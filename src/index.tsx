@@ -5,10 +5,13 @@ import 'normalize.css';
 import './styles/index.css';
 
 import App from './App';
+import { ReactFlowProvider } from 'react-flow-renderer';
 
 ReactDOM.render(
   <StrictMode>
-    <App />
+    <ReactFlowProvider>
+      <App />
+    </ReactFlowProvider>
   </StrictMode>,
   document.querySelector('#root')
 );

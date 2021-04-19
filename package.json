@@ -20,9 +20,11 @@
     "analyze": "npx source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
+    "dagre": "^0.8.5",
     "normalize.css": "^8.0.1",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-flow-renderer": "^9.5.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.9",
