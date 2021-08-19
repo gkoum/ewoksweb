@@ -6,10 +6,18 @@ import dagre from 'dagre';
 const { Graph } = dagre.graphlib;
 const NODE_SIZE = { width: 172, height: 36 };
 
+const ewoksNetwork = {
+  nodes: [
+    { id: 'name1', clas: 'module.task.SumTask', inputs: { a: 1 } },
+    { id: 'name2', clas: 'module.task.SumTask' },
+  ],
+  links: [{ source: 'name1', target: 'name2', arguments: { a: 'result' } }],
+};
+
 export function getNodes(): Node[] {
-  return rawNodes.map<Node>(({ id }) => ({
+  return ewoksNetwork.nodes.map<Node>(({ id, clas, inputs }) => ({
     id: id.toString(),
-    data: { label: `Node ${id}` },
+    data: { label: `${id} ${clas}` },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
     position: { x: 0, y: 0 },
@@ -17,7 +25,7 @@ export function getNodes(): Node[] {
 }
 
 export function getEdges(): Edge[] {
-  return rawLinks.map<Edge>(({ source, target }) => ({
+  return ewoksNetwork.links.map<Edge>(({ source, target }) => ({
     id: `e${source}-${target}`,
     source: source.toString(),
     target: target.toString(),
