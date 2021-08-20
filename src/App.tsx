@@ -10,13 +10,14 @@ import ReactFlow, {
   Background,
   MiniMap,
   removeElements,
-  addEdge
+  addEdge,
 } from 'react-flow-renderer';
 import type {
   ReactFlowProps,
   ReactFlowRefType,
 } from 'react-flow-renderer/dist/container/ReactFlow';
 import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
+import ReactJson from 'react-json-view';
 import { getEdges, getNodes, positionNodes } from './utils';
 import Sidebar from './sidebar';
 
@@ -42,6 +43,7 @@ const onElementClick = (event: MouseEvent, element: Node | Edge) =>
 function App() {
   const { fitView } = useZoomPanHelper();
   const [rfInstance, setRfInstance] = useState(null);
+  const [ewoksNetwork, setEwoksNetwork] = useState(null);
   const [elements, setElements] = useState([...positionedNodes, ...edges]);
   const reactFlowWrapper = useRef(null);
 
@@ -50,21 +52,23 @@ function App() {
   // const logToObject = () => console.log([...positionedNodes, ...edges]);
   const logToEwoksObject = () => {
     console.log(rfInstance.getElements());
-    const elements: [] = rfInstance.getElements()
-    const nodes = elements.filter((el: Node) => el.data).map(({ id, data }) => (
-    {
-      id,
-      clas: data,
-      inputs: 'ok'
-    }));
-    const links = elements.filter((el: Edge) => el.source).map(({ id, source, target }) => (
-    {
-      id,
-      source,
-      target,
-      inputs: 'ok'
-    }));
-    console.log(nodes, links)
+    const elements: [] = rfInstance.getElements();
+    const nodes = elements
+      .filter((el: Node) => el.data)
+      .map(({ id, data }) => ({
+        id,
+        clas: data,
+        inputs: 'ok',
+      }));
+    const links = elements
+      .filter((el: Edge) => el.source)
+      .map(({ id, source, target }) => ({
+        id,
+        source,
+        target,
+        inputs: 'ok',
+      }));
+    console.log(nodes, links);
     // const ewoksNetwork = {
     //   nodes: [
     //     { id: 'name1', clas: 'module.task.SumTask', inputs: { a: 1 } },
@@ -72,7 +76,7 @@ function App() {
     //   ],
     //   links: [{ source: 'name1', target: 'name2', arguments: { a: 'result' } }],
     // };
-  }
+  };
 
   useEffect(() => {
     fitView();
@@ -104,15 +108,26 @@ function App() {
   };
 
   const onConnect = (params) => {
-    console.log(params)
+    console.log(params);
     setElements((els) => addEdge(params, els));
-  }
+  };
+
+  const onAddRJson = (event) => {
+    console.log(event);
+    setElements((es) => event.updated_src);
+  };
+
+  const onEditRJson = (event) => {
+    console.log(event);
+    setElements((es) => event.updated_src);
+  };
+
   return (
     <div className="dndflow">
       <ReactFlowProvider>
         <div
           className="reactflow-wrapper"
-          style={{ height: '500px', width: '500px' }}
+          style={{ height: '800px', width: '500px' }}
           ref={reactFlowWrapper}
         >
           <ReactFlow
@@ -134,11 +149,29 @@ function App() {
               <button type="button" onClick={logToEwoksObject}>
                 toEwoksObject
               </button>
+              <a
+                href={`data:text/json;charset=utf-8,${encodeURIComponent(
+                  JSON.stringify(elements)
+                )}`}
+                download="filename.json"
+              >
+                {`Download Json`}
+              </a>
             </div>
             <Background />
           </ReactFlow>
         </div>
         <Sidebar />
+        <ReactJson
+          src={elements}
+          collapseStringsAfterLength={15}
+          onAdd={(e) => {
+            onAddRJson(e);
+          }}
+          onEdit={(e) => {
+            onEditRJson(e);
+          }}
+        />
       </ReactFlowProvider>
     </div>
   );

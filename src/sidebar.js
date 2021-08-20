@@ -36,11 +36,6 @@ const sidearrow = () => {
       >
         Output Node
       </div>
-      <div>
-        <textarea id="w3review" name="w3review" rows="4" cols="50">
-          
-        </textarea>
-      </div>
     </aside>
   );
 };
