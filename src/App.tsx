@@ -18,7 +18,7 @@ import type {
 } from 'react-flow-renderer/dist/container/ReactFlow';
 import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
 import ReactJson from 'react-json-view';
-import { getEdges, getNodes, positionNodes } from './utils';
+import { getEdges, getNodes, positionNodes, ewoksNetwork } from './utils';
 import Sidebar from './sidebar';
 
 const nodes = getNodes();
@@ -43,16 +43,16 @@ const onElementClick = (event: MouseEvent, element: Node | Edge) =>
 function App() {
   const { fitView } = useZoomPanHelper();
   const [rfInstance, setRfInstance] = useState(null);
-  const [ewoksNetwork, setEwoksNetwork] = useState(null);
+  const [ewoksD, setEwoksD] = useState(ewoksNetwork);
   const [elements, setElements] = useState([...positionedNodes, ...edges]);
   const reactFlowWrapper = useRef(null);
 
   const onLoad = (reactFlowInstance) => setRfInstance(reactFlowInstance);
   const logToObject = () => console.log(rfInstance.toObject());
   // const logToObject = () => console.log([...positionedNodes, ...edges]);
-  const logToEwoksObject = () => {
-    console.log(rfInstance.getElements());
-    const elements: [] = rfInstance.getElements();
+  const toEwoksObject = (elements) => {
+    // console.log(rfInstance.getElements());
+    // const elements: [] = rfInstance.getElements();
     const nodes = elements
       .filter((el: Node) => el.data)
       .map(({ id, data }) => ({
@@ -68,14 +68,9 @@ function App() {
         target,
         inputs: 'ok',
       }));
-    console.log(nodes, links);
-    // const ewoksNetwork = {
-    //   nodes: [
-    //     { id: 'name1', clas: 'module.task.SumTask', inputs: { a: 1 } },
-    //     { id: 'name2', clas: 'module.task.SumTask' },
-    //   ],
-    //   links: [{ source: 'name1', target: 'name2', arguments: { a: 'result' } }],
-    // };
+    console.log({ nodes, links });
+    return { nodes, links };
+    // return { nodes: nodes, links: links };
   };
 
   useEffect(() => {
@@ -115,11 +110,23 @@ function App() {
   const onAddRJson = (event) => {
     console.log(event);
     setElements((es) => event.updated_src);
+    setEwoksD((es) => toEwoksObject(event.updated_src));
+  };
+
+  const onAddRJsonEwoks = (event) => {
+    console.log(event);
+    setEwoksD((es) => event.updated_src);
   };
 
   const onEditRJson = (event) => {
     console.log(event);
     setElements((es) => event.updated_src);
+    setEwoksD(() => toEwoksObject(event.updated_src));
+  };
+
+  const onEditRJsonEwoks = (event) => {
+    console.log(event);
+    setEwoksD((es) => event.updated_src);
   };
 
   return (
@@ -146,9 +153,6 @@ function App() {
               <button type="button" onClick={logToObject}>
                 toObject
               </button>
-              <button type="button" onClick={logToEwoksObject}>
-                toEwoksObject
-              </button>
               <a
                 href={`data:text/json;charset=utf-8,${encodeURIComponent(
                   JSON.stringify(elements)
@@ -161,18 +165,28 @@ function App() {
             <Background />
           </ReactFlow>
         </div>
-        <Sidebar />
-        <ReactJson
-          src={elements}
-          collapseStringsAfterLength={15}
-          onAdd={(e) => {
-            onAddRJson(e);
-          }}
-          onEdit={(e) => {
-            onEditRJson(e);
-          }}
-        />
       </ReactFlowProvider>
+      <Sidebar />
+      <ReactJson
+        src={elements}
+        collapseStringsAfterLength={15}
+        onAdd={(e) => {
+          onAddRJson(e);
+        }}
+        onEdit={(e) => {
+          onEditRJson(e);
+        }}
+      />
+      <ReactJson
+        src={ewoksD}
+        collapseStringsAfterLength={15}
+        onAdd={(e) => {
+          onAddRJsonEwoks(e);
+        }}
+        onEdit={(e) => {
+          onEditRJsonEwoks(e);
+        }}
+      />
     </div>
   );
 }

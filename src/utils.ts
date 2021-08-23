@@ -6,7 +6,7 @@ import dagre from 'dagre';
 const { Graph } = dagre.graphlib;
 const NODE_SIZE = { width: 172, height: 36 };
 
-const ewoksNetwork = {
+export const ewoksNetwork = {
   nodes: [
     { id: 'name1', clas: 'module.task.SumTask', inputs: { a: 1 } },
     { id: 'name2', clas: 'module.task.SumTask' },
