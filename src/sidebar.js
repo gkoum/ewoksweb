@@ -1,19 +1,19 @@
-/* eslint-disable jsx-a11y/interactive-supports-focus */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react';
 
-const sidearrow = () => {
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const onDragStart = (event, nodeType) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.effectAllowed = 'move';
-  };
+const onDragStart = (event, nodeType) => {
+  event.dataTransfer.setData('application/reactflow', nodeType);
+  event.dataTransfer.effectAllowed = 'move';
+};
+
+function Sidebar(props) {
   return (
     <aside>
       <div className="description">
-        You can drag these nodes to the pane on the left.
+        You can drag these nodes to the pane on the right.
+        {props.element.id}
       </div>
       <div
-        role="button"
         className="dndnode input"
         onDragStart={(event) => onDragStart(event, 'input')}
         draggable
@@ -21,7 +21,6 @@ const sidearrow = () => {
         Input Node
       </div>
       <div
-        role="button"
         className="dndnode"
         onDragStart={(event) => onDragStart(event, 'default')}
         draggable
@@ -29,7 +28,6 @@ const sidearrow = () => {
         Default Node
       </div>
       <div
-        role="button"
         className="dndnode output"
         onDragStart={(event) => onDragStart(event, 'output')}
         draggable
@@ -38,6 +36,6 @@ const sidearrow = () => {
       </div>
     </aside>
   );
-};
+}
 
-export default sidearrow;
+export default Sidebar;

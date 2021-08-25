@@ -8,8 +8,9 @@ const NODE_SIZE = { width: 172, height: 36 };
 
 export const ewoksNetwork = {
   nodes: [
-    { id: 'name1', clas: 'module.task.SumTask', inputs: { a: 1 } },
-    { id: 'name2', clas: 'module.task.SumTask' },
+    { id: 'name1', clas: 'module.task.SumTask1', inputs: { a: 1 } },
+    { id: 'name2', clas: 'module.task.SumTask2' },
+    { id: 'name3', clas: 'module.task.SumTask3' },
   ],
   links: [{ source: 'name1', target: 'name2', arguments: { a: 'result' } }],
 };
@@ -20,7 +21,7 @@ export function getNodes(): Node[] {
     data: { label: `${id} ${clas}` },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
-    position: { x: 0, y: 0 },
+    position: { x: 100, y: 100 },
   }));
 }
 

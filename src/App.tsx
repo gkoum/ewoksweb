@@ -20,6 +20,7 @@ import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
 import ReactJson from 'react-json-view';
 import { getEdges, getNodes, positionNodes, ewoksNetwork } from './utils';
 import Sidebar from './sidebar';
+import Flow from './Flow';
 
 const nodes = getNodes();
 const edges = getEdges();
@@ -37,15 +38,18 @@ const getId = () => `dndnode_${id++}`;
 //   position: { x: 0, y: 0 },
 // });
 
-const onElementClick = (event: MouseEvent, element: Node | Edge) =>
-  console.log('click', element);
-
 function App() {
   const { fitView } = useZoomPanHelper();
   const [rfInstance, setRfInstance] = useState(null);
+  const [elementClicked, setElementClicked] = useState({ id: 'none' });
   const [ewoksD, setEwoksD] = useState(ewoksNetwork);
   const [elements, setElements] = useState([...positionedNodes, ...edges]);
   const reactFlowWrapper = useRef(null);
+
+  const onElementClick = (event: MouseEvent, element: Node | Edge) => {
+    console.log('click', element);
+    setElementClicked(element);
+  };
 
   const onLoad = (reactFlowInstance) => setRfInstance(reactFlowInstance);
   const logToObject = () => console.log(rfInstance.toObject());
@@ -131,6 +135,8 @@ function App() {
 
   return (
     <div className="dndflow">
+      <Flow />
+      <hr />
       <ReactFlowProvider>
         <div
           className="reactflow-wrapper"
@@ -159,15 +165,15 @@ function App() {
                 )}`}
                 download="filename.json"
               >
-                {`Download Json`}
+                Download Json
               </a>
             </div>
             <Background />
           </ReactFlow>
         </div>
       </ReactFlowProvider>
-      <Sidebar />
-      <ReactJson
+      <Sidebar element={elementClicked} />
+      {/* <ReactJson
         src={elements}
         collapseStringsAfterLength={15}
         onAdd={(e) => {
@@ -176,7 +182,7 @@ function App() {
         onEdit={(e) => {
           onEditRJson(e);
         }}
-      />
+      /> */}
       <ReactJson
         src={ewoksD}
         collapseStringsAfterLength={15}
