@@ -11,7 +11,6 @@ function Sidebar(props) {
     <aside>
       <div className="description">
         You can drag these nodes to the pane on the right.
-        {props.element.id}
       </div>
       <div
         className="dndnode input"
@@ -33,6 +32,13 @@ function Sidebar(props) {
         draggable
       >
         Output Node
+      </div>
+      <div>Id: {props.element.id}</div>
+      <div>Type: {props.element.type}</div>
+      <div>Label: {props.element.data && props.element.data.label}</div>
+      <div>
+        Position: {props.element.position && props.element.position.x},{' '}
+        {props.element.position && props.element.position.y}
       </div>
     </aside>
   );

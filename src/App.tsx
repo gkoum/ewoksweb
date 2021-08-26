@@ -21,6 +21,7 @@ import ReactJson from 'react-json-view';
 import { getEdges, getNodes, positionNodes, ewoksNetwork } from './utils';
 import Sidebar from './sidebar';
 import Flow from './Flow';
+import Popover from './Components/Popover';
 
 const nodes = getNodes();
 const edges = getEdges();
@@ -170,10 +171,16 @@ function App() {
             </div>
             <Background />
           </ReactFlow>
+          {/* <Popover
+            anchor={elementClicked || null}
+            onClose={() => setElementClicked(null)}
+            nodeData={elementClicked || null}
+            onBottom={true}
+          /> */}
         </div>
       </ReactFlowProvider>
       <Sidebar element={elementClicked} />
-      {/* <ReactJson
+      <ReactJson
         src={elements}
         collapseStringsAfterLength={15}
         onAdd={(e) => {
@@ -182,7 +189,7 @@ function App() {
         onEdit={(e) => {
           onEditRJson(e);
         }}
-      /> */}
+      />
       <ReactJson
         src={ewoksD}
         collapseStringsAfterLength={15}

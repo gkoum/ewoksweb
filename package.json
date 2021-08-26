@@ -20,6 +20,7 @@
     "analyze": "npx source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
+    "@material-ui/core": "^4.12.3",
     "dagre": "^0.8.5",
     "normalize.css": "^8.0.1",
     "react": "^17.0.2",
