@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 // import * as R from "ramda";
 import ReactFlow, {
   removeElements,
@@ -8,23 +8,11 @@ import ReactFlow, {
   Controls,
   MiniMap,
   BackgroundVariant,
+  ReactFlowProvider,
 } from 'react-flow-renderer';
 
 import DataNode from './CustomNodes/DataNode';
 import FunctionNode from './CustomNodes/FunctionNode';
-
-const nodeTypes = {
-  dataNode: DataNode,
-  functionNode: FunctionNode,
-};
-
-const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
-const onNodeContextMenu = (event, node) => {
-  event.preventDefault();
-  console.log('context menu:', node);
-};
-
-const onElementClick = (event, element) => console.log('click', element);
 
 const newElements = [
   {
@@ -116,7 +104,25 @@ const newElements = [
   // },
 ];
 
+const nodeTypes = {
+  dataNode: DataNode,
+  functionNode: FunctionNode,
+};
+
+const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
+const onNodeContextMenu = (event, node) => {
+  event.preventDefault();
+  console.log('context menu:', node);
+};
+
+const onElementClick = (event, element) => console.log('click', element);
+
+let id = 0;
+const getId = () => `dndnode_${id++}`;
+
 function Flow() {
+  const reactFlowWrapper = useRef(null);
+  const [rfInstance, setRfInstance] = useState(null);
   const [elements, setElements] = useState(newElements);
   const onElementsRemove = (elementsToRemove) =>
     console.log(elementsToRemove, elements);
@@ -132,37 +138,65 @@ function Flow() {
     // setElements((els) => addEdge(params, els));
   };
 
+  const onDrop = (event) => {
+    event.preventDefault();
+    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+    const type = event.dataTransfer.getData('application/reactflow');
+    const position = rfInstance.project({
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    });
+    const newNode = {
+      id: getId(),
+      type,
+      position,
+      data: { label: `${type} node` },
+    };
+    console.log(rfInstance.getElements());
+    // setElements((es) => [...es, newNode]);
+    // positionedNodes.push(newNode);
+    // console.log(positionedNodes);
+  };
+
   return (
-    <ReactFlow
-      elements={elements}
-      elementsSelectable
-      selectNodesOnDrag
-      nodeTypes={nodeTypes}
-      onElementsRemove={onElementsRemove}
-      onConnect={onConnect}
-      onLoad={onLoad}
-      onNodeContextMenu={onNodeContextMenu}
-      onElementClick={onElementClick}
-    >
-      <Background gap={24} size={1} />
-      <Controls />
-      <MiniMap
-        nodeColor={(node) => {
-          switch (node.type) {
-            case 'valueNode':
-              return 'LightGreen';
-            case 'dataNode':
-              return 'LightBlue';
-            case 'functionNode':
-              return 'Lavender';
-            case 'sourceNode':
-              return 'Gold';
-            default:
-              return '#eee';
-          }
-        }}
-      />
-    </ReactFlow>
+    <ReactFlowProvider>
+      <div
+        className="reactflow-wrapper"
+        style={{ height: '400px' }}
+        ref={reactFlowWrapper}
+      >
+        <ReactFlow
+          elements={elements}
+          elementsSelectable
+          selectNodesOnDrag
+          nodeTypes={nodeTypes}
+          onElementsRemove={onElementsRemove}
+          onConnect={onConnect}
+          onLoad={onLoad}
+          onNodeContextMenu={onNodeContextMenu}
+          onElementClick={onElementClick}
+        >
+          <Background gap={24} size={1} />
+          <Controls />
+          <MiniMap
+            nodeColor={(node) => {
+              switch (node.type) {
+                case 'valueNode':
+                  return 'LightGreen';
+                case 'dataNode':
+                  return 'LightBlue';
+                case 'functionNode':
+                  return 'Lavender';
+                case 'sourceNode':
+                  return 'Gold';
+                default:
+                  return '#eee';
+              }
+            }}
+          />
+        </ReactFlow>
+      </div>
+    </ReactFlowProvider>
   );
 }
 

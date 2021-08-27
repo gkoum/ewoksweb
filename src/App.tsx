@@ -18,10 +18,28 @@ import type {
 } from 'react-flow-renderer/dist/container/ReactFlow';
 import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
 import ReactJson from 'react-json-view';
+import { Rnd } from 'react-rnd';
 import { getEdges, getNodes, positionNodes, ewoksNetwork } from './utils';
 import Sidebar from './sidebar';
 import Flow from './Flow';
 import Popover from './Components/Popover';
+import PrimarySearchAppBar from './layout/navbar';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+  })
+);
 
 const nodes = getNodes();
 const edges = getEdges();
@@ -134,10 +152,25 @@ function App() {
     setEwoksD((es) => event.updated_src);
   };
 
+  const classes = useStyles();
+
   return (
-    <div className="dndflow">
-      <Flow />
-      <hr />
+    <div className={classes.root}>
+      <PrimarySearchAppBar />
+      <Rnd
+        // style={{ backgroundColor: 'red', zIndex: 400 }}
+        disableDragging={false}
+        default={{
+          x: 500,
+          y: 500,
+          width: 600,
+          height: 200,
+        }}
+      >
+        <PrimarySearchAppBar />
+        <Flow />
+      </Rnd>
+
       <ReactFlowProvider>
         <div
           className="reactflow-wrapper"

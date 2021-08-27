@@ -21,12 +21,14 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
     "dagre": "^0.8.5",
     "normalize.css": "^8.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-flow-renderer": "^9.5.0",
-    "react-json-view": "latest"
+    "react-json-view": "latest",
+    "react-rnd": "^10.3.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.9",
