@@ -23,10 +23,11 @@ import { getEdges, getNodes, positionNodes, ewoksNetwork } from './utils';
 import Sidebar from './sidebar';
 import Flow from './Flow';
 import Popover from './Components/Popover';
-import PrimarySearchAppBar from './layout/navbar';
+import PrimarySearchAppBar from './layout/Navbar';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import MyCard from './layout/MyCard';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -158,62 +159,75 @@ function App() {
     <div className={classes.root}>
       <PrimarySearchAppBar />
       <Rnd
-        // style={{ backgroundColor: 'red', zIndex: 400 }}
+        // style={{ backgroundColor: 'cyan', zIndex: 400 }}
         disableDragging={false}
         default={{
           x: 500,
           y: 500,
-          width: 600,
-          height: 200,
+          width: 800,
+          height: 300,
         }}
       >
         <PrimarySearchAppBar />
         <Flow />
       </Rnd>
-
-      <ReactFlowProvider>
-        <div
-          className="reactflow-wrapper"
-          style={{ height: '800px', width: '500px' }}
-          ref={reactFlowWrapper}
-        >
-          <ReactFlow
-            snapToGrid
-            elements={elements}
-            onElementClick={onElementClick}
-            onLoad={onLoad}
-            onDrop={onDrop}
-            onConnect={onConnect}
-            onDragOver={onDragOver}
+      <Rnd
+        // style={{ backgroundColor: 'cyan', zIndex: 400 }}
+        disableDragging={false}
+        default={{
+          x: 0,
+          y: 0,
+          width: 800,
+          height: 300,
+        }}
+      >
+        <PrimarySearchAppBar />
+        <ReactFlowProvider>
+          <div
+            className="reactflow-wrapper"
+            style={{ height: '300px', width: '800px' }}
+            ref={reactFlowWrapper}
           >
-            <Controls />
-            <div
-              style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}
+            <ReactFlow
+              snapToGrid
+              elements={elements}
+              onElementClick={onElementClick}
+              onLoad={onLoad}
+              onDrop={onDrop}
+              onConnect={onConnect}
+              onDragOver={onDragOver}
             >
-              <button type="button" onClick={logToObject}>
-                toObject
-              </button>
-              <a
-                href={`data:text/json;charset=utf-8,${encodeURIComponent(
-                  JSON.stringify(elements)
-                )}`}
-                download="filename.json"
+              <Controls />
+              <div
+                style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}
               >
-                Download Json
-              </a>
-            </div>
-            <Background />
-          </ReactFlow>
-          {/* <Popover
-            anchor={elementClicked || null}
-            onClose={() => setElementClicked(null)}
-            nodeData={elementClicked || null}
-            onBottom={true}
-          /> */}
-        </div>
-      </ReactFlowProvider>
+                <button type="button" onClick={logToObject}>
+                  toObject
+                </button>
+                <a
+                  href={`data:text/json;charset=utf-8,${encodeURIComponent(
+                    JSON.stringify(elements)
+                  )}`}
+                  download="filename.json"
+                >
+                  Download Json
+                </a>
+              </div>
+              <Background />
+            </ReactFlow>
+            {/* <Popover
+              anchor={elementClicked || null}
+              onClose={() => setElementClicked(null)}
+              nodeData={elementClicked || null}
+              onBottom={true}
+            /> */}
+          </div>
+        </ReactFlowProvider>
+      </Rnd>
+      <MyCard />
       <Sidebar element={elementClicked} />
-      <ReactJson
+
+      {/* <ReactJson
         src={elements}
         collapseStringsAfterLength={15}
         onAdd={(e) => {
@@ -232,7 +246,7 @@ function App() {
         onEdit={(e) => {
           onEditRJsonEwoks(e);
         }}
-      />
+      /> */}
     </div>
   );
 }

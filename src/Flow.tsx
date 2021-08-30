@@ -162,7 +162,7 @@ function Flow() {
     <ReactFlowProvider>
       <div
         className="reactflow-wrapper"
-        style={{ height: '400px' }}
+        style={{ height: '90%' }}
         ref={reactFlowWrapper}
       >
         <ReactFlow
@@ -178,7 +178,7 @@ function Flow() {
         >
           <Background gap={24} size={1} />
           <Controls />
-          <MiniMap
+          {/* <MiniMap
             nodeColor={(node) => {
               switch (node.type) {
                 case 'valueNode':
@@ -193,7 +193,7 @@ function Flow() {
                   return '#eee';
               }
             }}
-          />
+          /> */}
         </ReactFlow>
       </div>
     </ReactFlowProvider>
