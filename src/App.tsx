@@ -25,9 +25,30 @@ import Flow from './Flow';
 import Popover from './Components/Popover';
 import PrimarySearchAppBar from './layout/Navbar';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import Typography from '@material-ui/core/Typography';
+import clsx from 'clsx';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import MyCard from './layout/MyCard';
+import SideMenu from './layout/SideMenu';
+import { cyan } from '@material-ui/core/colors';
+import MinimizeIcon from '@material-ui/icons/Minimize';
+import Icon from '@material-ui/core/Icon';
+import useStore from './store';
+
+// type State = {
+//   clickedElement: string;
+//   setClickedElement: (filter: string) => void;
+// };
+
+// const useStore = create<State>((set) => ({
+//   clickedElement: '',
+//   setClickedElement: () =>
+//     set((state) => ({ clickedElement: state.clickedElement + '_clicked' })),
+// }));
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,6 +59,12 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       textAlign: 'center',
       color: theme.palette.text.secondary,
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+    },
+    hide: {
+      display: 'none',
     },
   })
 );
@@ -59,12 +86,16 @@ const getId = () => `dndnode_${id++}`;
 // });
 
 function App() {
+  const classes = useStyles();
   const { fitView } = useZoomPanHelper();
   const [rfInstance, setRfInstance] = useState(null);
   const [elementClicked, setElementClicked] = useState({ id: 'none' });
   const [ewoksD, setEwoksD] = useState(ewoksNetwork);
   const [elements, setElements] = useState([...positionedNodes, ...edges]);
   const reactFlowWrapper = useRef(null);
+
+  const pokemons = useStore((state) => state);
+  const removePokemon = useStore((state) => state);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     console.log('click', element);
@@ -153,11 +184,33 @@ function App() {
     setEwoksD((es) => event.updated_src);
   };
 
-  const classes = useStyles();
-
   return (
     <div className={classes.root}>
-      <PrimarySearchAppBar />
+      <SideMenu></SideMenu>
+      {/* <div className="row">
+        <div className="col-md-4"></div>
+        <div className="col-md-4">
+          <ul>
+            {pokemons.map((pokemon) => (
+              <li key={pokemon.id}>
+                <div className="row">
+                  <div className="col-md-6">{pokemon.name} </div>
+                  <div className="col-md-6">
+                    <button
+                      className="btn btn-outline-secondary btn-sm"
+                      onClick={(e) => removePokemon(pokemon.id)}
+                    >
+                      X
+                    </button>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="col-md-4"></div>
+      </div> */}
+      <Sidebar element={elementClicked} />
       <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
         disableDragging={false}
@@ -168,24 +221,46 @@ function App() {
           height: 300,
         }}
       >
-        <PrimarySearchAppBar />
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            // onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, classes.hide)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap>
+            Persistent drawer
+          </Typography>
+          <Icon className="fa fa-plus-circle" style={{ fontSize: 30 }} />
+        </Toolbar>
         <Flow />
       </Rnd>
       <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
         disableDragging={false}
         default={{
-          x: 0,
-          y: 0,
+          x: 100,
+          y: 100,
           width: 800,
-          height: 300,
+          height: 365,
         }}
       >
-        <PrimarySearchAppBar />
+        <Toolbar>
+          <Typography variant="h6" noWrap>
+            Graphs Name
+          </Typography>
+        </Toolbar>
         <ReactFlowProvider>
           <div
             className="reactflow-wrapper"
-            style={{ height: '300px', width: '800px' }}
+            style={{
+              height: '300px',
+              width: '800px',
+              backgroundColor: '#84ffff',
+            }}
             ref={reactFlowWrapper}
           >
             <ReactFlow
@@ -224,9 +299,18 @@ function App() {
           </div>
         </ReactFlowProvider>
       </Rnd>
-      <MyCard />
-      <Sidebar element={elementClicked} />
-
+      <Rnd
+        // style={{ backgroundColor: 'cyan', zIndex: 400 }}
+        disableDragging={false}
+        default={{
+          x: 0,
+          y: 0,
+          width: 800,
+          height: 300,
+        }}
+      >
+        <MyCard />
+      </Rnd>
       {/* <ReactJson
         src={elements}
         collapseStringsAfterLength={15}

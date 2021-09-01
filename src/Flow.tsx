@@ -138,8 +138,13 @@ function Flow() {
     // setElements((els) => addEdge(params, els));
   };
 
+  const onPaneClick = (params) => {
+    console.log(params, elements);
+  };
+
   const onDrop = (event) => {
     event.preventDefault();
+    console.log(event);
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
     const position = rfInstance.project({
@@ -173,8 +178,10 @@ function Flow() {
           onElementsRemove={onElementsRemove}
           onConnect={onConnect}
           onLoad={onLoad}
+          onDrop={onDrop}
           onNodeContextMenu={onNodeContextMenu}
           onElementClick={onElementClick}
+          onPaneClick={onPaneClick}
         >
           <Background gap={24} size={1} />
           <Controls />
