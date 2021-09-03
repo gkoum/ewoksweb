@@ -1,7 +1,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import useStore from './store';
+import type { Edge, Node } from 'react-flow-renderer';
 
 const onDragStart = (event, nodeType) => {
   console.log(event, nodeType);
@@ -22,17 +24,73 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Sidebar(props) {
   const classes = useStyles();
-  const [name, setName] = React.useState('Cat in the Hat');
-  const handleChange = (event) => {
-    console.log(event.target.value);
-    setName(event.target.value);
+
+  const elementClickedStore = useStore<Node>((state) => state.selectedElement);
+  const setSelectedElement = useStore((state) => state.setSelectedElement);
+  console.log(elementClickedStore);
+
+  const [element, setElement] = React.useState({} as Node);
+
+  const [id, setId] = React.useState('');
+  const [type, setType] = React.useState('');
+  const [label, setLabel] = React.useState('');
+  const [positionX, setPositionX] = React.useState(Number);
+  const [positionY, setPositionY] = React.useState(Number);
+
+  useEffect(() => {
+    setId(elementClickedStore.id);
+    setType(elementClickedStore.type);
+    setLabel(elementClickedStore.data.label);
+    setPositionX(elementClickedStore.position.x);
+    setPositionY(elementClickedStore.position.y);
+  }, [
+    elementClickedStore.id,
+    elementClickedStore.type,
+    elementClickedStore.data.label,
+    elementClickedStore.position.x,
+    elementClickedStore.position.y,
+  ]);
+
+  // const setSelectedElement = useStore((state) => state.setSelectedElement);
+
+  const elementClickedStoreChanged = (event) => {
+    console.log(event);
+    // setName(event.target.value);
+    // setSelectedElement(element);
+  };
+
+  const idChanged = (event) => {
+    setId(event.target.value);
+    const el = elementClickedStore;
+    el.id = event.target.value;
+    setSelectedElement(el);
+    // elementClickedStore.id = event.target.value;
+    // setSelectedElement(elementClickedStore);
+  };
+
+  const typeChanged = (event) => {
+    setType(event.target.value);
+    // elementClickedStore.type = event.target.value;
+    setSelectedElement(elementClickedStore);
+  };
+
+  const labelChanged = (event) => {
+    setLabel(event.target.value);
+  };
+
+  const positionXChanged = (event) => {
+    setPositionX(event.target.value);
+  };
+
+  const positionYChanged = (event) => {
+    setPositionY(event.target.value);
   };
 
   return (
-    <aside>
-      <div className="description">
+    <aside className="dndflow">
+      {/* <div className="description">
         You can drag these nodes to the pane on the right.
-      </div>
+      </div> */}
       <div
         className="dndnode input"
         onDragStart={(event) => onDragStart(event, 'input')}
@@ -55,21 +113,51 @@ export default function Sidebar(props) {
         Output Node
       </div>
       <form className={classes.root} noValidate autoComplete="off">
+        <div>Id: {props.element.id}</div>
         <div>
           <TextField
             id="outlined-basic"
             label="id"
             variant="outlined"
-            value={props.element.id}
-            onChange={handleChange}
+            value={id || ''}
+            onChange={idChanged}
           />
-          {props.element.id}
         </div>
-        <div>Type: {props.element.type}</div>
-        <div>Label: {props.element.data && props.element.data.label}</div>
         <div>
-          Position: {props.element.position && props.element.position.x},{' '}
-          {props.element.position && props.element.position.y}
+          <TextField
+            id="outlined-basic"
+            label="type"
+            variant="outlined"
+            value={type || ''}
+            onChange={typeChanged}
+          />
+        </div>
+        <div>
+          <TextField
+            id="outlined-basic"
+            label="Label"
+            variant="outlined"
+            value={label || ''}
+            onChange={labelChanged}
+          />
+        </div>
+        <div>
+          <TextField
+            id="outlined-basic"
+            label="positionX"
+            variant="outlined"
+            value={positionX || ''}
+            onChange={positionXChanged}
+          />
+        </div>
+        <div>
+          <TextField
+            id="outlined-basic"
+            label="positionY"
+            variant="outlined"
+            value={positionY || ''}
+            onChange={positionYChanged}
+          />
         </div>
       </form>
     </aside>

@@ -15,10 +15,14 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Sidebar from '../sidebar';
+import useStore from '../store';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      width: '100%',
+      length: '100%',
       maxWidth: 345,
     },
     media: {
@@ -44,6 +48,8 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function MyCard() {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const selectedElement = useStore((state) => state.selectedElement);
+  const setSelectedElement = useStore((state) => state.setSelectedElement);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -65,17 +71,13 @@ export default function MyCard() {
         title="Shrimp and Chorizo Paella"
         subheader="September 14, 2016"
       />
-      <CardMedia
+      {/* <CardMedia
         className={classes.media}
         image="/static/images/cards/paella.jpg"
         title="Paella dish"
-      />
+      /> */}
       <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
-        </Typography>
+        <Sidebar element={selectedElement} />
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">

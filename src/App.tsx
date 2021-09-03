@@ -26,6 +26,8 @@ import Popover from './Components/Popover';
 import PrimarySearchAppBar from './layout/Navbar';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
+import AppBar from '@material-ui/core/AppBar';
+import { Checkbox } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
@@ -38,17 +40,6 @@ import { cyan } from '@material-ui/core/colors';
 import MinimizeIcon from '@material-ui/icons/Minimize';
 import Icon from '@material-ui/core/Icon';
 import useStore from './store';
-
-// type State = {
-//   clickedElement: string;
-//   setClickedElement: (filter: string) => void;
-// };
-
-// const useStore = create<State>((set) => ({
-//   clickedElement: '',
-//   setClickedElement: () =>
-//     set((state) => ({ clickedElement: state.clickedElement + '_clicked' })),
-// }));
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,15 +82,17 @@ function App() {
   const [rfInstance, setRfInstance] = useState(null);
   const [elementClicked, setElementClicked] = useState({ id: 'none' });
   const [ewoksD, setEwoksD] = useState(ewoksNetwork);
+  const [disableDragging, setDisableDragging] = useState(false);
   const [elements, setElements] = useState([...positionedNodes, ...edges]);
   const reactFlowWrapper = useRef(null);
 
-  const pokemons = useStore((state) => state);
-  const removePokemon = useStore((state) => state);
+  const selectedElement = useStore((state) => state.selectedElement);
+  const setSelectedElement = useStore((state) => state.setSelectedElement);
 
-  const onElementClick = (event: MouseEvent, element: Node | Edge) => {
+  const onElementClick = (event: MouseEvent, element: Node) => {
     console.log('click', element);
     setElementClicked(element);
+    setSelectedElement(element);
   };
 
   const onLoad = (reactFlowInstance) => setRfInstance(reactFlowInstance);
@@ -110,10 +103,11 @@ function App() {
     // const elements: [] = rfInstance.getElements();
     const nodes = elements
       .filter((el: Node) => el.data)
-      .map(({ id, data }) => ({
+      .map(({ id, data, type }) => ({
         id,
         clas: data,
         inputs: 'ok',
+        type,
       }));
     const links = elements
       .filter((el: Edge) => el.source)
@@ -184,36 +178,16 @@ function App() {
     setEwoksD((es) => event.updated_src);
   };
 
+  const handlDisableDragging = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDisableDragging(event.target.checked);
+  };
+
   return (
     <div className={classes.root}>
       <SideMenu></SideMenu>
-      {/* <div className="row">
-        <div className="col-md-4"></div>
-        <div className="col-md-4">
-          <ul>
-            {pokemons.map((pokemon) => (
-              <li key={pokemon.id}>
-                <div className="row">
-                  <div className="col-md-6">{pokemon.name} </div>
-                  <div className="col-md-6">
-                    <button
-                      className="btn btn-outline-secondary btn-sm"
-                      onClick={(e) => removePokemon(pokemon.id)}
-                    >
-                      X
-                    </button>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="col-md-4"></div>
-      </div> */}
-      <Sidebar element={elementClicked} />
       <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
-        disableDragging={false}
+        disableDragging={disableDragging}
         default={{
           x: 500,
           y: 500,
@@ -240,7 +214,7 @@ function App() {
       </Rnd>
       <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
-        disableDragging={false}
+        disableDragging={disableDragging}
         default={{
           x: 100,
           y: 100,
@@ -248,18 +222,25 @@ function App() {
           height: 365,
         }}
       >
-        <Toolbar>
-          <Typography variant="h6" noWrap>
-            Graphs Name
-          </Typography>
-        </Toolbar>
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" noWrap>
+              Graphs Name
+            </Typography>
+            <Checkbox
+              checked={disableDragging}
+              onChange={handlDisableDragging}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          </Toolbar>
+        </AppBar>
         <ReactFlowProvider>
           <div
             className="reactflow-wrapper"
             style={{
-              height: '300px',
-              width: '800px',
-              backgroundColor: '#84ffff',
+              height: '100%',
+              width: '100%',
+              backgroundColor: '#e9ebf7',
             }}
             ref={reactFlowWrapper}
           >
@@ -301,11 +282,11 @@ function App() {
       </Rnd>
       <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
-        disableDragging={false}
+        disableDragging={disableDragging}
         default={{
-          x: 0,
-          y: 0,
-          width: 800,
+          x: 10,
+          y: 70,
+          width: 300,
           height: 300,
         }}
       >

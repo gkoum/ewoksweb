@@ -41,9 +41,9 @@
 }
 
 @media screen and (min-width: 768px) {
-  .dndflow {
+  /* .dndflow {
     flex-direction: row;
-  }
+  } */
 
   .dndflow aside {
     width: 20%;

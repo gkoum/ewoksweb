@@ -8,17 +8,22 @@ const NODE_SIZE = { width: 172, height: 36 };
 
 export const ewoksNetwork = {
   nodes: [
-    { id: 'name1', clas: 'module.task.SumTask1', inputs: { a: 1 } },
-    { id: 'name2', clas: 'module.task.SumTask2' },
-    { id: 'name3', clas: 'module.task.SumTask3' },
+    {
+      id: 'name1',
+      type: 'input',
+      clas: 'module.task.SumTask1',
+      inputs: { a: 1 },
+    },
+    { id: 'name2', type: 'output', clas: 'module.task.SumTask2' },
+    { id: 'name3', type: 'output', clas: 'module.task.SumTask3' },
   ],
   links: [{ source: 'name1', target: 'name2', arguments: { a: 'result' } }],
 };
 
 export function getNodes(): Node[] {
-  return ewoksNetwork.nodes.map<Node>(({ id, clas, inputs }) => ({
+  return ewoksNetwork.nodes.map<Node>(({ id, clas, type, inputs }) => ({
     id: id.toString(),
-    data: { label: `${id} ${clas}` },
+    data: { label: `${id} ${type} ${clas}` },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
     position: { x: 100, y: 100 },
@@ -30,6 +35,7 @@ export function getEdges(): Edge[] {
     id: `e${source}-${target}`,
     source: source.toString(),
     target: target.toString(),
+    label: `e${source}-${target}`,
   }));
 }
 

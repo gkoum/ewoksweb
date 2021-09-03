@@ -1,3 +1,9 @@
+// https://docs.google.com/document/d/1kGRwyrPJQfpx9xUND6Epei2oa71rXeWRZ3owRDglVHk/edit#heading=h.1p7naowyrq09
+// https://confluence.esrf.fr/pages/viewpage.action?spaceKey=AAWWK&title=Automation+and+Analysis+Workflows
+// https://confluence.esrf.fr/display/AAWWK/Zocalo
+// https://discourse.jupyter.org/t/tool-for-notebook-workflows/3764
+// https://gitlab.esrf.fr/denolf/workflow_concepts/-/blob/master/doc/workflows_meeting_march2021.pdf
+
 const nodes = {
   id: '',
   type: 'class, method, graph ...', // must be clear and draw conclusions from both key and value of a dictionary,
@@ -82,7 +88,7 @@ const upperGraph = {
       target: 'Check move of phi',
       links: [
         {
-          source: 'Out',
+          source: 'Out',https://confluence.esrf.fr/pages/viewpage.action?spaceKey=AAWWK&title=Automation+and+Analysis+Workflows
           target: 'Check move of phi',
           all_arguments: true,
         },
