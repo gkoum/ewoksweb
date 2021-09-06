@@ -36,6 +36,8 @@ export function getEdges(): Edge[] {
     source: source.toString(),
     target: target.toString(),
     label: `e${source}-${target}`,
+    data: { label: `e${source}-${target}` },
+    position: { x: 100, y: 100 },
   }));
 }
 

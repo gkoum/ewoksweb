@@ -180,3 +180,86 @@ const graph = {
 // the node should as well be an autonomous entity and wait from the links to "know" its inputs.
 // So all inputs must be specified in the node. inputs: [{}]
 // do we at any point need different outputs from a node. outputs: [{}]
+
+
+// referencing 2 layers down breaks? the decoupling
+
+
+const graph = {
+  "nodes": [
+      {
+          "id": "node1",
+          "task_type": "method",
+          "task_identifier": "__main__.myfunc",
+          "inputs": {
+              "name": "node1",
+              "value": 0
+          }
+      },
+      {
+          "id": "node2",
+          "task_type": "graph",
+          "task_identifier": "subgraph.json"
+      }
+  ],
+  "links": [
+      {
+          "source": "node1",
+          "target": "node2",
+          // "sub_graph_nodes": {
+          to_target_input: "in1", // applicable when more than one inputs or else it can be defined in the node?
+          // },
+          "arguments": {
+              "value": "return_value"
+          }
+      }
+  ]
+}
+
+
+const subgraph = {
+  "graph": {
+    inputs: [
+      {name: 'in1', to: 'subnode1'}
+    ],
+    outputs: [
+      {name: 'out1', to: 'in1'}
+    ],
+    // "input_nodes": {
+    //   "in": [
+    //     "subnode1",
+    //     "in"
+    //   ]
+    // }
+  },
+  "nodes": [
+    {
+      "id": "subnode1",
+      "task_type": "graph",
+      "task_identifier": "subsubgraph.json"
+    }
+  ]
+}
+
+const subsubgraph = {
+  "graph": {
+    input: [
+      {name: 'in1', to: 'subsubnode1'}
+    ],
+    // "input_nodes": {
+    //   "in1": "subsubnode1"
+    // }
+  },
+  "nodes": [
+    {
+      "task_type": "method",
+      "task_identifier": "__main__.myfunc",
+      "inputs": {
+        "name": "subnode1",
+        "value": 0
+      },
+      "id": "subsubnode1"
+    }
+  ],
+  "links": []
+}

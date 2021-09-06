@@ -68,8 +68,8 @@ export default function MyCard() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title="Information about the Project"
+        subheader="Modified: September 14, 2016"
       />
       {/* <CardMedia
         className={classes.media}

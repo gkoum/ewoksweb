@@ -25,9 +25,19 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Sidebar(props) {
   const classes = useStyles();
 
-  const elementClickedStore = useStore<Node>((state) => state.selectedElement);
+  console.log('rendered sidebar');
+
+  const elementClickedStore = useStore<Node | Edge>(
+    (state) => state.selectedElement
+  );
   const setSelectedElement = useStore((state) => state.setSelectedElement);
   console.log(elementClickedStore);
+
+  const ewoksElements = useStore((state) => {
+    console.log(state);
+    return state.ewoksElements;
+  });
+  const setEwoksElements = useStore((state) => state.setEwoksElements);
 
   const [element, setElement] = React.useState({} as Node);
 
@@ -51,31 +61,31 @@ export default function Sidebar(props) {
     elementClickedStore.position.y,
   ]);
 
-  // const setSelectedElement = useStore((state) => state.setSelectedElement);
-
   const elementClickedStoreChanged = (event) => {
     console.log(event);
     // setName(event.target.value);
     // setSelectedElement(element);
   };
 
-  const idChanged = (event) => {
+  const labelChanged = (event) => {
+    console.log(ewoksElements);
     setId(event.target.value);
-    const el = elementClickedStore;
-    el.id = event.target.value;
+    const el: Node | Edge = elementClickedStore;
+    el.data.label = event.target.value;
+    const temp = ewoksElements.filter((elem) => {
+      console.log(elem.id, id);
+      return elem.id !== id;
+    });
+    temp.push(el);
+    setEwoksElements(temp);
+
     setSelectedElement(el);
-    // elementClickedStore.id = event.target.value;
-    // setSelectedElement(elementClickedStore);
   };
 
   const typeChanged = (event) => {
     setType(event.target.value);
     // elementClickedStore.type = event.target.value;
     setSelectedElement(elementClickedStore);
-  };
-
-  const labelChanged = (event) => {
-    setLabel(event.target.value);
   };
 
   const positionXChanged = (event) => {
@@ -114,15 +124,6 @@ export default function Sidebar(props) {
       </div>
       <form className={classes.root} noValidate autoComplete="off">
         <div>Id: {props.element.id}</div>
-        <div>
-          <TextField
-            id="outlined-basic"
-            label="id"
-            variant="outlined"
-            value={id || ''}
-            onChange={idChanged}
-          />
-        </div>
         <div>
           <TextField
             id="outlined-basic"

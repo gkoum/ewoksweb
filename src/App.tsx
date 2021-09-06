@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable unicorn/consistent-function-scoping */
 import { useEffect, useState, MouseEvent, useRef } from 'react';
 import ReactFlow, {
@@ -60,37 +61,35 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const nodes = getNodes();
-const edges = getEdges();
-const positionedNodes = positionNodes(nodes, edges);
-console.log(positionedNodes);
-
 let id = 0;
 const getId = () => `dndnode_${id++}`;
-
-// positionedNodes.push({
-//   id: 'Network Details',
-//   data: 'sdvsfdv',
-//   // sourcePosition: Position.Right,
-//   // targetPosition: Position.Left,
-//   position: { x: 0, y: 0 },
-// });
 
 function App() {
   const classes = useStyles();
   const { fitView } = useZoomPanHelper();
   const [rfInstance, setRfInstance] = useState(null);
   const [elementClicked, setElementClicked] = useState({ id: 'none' });
-  const [ewoksD, setEwoksD] = useState(ewoksNetwork);
+  // const [ewoksD, setEwoksD] = useState(ewoksNetwork);
   const [disableDragging, setDisableDragging] = useState(false);
-  const [elements, setElements] = useState([...positionedNodes, ...edges]);
+  const [elements, setElements] = useState([]);
   const reactFlowWrapper = useRef(null);
+
+  const ewoksElements = useStore((state) => {
+    console.log(state);
+    return state.ewoksElements;
+  });
+  const setEwoksElements = useStore((state) => state.setEwoksElements);
+
+  useEffect(() => {
+    console.log(ewoksElements);
+    setElements(ewoksElements);
+  }, [ewoksElements]);
 
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
 
   const onElementClick = (event: MouseEvent, element: Node) => {
-    console.log('click', element);
+    console.log(element);
     setElementClicked(element);
     setSelectedElement(element);
   };
@@ -145,10 +144,9 @@ function App() {
       position,
       data: { label: `${type} node` },
     };
-    console.log(rfInstance.getElements());
-    setElements((es) => [...es, newNode]);
-    // positionedNodes.push(newNode);
-    // console.log(positionedNodes);
+    console.log(rfInstance);
+    // setElements((es) => [...es, newNode]);
+    setEwoksElements([...elements, newNode]);
   };
 
   const onConnect = (params) => {
@@ -156,35 +154,37 @@ function App() {
     setElements((els) => addEdge(params, els));
   };
 
-  const onAddRJson = (event) => {
-    console.log(event);
-    setElements((es) => event.updated_src);
-    setEwoksD((es) => toEwoksObject(event.updated_src));
-  };
+  // const onAddRJson = (event) => {
+  //   console.log(event);
+  //   setElements((es) => event.updated_src);
+  //   setEwoksD((es) => toEwoksObject(event.updated_src));
+  // };
 
-  const onAddRJsonEwoks = (event) => {
-    console.log(event);
-    setEwoksD((es) => event.updated_src);
-  };
+  // const onAddRJsonEwoks = (event) => {
+  //   console.log(event);
+  //   setEwoksD((es) => event.updated_src);
+  // };
 
-  const onEditRJson = (event) => {
-    console.log(event);
-    setElements((es) => event.updated_src);
-    setEwoksD(() => toEwoksObject(event.updated_src));
-  };
+  // const onEditRJson = (event) => {
+  //   console.log(event);
+  //   setElements((es) => event.updated_src);
+  //   setEwoksD(() => toEwoksObject(event.updated_src));
+  // };
 
-  const onEditRJsonEwoks = (event) => {
-    console.log(event);
-    setEwoksD((es) => event.updated_src);
-  };
+  // const onEditRJsonEwoks = (event) => {
+  //   console.log(event);
+  //   setEwoksD((es) => event.updated_src);
+  // };
 
   const handlDisableDragging = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDisableDragging(event.target.checked);
   };
 
+  console.log(ewoksElements);
+
   return (
     <div className={classes.root}>
-      <SideMenu></SideMenu>
+      <SideMenu />
       <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
         disableDragging={disableDragging}
@@ -280,7 +280,7 @@ function App() {
           </div>
         </ReactFlowProvider>
       </Rnd>
-      <Rnd
+      {/* <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
         disableDragging={disableDragging}
         default={{
@@ -289,9 +289,9 @@ function App() {
           width: 300,
           height: 300,
         }}
-      >
-        <MyCard />
-      </Rnd>
+      > */}
+      <MyCard />
+      {/* </Rnd> */}
       {/* <ReactJson
         src={elements}
         collapseStringsAfterLength={15}
