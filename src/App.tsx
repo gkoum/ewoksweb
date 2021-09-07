@@ -41,6 +41,7 @@ import { cyan } from '@material-ui/core/colors';
 import MinimizeIcon from '@material-ui/icons/Minimize';
 import Icon from '@material-ui/core/Icon';
 import useStore from './store';
+import CustomNode from './CustomNodes/CustomNode';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -63,6 +64,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
+
+const nodeTypes = {
+  special: CustomNode,
+};
 
 function App() {
   const classes = useStyles();
@@ -88,7 +93,7 @@ function App() {
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
 
-  const onElementClick = (event: MouseEvent, element: Node) => {
+  const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     console.log(element);
     setElementClicked(element);
     setSelectedElement(element);
@@ -101,7 +106,7 @@ function App() {
     // console.log(rfInstance.getElements());
     // const elements: [] = rfInstance.getElements();
     const nodes = elements
-      .filter((el: Node) => el.data)
+      .filter((el: Node) => el.position)
       .map(({ id, data, type }) => ({
         id,
         clas: data,
@@ -130,10 +135,25 @@ function App() {
     event.dataTransfer.dropEffect = 'move';
   };
 
+  const CustomNewNode = (id: number, name: string, image: string) => {
+    return (
+      <CustomNode
+        id={id}
+        name={name}
+        image={image}
+        onElementClick={onElementClick}
+        // removeNode={removeNode}
+        // openContactDetails={openContactDetails}
+      />
+    );
+  };
+
   const onDrop = (event) => {
     event.preventDefault();
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
+    const name = event.dataTransfer.getData('name');
+    const image = event.dataTransfer.getData('image');
     const position = rfInstance.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
@@ -142,7 +162,7 @@ function App() {
       id: getId(),
       type,
       position,
-      data: { label: `${type} node` },
+      data: { label: CustomNewNode(id, name, image) },
     };
     console.log(rfInstance);
     // setElements((es) => [...es, newNode]);
@@ -252,6 +272,7 @@ function App() {
               onDrop={onDrop}
               onConnect={onConnect}
               onDragOver={onDragOver}
+              nodeTypes={nodeTypes}
             >
               <Controls />
               <div

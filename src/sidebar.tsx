@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import useStore from './store';
 import type { Edge, Node } from 'react-flow-renderer';
+import { Button } from '@material-ui/core';
 
 const onDragStart = (event, nodeType) => {
   console.log(event, nodeType);
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       '& > *': {
         margin: theme.spacing(1),
-        width: '25ch',
+        // width: '25ch',
       },
     },
   })
@@ -25,11 +26,11 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Sidebar(props) {
   const classes = useStyles();
 
-  console.log('rendered sidebar');
-
   const elementClickedStore = useStore<Node | Edge>(
     (state) => state.selectedElement
   );
+  console.log(typeof elementClickedStore);
+
   const setSelectedElement = useStore((state) => state.setSelectedElement);
   console.log(elementClickedStore);
 
@@ -48,18 +49,19 @@ export default function Sidebar(props) {
   const [positionY, setPositionY] = React.useState(Number);
 
   useEffect(() => {
+    console.log(elementClickedStore);
     setId(elementClickedStore.id);
     setType(elementClickedStore.type);
-    setLabel(elementClickedStore.data.label);
-    setPositionX(elementClickedStore.position.x);
-    setPositionY(elementClickedStore.position.y);
-  }, [
-    elementClickedStore.id,
-    elementClickedStore.type,
-    elementClickedStore.data.label,
-    elementClickedStore.position.x,
-    elementClickedStore.position.y,
-  ]);
+    if ('position' in elementClickedStore) {
+      setLabel(elementClickedStore.data.label);
+      setPositionX(elementClickedStore.position.x);
+      setPositionY(elementClickedStore.position.y);
+    } else {
+      setLabel(elementClickedStore.label);
+      setPositionX(0);
+      setPositionY(0);
+    }
+  }, [elementClickedStore]);
 
   const elementClickedStoreChanged = (event) => {
     console.log(event);
@@ -68,17 +70,18 @@ export default function Sidebar(props) {
   };
 
   const labelChanged = (event) => {
-    console.log(ewoksElements);
-    setId(event.target.value);
+    setLabel(event.target.value);
     const el: Node | Edge = elementClickedStore;
-    el.data.label = event.target.value;
+    if ('position' in elementClickedStore) {
+      el.data.label = event.target.value;
+    } else {
+      el.label = event.target.value;
+    }
     const temp = ewoksElements.filter((elem) => {
-      console.log(elem.id, id);
       return elem.id !== id;
     });
     temp.push(el);
     setEwoksElements(temp);
-
     setSelectedElement(el);
   };
 
@@ -160,6 +163,9 @@ export default function Sidebar(props) {
             onChange={positionYChanged}
           />
         </div>
+        <Button variant="contained" color="primary">
+          Save
+        </Button>
       </form>
     </aside>
   );

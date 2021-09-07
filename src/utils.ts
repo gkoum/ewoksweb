@@ -4,13 +4,13 @@ import { nodes as rawNodes, links as rawLinks } from './data/directed.json';
 import dagre from 'dagre';
 
 const { Graph } = dagre.graphlib;
-const NODE_SIZE = { width: 172, height: 36 };
+const NODE_SIZE = { width: 270, height: 36 };
 
 export const ewoksNetwork = {
   nodes: [
     {
       id: 'name1',
-      type: 'input',
+      type: 'CustomNode',
       clas: 'module.task.SumTask1',
       inputs: { a: 1 },
     },
@@ -33,11 +33,10 @@ export function getNodes(): Node[] {
 export function getEdges(): Edge[] {
   return ewoksNetwork.links.map<Edge>(({ source, target }) => ({
     id: `e${source}-${target}`,
+    label: `e${source}-${target}`,
     source: source.toString(),
     target: target.toString(),
-    label: `e${source}-${target}`,
-    data: { label: `e${source}-${target}` },
-    position: { x: 100, y: 100 },
+    data: { position: { x: 100, y: 100 } },
   }));
 }
 
