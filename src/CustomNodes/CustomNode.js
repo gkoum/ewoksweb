@@ -15,14 +15,16 @@ import MoodIcon from '@material-ui/icons/Mood';
 import MoodBadIcon from '@material-ui/icons/MoodBad';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import Typography from '@material-ui/core/Typography';
+import orangeFile from '../images/orangeFile.png';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 250,
-    width: 250,
+    width: 130,
+    height: 80,
   },
   header: {
-    padding: '5px',
+    padding: '1px',
   },
   action: {
     padding: '0px',
@@ -58,11 +60,12 @@ export default function CustomNode(props) {
     <Card className={classes.root}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div style={{ width: '100%', textAlign: 'center' }}>
-          <Avatar
+          {/* <Avatar
             className={classes.large}
             src={props.image}
             aria-label="recipe"
-          />
+          /> */}
+          <img src={orangeFile} alt="orangeImage" />
           <Typography gutterBottom component="h2">
             {props.name}
           </Typography>

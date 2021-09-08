@@ -226,9 +226,9 @@ const subgraph = {
       {name: 'out1', to: 'in1'}
     ],
     // "input_nodes": {
-    //   "in": [
+    //   "in1": [
     //     "subnode1",
-    //     "in"
+    //     "in1b"
     //   ]
     // }
   },
@@ -263,3 +263,81 @@ const subsubgraph = {
   ],
   "links": []
 }
+
+
+{/* {'source' in elementClickedStore && ( */}
+        //   <React.Fragment>
+        //     <div>
+        //       <TextField
+        //         id="outlined-basic"
+        //         label="Task identifier"
+        //         variant="outlined"
+        //         value={source || ''}
+        //         onChange={sourceChanged}
+        //       />
+        //     </div>
+        //     <div>
+        //       <TextField
+        //         id="outlined-basic"
+        //         label="Task type"
+        //         variant="outlined"
+        //         value={target || ''}
+        //         onChange={targetChanged}
+        //       />
+        //     </div>
+        //     <div>
+        //       <TextField
+        //         id="outlined-basic"
+        //         label="Task identifier"
+        //         variant="outlined"
+        //         value={args || ''}
+        //         onChange={argsChanged}
+        //       />
+        //     </div>
+        //     <div>
+        //       <TextField
+        //         id="outlined-basic"
+        //         label="Task type"
+        //         variant="outlined"
+        //         value={allArgs || ''}
+        //         onChange={allArgsChanged}
+        //       />
+        //     </div>
+        //     <div>
+        //       <TextField
+        //         id="outlined-basic"
+        //         label="Task identifier"
+        //         variant="outlined"
+        //         value={conditions || ''}
+        //         onChange={conditionsChanged}
+        //       />
+        //     </div>
+        //     <div>
+        //       <TextField
+        //         id="outlined-basic"
+        //         label="Task type"
+        //         variant="outlined"
+        //         value={onError || ''}
+        //         onChange={onErrorChanged}
+        //       />
+        //     </div>
+        //     <div>
+        //       <TextField
+        //         id="outlined-basic"
+        //         label="Task identifier"
+        //         variant="outlined"
+        //         value={args || ''}
+        //         onChange={argsChanged}
+        //       />
+        //     </div>
+        //     <div>
+        //       <TextField
+        //         id="outlined-basic"
+        //         label="Task type"
+        //         variant="outlined"
+        //         value={allArgs || ''}
+        //         onChange={allArgsChanged}
+        //       />
+        //     </div>
+        //   </React.Fragment>
+        // )}

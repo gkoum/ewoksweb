@@ -43,6 +43,11 @@ export default function Sidebar(props) {
   const [element, setElement] = React.useState({} as Node);
 
   const [id, setId] = React.useState('');
+  const [taskIdentifier, setTaskIdentifier] = React.useState('');
+  const [taskType, setTaskType] = React.useState('');
+  const [taskGenerator, setTaskGenerator] = React.useState('');
+  const [inputs, setInputs] = React.useState('');
+  const [inputsComplete, setInputsComplete] = React.useState('');
   const [type, setType] = React.useState('');
   const [label, setLabel] = React.useState('');
   const [positionX, setPositionX] = React.useState(Number);
@@ -91,6 +96,26 @@ export default function Sidebar(props) {
     setSelectedElement(elementClickedStore);
   };
 
+  const taskIdentifierChanged = (event) => {
+    setTaskIdentifier(event.target.value);
+  };
+
+  const taskTypeChanged = (event) => {
+    setTaskType(event.target.value);
+  };
+
+  const taskGeneratorChanged = (event) => {
+    setTaskGenerator(event.target.value);
+  };
+
+  const inputsChanged = (event) => {
+    setInputs(event.target.value);
+  };
+
+  const inputsCompleteChanged = (event) => {
+    setInputsComplete(event.target.value);
+  };
+
   const positionXChanged = (event) => {
     setPositionX(event.target.value);
   };
@@ -127,10 +152,61 @@ export default function Sidebar(props) {
       </div>
       <form className={classes.root} noValidate autoComplete="off">
         <div>Id: {props.element.id}</div>
+
+        {'position' in elementClickedStore && (
+          <React.Fragment>
+            <div>
+              <TextField
+                id="outlined-basic"
+                label="Task identifier"
+                variant="outlined"
+                value={taskIdentifier || ''}
+                onChange={taskIdentifierChanged}
+              />
+            </div>
+            <div>
+              <TextField
+                id="outlined-basic"
+                label="Task type"
+                variant="outlined"
+                value={taskType || ''}
+                onChange={taskTypeChanged}
+              />
+            </div>
+            <div>
+              <TextField
+                id="outlined-basic"
+                label="Task generator"
+                variant="outlined"
+                value={taskGenerator || ''}
+                onChange={taskGeneratorChanged}
+              />
+            </div>
+
+            <div>
+              <TextField
+                id="outlined-basic"
+                label="Static inputs"
+                variant="outlined"
+                value={inputs || ''}
+                onChange={inputsChanged}
+              />
+            </div>
+            <div>
+              <TextField
+                id="outlined-basic"
+                label="Inputs complete"
+                variant="outlined"
+                value={inputsComplete || ''}
+                onChange={inputsCompleteChanged}
+              />
+            </div>
+          </React.Fragment>
+        )}
         <div>
           <TextField
             id="outlined-basic"
-            label="type"
+            label="Node type"
             variant="outlined"
             value={type || ''}
             onChange={typeChanged}
@@ -143,15 +219,6 @@ export default function Sidebar(props) {
             variant="outlined"
             value={label || ''}
             onChange={labelChanged}
-          />
-        </div>
-        <div>
-          <TextField
-            id="outlined-basic"
-            label="positionX"
-            variant="outlined"
-            value={positionX || ''}
-            onChange={positionXChanged}
           />
         </div>
         <div>

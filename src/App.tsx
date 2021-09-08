@@ -109,7 +109,7 @@ function App() {
       .filter((el: Node) => el.position)
       .map(({ id, data, type }) => ({
         id,
-        clas: data,
+        task_identifier: data,
         inputs: 'ok',
         type,
       }));

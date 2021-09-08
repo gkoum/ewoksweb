@@ -130,9 +130,9 @@ abbr[title] {
   cursor: pointer;
 }
 
-.react-flow__node-default {
-  width: 270px !important;
-  height: 190px !important;
+.react-flow__node {
+  width: 150px !important;
+  height: 100px !important;
   padding: 0;
   border-style: none;
   border-width: 0;
