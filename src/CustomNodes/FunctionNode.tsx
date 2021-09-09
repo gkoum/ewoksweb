@@ -11,16 +11,17 @@ const isValidOutput = (connection, type) => {
   return true; // R.last(R.split('__', connection.target)) === type;
 };
 
-function FunctionNode({ data, selected }) {
+function FunctionNode(all) {
+  console.log(all.data, all);
   return (
     <Node
-      label={data.name}
-      selected={selected}
+      label={all.data.name}
+      selected={all.selected}
       color="Lavender"
       content={
         <>
           <div style={style.contentHeader}>Inputs</div>
-          {data.inputs.map((input) => (
+          {all.data.inputs.map((input) => (
             <div
               key={`i-${input.label}`}
               style={{ ...style.io, ...style.textLeft } as React.CSSProperties}
@@ -28,7 +29,7 @@ function FunctionNode({ data, selected }) {
               {input.label}
               <Handle
                 type="target"
-                position={Position.Top}
+                position={Position.Left}
                 id={`i-${input.label}__${input.type}`}
                 style={{ ...style.handle, ...style.left }}
                 isValidConnection={(connection) =>
@@ -38,7 +39,7 @@ function FunctionNode({ data, selected }) {
             </div>
           ))}
           <div style={style.contentHeader}>Outputs</div>
-          {data.outputs.map((output) => (
+          {all.data.outputs.map((output) => (
             <div
               key={`o-${output.label}`}
               style={{ ...style.io, ...style.textRight } as React.CSSProperties}

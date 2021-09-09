@@ -341,3 +341,186 @@ const subsubgraph = {
         //     </div>
         //   </React.Fragment>
         // )}
+
+let graph = {
+  "nodes": [
+    {
+      "id": "node1",
+      "task_type": "method",
+      "task_identifier": "asks.simplemethods.add0"
+    },
+    {
+      "id": "node2",
+      "task_type": "graph",
+      "task_identifier": "subgraph.json"
+    },
+    {
+      "id": "node3",
+      "task_type": "method",
+      "task_identifier": "ewokscore.tests.examples.tasks.simplemethods.add"
+    }
+  ],
+  "links": [
+    {
+      "source": "node1",
+      "target": "node2",
+      "arguments": {
+        "0": "return_value"
+      },
+      "sub_graph_nodes": {
+        "sub_target": "in",
+      }
+    },
+    {
+      "source": "node2",
+      "target": "node3",
+      "arguments": {
+        "0": "return_value"
+      },
+      "sub_graph_nodes": {
+        "sub_source": "out"
+      }
+    }
+  ]
+}
+
+let subgraph = {
+  "graph": {
+    "input_nodes": { // specify all input nodes in1, in2...
+      "in": { //  for in which is the default input
+        "id": "task1" // task1 is a/the input node of the graph
+      }
+    },
+    "output_nodes": { // All outputs out1, out2...
+      "out": { //  out is
+        "id": "subsubgraph", // the ssg node that is specified in this graph
+        "sub_node": "out" // and since it is again a graph we map to the out of the inner graph
+      // the ssg could have 2 outputs (out1, out2) and then we wouldn't know which one to get as out
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "task1",
+      "task_type": "method",
+      "task_identifier": "ewokscore.tests.examples.tasks.simplemethods.add"
+    },
+    {
+      "id": "task2",
+      "task_type": "method",
+      "task_identifier": "ewokscore.tests.examples.tasks.simplemethods.add"
+    },
+    {
+      "id": "subsubgraph",
+      "task_type": "graph",
+      "task_identifier": "subsubgraph.json"
+    }
+  ],
+  "links": [
+    {
+      "source": "task1",
+      "target": "task2",
+      "arguments": {
+        "0": "return_value"
+      }
+    },
+    {
+      "source": "task2",
+      "target": "subsubgraph",
+      "arguments": {
+        "0": "return_value"
+      },
+      "sub_graph_nodes": {
+        "sub_target": "in"
+      }
+    }
+  ]
+}
+
+let subsubgraph = {
+  "graph": {
+    "input_nodes": {
+      "in": {
+        "id": "task1"
+      }
+    },
+    "output_nodes": {
+      "out": {
+        "id": "subsubsubgraph",
+        "sub_node": "out"
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "task1",
+      "task_type": "method",
+      "task_identifier": "ewokscore.tests.examples.tasks.simplemethods.add"
+    },
+    {
+      "id": "task2",
+      "task_type": "method",
+      "task_identifier": "ewokscore.tests.examples.tasks.simplemethods.add"
+    },
+    {
+      "id": "subsubsubgraph",
+      "task_type": "graph",
+      "task_identifier": "subsubsubgraph.json"
+    }
+  ],
+  "links": [
+    {
+      "source": "task1",
+      "target": "task2",
+      "arguments": {
+        "0": "return_value"
+      }
+    },
+    {
+      "source": "task2",
+      "target": "subsubsubgraph",
+      "arguments": {
+        "0": "return_value"
+      },
+      "sub_graph_nodes": {
+        "sub_target": "in"
+      }
+    }
+  ]
+}
+
+let subsubsubgraph = {
+  "graph": {
+    "input_nodes": {
+      "in": {
+        "id": "task1"
+      }
+    },
+    "output_nodes": {
+      "out": {
+        "id": "task2"
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "task1",
+      "task_type": "method",
+      "task_identifier": "ewokscore.tests.examples.tasks.simplemethods.add"
+    },
+    {
+      "id": "task2",
+      "task_type": "method",
+      "task_identifier": "ewokscore.tests.examples.tasks.simplemethods.add"
+    }
+  ],
+  "links": [
+    {
+      "source": "task1",
+      "target": "task2",
+      "arguments": {
+        "0": "return_value"
+      }
+    }
+  ]
+}

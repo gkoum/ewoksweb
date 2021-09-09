@@ -48,15 +48,53 @@ export const ewoksNetwork = graph;
 //   }
 // }
 
+// A map-engine for react-flow that needs to run with every change to the UI
+// Maps (ewoks -> react-flow) and (react-flow -> ewoks)
 export function getNodes(): Node[] {
   return ewoksNetwork.nodes.map<Node>(
-    ({ id, task_identifier, type, inputs }) => ({
-      id: id.toString(),
-      data: { label: `${id} ${type} ${task_identifier}` },
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-      position: { x: 100, y: 100 },
-    })
+    ({ id, task_type, task_identifier, data, position }) => {
+      if (task_type != 'graph') {
+        return {
+          id: id.toString(),
+          task_type,
+          task_identifier,
+          type: task_type,
+          data: { name: task_identifier },
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
+          position,
+        };
+        // inputs: [
+        //   { label: 'Dataset', type: 'data' }, // needed for subgraph
+        //   { label: 'Labels', type: 'data' }, // simple node does not need them
+        // ], // if missing in a subgraph default in-out will be used
+        // outputs: [
+        //   { label: 'Model', type: 'data' },
+        //   { label: 'Error', type: 'value' },
+        // ],
+      } else {
+        return {
+          id: id.toString(),
+          task_type,
+          task_identifier,
+          type: task_type,
+          data: {
+            name: 'graph: ' + task_identifier,
+            inputs: [
+              { label: 'findSubgraphsInput', type: 'data' },
+              { label: 'findSubgraphsotherInput', type: 'data' },
+            ],
+            outputs: [
+              { label: 'findSubgraphsOutput', type: 'data' },
+              { label: 'findSubgraphsOtherOutput', type: 'value' },
+            ],
+          },
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
+          position: { x: 350, y: 150 },
+        };
+      }
+    }
   );
 }
 
@@ -66,7 +104,6 @@ export function getEdges(): Edge[] {
     label: Object.entries(args),
     source: source.toString(),
     target: target.toString(),
-    data: { position: { x: 100, y: 100 } },
   }));
 }
 

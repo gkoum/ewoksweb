@@ -43,7 +43,7 @@ const positionedNodes = positionNodes(nodes, edges);
 console.log(positionedNodes);
 
 const useStore = create<State>((set) => ({
-  ewoksElements: [...positionedNodes, ...edges],
+  ewoksElements: [...nodes, ...edges],
   setEwoksElements: (ewoksElements: Node | Edge) =>
     set((state) => ({
       ...state,

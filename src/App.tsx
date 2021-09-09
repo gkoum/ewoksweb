@@ -42,6 +42,8 @@ import MinimizeIcon from '@material-ui/icons/Minimize';
 import Icon from '@material-ui/core/Icon';
 import useStore from './store';
 import CustomNode from './CustomNodes/CustomNode';
+import FunctionNode from './CustomNodes/FunctionNode';
+import DataNode from './CustomNodes/DataNode';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,6 +69,8 @@ const getId = () => `dndnode_${id++}`;
 
 const nodeTypes = {
   special: CustomNode,
+  graph: FunctionNode,
+  method: DataNode,
 };
 
 function App() {
@@ -150,8 +154,10 @@ function App() {
 
   const onDrop = (event) => {
     event.preventDefault();
+    console.log(event);
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
+    console.log(type);
     const name = event.dataTransfer.getData('name');
     const image = event.dataTransfer.getData('image');
     const position = rfInstance.project({
@@ -205,7 +211,7 @@ function App() {
   return (
     <div className={classes.root}>
       <SideMenu />
-      <Rnd
+      {/* <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
         disableDragging={disableDragging}
         default={{
@@ -231,15 +237,15 @@ function App() {
           <Icon className="fa fa-plus-circle" style={{ fontSize: 30 }} />
         </Toolbar>
         <Flow />
-      </Rnd>
+      </Rnd> */}
       <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
         disableDragging={disableDragging}
         default={{
           x: 100,
           y: 100,
-          width: 800,
-          height: 365,
+          width: 1000,
+          height: 800,
         }}
       >
         <AppBar position="static">

@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CustomNode(props) {
+  console.log(props);
   const classes = useStyles();
   const [id, setId] = React.useState(props.id);
   const [state, setState] = React.useState({
@@ -66,6 +67,9 @@ export default function CustomNode(props) {
             aria-label="recipe"
           /> */}
           <img src={orangeFile} alt="orangeImage" />
+          {/* <span style={{ 'word-wrap': 'break-word' }}>
+            ACTGATCGAGCTGAAGCGCAGTGCGATGCTTCGATGATGCTGACGATGCTACGATGCGAGCATCTACGATCAGTC
+          </span> */}
           <Typography gutterBottom component="h2">
             {props.name}
           </Typography>

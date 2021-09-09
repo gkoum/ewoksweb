@@ -150,6 +150,13 @@ export default function Sidebar(props) {
       >
         Output Node
       </div>
+      <div
+        className="dndnode graph"
+        onDragStart={(event) => onDragStart(event, 'graph')}
+        draggable
+      >
+        Subgraph
+      </div>
       <form className={classes.root} noValidate autoComplete="off">
         <div>Id: {props.element.id}</div>
 
