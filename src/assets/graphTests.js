@@ -14,7 +14,7 @@ export const graph = {
     {
       id: 'node2',
       task_type: 'graph',
-      task_identifier: 'subgraph.json',
+      task_identifier: 'subgraphNode',
       // type: 'graph', // infered
       data: {
         // this needs to be infered by the link and the subgraph inputs-outputs
@@ -72,34 +72,33 @@ export const graph = {
 
 export const subgraph = {
   graph: {
-    input_nodes: {
-      in: {
-        id: 'task1',
-      },
-    },
-    output_nodes: {
-      out: {
-        id: 'subsubgraph',
-        // if sub_node graph in a graph with a final node being a graph again...
-        sub_node: 'out',
-      },
-    },
+    input_nodes: [
+      { name: 'in1', id: 'task1' },
+      { name: 'in2', id: 'task2' },
+    ],
+    output_nodes: [
+      { name: 'out1', id: 'subsubgraph', sub_node: 'out1' },
+      { name: 'out2', id: 'subsubgraph', sub_node: 'out2' },
+    ],
   },
   nodes: [
     {
       id: 'task1',
       task_type: 'method',
       task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add2',
+      position: { x: 500, y: 80 },
     },
     {
       id: 'task2',
       task_type: 'method',
       task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add3',
+      position: { x: 500, y: 80 },
     },
     {
       id: 'subsubgraph',
       task_type: 'graph',
-      task_identifier: 'subsubgraph.json',
+      task_identifier: 'subsubgraphNode',
+      position: { x: 500, y: 80 },
     },
   ],
   links: [
@@ -125,33 +124,33 @@ export const subgraph = {
 
 export const subsubgraph = {
   graph: {
-    input_nodes: {
-      in: {
-        id: 'task1',
-      },
-    },
-    output_nodes: {
-      out: {
-        id: 'subsubsubgraph',
-        sub_node: 'out',
-      },
-    },
+    input_nodes: [
+      { name: 'in1', id: 'task1' },
+      { name: 'in2', id: 'task2' },
+    ],
+    output_nodes: [
+      { name: 'out1', id: 'subsubsubgraph', sub_node: 'out' },
+      { name: 'out2', id: 'subsubsubgraph', sub_node: 'out' },
+    ],
   },
   nodes: [
     {
       id: 'task1',
       task_type: 'method',
       task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add4',
+      position: { x: 500, y: 80 },
     },
     {
       id: 'task2',
       task_type: 'method',
       task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add5',
+      position: { x: 500, y: 80 },
     },
     {
       id: 'subsubsubgraph',
       task_type: 'graph',
-      task_identifier: 'subsubsubgraph.json',
+      task_identifier: 'subsubsubgraphNode',
+      position: { x: 500, y: 80 },
     },
   ],
   links: [
@@ -177,27 +176,37 @@ export const subsubgraph = {
 
 export const subsubsubgraph = {
   graph: {
-    input_nodes: {
-      in: {
-        id: 'task1',
-      },
-    },
-    output_nodes: {
-      out: {
-        id: 'task2',
-      },
-    },
+    input_nodes: [
+      { name: 'in1', id: 'task1' },
+      { name: 'in2', id: 'task2' },
+    ],
+    output_nodes: [
+      { name: 'out1', id: 'subsubsubgraph', sub_node: 'out' },
+      { name: 'out2', id: 'subsubsubgraph', sub_node: 'out' },
+    ],
+    // input_nodes: {
+    //   in: {
+    //     id: 'task1',
+    //   },
+    // },
+    // output_nodes: {
+    //   out: {
+    //     id: 'task2',
+    //   },
+    // },
   },
   nodes: [
     {
       id: 'task1',
       task_type: 'method',
       task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add6',
+      position: { x: 500, y: 80 },
     },
     {
       id: 'task2',
       task_type: 'method',
       task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add7',
+      position: { x: 500, y: 80 },
     },
   ],
   links: [

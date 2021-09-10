@@ -278,6 +278,7 @@ function App() {
               onDrop={onDrop}
               onConnect={onConnect}
               onDragOver={onDragOver}
+              // onPaneContextMenu(onRightClick)
               nodeTypes={nodeTypes}
             >
               <Controls />

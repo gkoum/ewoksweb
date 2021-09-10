@@ -240,6 +240,9 @@ export default function Sidebar(props) {
         <Button variant="contained" color="primary">
           Save
         </Button>
+        <Button variant="contained" color="primary">
+          Open Subgraph
+        </Button>
       </form>
     </aside>
   );

@@ -12,7 +12,7 @@ import {
 const { Graph } = dagre.graphlib;
 const NODE_SIZE = { width: 270, height: 36 };
 
-export const ewoksNetwork = graph;
+export const ewoksNetwork = subgraph;
 // {
 //   nodes: [
 //     {
@@ -64,15 +64,37 @@ export function getNodes(): Node[] {
           targetPosition: Position.Left,
           position,
         };
-        // inputs: [
-        //   { label: 'Dataset', type: 'data' }, // needed for subgraph
-        //   { label: 'Labels', type: 'data' }, // simple node does not need them
-        // ], // if missing in a subgraph default in-out will be used
-        // outputs: [
-        //   { label: 'Model', type: 'data' },
-        //   { label: 'Error', type: 'value' },
-        // ],
       } else {
+        // find the subgraph it refers to
+        const thisSubgraph = task_identifier.slice(0, -4);
+        console.log(thisSubgraph);
+        let subgraphL = { graph: { input_nodes: [], output_nodes: [] } };
+        if (thisSubgraph === 'subgraph') {
+          subgraphL = subgraph;
+        } else if (thisSubgraph === 'subsubgraph') {
+          subgraphL = subsubgraph;
+        } else if (thisSubgraph === 'subsubsubgraph') {
+          subgraphL = subsubsubgraph;
+        }
+        console.log(subgraphL);
+        // get the inputs outputs of the graph
+        const inputs = subgraphL.graph.input_nodes.map((alias) => {
+          return {
+            label: `${alias.name}: ${alias.id} ${
+              alias.sub_node ? '  -> ' + alias.sub_node : ''
+            }`,
+            type: 'data ',
+          };
+        });
+        const outputs = subgraphL.graph.output_nodes.map((alias) => {
+          return {
+            label: `${alias.name}: ${alias.id} ${
+              alias.sub_node ? ' -> ' + alias.sub_node : ''
+            }`,
+            type: 'data ',
+          };
+        });
+        console.log(inputs);
         return {
           id: id.toString(),
           task_type,
@@ -80,14 +102,8 @@ export function getNodes(): Node[] {
           type: task_type,
           data: {
             name: 'graph: ' + task_identifier,
-            inputs: [
-              { label: 'findSubgraphsInput', type: 'data' },
-              { label: 'findSubgraphsotherInput', type: 'data' },
-            ],
-            outputs: [
-              { label: 'findSubgraphsOutput', type: 'data' },
-              { label: 'findSubgraphsOtherOutput', type: 'value' },
-            ],
+            inputs,
+            outputs,
           },
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
