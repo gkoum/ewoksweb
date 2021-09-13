@@ -7,40 +7,26 @@ export const graph = {
       id: 'node1',
       task_type: 'method',
       task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add0',
-      // type: 'method', // can be infered from task_type?
-      data: { name: 'OSIPI' }, // name is also infered by task_identifier + id
-      position: { x: 0, y: 80 },
+      inputs: [{ name: 'a', value: 1 }],
+      position: { x: 50, y: 80 },
     },
     {
       id: 'node2',
       task_type: 'graph',
-      task_identifier: 'subgraphNode',
-      // type: 'graph', // infered
-      data: {
-        // this needs to be infered by the link and the subgraph inputs-outputs
-        // I begin from the inner graphs to have an understanding of inputs outputs:
-        // If a graph exist on a node go deeper for every node till there are just nodes
-        // and start drawing. OR
-        // for each graph find the info from the included subgraphs and draw it
-        name: 'some_function', // infered
-        inputs: [
-          { label: 'Dataset', type: 'data' }, // needed for subgraph
-          { label: 'Labels', type: 'data' }, // simple node does not need them
-        ], // if missing in a subgraph default in-out will be used
-        outputs: [
-          { label: 'Model', type: 'data' },
-          { label: 'Error', type: 'value' },
-        ],
-      },
+      task_identifier: 'subgraph',
       position: { x: 500, y: 80 },
     },
     {
       id: 'node3',
       task_type: 'method',
       task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add1',
-      // type: 'method', // infered
-      data: { name: '3OSIPI' }, // infered
       position: { x: 700, y: 580 },
+    },
+    {
+      id: 'node4',
+      task_type: 'method',
+      task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add44',
+      position: { x: 50, y: 380 },
     },
   ],
   links: [
@@ -50,19 +36,23 @@ export const graph = {
     {
       source: 'node1',
       target: 'node2',
-      args: {
-        zero: 'return_value',
-      },
+      data_mapping: [{ input: 'ab', output: 'result' }],
       sub_graph_nodes: {
-        sub_target: 'in',
+        sub_target: 'in1',
+      },
+    },
+    {
+      source: 'node4',
+      target: 'node2',
+      data_mapping: [{ input: 'ba', output: 'result' }],
+      sub_graph_nodes: {
+        sub_target: 'in2',
       },
     },
     {
       source: 'node2',
       target: 'node3',
-      args: {
-        zero: 'return_value',
-      },
+      data_mapping: [{ input: 'a', output: 'result' }],
       sub_graph_nodes: {
         sub_source: 'out',
       },
@@ -97,7 +87,7 @@ export const subgraph = {
     {
       id: 'subsubgraph',
       task_type: 'graph',
-      task_identifier: 'subsubgraphNode',
+      task_identifier: 'subsubgraph',
       position: { x: 500, y: 80 },
     },
   ],
@@ -105,16 +95,12 @@ export const subgraph = {
     {
       source: 'task1',
       target: 'task2',
-      args: {
-        zero: 'return_value',
-      },
+      data_mapping: [{ input: 'a', output: 'result' }],
     },
     {
       source: 'task2',
       target: 'subsubgraph',
-      args: {
-        zero: 'return_value',
-      },
+      data_mapping: [{ input: 'a', output: 'result' }],
       sub_graph_nodes: {
         sub_target: 'in',
       },
@@ -149,7 +135,7 @@ export const subsubgraph = {
     {
       id: 'subsubsubgraph',
       task_type: 'graph',
-      task_identifier: 'subsubsubgraphNode',
+      task_identifier: 'subsubsubgraph',
       position: { x: 500, y: 80 },
     },
   ],
@@ -157,16 +143,12 @@ export const subsubgraph = {
     {
       source: 'task1',
       target: 'task2',
-      args: {
-        zero: 'return_value',
-      },
+      data_mapping: [{ input: 'a', output: 'result' }],
     },
     {
       source: 'task2',
       target: 'subsubsubgraph',
-      args: {
-        zero: 'return_value',
-      },
+      data_mapping: [{ input: 'a', output: 'result' }],
       sub_graph_nodes: {
         sub_target: 'in',
       },
@@ -213,9 +195,7 @@ export const subsubsubgraph = {
     {
       source: 'task1',
       target: 'task2',
-      args: {
-        zero: 'return_value',
-      },
+      data_mapping: [{ input: 'a', output: 'result' }],
     },
   ],
 };

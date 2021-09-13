@@ -20,7 +20,13 @@ import type {
 import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
 import ReactJson from 'react-json-view';
 import { Rnd } from 'react-rnd';
-import { getEdges, getNodes, positionNodes, ewoksNetwork } from './utils';
+import {
+  getEdges,
+  getNodes,
+  positionNodes,
+  ewoksNetwork,
+  findGraphWithName,
+} from './utils';
 import Sidebar from './sidebar';
 import Flow from './Flow';
 import Popover from './Components/Popover';
@@ -99,36 +105,32 @@ function App() {
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     console.log(element);
-    setElementClicked(element);
-    setSelectedElement(element);
+    const ewoksElement = ewoksElements.find((el) => el.id === element.id);
+    setElementClicked(ewoksElement);
+    setSelectedElement(ewoksElement);
   };
 
   const onLoad = (reactFlowInstance) => setRfInstance(reactFlowInstance);
-  const logToObject = () => console.log(rfInstance.toObject());
-  // const logToObject = () => console.log([...positionedNodes, ...edges]);
-  const toEwoksObject = (elements) => {
-    // console.log(rfInstance.getElements());
-    // const elements: [] = rfInstance.getElements();
-    const nodes = elements
-      .filter((el: Node) => el.position)
-      .map(({ id, data, type }) => ({
-        id,
-        task_identifier: data,
-        inputs: 'ok',
-        type,
-      }));
-    const links = elements
-      .filter((el: Edge) => el.source)
-      .map(({ id, source, target }) => ({
-        id,
-        source,
-        target,
-        inputs: 'ok',
-      }));
-    console.log({ nodes, links });
-    return { nodes, links };
-    // return { nodes: nodes, links: links };
-  };
+  // const logToObject = () => console.log(rfInstance.toObject());
+  // // const logToObject = (findGraphWithName> el.position)
+  //     .map(({ id, data, type }) => ({
+  //       id,
+  //       task_identifier: data,
+  //       inputs: 'ok',
+  //       type,
+  //     }));
+  //   const links = elements
+  //     .filter((el: Edge) => el.source)
+  //     .map(({ id, source, target }) => ({
+  //       id,
+  //       source,
+  //       target,
+  //       inputs: 'ok',
+  //     }));
+  //   console.log({ nodes, links });
+  //   return { nodes, links };
+  //   // return { nodes: nodes, links: links };
+  // };
 
   useEffect(() => {
     fitView();
@@ -178,6 +180,23 @@ function App() {
   const onConnect = (params) => {
     console.log(params);
     setElements((els) => addEdge(params, els));
+  };
+
+  const onRightClick = (event) => {
+    event.preventDefault();
+    console.log(event);
+  };
+
+  const onNodeDoubleClick = (event, node) => {
+    event.preventDefault();
+    console.log(event, node);
+    if (node.type === 'graph') {
+      const subgraph = findGraphWithName(node.data.task_identifier);
+      console.log('THIS IS A GRAPH');
+      console.log(subgraph);
+    } else {
+      console.log('THIS IS A NODE');
+    }
   };
 
   // const onAddRJson = (event) => {
@@ -278,16 +297,17 @@ function App() {
               onDrop={onDrop}
               onConnect={onConnect}
               onDragOver={onDragOver}
-              // onPaneContextMenu(onRightClick)
+              onPaneContextMenu={onRightClick}
+              onNodeDoubleClick={onNodeDoubleClick}
               nodeTypes={nodeTypes}
             >
               <Controls />
               <div
                 style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}
               >
-                <button type="button" onClick={logToObject}>
+                {/* <button type="button" onClick={logToObject}>
                   toObject
-                </button>
+                </button> */}
                 <a
                   href={`data:text/json;charset=utf-8,${encodeURIComponent(
                     JSON.stringify(elements)

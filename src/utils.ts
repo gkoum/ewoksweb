@@ -12,7 +12,7 @@ import {
 const { Graph } = dagre.graphlib;
 const NODE_SIZE = { width: 270, height: 36 };
 
-export const ewoksNetwork = subgraph;
+export const ewoksNetwork = graph;
 // {
 //   nodes: [
 //     {
@@ -50,6 +50,33 @@ export const ewoksNetwork = subgraph;
 
 // A map-engine for react-flow that needs to run with every change to the UI
 // Maps (ewoks -> react-flow) and (react-flow -> ewoks)
+
+// All graphs included in a given graph
+const allGraphs = [graph, subgraph, subsubgraph, subsubsubgraph];
+
+export function findGraphWithName(gname: string) {
+  // find the subgraph it refers to
+  // const graph = allGraphs.find((gr) => {
+  //   console.log(gr);
+  //   return Object.keys({ gr })[0] === gname;
+  // });
+  const thisSubgraph = gname;
+  console.log(thisSubgraph, Object.keys({ subgraph })[0]);
+  let subgraphL = { graph: { input_nodes: [], output_nodes: [] } };
+  if (thisSubgraph === 'subgraph') {
+    subgraphL = subgraph;
+  } else if (thisSubgraph === 'subsubgraph') {
+    subgraphL = subsubgraph;
+  } else if (thisSubgraph === 'subsubsubgraph') {
+    subgraphL = subsubsubgraph;
+  }
+  // console.log(graph);
+  return subgraphL;
+}
+
+// export function getSubNetwork(subNetName: string) {
+//   return subNetName;
+// }
 export function getNodes(): Node[] {
   return ewoksNetwork.nodes.map<Node>(
     ({ id, task_type, task_identifier, data, position }) => {
@@ -59,68 +86,70 @@ export function getNodes(): Node[] {
           task_type,
           task_identifier,
           type: task_type,
-          data: { name: task_identifier },
+          data: {
+            name: task_identifier,
+            id: id.toString(),
+            task_type,
+            task_identifier,
+          },
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
           position,
         };
-      } else {
-        // find the subgraph it refers to
-        const thisSubgraph = task_identifier.slice(0, -4);
-        console.log(thisSubgraph);
-        let subgraphL = { graph: { input_nodes: [], output_nodes: [] } };
-        if (thisSubgraph === 'subgraph') {
-          subgraphL = subgraph;
-        } else if (thisSubgraph === 'subsubgraph') {
-          subgraphL = subsubgraph;
-        } else if (thisSubgraph === 'subsubsubgraph') {
-          subgraphL = subsubsubgraph;
-        }
-        console.log(subgraphL);
-        // get the inputs outputs of the graph
-        const inputs = subgraphL.graph.input_nodes.map((alias) => {
-          return {
-            label: `${alias.name}: ${alias.id} ${
-              alias.sub_node ? '  -> ' + alias.sub_node : ''
-            }`,
-            type: 'data ',
-          };
-        });
-        const outputs = subgraphL.graph.output_nodes.map((alias) => {
-          return {
-            label: `${alias.name}: ${alias.id} ${
-              alias.sub_node ? ' -> ' + alias.sub_node : ''
-            }`,
-            type: 'data ',
-          };
-        });
-        console.log(inputs);
+      }
+      const subgraphL = findGraphWithName(task_identifier);
+      // get the inputs outputs of the graph
+      const inputs = subgraphL.graph.input_nodes.map((alias) => {
         return {
+          label: `${alias.name}: ${alias.id} ${
+            alias.sub_node ? `  -> ${alias.sub_node}` : ''
+          }`,
+          type: 'data ',
+        };
+      });
+      const inputsFlow = subgraphL.graph.input_nodes.map((alias) => alias.name);
+      const outputs = subgraphL.graph.output_nodes.map((alias) => {
+        return {
+          label: `${alias.name}: ${alias.id} ${
+            alias.sub_node ? ` -> ${alias.sub_node}` : ''
+          }`,
+          type: 'data ',
+        };
+      });
+      console.log(inputs);
+      return {
+        id: id.toString(),
+        task_type,
+        task_identifier,
+        type: task_type,
+        data: {
+          name: `graph: ${task_identifier}`,
           id: id.toString(),
           task_type,
           task_identifier,
-          type: task_type,
-          data: {
-            name: 'graph: ' + task_identifier,
-            inputs,
-            outputs,
-          },
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-          position: { x: 350, y: 150 },
-        };
-      }
+          inputs,
+          outputs,
+        },
+        inputs: inputsFlow,
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+        position: { x: 350, y: 150 },
+      };
     }
   );
 }
 
 export function getEdges(): Edge[] {
-  return ewoksNetwork.links.map<Edge>(({ source, target, args }) => ({
-    id: `e${source}-${target}`,
-    label: Object.entries(args),
-    source: source.toString(),
-    target: target.toString(),
-  }));
+  console.log(ewoksNetwork.links);
+  return ewoksNetwork.links.map<Edge>(
+    ({ source, target, data_mapping, sub_graph_nodes }) => ({
+      id: `e${source}-${target}`,
+      label: data_mapping.map((el) => el.output + '->' + el.input).join(', '),
+      source: source.toString(),
+      target: target.toString(),
+      data: { data_mapping, sub_graph_nodes },
+    })
+  );
 }
 
 function getNodeType(isSource: boolean, isTarget: boolean): string {

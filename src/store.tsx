@@ -10,10 +10,8 @@ import { getEdges, getNodes, positionNodes, ewoksNetwork } from './utils';
 interface State {
   ewoksElements: Array<Node | Edge>;
   setEwoksElements: (elements: Array<Node | Edge>) => void;
-  selectedElement: Node;
-  pokemon: Array<string>;
-  setSelectedElement: (element: Node) => void;
-  setPokemon: (pokemon: Array<string>) => void;
+  selectedElement: Node | Edge;
+  setSelectedElement: (element: Node | Edge) => void;
 }
 
 interface Inputs {
@@ -28,9 +26,9 @@ interface UiProps {
 
 interface EwoksNode {
   id: string;
-  class: string;
-  method: string;
-  graph: string;
+  task_type: string;
+  task_identifier: string;
+  type: string;
   inputs: Inputs;
   inputs_complete: boolean;
   task_generator: string;
@@ -39,12 +37,14 @@ interface EwoksNode {
 
 const nodes = getNodes();
 const edges = getEdges();
+console.log(nodes, edges);
 const positionedNodes = positionNodes(nodes, edges);
 console.log(positionedNodes);
 
 const useStore = create<State>((set) => ({
   ewoksElements: [...nodes, ...edges],
-  setEwoksElements: (ewoksElements: Node | Edge) =>
+
+  setEwoksElements: (ewoksElements) =>
     set((state) => ({
       ...state,
       ewoksElements,
@@ -56,18 +56,11 @@ const useStore = create<State>((set) => ({
     data: { label: '' },
     position: { x: 0, y: 0 },
   } as Node, // set initial values here
-  pokemon: [],
 
   setSelectedElement: (element: Node | Edge) =>
     set((state) => ({
       ...state,
       selectedElement: element,
-    })),
-
-  setPokemon: (pokemon) =>
-    set((state) => ({
-      ...state,
-      pokemon,
     })),
 }));
 export default useStore;

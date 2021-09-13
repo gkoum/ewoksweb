@@ -59,8 +59,10 @@ export default function Sidebar(props) {
     setType(elementClickedStore.type);
     if ('position' in elementClickedStore) {
       setLabel(elementClickedStore.data.label);
-      setPositionX(elementClickedStore.position.x);
-      setPositionY(elementClickedStore.position.y);
+      setTaskIdentifier(elementClickedStore.task_identifier);
+      setTaskType(elementClickedStore.task_type);
+      // setPositionX(elementClickedStore.position.x);
+      // setPositionY(elementClickedStore.position.y);
     } else {
       setLabel(elementClickedStore.label);
       setPositionX(0);
@@ -228,7 +230,7 @@ export default function Sidebar(props) {
             onChange={labelChanged}
           />
         </div>
-        <div>
+        {/* <div>
           <TextField
             id="outlined-basic"
             label="positionY"
@@ -236,7 +238,7 @@ export default function Sidebar(props) {
             value={positionY || ''}
             onChange={positionYChanged}
           />
-        </div>
+        </div> */}
         <Button variant="contained" color="primary">
           Save
         </Button>
