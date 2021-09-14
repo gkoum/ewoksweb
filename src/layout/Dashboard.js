@@ -18,7 +18,14 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { mainListItems, secondaryListItems } from './listItems';
+import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import SaveIcon from '@material-ui/icons/Save';
+import Sidebar from '../sidebar';
+import useStore from '../store';
+import Canvas from './Canvas';
+import Card from '@material-ui/core/Card';
+// import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
 // import Deposits from './Deposits';
 // import Orders from './Orders';
@@ -41,9 +48,16 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    // width: '100%',
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
   },
   toolbarIcon: {
     display: 'flex',
@@ -53,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
   },
   appBar: {
+    // height: 45,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -98,13 +113,14 @@ const useStyles = makeStyles((theme) => ({
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
+    // width: '100%',
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
   },
   container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
   },
   paper: {
     padding: theme.spacing(2),
@@ -113,12 +129,17 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   fixedHeight: {
-    height: 240,
+    height: 1000,
+    padding_top: 45,
   },
 }));
 
 export default function Dashboard() {
   const classes = useStyles();
+
+  const ewoksElements = useStore((state) => state.ewoksElements);
+  const selectedElement = useStore((state) => state.selectedElement);
+  const setSelectedElement = useStore((state) => state.setSelectedElement);
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -155,12 +176,21 @@ export default function Dashboard() {
             noWrap
             className={classes.title}
           >
-            Dashboard
+            {ewoksElements[0].id}
           </Typography>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
             </Badge>
+          </IconButton>
+          <IconButton color="inherit">
+            <AccessAlarmIcon />
+          </IconButton>
+          <IconButton color="inherit">
+            <CloudDownloadIcon />
+          </IconButton>
+          <IconButton color="inherit">
+            <SaveIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -177,32 +207,39 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
+        {/* <List>{mainListItems}</List> */}
         <Divider />
-        <List>{secondaryListItems}</List>
+        {/* <List>{secondaryListItems}</List> */}
+        <Sidebar element={selectedElement} />
       </Drawer>
       <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>{/* <Chart /> */}</Paper>
-            </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>{/* <Deposits /> */}</Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>{/* <Orders /> */}</Paper>
-            </Grid>
-          </Grid>
-          <Box pt={4}>
-            <Copyright />
-          </Box>
-        </Container>
+        <div className={classes.toolbar} />
+        <Paper className={fixedHeightPaper}>
+          <Canvas />
+        </Paper>
       </main>
+      {/* <Canvas /> */}
+      {/* <main> */}
+      {/* <div className={classes.appBarSpacer} /> */}
+      {/* <Container className={classes.container}> */}
+      {/* <Grid container>
+        <Grid item xs={12}>
+          <Paper className={fixedHeightPaper}>
+            <Canvas />
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={4} lg={3}>
+          <Paper className={fixedHeightPaper} />
+        </Grid>
+        <Grid item xs={12}>
+          <Paper className={classes.paper} />
+        </Grid>
+      </Grid> */}
+      {/* <Box pt={4}>
+        <Copyright />
+      </Box> */}
+      {/* </Container> */}
+      {/* </main> */}
     </div>
   );
 }

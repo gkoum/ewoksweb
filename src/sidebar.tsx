@@ -5,6 +5,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import useStore from './store';
 import type { Edge, Node } from 'react-flow-renderer';
 import { Button } from '@material-ui/core';
+// import orangeFile from './images/orangeFile.png';
+import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
+import IconButton from '@material-ui/core/IconButton';
 
 const onDragStart = (event, nodeType) => {
   console.log(event, nodeType);
@@ -136,21 +139,25 @@ export default function Sidebar(props) {
         onDragStart={(event) => onDragStart(event, 'input')}
         draggable
       >
-        Input Node
+        <IconButton color="inherit">
+          <AccessAlarmIcon />
+        </IconButton>
+        Input
+        {/* <img src={orangeFile} alt="orangeImage" /> */}
       </div>
       <div
         className="dndnode"
         onDragStart={(event) => onDragStart(event, 'default')}
         draggable
       >
-        Default Node
+        Default
       </div>
       <div
         className="dndnode output"
         onDragStart={(event) => onDragStart(event, 'output')}
         draggable
       >
-        Output Node
+        Output
       </div>
       <div
         className="dndnode graph"

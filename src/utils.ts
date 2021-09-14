@@ -8,45 +8,12 @@ import {
   subsubgraph,
   subsubsubgraph,
 } from './assets/graphTests';
+import type { EwoksNode, EwoksLink } from './store';
 
 const { Graph } = dagre.graphlib;
 const NODE_SIZE = { width: 270, height: 36 };
 
 export const ewoksNetwork = graph;
-// {
-//   nodes: [
-//     {
-//       id: 'name1',
-//       type: 'input',
-//       task_identifier: 'module.task.SumTask1',
-//       task_type: 'class',
-//       inputs: { a: 1 },
-//     },
-//     {
-//       id: 'name2',
-//       type: 'default',
-//       task_identifier: 'module.task.SumTask2',
-//       task_type: 'generated',
-//     },
-//     {
-//       id: 'name3',
-//       type: 'output',
-//       task_identifier: 'module.task.SumTask3',
-//       task_type: 'graph',
-//     },
-//   ],
-//   links: [
-//     { source: 'name1', target: 'name2', arguments: { a: 'result' } },
-//     { source: 'name1', target: 'name1', arguments: { a: 'result' } },
-//   ],
-// };
-// const getPairs = (obj) => {
-//   const
-
-//   for (const [key, value] of Object.entries(obj)) {
-//     console.log(`${key}: ${value}`);
-//   }
-// }
 
 // A map-engine for react-flow that needs to run with every change to the UI
 // Maps (ewoks -> react-flow) and (react-flow -> ewoks)
@@ -77,15 +44,26 @@ export function findGraphWithName(gname: string) {
 // export function getSubNetwork(subNetName: string) {
 //   return subNetName;
 // }
-export function getNodes(): Node[] {
-  return ewoksNetwork.nodes.map<Node>(
-    ({ id, task_type, task_identifier, data, position }) => {
+export function getNodes(): EwoksNode[] {
+  return ewoksNetwork.nodes.map<EwoksNode>(
+    ({
+      id,
+      task_type,
+      task_identifier,
+      inputs,
+      inputs_complete,
+      task_generator,
+      uiProps,
+    }) => {
+      console.log(uiProps);
       if (task_type != 'graph') {
         return {
           id: id.toString(),
           task_type,
           task_identifier,
           type: task_type,
+          inputs_complete,
+          task_generator,
           data: {
             name: task_identifier,
             id: id.toString(),
@@ -94,12 +72,12 @@ export function getNodes(): Node[] {
           },
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
-          position,
+          position: uiProps.position,
         };
       }
       const subgraphL = findGraphWithName(task_identifier);
       // get the inputs outputs of the graph
-      const inputs = subgraphL.graph.input_nodes.map((alias) => {
+      const inputsSub = subgraphL.graph.input_nodes.map((alias) => {
         return {
           label: `${alias.name}: ${alias.id} ${
             alias.sub_node ? `  -> ${alias.sub_node}` : ''
@@ -108,7 +86,7 @@ export function getNodes(): Node[] {
         };
       });
       const inputsFlow = subgraphL.graph.input_nodes.map((alias) => alias.name);
-      const outputs = subgraphL.graph.output_nodes.map((alias) => {
+      const outputsSub = subgraphL.graph.output_nodes.map((alias) => {
         return {
           label: `${alias.name}: ${alias.id} ${
             alias.sub_node ? ` -> ${alias.sub_node}` : ''
@@ -122,26 +100,29 @@ export function getNodes(): Node[] {
         task_type,
         task_identifier,
         type: task_type,
+        inputs_complete,
+        task_generator,
+        inputs,
         data: {
           name: `graph: ${task_identifier}`,
           id: id.toString(),
           task_type,
           task_identifier,
-          inputs,
-          outputs,
+          inputs: inputsSub,
+          outputs: outputsSub,
         },
-        inputs: inputsFlow,
+        // inputs: inputsFlow, // for connecting graphically to different input
         sourcePosition: Position.Right,
         targetPosition: Position.Left,
-        position: { x: 350, y: 150 },
+        position: uiProps.position,
       };
     }
   );
 }
 
-export function getEdges(): Edge[] {
+export function getEdges(): EwoksLink[] {
   console.log(ewoksNetwork.links);
-  return ewoksNetwork.links.map<Edge>(
+  return ewoksNetwork.links.map<EwoksLink>(
     ({ source, target, data_mapping, sub_graph_nodes }) => ({
       id: `e${source}-${target}`,
       label: data_mapping.map((el) => el.output + '->' + el.input).join(', '),

@@ -7,11 +7,30 @@ import { getEdges, getNodes, positionNodes, ewoksNetwork } from './utils';
 //   setClickedElement: (element: string) => void;
 // };
 
+interface GraphNodes {
+  name: string;
+  id: string;
+  sub_node: string;
+}
+
+interface GraphDetails {
+  input_nodes: Array<GraphNodes>;
+  output_nodes: Array<GraphNodes>;
+}
+
+interface Graph {
+  graph: GraphDetails;
+  nodes: Array<EwoksNode>;
+  edges: Array<EwoksLink>;
+}
+
 interface State {
-  ewoksElements: Array<Node | Edge>;
-  setEwoksElements: (elements: Array<Node | Edge>) => void;
-  selectedElement: Node | Edge;
-  setSelectedElement: (element: Node | Edge) => void;
+  ewoksElements: Array<EwoksNode | EwoksLink>;
+  setEwoksElements: (elements: Array<EwoksNode | EwoksLink>) => void;
+  selectedElement: EwoksNode | EwoksLink;
+  setSelectedElement: (element: EwoksNode | EwoksLink) => void;
+  selectedSubgraph: Graph;
+  setSelectedSubgraph: (graph: Graph) => void;
 }
 
 interface Inputs {
@@ -24,22 +43,31 @@ interface UiProps {
   value: string;
 }
 
-interface EwoksNode {
+export interface EwoksLink {
+  source: string;
+  target: string;
+  data_mapping?: string;
+  conditions?: string;
+  on_error?: Inputs;
+  sub_graph_nodes?: { subtarget?: string; subsource?: string };
+  uiProps?: UiProps;
+}
+
+export interface EwoksNode {
   id: string;
   task_type: string;
   task_identifier: string;
-  type: string;
-  inputs: Inputs;
-  inputs_complete: boolean;
-  task_generator: string;
-  uiProps: UiProps;
+  inputs?: Inputs;
+  inputs_complete?: boolean;
+  task_generator?: string;
+  uiProps?: UiProps;
 }
 
 const nodes = getNodes();
 const edges = getEdges();
 console.log(nodes, edges);
-const positionedNodes = positionNodes(nodes, edges);
-console.log(positionedNodes);
+// const positionedNodes = positionNodes(nodes, edges);
+// console.log(positionedNodes);
 
 const useStore = create<State>((set) => ({
   ewoksElements: [...nodes, ...edges],
@@ -55,9 +83,9 @@ const useStore = create<State>((set) => ({
     type: '',
     data: { label: '' },
     position: { x: 0, y: 0 },
-  } as Node, // set initial values here
+  } as EwoksNode, // set initial values here
 
-  setSelectedElement: (element: Node | Edge) =>
+  setSelectedElement: (element: EwoksNode | EwoksLink) =>
     set((state) => ({
       ...state,
       selectedElement: element,
