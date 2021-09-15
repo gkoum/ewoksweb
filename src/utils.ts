@@ -8,9 +8,15 @@ import {
   subsubgraph,
   subsubsubgraph,
 } from './assets/graphTests';
-import type { EwoksNode, EwoksLink } from './store';
+import type {
+  Graph,
+  EwoksNode,
+  EwoksRFNode,
+  EwoksLink,
+  EwoksRFLink,
+} from './types';
 
-const { Graph } = dagre.graphlib;
+const { GraphDagre } = dagre.graphlib;
 const NODE_SIZE = { width: 270, height: 36 };
 
 export const ewoksNetwork = graph;
@@ -21,16 +27,22 @@ export const ewoksNetwork = graph;
 // All graphs included in a given graph
 const allGraphs = [graph, subgraph, subsubgraph, subsubsubgraph];
 
-export function findGraphWithName(gname: string) {
+export function findGraphWithName(gname: string): Graph {
   // find the subgraph it refers to
   // const graph = allGraphs.find((gr) => {
   //   console.log(gr);
   //   return Object.keys({ gr })[0] === gname;
   // });
   const thisSubgraph = gname;
-  console.log(thisSubgraph, Object.keys({ subgraph })[0]);
-  let subgraphL = { graph: { input_nodes: [], output_nodes: [] } };
-  if (thisSubgraph === 'subgraph') {
+  console.log(thisSubgraph);
+  let subgraphL = {
+    graph: { input_nodes: [], output_nodes: [] },
+    nodes: [],
+    links: [],
+  };
+  if (thisSubgraph === 'graph') {
+    subgraphL = graph;
+  } else if (thisSubgraph === 'subgraph') {
     subgraphL = subgraph;
   } else if (thisSubgraph === 'subsubgraph') {
     subgraphL = subsubgraph;
@@ -44,8 +56,10 @@ export function findGraphWithName(gname: string) {
 // export function getSubNetwork(subNetName: string) {
 //   return subNetName;
 // }
-export function getNodes(): EwoksNode[] {
-  return ewoksNetwork.nodes.map<EwoksNode>(
+export function getNodes(id: string): EwoksRFNode[] {
+  const tempGraph = findGraphWithName(id);
+  console.log(tempGraph);
+  return tempGraph.nodes.map<EwoksNode>(
     ({
       id,
       task_type,
@@ -66,9 +80,9 @@ export function getNodes(): EwoksNode[] {
           task_generator,
           data: {
             name: task_identifier,
-            id: id.toString(),
-            task_type,
-            task_identifier,
+            // id: id.toString(),
+            // task_type,
+            // task_identifier,
           },
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
@@ -120,12 +134,13 @@ export function getNodes(): EwoksNode[] {
   );
 }
 
-export function getEdges(): EwoksLink[] {
-  console.log(ewoksNetwork.links);
-  return ewoksNetwork.links.map<EwoksLink>(
+export function getLinks(id: string): EwoksRFLink[] {
+  const tempGraph = findGraphWithName(id);
+  console.log(tempGraph);
+  return tempGraph.links.map<EwoksLink>(
     ({ source, target, data_mapping, sub_graph_nodes }) => ({
       id: `e${source}-${target}`,
-      label: data_mapping.map((el) => el.output + '->' + el.input).join(', '),
+      label: 'ok', // data_mapping.map((el) => el.output + '->' + el.input).join(', '),
       source: source.toString(),
       target: target.toString(),
       data: { data_mapping, sub_graph_nodes },
@@ -138,7 +153,7 @@ function getNodeType(isSource: boolean, isTarget: boolean): string {
 }
 
 export function positionNodes(nodes: Node[], edges: Edge[]): Node[] {
-  const graph = new Graph();
+  const graph = new GraphDagre();
   graph.setDefaultEdgeLabel(() => ({}));
   graph.setGraph({ rankdir: 'LR' });
 

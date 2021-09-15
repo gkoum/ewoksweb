@@ -25,6 +25,7 @@ import Sidebar from '../sidebar';
 import useStore from '../store';
 import Canvas from './Canvas';
 import Card from '@material-ui/core/Card';
+import CanvasView from './CanvasView';
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
 // import Deposits from './Deposits';
@@ -46,6 +47,10 @@ function Copyright() {
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  canvasView: {
+    'z-index': 2000,
+  },
+
   root: {
     display: 'flex',
     // width: '100%',
@@ -140,6 +145,7 @@ export default function Dashboard() {
   const ewoksElements = useStore((state) => state.ewoksElements);
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
+  const selectedSubgraph = useStore((state) => state.selectedSubgraph);
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -176,7 +182,7 @@ export default function Dashboard() {
             noWrap
             className={classes.title}
           >
-            {ewoksElements[0].id}
+            graph
           </Typography>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
@@ -188,9 +194,6 @@ export default function Dashboard() {
           </IconButton>
           <IconButton color="inherit">
             <CloudDownloadIcon />
-          </IconButton>
-          <IconButton color="inherit">
-            <SaveIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -216,6 +219,15 @@ export default function Dashboard() {
         <div className={classes.toolbar} />
         <Paper className={fixedHeightPaper}>
           <Canvas />
+          <span className={classes.canvasView}>
+            <CanvasView subgraph={selectedSubgraph} />
+          </span>
+          {/* <span className={classes.canvasView}>
+            <CanvasView />
+          </span>
+          <span className={classes.canvasView}>
+            <CanvasView />
+          </span> */}
         </Paper>
       </main>
       {/* <Canvas /> */}

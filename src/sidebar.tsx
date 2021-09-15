@@ -8,6 +8,7 @@ import { Button } from '@material-ui/core';
 // import orangeFile from './images/orangeFile.png';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import IconButton from '@material-ui/core/IconButton';
+import type { Graph, EwoksLink, EwoksNode } from './types';
 
 const onDragStart = (event, nodeType) => {
   console.log(event, nodeType);
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Sidebar(props) {
   const classes = useStyles();
 
-  const elementClickedStore = useStore<Node | Edge>(
+  const elementClickedStore = useStore<EwoksNode | EwoksLink>(
     (state) => state.selectedElement
   );
   console.log(typeof elementClickedStore);

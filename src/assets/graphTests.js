@@ -3,6 +3,7 @@
 // of ewoks and a map-engine to create a model for react-flow or another for vis etc.
 export const graph = {
   graph: {
+    id: 'graph',
     input_nodes: [{ name: 'in1', id: 'node1' }],
     output_nodes: [{ name: 'out1', id: 'node3' }],
   },
@@ -10,7 +11,7 @@ export const graph = {
     {
       id: 'node1',
       task_type: 'method',
-      task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add0',
+      task_identifier: 'tasks.simplemethods.add0',
       inputs: [{ name: 'a', value: 1 }],
       uiProps: { position: { x: 50, y: 80 } },
     },
@@ -23,13 +24,13 @@ export const graph = {
     {
       id: 'node3',
       task_type: 'method',
-      task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add1',
+      task_identifier: 'tasks.simplemethods.add1',
       uiProps: { position: { x: 700, y: 580 } },
     },
     {
       id: 'node4',
       task_type: 'method',
-      task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add44',
+      task_identifier: 'tasks.simplemethods.add44',
       uiProps: { position: { x: 50, y: 380 } },
     },
   ],
@@ -66,6 +67,7 @@ export const graph = {
 
 export const subgraph = {
   graph: {
+    id: 'subgraph',
     input_nodes: [
       { name: 'in1', id: 'task1' },
       { name: 'in2', id: 'task2' },
@@ -79,13 +81,13 @@ export const subgraph = {
     {
       id: 'task1',
       task_type: 'method',
-      task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add2',
+      task_identifier: 'tasks.simplemethods.add2',
       uiProps: { position: { x: 50, y: 80 } },
     },
     {
       id: 'task2',
       task_type: 'method',
-      task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add3',
+      task_identifier: 'tasks.simplemethods.add3',
       uiProps: { position: { x: 500, y: 180 } },
     },
     {
@@ -114,6 +116,7 @@ export const subgraph = {
 
 export const subsubgraph = {
   graph: {
+    id: 'subsubgraph',
     input_nodes: [
       { name: 'in1', id: 'task1' },
       { name: 'in2', id: 'task2' },
@@ -127,13 +130,13 @@ export const subsubgraph = {
     {
       id: 'task1',
       task_type: 'method',
-      task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add4',
+      task_identifier: 'tasks.simplemethods.add4',
       uiProps: { position: { x: 50, y: 80 } },
     },
     {
       id: 'task2',
       task_type: 'method',
-      task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add5',
+      task_identifier: 'tasks.simplemethods.add5',
       uiProps: { position: { x: 350, y: 280 } },
     },
     {
@@ -162,6 +165,7 @@ export const subsubgraph = {
 
 export const subsubsubgraph = {
   graph: {
+    id: 'subsubsubgraph',
     input_nodes: [
       { name: 'in1', id: 'task1' },
       { name: 'in2', id: 'task2' },
@@ -175,13 +179,13 @@ export const subsubsubgraph = {
     {
       id: 'task1',
       task_type: 'method',
-      task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add6',
+      task_identifier: 'tasks.simplemethods.add6',
       uiProps: { position: { x: 50, y: 80 } },
     },
     {
       id: 'task2',
       task_type: 'method',
-      task_identifier: 'ewokscore.tests.examples.tasks.simplemethods.add7',
+      task_identifier: 'tasks.simplemethods.add7',
       uiProps: { position: { x: 300, y: 80 } },
     },
   ],

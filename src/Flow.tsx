@@ -120,10 +120,16 @@ const onElementClick = (event, element) => console.log('click', element);
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
-function Flow() {
+function Flow(props) {
+  console.log(props);
   const reactFlowWrapper = useRef(null);
   const [rfInstance, setRfInstance] = useState(null);
+  // const [elements, setElements] = useState([
+  //   ...props.subgraph.nodes,
+  //   ...props.subgraph.links,
+  // ]);
   const [elements, setElements] = useState(newElements);
+
   const onElementsRemove = (elementsToRemove) =>
     console.log(elementsToRemove, elements);
   // setElements((els) => removeElements(elementsToRemove, els));
@@ -167,7 +173,7 @@ function Flow() {
     <ReactFlowProvider>
       <div
         className="reactflow-wrapper"
-        style={{ height: '90%' }}
+        style={{ height: '90%', backgroundColor: 'rgb(213, 217, 244)' }}
         ref={reactFlowWrapper}
       >
         <ReactFlow

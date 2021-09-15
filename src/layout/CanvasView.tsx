@@ -27,7 +27,15 @@ import CustomNode from '../CustomNodes/CustomNode';
 import FunctionNode from '../CustomNodes/FunctionNode';
 import DataNode from '../CustomNodes/DataNode';
 import type { Graph, EwoksLink, EwoksNode } from '../types';
-import CanvasView from './CanvasView';
+import Toolbar from '@material-ui/core/Toolbar';
+import AppBar from '@material-ui/core/AppBar';
+import { Checkbox } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import Typography from '@material-ui/core/Typography';
+import clsx from 'clsx';
+import Icon from '@material-ui/core/Icon';
+import Flow from '../Flow';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,7 +65,8 @@ const nodeTypes = {
   method: DataNode,
 };
 
-function Canvas() {
+function CanvasView(props) {
+  console.log(props);
   const classes = useStyles();
 
   const { fitView } = useZoomPanHelper();
@@ -82,8 +91,8 @@ function Canvas() {
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
 
-  const selectedSubgraph = useStore((state) => state.selectedSubgraph);
-  const setSelectedSubgraph = useStore((state) => state.setSelectedSubgraph);
+  const selectedSubgraph = useStore((state) => state.selectedElement);
+  const setSelectedSubgraph = useStore((state) => state.setSelectedElement);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     console.log(element);
@@ -161,7 +170,6 @@ function Canvas() {
       setSelectedSubgraph(subgraph);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);
-      console.log(selectedSubgraph);
     } else {
       console.log('THIS IS A NODE');
     }
@@ -169,80 +177,32 @@ function Canvas() {
 
   return (
     <div className={classes.root}>
-      {/* <CanvasView /> */}
-      {/* <Rnd
+      <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
-        disableDragging={disableDragging}
+        // disableDragging={disableDragging}
         default={{
-          x: 100,
-          y: 100,
-          width: 1000,
-          height: 800,
+          x: 50,
+          y: -400,
+          width: 700,
+          height: 400,
         }}
-      > */}
-      {/* <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" noWrap>
-            Graphs Name
-          </Typography>
-          <Checkbox
-            checked={disableDragging}
-            onChange={handlDisableDragging}
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />
-        </Toolbar>
-      </AppBar> */}
-      <ReactFlowProvider>
-        <div
-          className="reactflow-wrapper"
-          style={{
-            height: '100%',
-            width: '100%',
-            backgroundColor: '#e9ebf7',
-          }}
-          ref={reactFlowWrapper}
-        >
-          <ReactFlow
-            snapToGrid
-            elements={elements}
-            onElementClick={onElementClick}
-            onLoad={onLoad}
-            onDrop={onDrop}
-            onConnect={onConnect}
-            onDragOver={onDragOver}
-            onPaneContextMenu={onRightClick}
-            onNodeDoubleClick={onNodeDoubleClick}
-            nodeTypes={nodeTypes}
-          >
-            <Controls />
-            <div
-              style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}
-            >
-              {/* <button type="button" onClick={logToObject}>
-                  toObject
-                </button> */}
-              <a
-                href={`data:text/json;charset=utf-8,${encodeURIComponent(
-                  JSON.stringify(elements)
-                )}`}
-                download="filename.json"
-              >
-                Download Json
-              </a>
-            </div>
-            <Background />
-          </ReactFlow>
-          {/* <Popover
-              anchor={elementClicked || null}
-              onClose={() => setElementClicked(null)}
-              nodeData={elementClicked || null}
-              onBottom={true}
-            /> */}
-        </div>
-      </ReactFlowProvider>
-      {/* </Rnd> */}
+      >
+        <AppBar position="static">
+          <Toolbar>
+            <Typography variant="h6" noWrap>
+              Graphs Name
+            </Typography>
+            <Checkbox
+              checked={disableDragging}
+              onChange={handlDisableDragging}
+              inputProps={{ 'aria-label': 'primary checkbox' }}
+            />
+          </Toolbar>
+        </AppBar>
+        <Flow subgraph={props.subgraph} />
+      </Rnd>
     </div>
   );
 }
 
-export default Canvas;
+export default CanvasView;
