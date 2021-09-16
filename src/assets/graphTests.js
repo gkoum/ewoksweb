@@ -12,7 +12,7 @@ export const graph = {
       id: 'node1',
       task_type: 'method',
       task_identifier: 'tasks.simplemethods.add0',
-      inputs: [{ name: 'a', value: 1 }],
+      default_inputs: [{ name: 'a', value: 1 }],
       uiProps: { position: { x: 50, y: 80 } },
     },
     {
@@ -41,7 +41,7 @@ export const graph = {
     {
       source: 'node1',
       target: 'node2',
-      data_mapping: [{ input: 'ab', output: 'result' }],
+      data_mapping: [{ source_output: 'ab', target_input: 'result' }],
       sub_graph_nodes: {
         sub_target: 'in1',
       },
@@ -49,7 +49,7 @@ export const graph = {
     {
       source: 'node4',
       target: 'node2',
-      data_mapping: [{ input: 'ba', output: 'result' }],
+      data_mapping: [{ source_output: 'ab3', target_input: 'result5' }],
       sub_graph_nodes: {
         sub_target: 'in2',
       },
@@ -57,7 +57,7 @@ export const graph = {
     {
       source: 'node2',
       target: 'node3',
-      data_mapping: [{ input: 'a', output: 'result' }],
+      data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
       sub_graph_nodes: {
         sub_source: 'out',
       },
@@ -101,12 +101,12 @@ export const subgraph = {
     {
       source: 'task1',
       target: 'task2',
-      data_mapping: [{ input: 'a', output: 'result' }],
+      data_mapping: [{ source_output: 'ab6', target_input: 'result6' }],
     },
     {
       source: 'task2',
       target: 'subsubgraph',
-      data_mapping: [{ input: 'a', output: 'result' }],
+      data_mapping: [{ source_output: 'ab56', target_input: 'result56' }],
       sub_graph_nodes: {
         sub_target: 'in',
       },
@@ -150,12 +150,12 @@ export const subsubgraph = {
     {
       source: 'task1',
       target: 'task2',
-      data_mapping: [{ input: 'a', output: 'result' }],
+      data_mapping: [{ source_output: 'ab45', target_input: 'result45' }],
     },
     {
       source: 'task2',
       target: 'subsubsubgraph',
-      data_mapping: [{ input: 'a', output: 'result' }],
+      data_mapping: [{ source_output: 'ab78', target_input: 'result7' }],
       sub_graph_nodes: {
         sub_target: 'in',
       },
@@ -193,7 +193,7 @@ export const subsubsubgraph = {
     {
       source: 'task1',
       target: 'task2',
-      data_mapping: [{ input: 'a', output: 'result' }],
+      data_mapping: [{ source_output: 'ab', target_input: 'result' }],
     },
   ],
 };

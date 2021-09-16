@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 // import * as R from "ramda";
 import ReactFlow, {
   removeElements,
@@ -105,8 +105,8 @@ const newElements = [
 ];
 
 const nodeTypes = {
-  dataNode: DataNode,
-  functionNode: FunctionNode,
+  method: DataNode,
+  graph: FunctionNode,
 };
 
 const onLoad = (reactFlowInstance) => reactFlowInstance.fitView();
@@ -128,7 +128,17 @@ function Flow(props) {
   //   ...props.subgraph.nodes,
   //   ...props.subgraph.links,
   // ]);
-  const [elements, setElements] = useState(newElements);
+  // const graph = props.subgraph.nodes
+  //   ? [...props.subgraph.nodes, ...props.subgraph.links]
+  //   : newElements;
+  const [elements, setElements] = useState([
+    ...props.subgraph.nodes,
+    ...props.subgraph.links,
+  ]);
+
+  useEffect(() => {
+    setElements([...props.subgraph.nodes, ...props.subgraph.links]);
+  }, [props.subgraph.nodes, props.subgraph.links]);
 
   const onElementsRemove = (elementsToRemove) =>
     console.log(elementsToRemove, elements);

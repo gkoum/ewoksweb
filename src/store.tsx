@@ -24,6 +24,16 @@ console.log(nodes, edges);
 // console.log(positionedNodes);
 
 const useStore = create<State>((set) => ({
+  graphRF: {} as GraphRF,
+
+  setGraphRF: (graphRF) => {
+    console.log(graphRF);
+    set((state) => ({
+      ...state,
+      graphRF,
+    }));
+  },
+
   ewoksElements: [...nodes, ...edges],
 
   setEwoksElements: (ewoksElements) => {

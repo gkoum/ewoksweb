@@ -36,6 +36,8 @@ import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
 import Icon from '@material-ui/core/Icon';
 import Flow from '../Flow';
+import CloseIcon from '@material-ui/icons/Close';
+import ButtonWrapper from '../Components/ButtonWrapper';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -175,6 +177,12 @@ function CanvasView(props) {
     }
   };
 
+  const closeSubgraph = (event) => {
+    event.preventDefault();
+    console.log(event);
+    setSelectedSubgraph({ graph: { id: 0 }, nodes: [], links: [] });
+  };
+
   return (
     <div className={classes.root}>
       <Rnd
@@ -197,6 +205,9 @@ function CanvasView(props) {
               onChange={handlDisableDragging}
               inputProps={{ 'aria-label': 'primary checkbox' }}
             />
+            <IconButton color="inherit">
+              <CloseIcon onClick={closeSubgraph} />
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Flow subgraph={props.subgraph} />

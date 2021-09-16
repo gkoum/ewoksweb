@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,6 +12,10 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -26,6 +31,10 @@ import useStore from '../store';
 import Canvas from './Canvas';
 import Card from '@material-ui/core/Card';
 import CanvasView from './CanvasView';
+import ButtonWrapper from '../Components/ButtonWrapper';
+import AddIcon from '@material-ui/icons/Add';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
 // import Deposits from './Deposits';
@@ -47,6 +56,11 @@ function Copyright() {
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  formControl: {
+    minWidth: '250px',
+    backgroundColor: '#7685dd',
+  },
+
   canvasView: {
     'z-index': 2000,
   },
@@ -142,10 +156,15 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard() {
   const classes = useStyles();
 
+  const inputFile = React.useRef(null);
+
+  const graphRF = useStore((state) => state.graphRF);
+  const setGraphRF = useStore((state) => state.setGraphRF);
   const ewoksElements = useStore((state) => state.ewoksElements);
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
   const selectedSubgraph = useStore((state) => state.selectedSubgraph);
+  const [selectedGraph, setSelectedGraph] = React.useState('graph');
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -154,6 +173,15 @@ export default function Dashboard() {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  const selectedGraphChange = (event) => {
+    console.log(event, selectedGraph);
+  };
+
+  const onButtonClick = () => {
+    // `current` points to the mounted file input element
+    inputFile.current.click();
+  };
 
   return (
     <div className={classes.root}>
@@ -184,17 +212,59 @@ export default function Dashboard() {
           >
             graph
           </Typography>
+
+          <FormControl variant="filled" className={classes.formControl}>
+            <InputLabel id="demo-simple-select-filled-label">
+              Recent Files
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-filled-label"
+              id="demo-simple-select-filled"
+              value={selectedGraph}
+              onChange={selectedGraphChange}
+            >
+              <MenuItem value="">
+                <em>Graph</em>
+              </MenuItem>
+              <MenuItem value={10}>subGraph</MenuItem>
+              <MenuItem value={20}>subsubGraph</MenuItem>
+              <MenuItem value={30}>subsubsubGraph</MenuItem>
+            </Select>
+          </FormControl>
+          <IconButton color="inherit">
+            <ButtonWrapper>
+              <SaveIcon />
+            </ButtonWrapper>
+          </IconButton>
+          <IconButton color="inherit">
+            <ButtonWrapper>
+              <AddIcon onClick={onButtonClick} />
+              <input
+                type="file"
+                id="file"
+                ref={inputFile}
+                style={{ display: 'none' }}
+              />
+            </ButtonWrapper>
+          </IconButton>
+          <IconButton color="inherit">
+            <ButtonWrapper>
+              <CloudDownloadIcon />
+            </ButtonWrapper>
+          </IconButton>
+          <IconButton color="inherit">
+            <ButtonWrapper>
+              <CloudUploadIcon />
+            </ButtonWrapper>
+          </IconButton>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <IconButton color="inherit">
+          {/* <IconButton color="inherit">
             <AccessAlarmIcon />
-          </IconButton>
-          <IconButton color="inherit">
-            <CloudDownloadIcon />
-          </IconButton>
+          </IconButton> */}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -219,9 +289,11 @@ export default function Dashboard() {
         <div className={classes.toolbar} />
         <Paper className={fixedHeightPaper}>
           <Canvas />
-          <span className={classes.canvasView}>
-            <CanvasView subgraph={selectedSubgraph} />
-          </span>
+          {selectedSubgraph.graph && selectedSubgraph.graph.id && (
+            <span className={classes.canvasView}>
+              <CanvasView subgraph={selectedSubgraph} />
+            </span>
+          )}
           {/* <span className={classes.canvasView}>
             <CanvasView />
           </span>

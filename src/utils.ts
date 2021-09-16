@@ -48,6 +48,8 @@ export function findGraphWithName(gname: string): Graph {
     subgraphL = subsubgraph;
   } else if (thisSubgraph === 'subsubsubgraph') {
     subgraphL = subsubsubgraph;
+  } else {
+    subgraphL = { graph: {}, nodes: [], links: [] };
   }
   // console.log(graph);
   return subgraphL;
@@ -140,7 +142,9 @@ export function getLinks(id: string): EwoksRFLink[] {
   return tempGraph.links.map<EwoksLink>(
     ({ source, target, data_mapping, sub_graph_nodes }) => ({
       id: `e${source}-${target}`,
-      label: 'ok', // data_mapping.map((el) => el.output + '->' + el.input).join(', '),
+      label: data_mapping
+        .map((el) => el.source_output + '->' + el.target_input)
+        .join(', '),
       source: source.toString(),
       target: target.toString(),
       data: { data_mapping, sub_graph_nodes },

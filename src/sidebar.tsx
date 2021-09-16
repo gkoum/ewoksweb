@@ -50,7 +50,7 @@ export default function Sidebar(props) {
   const [taskIdentifier, setTaskIdentifier] = React.useState('');
   const [taskType, setTaskType] = React.useState('');
   const [taskGenerator, setTaskGenerator] = React.useState('');
-  const [inputs, setInputs] = React.useState('');
+  const [defaultInputs, setDefaultInputs] = React.useState('');
   const [inputsComplete, setInputsComplete] = React.useState('');
   const [type, setType] = React.useState('');
   const [label, setLabel] = React.useState('');
@@ -114,8 +114,8 @@ export default function Sidebar(props) {
     setTaskGenerator(event.target.value);
   };
 
-  const inputsChanged = (event) => {
-    setInputs(event.target.value);
+  const defaultInputsChanged = (event) => {
+    setDefaultInputs(event.target.value);
   };
 
   const inputsCompleteChanged = (event) => {
@@ -205,8 +205,8 @@ export default function Sidebar(props) {
                 id="outlined-basic"
                 label="Static inputs"
                 variant="outlined"
-                value={inputs || ''}
-                onChange={inputsChanged}
+                value={defaultInputs || ''}
+                onChange={defaultInputsChanged}
               />
             </div>
             <div>

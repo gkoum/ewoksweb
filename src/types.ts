@@ -45,7 +45,7 @@ export interface DataMapping {
 export interface EwoksLink {
   source: string;
   target: string;
-  data_mapping?: DataMapping;
+  data_mapping?: DataMapping[];
   conditions?: string;
   on_error?: Inputs;
   sub_graph_nodes?: { subtarget?: string; subsource?: string };
