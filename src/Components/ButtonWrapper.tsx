@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Fab, Button } from '@material-ui/core';
+import { useState } from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -10,8 +11,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function OpenFile(props) {
+function ButtonWrapper(props) {
   const classes = useStyles();
+
+  const [fileName, setFileName] = useState('');
+
+  const fileNameChanged = (value) => {
+    console.log(value);
+    setFileName(value);
+  };
 
   return (
     <div>
@@ -21,18 +29,8 @@ function OpenFile(props) {
           id="upload-photo"
           name="upload-photo"
           type="file"
+          onChange={fileNameChanged}
         />
-        {/* <Fab
-          color="secondary"
-          size="small"
-          component="span"
-          aria-label="add"
-          variant="extended"
-        >
-          <AddIcon /> Upload photo
-        </Fab>
-        <br />
-        <br /> */}
         <Fab
           className={classes.openFileButton}
           color="primary"
@@ -41,14 +39,7 @@ function OpenFile(props) {
           aria-label="add"
         >
           {props.children}
-          {/* <SaveIcon /> */}
-          {/* <AddIcon /> */}
         </Fab>
-        {/* <br />
-        <br />
-        <Button color="secondary" variant="contained" component="span">
-          Upload button
-        </Button>{' '} */}
       </label>
     </div>
   );
@@ -56,4 +47,4 @@ function OpenFile(props) {
 
 const rootElement = document.querySelector('#root');
 
-export default OpenFile;
+export default ButtonWrapper;

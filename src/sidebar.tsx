@@ -5,7 +5,11 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import useStore from './store';
 import type { Edge, Node } from 'react-flow-renderer';
 import { Button } from '@material-ui/core';
-// import orangeFile from './images/orangeFile.png';
+import orangeFile from './images/orangeFile.png';
+import orange1 from './images/orange1.png';
+import orange2 from './images/orange2.png';
+import orange3 from './images/orange3.png';
+
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import IconButton from '@material-ui/core/IconButton';
 import type { Graph, EwoksLink, EwoksNode } from './types';
@@ -23,6 +27,10 @@ const useStyles = makeStyles((theme: Theme) =>
         margin: theme.spacing(1),
         // width: '25ch',
       },
+    },
+
+    iconBut: {
+      padding: '2px',
     },
   })
 );
@@ -132,41 +140,48 @@ export default function Sidebar(props) {
 
   return (
     <aside className="dndflow">
-      {/* <div className="description">
-        You can drag these nodes to the pane on the right.
-      </div> */}
-      <div
+      <span className="icons">
+        <img src={orangeFile} alt="orangeImage" />
+      </span>
+      <span className="icons">
+        <img src={orange1} alt="orangeImage" />
+      </span>
+      <span className="icons">
+        <img src={orange2} alt="orangeImage" />
+      </span>
+      <span className="icons">
+        <img src={orange3} alt="orangeImage" />
+      </span>
+      <span
         className="dndnode input"
         onDragStart={(event) => onDragStart(event, 'input')}
         draggable
       >
-        <IconButton color="inherit">
-          <AccessAlarmIcon />
-        </IconButton>
+        <AccessAlarmIcon className="iconBut" />
         Input
         {/* <img src={orangeFile} alt="orangeImage" /> */}
-      </div>
-      <div
+      </span>
+      <span
         className="dndnode"
         onDragStart={(event) => onDragStart(event, 'default')}
         draggable
       >
         Default
-      </div>
-      <div
+      </span>
+      <span
         className="dndnode output"
         onDragStart={(event) => onDragStart(event, 'output')}
         draggable
       >
         Output
-      </div>
-      <div
+      </span>
+      <span
         className="dndnode graph"
         onDragStart={(event) => onDragStart(event, 'graph')}
         draggable
       >
         Subgraph
-      </div>
+      </span>
       <form className={classes.root} noValidate autoComplete="off">
         <div>Id: {props.element.id}</div>
 
@@ -251,7 +266,7 @@ export default function Sidebar(props) {
           Save
         </Button>
         <Button variant="contained" color="primary">
-          Open Subgraph
+          Subgraph
         </Button>
       </form>
     </aside>

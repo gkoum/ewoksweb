@@ -34,6 +34,7 @@ import CanvasView from './CanvasView';
 import ButtonWrapper from '../Components/ButtonWrapper';
 import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import { Fab, Button } from '@material-ui/core';
 
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
@@ -56,8 +57,11 @@ function Copyright() {
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  openFileButton: {
+    backgroundColor: '#96a5f9',
+  },
   formControl: {
-    minWidth: '250px',
+    minWidth: '220px',
     backgroundColor: '#7685dd',
   },
 
@@ -178,9 +182,10 @@ export default function Dashboard() {
     console.log(event, selectedGraph);
   };
 
-  const onButtonClick = () => {
+  const onButtonClick = (val) => {
     // `current` points to the mounted file input element
-    inputFile.current.click();
+    console.log(val, inputFile);
+    // inputFile.current.click();
   };
 
   return (
@@ -232,30 +237,42 @@ export default function Dashboard() {
             </Select>
           </FormControl>
           <IconButton color="inherit">
-            <ButtonWrapper>
+            <Fab
+              className={classes.openFileButton}
+              color="primary"
+              size="small"
+              component="span"
+              aria-label="add"
+            >
               <SaveIcon />
-            </ButtonWrapper>
+            </Fab>
           </IconButton>
           <IconButton color="inherit">
             <ButtonWrapper>
               <AddIcon onClick={onButtonClick} />
-              <input
-                type="file"
-                id="file"
-                ref={inputFile}
-                style={{ display: 'none' }}
-              />
             </ButtonWrapper>
           </IconButton>
           <IconButton color="inherit">
-            <ButtonWrapper>
+            <Fab
+              className={classes.openFileButton}
+              color="primary"
+              size="small"
+              component="span"
+              aria-label="add"
+            >
               <CloudDownloadIcon />
-            </ButtonWrapper>
+            </Fab>
           </IconButton>
           <IconButton color="inherit">
-            <ButtonWrapper>
+            <Fab
+              className={classes.openFileButton}
+              color="primary"
+              size="small"
+              component="span"
+              aria-label="add"
+            >
               <CloudUploadIcon />
-            </ButtonWrapper>
+            </Fab>
           </IconButton>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">

@@ -153,6 +153,10 @@ function Canvas() {
     console.log(event);
   };
 
+  const onSelectionChange = (elements) => {
+    console.log(elements);
+  };
+
   const onNodeDoubleClick = (event, node) => {
     event.preventDefault();
     console.log(event, node);
@@ -212,6 +216,7 @@ function Canvas() {
             onDragOver={onDragOver}
             onPaneContextMenu={onRightClick}
             onNodeDoubleClick={onNodeDoubleClick}
+            onSelectionChange={onSelectionChange}
             nodeTypes={nodeTypes}
           >
             <Controls />

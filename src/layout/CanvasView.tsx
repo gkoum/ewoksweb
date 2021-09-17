@@ -37,7 +37,6 @@ import clsx from 'clsx';
 import Icon from '@material-ui/core/Icon';
 import Flow from '../Flow';
 import CloseIcon from '@material-ui/icons/Close';
-import ButtonWrapper from '../Components/ButtonWrapper';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

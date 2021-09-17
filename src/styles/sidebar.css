@@ -1,7 +1,12 @@
+.icons {
+}
+
 .dndflow {
-  flex-direction: column;
+  /* flex-direction: column; */
   display: flex;
   height: 100%;
+  flex-wrap: wrap;
+  /* background-color: DodgerBlue; */
 }
 
 .dndflow aside {
@@ -21,7 +26,7 @@
   padding: 3px;
   border: 1px solid #1a192b;
   border-radius: 2px;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   display: flex;
   justify-content: center;
   align-items: center;
