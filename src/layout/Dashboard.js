@@ -35,6 +35,7 @@ import ButtonWrapper from '../Components/ButtonWrapper';
 import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
@@ -168,6 +169,7 @@ export default function Dashboard() {
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
   const selectedSubgraph = useStore((state) => state.selectedSubgraph);
+  const subgraphsStack = useStore((state) => state.subgraphsStack);
   const [selectedGraph, setSelectedGraph] = React.useState('graph');
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -215,7 +217,19 @@ export default function Dashboard() {
             noWrap
             className={classes.title}
           >
-            graph
+            <Breadcrumbs aria-label="breadcrumb">
+              {subgraphsStack[0] &&
+                subgraphsStack.map((sub) => (
+                  <span
+                    underline="hover"
+                    color="text.primary"
+                    href="/"
+                    key={sub.graph.id}
+                  >
+                    {sub.graph.id}
+                  </span>
+                ))}
+            </Breadcrumbs>
           </Typography>
 
           <FormControl variant="filled" className={classes.formControl}>
@@ -228,7 +242,7 @@ export default function Dashboard() {
               value={selectedGraph}
               onChange={selectedGraphChange}
             >
-              <MenuItem value="">
+              <MenuItem value={1}>
                 <em>Graph</em>
               </MenuItem>
               <MenuItem value={10}>subGraph</MenuItem>
@@ -306,11 +320,11 @@ export default function Dashboard() {
         <div className={classes.toolbar} />
         <Paper className={fixedHeightPaper}>
           <Canvas />
-          {selectedSubgraph.graph && selectedSubgraph.graph.id && (
+          {/* {selectedSubgraph.graph && selectedSubgraph.graph.id && (
             <span className={classes.canvasView}>
               <CanvasView subgraph={selectedSubgraph} />
             </span>
-          )}
+          )} */}
           {/* <span className={classes.canvasView}>
             <CanvasView />
           </span>

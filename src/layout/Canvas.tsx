@@ -20,7 +20,6 @@ import type {
 import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
 import ReactJson from 'react-json-view';
 import { Rnd } from 'react-rnd';
-import { findGraphWithName } from '../utils';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import useStore from '../store';
 import CustomNode from '../CustomNodes/CustomNode';
@@ -28,6 +27,13 @@ import FunctionNode from '../CustomNodes/FunctionNode';
 import DataNode from '../CustomNodes/DataNode';
 import type { Graph, EwoksLink, EwoksNode } from '../types';
 import CanvasView from './CanvasView';
+import {
+  getLinks,
+  getNodes,
+  positionNodes,
+  ewoksNetwork,
+  findGraphWithName,
+} from '../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,6 +73,9 @@ function Canvas() {
   const [disableDragging, setDisableDragging] = useState(false);
   const [elements, setElements] = useState([]);
   const reactFlowWrapper = useRef(null);
+  const graphRF = useStore((state) => state.graphRF);
+  const setGraphRF = useStore((state) => state.setGraphRF);
+  const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
 
   const ewoksElements = useStore((state) => {
     console.log(state);
@@ -74,10 +83,16 @@ function Canvas() {
   });
   const setEwoksElements = useStore((state) => state.setEwoksElements);
 
+  // useEffect(() => {
+  //   console.log(ewoksElements);
+  //   setElements(ewoksElements);
+  // }, [ewoksElements]);
+
   useEffect(() => {
-    console.log(ewoksElements);
-    setElements(ewoksElements);
-  }, [ewoksElements]);
+    console.log(graphRF);
+    console.log([...getNodes(graphRF), ...getLinks(graphRF)]);
+    setElements([...getNodes(graphRF), ...getLinks(graphRF)]);
+  }, [graphRF, graphRF.graph.id]);
 
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
@@ -87,7 +102,7 @@ function Canvas() {
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     console.log(element);
-    const ewoksElement = ewoksElements.find((el) => el.id === element.id);
+    const ewoksElement = elements.find((el) => el.id === element.id);
     setElementClicked(ewoksElement);
     setSelectedElement(ewoksElement);
   };
@@ -107,7 +122,7 @@ function Canvas() {
     event.dataTransfer.dropEffect = 'move';
   };
 
-  const CustomNewNode = (id: number, name: string, image: string) => {
+  function CustomNewNode(id: number, name: string, image: string) {
     return (
       <CustomNode
         id={id}
@@ -118,7 +133,7 @@ function Canvas() {
         // openContactDetails={openContactDetails}
       />
     );
-  };
+  }
 
   const onDrop = (event) => {
     event.preventDefault();
@@ -163,6 +178,8 @@ function Canvas() {
     if (node.type === 'graph') {
       const subgraph = findGraphWithName(node.data.task_identifier);
       setSelectedSubgraph(subgraph);
+      setGraphRF(subgraph);
+      setSubgraphsStack(subgraph);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);
       console.log(selectedSubgraph);

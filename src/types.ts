@@ -1,4 +1,4 @@
-import { Node, Edge, Position } from 'react-flow-renderer';
+import type { Node, Edge, Position } from 'react-flow-renderer';
 
 export interface GraphNodes {
   name: string;
@@ -19,6 +19,10 @@ export interface Graph {
 }
 
 export interface State {
+  subgraphsStack?: Array<GraphRF>;
+  setSubgraphsStack?: (graphRF: GraphRF) => void;
+  graphRF: GraphRF;
+  setGraphRF: (graphRF: GraphRF) => void;
   ewoksElements: Array<EwoksRFNode | EwoksRFLink>;
   setEwoksElements: (elements: Array<EwoksRFNode | EwoksRFLink>) => void;
   selectedElement: EwoksRFNode | EwoksRFLink;

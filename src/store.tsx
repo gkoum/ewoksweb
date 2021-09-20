@@ -17,14 +17,32 @@ import {
   findGraphWithName,
 } from './utils';
 
-const nodes: EwoksRFNode[] = getNodes('graph');
-const edges: EwoksRFLink[] = getLinks('graph');
+const nodes: EwoksRFNode[] = []; //getNodes('graph');
+const edges: EwoksRFLink[] = []; // getLinks('graph');
 console.log(nodes, edges);
 // const positionedNodes = positionNodes(nodes, edges);
 // console.log(positionedNodes);
 
-const useStore = create<State>((set) => ({
-  graphRF: {} as GraphRF,
+const useStore = create<State>((set, get) => ({
+  subgraphsStack: [] as GraphRF[],
+
+  setSubgraphsStack: (graphRF: GraphRF) => {
+    let stack = [];
+    const exists = get().subgraphsStack.find(
+      (gr) => gr.graph.id === graphRF.graph.id
+    );
+    console.log(exists);
+    if (exists) {
+    } else {
+      stack = [...get().subgraphsStack, graphRF];
+    }
+    set((state) => ({
+      ...state,
+      subgraphsStack: stack,
+    }));
+  },
+
+  graphRF: { graph: {}, nodes: [], links: [] } as GraphRF,
 
   setGraphRF: (graphRF) => {
     console.log(graphRF);
