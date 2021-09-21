@@ -15,9 +15,10 @@ function FunctionNode(all) {
   console.log(all.data, all);
   return (
     <Node
+      type="graph"
       label={all.data.name}
       selected={all.selected}
-      color="Lavender"
+      color="#ced3ee"
       content={
         <>
           <div style={style.contentHeader}>Inputs</div>

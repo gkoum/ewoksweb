@@ -44,7 +44,8 @@ function ButtonWrapper(props) {
       setSelectedFile(file.result);
       console.log(selectedFile);
       setGraphRF(JSON.parse(file.result) as GraphRF);
-      setSubgraphsStack(JSON.parse(file.result) as GraphRF);
+      setSubgraphsStack('initialiase');
+      setSubgraphsStack(JSON.parse(file.result).graph.id);
     };
     // var data = require('json!./' + selectedFile.name);
     // console.log(data);

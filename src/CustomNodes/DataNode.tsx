@@ -13,9 +13,10 @@ const isValidOutput = (connection) => {
 const DataNode = ({ data, selected }) => {
   return (
     <Node
-      label={data.name}
+      type={data.type}
+      label={data.name.slice(-9)}
       selected={selected}
-      color={'LightCyan'}
+      color={'#ced3ee'}
       content={
         <div style={{ ...style.io } as React.CSSProperties}>
           {!data.uploaded && (

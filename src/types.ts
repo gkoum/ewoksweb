@@ -19,8 +19,8 @@ export interface Graph {
 }
 
 export interface State {
-  subgraphsStack?: Array<GraphRF>;
-  setSubgraphsStack?: (graphRF: GraphRF) => void;
+  subgraphsStack?: Array<string>;
+  setSubgraphsStack?: (graphRF: string) => void;
   graphRF: GraphRF;
   setGraphRF: (graphRF: GraphRF) => void;
   ewoksElements: Array<EwoksRFNode | EwoksRFLink>;

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -36,6 +36,8 @@ import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import { findGraphWithName } from '../utils';
+import MyCard from '../layout/MyCard';
 
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
@@ -158,6 +160,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function download(content, fileName, contentType) {
+  const a = document.createElement('a');
+  const file = new Blob([content], { type: contentType });
+  a.href = URL.createObjectURL(file);
+  a.download = fileName;
+  a.click();
+}
+
 export default function Dashboard() {
   const classes = useStyles();
 
@@ -168,10 +178,22 @@ export default function Dashboard() {
   const ewoksElements = useStore((state) => state.ewoksElements);
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
-  const selectedSubgraph = useStore((state) => state.selectedSubgraph);
-  const subgraphsStack = useStore((state) => state.subgraphsStack);
+  const selectedSubgraph = useStore((state) => {
+    console.log(state);
+    return state.selectedSubgraph;
+  });
+  const subgraphsStack = useStore((state) => {
+    console.log(state);
+    return state.subgraphsStack;
+  });
   const [selectedGraph, setSelectedGraph] = React.useState('graph');
   const [open, setOpen] = React.useState(true);
+  const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
+
+  useEffect(() => {
+    console.log(subgraphsStack.length);
+  }, [subgraphsStack]);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -184,10 +206,19 @@ export default function Dashboard() {
     console.log(event, selectedGraph);
   };
 
-  const onButtonClick = (val) => {
-    // `current` points to the mounted file input element
+  const loadFromDisk = (val) => {
     console.log(val, inputFile);
-    // inputFile.current.click();
+  };
+
+  const saveToDisk = (val) => {
+    console.log(val, inputFile);
+    download(JSON.stringify(graphRF), 'json.txt', 'text/plain');
+  };
+
+  const goToGraph = (e) => {
+    e.preventDefault();
+    setSubgraphsStack(e.target.text);
+    setGraphRF(findGraphWithName(e.target.text));
   };
 
   return (
@@ -217,19 +248,21 @@ export default function Dashboard() {
             noWrap
             className={classes.title}
           >
-            <Breadcrumbs aria-label="breadcrumb">
+            <Breadcrumbs aria-label="breadcrumb" color="textPrimary">
               {subgraphsStack[0] &&
-                subgraphsStack.map((sub) => (
-                  <span
+                subgraphsStack.map((name) => (
+                  <Link
                     underline="hover"
-                    color="text.primary"
+                    color="textPrimary"
                     href="/"
-                    key={sub.graph.id}
+                    key={name}
+                    onClick={goToGraph}
                   >
-                    {sub.graph.id}
-                  </span>
+                    {name}
+                  </Link>
                 ))}
             </Breadcrumbs>
+            {subgraphsStack[subgraphsStack.length - 1]}
           </Typography>
 
           <FormControl variant="filled" className={classes.formControl}>
@@ -258,12 +291,12 @@ export default function Dashboard() {
               component="span"
               aria-label="add"
             >
-              <SaveIcon />
+              <SaveIcon onClick={saveToDisk} />
             </Fab>
           </IconButton>
           <IconButton color="inherit">
             <ButtonWrapper>
-              <AddIcon onClick={onButtonClick} />
+              <AddIcon onClick={loadFromDisk} />
             </ButtonWrapper>
           </IconButton>
           <IconButton color="inherit">
@@ -333,6 +366,7 @@ export default function Dashboard() {
           </span> */}
         </Paper>
       </main>
+      {/* <MyCard /> */}
       {/* <Canvas /> */}
       {/* <main> */}
       {/* <div className={classes.appBarSpacer} /> */}

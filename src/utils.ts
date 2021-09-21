@@ -61,6 +61,12 @@ export function findGraphWithName(gname: string): Graph {
 export function getNodes(tempGraph): EwoksRFNode[] {
   // const tempGraph = findGraphWithName(id);
   console.log(tempGraph);
+  // const inputs =
+  //   tempGraph.graph.input_nodes &&
+  //   tempGraph.graph.input_nodes.map((nod) => nod.id);
+  // const outputs =
+  //   tempGraph.graph.output_nodes &&
+  //   tempGraph.graph.output_nodes.map((nod) => nod.id);
   if (tempGraph.nodes) {
     return tempGraph.nodes.map<EwoksNode>(
       ({
@@ -83,6 +89,7 @@ export function getNodes(tempGraph): EwoksRFNode[] {
             task_generator,
             data: {
               name: task_identifier,
+              type: 'input', // inputs.include(id) ? 'input' : '', // calculate if input/output/default
               // id: id.toString(),
               // task_type,
               // task_identifier,

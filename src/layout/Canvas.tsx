@@ -140,9 +140,10 @@ function Canvas() {
     console.log(event);
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
-    console.log(type);
+
     const name = event.dataTransfer.getData('name');
     const image = event.dataTransfer.getData('image');
+    console.log(type, name, image);
     const position = rfInstance.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
@@ -150,12 +151,17 @@ function Canvas() {
     const newNode = {
       id: getId(),
       type,
-      position,
+      uiProps: { position },
       data: { label: CustomNewNode(id, name, image) },
     };
     console.log(rfInstance);
     // setElements((es) => [...es, newNode]);
     setEwoksElements([...elements, newNode]);
+    setGraphRF({
+      graph: graphRF.graph,
+      nodes: [...graphRF.nodes, newNode],
+      links: graphRF.links,
+    });
   };
 
   const onConnect = (params) => {
@@ -179,7 +185,7 @@ function Canvas() {
       const subgraph = findGraphWithName(node.data.task_identifier);
       setSelectedSubgraph(subgraph);
       setGraphRF(subgraph);
-      setSubgraphsStack(subgraph);
+      setSubgraphsStack(subgraph.graph.id);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);
       console.log(selectedSubgraph);

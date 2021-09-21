@@ -15,7 +15,6 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Sidebar from '../sidebar';
 import useStore from '../store';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -76,9 +75,7 @@ export default function MyCard() {
         image="/static/images/cards/paella.jpg"
         title="Paella dish"
       /> */}
-      <CardContent>
-        <Sidebar element={selectedElement} />
-      </CardContent>
+      <CardContent></CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
           <FavoriteIcon />

@@ -24,18 +24,28 @@ console.log(nodes, edges);
 // console.log(positionedNodes);
 
 const useStore = create<State>((set, get) => ({
-  subgraphsStack: [] as GraphRF[],
+  subgraphsStack: [] as string[],
 
-  setSubgraphsStack: (graphRF: GraphRF) => {
+  setSubgraphsStack: (name: string) => {
     let stack = [];
-    const exists = get().subgraphsStack.find(
-      (gr) => gr.graph.id === graphRF.graph.id
-    );
+    const subStack = get().subgraphsStack;
+    const exists = subStack.indexOf(name);
     console.log(exists);
-    if (exists) {
+    if (name === 'initialiase') {
+      stack = [];
+    } else if (exists === -1) {
+      console.log('not exists');
+      stack = [...subStack, name];
+    } else if (exists == subStack.length - 1) {
+      console.log('exists the last');
+      stack = subStack;
     } else {
-      stack = [...get().subgraphsStack, graphRF];
+      console.log('exists');
+      // subStack.length = exists + 1;
+      stack = subStack.slice(0, exists + 1);
+      // stack = ['graph'];
     }
+    console.log(stack);
     set((state) => ({
       ...state,
       subgraphsStack: stack,

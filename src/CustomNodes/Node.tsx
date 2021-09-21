@@ -1,5 +1,6 @@
 /* eslint-disable react/function-component-definition */
 import React, { memo } from 'react';
+import orange1 from '../images/orange1.png';
 
 export const contentStyle = {
   contentHeader: {
@@ -32,10 +33,11 @@ const style = {
   body: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgb(217, 223, 255);',
     transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-    border: '0px solid #bbb',
+    border: '2px solid #bbb',
+    borderRadius: '15px',
     fontSize: '10pt',
   },
   selected: {
@@ -43,9 +45,9 @@ const style = {
   },
   title: {
     position: 'relative',
-    padding: '8px 32px',
+    padding: '8px 3px',
     flexGrow: 1,
-    backgroundColor: '#eee',
+    backgroundColor: '#ee1',
   },
   contentWrapper: {
     padding: '8px 0px',
@@ -53,20 +55,32 @@ const style = {
 };
 
 interface NodeProps {
+  type: string;
   label: string;
   selected: boolean;
   color?: string;
   content: React.ReactNode;
 }
 const Node: React.FC<NodeProps> = ({
+  type,
   label,
   selected,
   color,
   content,
 }: NodeProps) => {
+  // calculate the border if input/output/graph
+  let border = '';
+  if (type === 'graph') {
+    border = '4px solid rgb(150, 165, 249)';
+  } else if (type === 'input') {
+    border = '4px solid rgb(62, 80, 180)';
+  } else if (type === 'output') {
+    border = '4px solid rgb(62, 80, 100)';
+  }
   const customTitle = { ...style.title };
   if (color) {
     customTitle.backgroundColor = color;
+    customTitle.borderRadius = '10px';
   }
 
   // Collapse contentWrapper on icon click
@@ -76,11 +90,15 @@ const Node: React.FC<NodeProps> = ({
         {
           ...style.body,
           ...(selected ? style.selected : []),
+          border: border,
         } as React.CSSProperties
       }
     >
-      <div style={{ customTitle } as React.CSSProperties}>{label}</div>
-      <div style={style.contentWrapper}>{content}</div>
+      <span className="icons">
+        <div style={customTitle}>{label}</div>
+        <img src={orange1} alt="orangeImage" />
+        <span style={style.contentWrapper}>{content}</span>
+      </span>
     </div>
   );
 };
