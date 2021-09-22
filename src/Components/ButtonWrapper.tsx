@@ -40,7 +40,7 @@ function ButtonWrapper(props) {
     const reader = showFile(event);
     const file = await reader.then((val) => val);
     file.onloadend = function () {
-      console.log('DONE', file.result); // readyState will be 2
+      // console.log('DONE', file.result); // readyState will be 2
       setSelectedFile(file.result);
       console.log(selectedFile);
       setGraphRF(JSON.parse(file.result) as GraphRF);

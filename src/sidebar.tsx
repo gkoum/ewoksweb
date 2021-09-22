@@ -9,6 +9,17 @@ import orangeFile from './images/orangeFile.png';
 import orange1 from './images/orange1.png';
 import orange2 from './images/orange2.png';
 import orange3 from './images/orange3.png';
+import AggregateColumns from './images/AggregateColumns.svg';
+import Continuize from './images/Continuize.svg';
+import Correlations from './images/Correlations.svg';
+import CreateClass from './images/CreateClass.svg';
+import CSVFile from './images/CSVFile.svg';
+import Checkbox from '@material-ui/core/Checkbox';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Typography from '@material-ui/core/Typography';
+// import ExpandMoreIcon from '@material-ui/core/ExpandMoreIcon';
 
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import IconButton from '@material-ui/core/IconButton';
@@ -140,29 +151,80 @@ export default function Sidebar(props) {
 
   return (
     <aside className="dndflow">
-      <span className="icons">
+      {/* <span
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'default')}
+        draggable
+      >
         <img src={orangeFile} alt="orangeImage" />
-      </span>
-      <span className="icons">
+      </span> */}
+      <span
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'default')}
+        draggable
+      >
         <img src={orange1} alt="orangeImage" />
       </span>
-      <span className="icons">
+      <span
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'default')}
+        draggable
+      >
         <img src={orange2} alt="orangeImage" />
       </span>
-      <span className="icons">
+      <span
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'default')}
+        draggable
+      >
         <img src={orange3} alt="orangeImage" />
       </span>
+      <span
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'default')}
+        draggable
+      >
+        <img src={AggregateColumns} alt="orangeImage" />
+      </span>
+      <span
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'default')}
+        draggable
+      >
+        <img src={Continuize} alt="orangeImage" />
+      </span>
+      <span
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'default')}
+        draggable
+      >
+        <img src={Correlations} alt="orangeImage" />
+      </span>
+      <span
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'default')}
+        draggable
+      >
+        <img src={CreateClass} alt="orangeImage" />
+      </span>
+      <span
+        className="dndnode"
+        onDragStart={(event) => onDragStart(event, 'default')}
+        draggable
+      >
+        <img src={CSVFile} alt="orangeImage" />
+      </span>
+
       <span
         className="dndnode input"
         onDragStart={(event) => onDragStart(event, 'input')}
         draggable
       >
-        <AccessAlarmIcon className="iconBut" />
         Input
         {/* <img src={orangeFile} alt="orangeImage" /> */}
       </span>
       <span
-        className="dndnode"
+        className="dndnode default"
         onDragStart={(event) => onDragStart(event, 'default')}
         draggable
       >
@@ -182,78 +244,96 @@ export default function Sidebar(props) {
       >
         Subgraph
       </span>
-      <form className={classes.root} noValidate autoComplete="off">
-        <div>Id: {props.element.id}</div>
+      <Accordion>
+        <AccordionSummary
+          // expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Edit Graph Elements</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {/* <Typography>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+            malesuada lacus ex, sit amet blandit leo lobortis eget.
+          </Typography> */}
+          <form className={classes.root} noValidate autoComplete="off">
+            <div>Id: {props.element.id}</div>
 
-        {'position' in elementClickedStore && (
-          <React.Fragment>
-            <div>
-              <TextField
-                id="outlined-basic"
-                label="Task identifier"
-                variant="outlined"
-                value={taskIdentifier || ''}
-                onChange={taskIdentifierChanged}
-              />
-            </div>
-            <div>
-              <TextField
-                id="outlined-basic"
-                label="Task type"
-                variant="outlined"
-                value={taskType || ''}
-                onChange={taskTypeChanged}
-              />
-            </div>
-            <div>
-              <TextField
-                id="outlined-basic"
-                label="Task generator"
-                variant="outlined"
-                value={taskGenerator || ''}
-                onChange={taskGeneratorChanged}
-              />
-            </div>
+            {'position' in elementClickedStore && (
+              <React.Fragment>
+                <div>
+                  <TextField
+                    id="outlined-basic"
+                    label="Task identifier"
+                    variant="outlined"
+                    value={taskIdentifier || ''}
+                    onChange={taskIdentifierChanged}
+                  />
+                </div>
+                <div>
+                  <TextField
+                    id="outlined-basic"
+                    label="Task type"
+                    variant="outlined"
+                    value={taskType || ''}
+                    onChange={taskTypeChanged}
+                  />
+                </div>
+                <div>
+                  <TextField
+                    id="outlined-basic"
+                    label="Task generator"
+                    variant="outlined"
+                    value={taskGenerator || 'none'}
+                    onChange={taskGeneratorChanged}
+                  />
+                </div>
 
-            <div>
-              <TextField
+                <div>
+                  <TextField
+                    id="outlined-basic"
+                    label="Default Inputs"
+                    variant="outlined"
+                    value={defaultInputs || 'none'}
+                    onChange={defaultInputsChanged}
+                  />
+                </div>
+                <div>
+                  Inputs-complete
+                  <Checkbox
+                    value={inputsComplete}
+                    onChange={inputsCompleteChanged}
+                  />
+                  {/* <TextField
                 id="outlined-basic"
-                label="Static inputs"
-                variant="outlined"
-                value={defaultInputs || ''}
-                onChange={defaultInputsChanged}
-              />
-            </div>
-            <div>
-              <TextField
-                id="outlined-basic"
-                label="Inputs complete"
+                label="Inputs-complete"
                 variant="outlined"
                 value={inputsComplete || ''}
                 onChange={inputsCompleteChanged}
+              /> */}
+                </div>
+              </React.Fragment>
+            )}
+            <div>
+              <TextField
+                id="outlined-basic"
+                label="Node type"
+                variant="outlined"
+                value={type || ''}
+                onChange={typeChanged}
               />
             </div>
-          </React.Fragment>
-        )}
-        <div>
-          <TextField
-            id="outlined-basic"
-            label="Node type"
-            variant="outlined"
-            value={type || ''}
-            onChange={typeChanged}
-          />
-        </div>
-        <div>
-          <TextField
-            id="outlined-basic"
-            label="Label"
-            variant="outlined"
-            value={label || ''}
-            onChange={labelChanged}
-          />
-        </div>
-        {/* <div>
+            <div>
+              <TextField
+                id="outlined-basic"
+                label="Label"
+                variant="outlined"
+                value={label || ''}
+                onChange={labelChanged}
+              />
+            </div>
+            {/* <div>
           <TextField
             id="outlined-basic"
             label="positionY"
@@ -262,13 +342,15 @@ export default function Sidebar(props) {
             onChange={positionYChanged}
           />
         </div> */}
-        <Button variant="contained" color="primary">
-          Save
-        </Button>
-        <Button variant="contained" color="primary">
-          Subgraph
-        </Button>
-      </form>
+            <Button variant="contained" color="primary">
+              Save
+            </Button>
+            <Button variant="contained" color="primary">
+              Subgraph
+            </Button>
+          </form>
+        </AccordionDetails>
+      </Accordion>
     </aside>
   );
 }

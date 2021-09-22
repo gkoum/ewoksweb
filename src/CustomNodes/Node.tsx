@@ -1,6 +1,14 @@
 /* eslint-disable react/function-component-definition */
+/*jshint sub:true*/
 import React, { memo } from 'react';
 import orange1 from '../images/orange1.png';
+import orange2 from '../images/orange2.png';
+import orange3 from '../images/orange3.png';
+import AggregateColumns from '../images/AggregateColumns.svg';
+import Continuize from '../images/Continuize.svg';
+import Correlations from '../images/Correlations.svg';
+import CreateClass from '../images/CreateClass.svg';
+import CSVFile from '../images/CSVFile.svg';
 
 export const contentStyle = {
   contentHeader: {
@@ -33,7 +41,7 @@ const style = {
   body: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: 'rgb(217, 223, 255);',
+    // backgroundColor: 'rgb(217, 223, 255)',
     transition: 'all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
     boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
     border: '2px solid #bbb',
@@ -60,13 +68,30 @@ interface NodeProps {
   selected: boolean;
   color?: string;
   content: React.ReactNode;
+  image?: string;
 }
+
+const iconsObj = {
+  orange1: orange1,
+  Continuize: Continuize,
+  orange2: orange2,
+  orange3: orange3,
+  AggregateColumns: AggregateColumns,
+  Correlations: Correlations,
+  CreateClass: CreateClass,
+};
+const randomProperty = function (obj) {
+  const keys = Object.keys(obj);
+  return obj[keys[(keys.length * Math.random()) << 0]];
+};
+
 const Node: React.FC<NodeProps> = ({
   type,
   label,
   selected,
   color,
   content,
+  image,
 }: NodeProps) => {
   // calculate the border if input/output/graph
   let border = '';
@@ -75,7 +100,7 @@ const Node: React.FC<NodeProps> = ({
   } else if (type === 'input') {
     border = '4px solid rgb(62, 80, 180)';
   } else if (type === 'output') {
-    border = '4px solid rgb(62, 80, 100)';
+    border = '4px solid rgb(50, 130, 219)';
   }
   const customTitle = { ...style.title };
   if (color) {
@@ -83,6 +108,8 @@ const Node: React.FC<NodeProps> = ({
     customTitle.borderRadius = '10px';
   }
 
+  /* eslint-disable-next-line dot-notation */
+  // console.log(type, label, image, iconsObj[image]);
   // Collapse contentWrapper on icon click
   return (
     <div
@@ -96,7 +123,8 @@ const Node: React.FC<NodeProps> = ({
     >
       <span className="icons">
         <div style={customTitle}>{label}</div>
-        <img src={orange1} alt="orangeImage" />
+        {/* eslint-disable-next-line dot-notation */}
+        <img src={iconsObj[image]} alt="orangeImage" />
         <span style={style.contentWrapper}>{content}</span>
       </span>
     </div>

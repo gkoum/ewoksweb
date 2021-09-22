@@ -101,10 +101,11 @@ function Canvas() {
   const setSelectedSubgraph = useStore((state) => state.setSelectedSubgraph);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
-    console.log(element);
-    const ewoksElement = elements.find((el) => el.id === element.id);
-    setElementClicked(ewoksElement);
-    setSelectedElement(ewoksElement);
+    console.log(element, elements);
+    const graphElement = elements.find((el) => el.id === element.id);
+    console.log(graphElement);
+    setElementClicked(graphElement);
+    setSelectedElement(graphElement);
   };
 
   const onLoad = (reactFlowInstance) => setRfInstance(reactFlowInstance);
@@ -140,7 +141,6 @@ function Canvas() {
     console.log(event);
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
-
     const name = event.dataTransfer.getData('name');
     const image = event.dataTransfer.getData('image');
     console.log(type, name, image);
@@ -150,13 +150,15 @@ function Canvas() {
     });
     const newNode = {
       id: getId(),
+      task_type: 'special',
+      task_identifier: getId(),
       type,
       uiProps: { position },
       data: { label: CustomNewNode(id, name, image) },
     };
     console.log(rfInstance);
     // setElements((es) => [...es, newNode]);
-    setEwoksElements([...elements, newNode]);
+    // setEwoksElements([...elements, newNode]);
     setGraphRF({
       graph: graphRF.graph,
       nodes: [...graphRF.nodes, newNode],

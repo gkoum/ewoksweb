@@ -15,13 +15,13 @@ import MoodIcon from '@material-ui/icons/Mood';
 import MoodBadIcon from '@material-ui/icons/MoodBad';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import Typography from '@material-ui/core/Typography';
-import orangeFile from '../images/orangeFile.png';
+import orange2 from '../images/orange2.png';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 250,
-    width: 130,
-    height: 80,
+    maxWidth: 300,
+    width: 120,
+    height: 180,
   },
   header: {
     padding: '1px',
@@ -66,7 +66,7 @@ export default function CustomNode(props) {
             src={props.image}
             aria-label="recipe"
           /> */}
-          <img src={orangeFile} alt="orangeImage" />
+          <img src={orange2} alt="orangeImage" />
           {/* <span style={{ 'word-wrap': 'break-word' }}>
             ACTGATCGAGCTGAAGCGCAGTGCGATGCTTCGATGATGCTGACGATGCTACGATGCGAGCATCTACGATCAGTC
           </span> */}

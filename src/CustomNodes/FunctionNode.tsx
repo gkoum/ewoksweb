@@ -19,6 +19,7 @@ function FunctionNode(all) {
       label={all.data.name}
       selected={all.selected}
       color="#ced3ee"
+      image={all.data.icon}
       content={
         <>
           <div style={style.contentHeader}>Inputs</div>

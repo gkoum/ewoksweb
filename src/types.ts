@@ -74,7 +74,12 @@ export interface EwoksRFNode {
   inputs?: Inputs;
   inputs_complete?: boolean;
   task_generator?: string;
-  data?: { label: string; inputs?: [string]; outputs?: [string] };
+  data?: {
+    label?: string;
+    type?: string;
+    inputs?: [string];
+    outputs?: [string];
+  };
   sourcePosition?: Position;
   targetPosition?: Position;
   position?: { x: number; y: number };

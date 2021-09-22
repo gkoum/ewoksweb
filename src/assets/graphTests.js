@@ -4,40 +4,70 @@
 export const graph = {
   graph: {
     id: 'graph',
-    input_nodes: [{ name: 'in1', id: 'node1' }],
-    output_nodes: [{ name: 'out1', id: 'node3' }],
+    input_nodes: [
+      { name: 'in1', id: 'node1' },
+      { name: 'in2', id: 'node4' },
+    ],
+    output_nodes: [
+      { name: 'out1', id: 'node3' },
+      { name: 'out2', id: 'node7' },
+    ],
   },
   nodes: [
     {
       id: 'node1',
       task_type: 'method',
-      task_identifier: 'tasks.simplemethods.add0',
+      task_identifier: 'tasks.methods.add12',
       default_inputs: [{ name: 'a', value: 1 }],
-      uiProps: { position: { x: 50, y: 80 } },
+      uiProps: { position: { x: 50, y: 80 }, icon: 'orange1' },
     },
     {
       id: 'node2',
       task_type: 'graph',
       task_identifier: 'subgraph',
-      uiProps: { position: { x: 500, y: 80 } },
+      uiProps: { position: { x: 400, y: 80 }, icon: 'orange2' },
     },
     {
       id: 'node3',
       task_type: 'method',
-      task_identifier: 'tasks.simplemethods.add1',
-      uiProps: { position: { x: 700, y: 580 } },
+      task_identifier: 'tasks.methods.find13',
+      uiProps: {
+        position: { x: 700, y: 580 },
+        icon: 'orange3',
+      },
     },
     {
       id: 'node4',
       task_type: 'method',
-      task_identifier: 'tasks.simplemethods.add44',
-      uiProps: { position: { x: 50, y: 380 } },
+      task_identifier: 'tasks.methods.yut14',
+      uiProps: { position: { x: 50, y: 380 }, icon: 'Continuize' },
+    },
+    {
+      id: 'node5',
+      task_type: 'method',
+      task_identifier: 'tasks.methods.rerr15',
+      uiProps: {
+        position: { x: 700, y: 80 },
+        icon: 'AggregateColumns',
+      },
+    },
+    {
+      id: 'node6',
+      task_type: 'method',
+      task_identifier: 'tasks.methods.track16',
+      uiProps: { position: { x: 900, y: 80 }, icon: 'Correlations' },
+    },
+    {
+      id: 'node7',
+      task_type: 'method',
+      task_identifier: 'tasks.methods.kep17',
+      uiProps: {
+        position: { x: 1100, y: 240 },
+        icon: 'CreateClass',
+      },
     },
   ],
   links: [
-    // checking each link, if source or target is a graph we need to have sub_graph_nodes
-    // if we don't we assume "subtarget: in" as a default
-    // if we do the sub_target must be the same with one input or output of the subgraph
     {
       source: 'node1',
       target: 'node2',
@@ -50,17 +80,29 @@ export const graph = {
       source: 'node4',
       target: 'node2',
       data_mapping: [{ source_output: 'ab3', target_input: 'result5' }],
-      sub_graph_nodes: {
-        sub_target: 'in2',
-      },
+      sub_target: 'in2',
     },
     {
       source: 'node2',
       target: 'node3',
       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-      sub_graph_nodes: {
-        sub_source: 'out',
-      },
+      sub_source: 'out',
+    },
+    {
+      source: 'node2',
+      target: 'node5',
+      data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
+      sub_source: 'out',
+    },
+    {
+      source: 'node5',
+      target: 'node6',
+      data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
+    },
+    {
+      source: 'node6',
+      target: 'node7',
+      data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
     },
   ],
 };
@@ -68,10 +110,7 @@ export const graph = {
 export const subgraph = {
   graph: {
     id: 'subgraph',
-    input_nodes: [
-      { name: 'in1', id: 'task1' },
-      { name: 'in2', id: 'task2' },
-    ],
+    input_nodes: [{ name: 'in1', id: 'task1' }],
     output_nodes: [
       { name: 'out1', id: 'subsubgraph', sub_node: 'out1' },
       { name: 'out2', id: 'subsubgraph', sub_node: 'out2' },
@@ -81,13 +120,13 @@ export const subgraph = {
     {
       id: 'task1',
       task_type: 'method',
-      task_identifier: 'tasks.simplemethods.add2',
+      task_identifier: 'tasks.methods.add2',
       uiProps: { position: { x: 50, y: 80 } },
     },
     {
       id: 'task2',
       task_type: 'method',
-      task_identifier: 'tasks.simplemethods.add3',
+      task_identifier: 'tasks.methods.add3',
       uiProps: { position: { x: 500, y: 180 } },
     },
     {
@@ -117,10 +156,7 @@ export const subgraph = {
 export const subsubgraph = {
   graph: {
     id: 'subsubgraph',
-    input_nodes: [
-      { name: 'in1', id: 'task1' },
-      { name: 'in2', id: 'task2' },
-    ],
+    input_nodes: [{ name: 'in1', id: 'task1' }],
     output_nodes: [
       { name: 'out1', id: 'subsubsubgraph', sub_node: 'out' },
       { name: 'out2', id: 'subsubsubgraph', sub_node: 'out' },
@@ -130,13 +166,13 @@ export const subsubgraph = {
     {
       id: 'task1',
       task_type: 'method',
-      task_identifier: 'tasks.simplemethods.add4',
+      task_identifier: 'tasks.methods.add4',
       uiProps: { position: { x: 50, y: 80 } },
     },
     {
       id: 'task2',
       task_type: 'method',
-      task_identifier: 'tasks.simplemethods.add5',
+      task_identifier: 'tasks.methods.add5',
       uiProps: { position: { x: 350, y: 280 } },
     },
     {
@@ -166,26 +202,20 @@ export const subsubgraph = {
 export const subsubsubgraph = {
   graph: {
     id: 'subsubsubgraph',
-    input_nodes: [
-      { name: 'in1', id: 'task1' },
-      { name: 'in2', id: 'task2' },
-    ],
-    output_nodes: [
-      { name: 'out1', id: 'subsubsubgraph', sub_node: 'out' },
-      { name: 'out2', id: 'subsubsubgraph', sub_node: 'out' },
-    ],
+    input_nodes: [{ name: 'in1', id: 'task1' }],
+    output_nodes: [{ name: 'in2', id: 'task2' }],
   },
   nodes: [
     {
       id: 'task1',
       task_type: 'method',
-      task_identifier: 'tasks.simplemethods.add6',
+      task_identifier: 'tasks.methods.add6',
       uiProps: { position: { x: 50, y: 80 } },
     },
     {
       id: 'task2',
       task_type: 'method',
-      task_identifier: 'tasks.simplemethods.add7',
+      task_identifier: 'tasks.methods.add7',
       uiProps: { position: { x: 300, y: 80 } },
     },
   ],

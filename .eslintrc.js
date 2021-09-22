@@ -10,7 +10,7 @@ const {
 module.exports = createConfig({
   rules: {
     'import/order': 'off',
-
+    'dot-notation': 'off',
     'sort-keys-fix/sort-keys-fix': 'off', // keys should be sorted based on significance
     'import/no-default-export': 'off', // default exports are common in React
     'no-negated-condition': 'off', // ternaries are sometimes more readable when `true` branch is most significant branch
@@ -38,6 +38,8 @@ module.exports = createConfig({
     {
       files: tsFiles,
       rules: {
+        'dot-notation': 'off',
+        '@typescript-eslint/dot-notation': 'off',
         '@typescript-eslint/ban-ts-comment': 'off', // too strict
         '@typescript-eslint/no-floating-promises': 'off', // big crash sometimes better than silent fail
         '@typescript-eslint/lines-between-class-members': 'off', // allow grouping single-line members
