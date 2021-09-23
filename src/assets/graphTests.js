@@ -19,13 +19,21 @@ export const graph = {
       task_type: 'method',
       task_identifier: 'tasks.methods.add12',
       default_inputs: [{ name: 'a', value: 1 }],
-      uiProps: { position: { x: 50, y: 80 }, icon: 'orange1' },
+      uiProps: {
+        position: { x: 50, y: 80 },
+        icon: 'orange1',
+        comment: 'Prepare troubleshouting',
+      },
     },
     {
       id: 'node2',
       task_type: 'graph',
       task_identifier: 'subgraph',
-      uiProps: { position: { x: 400, y: 80 }, icon: 'orange2' },
+      uiProps: {
+        position: { x: 400, y: 80 },
+        icon: 'orange2',
+        comment: 'Common Prepare Experiment',
+      },
     },
     {
       id: 'node3',
@@ -34,13 +42,18 @@ export const graph = {
       uiProps: {
         position: { x: 700, y: 580 },
         icon: 'orange3',
+        comment: 'Check move of phi',
       },
     },
     {
       id: 'node4',
       task_type: 'method',
       task_identifier: 'tasks.methods.yut14',
-      uiProps: { position: { x: 50, y: 380 }, icon: 'Continuize' },
+      uiProps: {
+        position: { x: 50, y: 380 },
+        icon: 'Continuize',
+        comment: 'All Tests OK',
+      },
     },
     {
       id: 'node5',
@@ -49,13 +62,18 @@ export const graph = {
       uiProps: {
         position: { x: 700, y: 80 },
         icon: 'AggregateColumns',
+        comment: 'Set ISPyB status to success with error message',
       },
     },
     {
       id: 'node6',
       task_type: 'method',
       task_identifier: 'tasks.methods.track16',
-      uiProps: { position: { x: 900, y: 80 }, icon: 'Correlations' },
+      uiProps: {
+        position: { x: 900, y: 80 },
+        icon: 'Correlations',
+        comment: 'Set ISPyB status to success',
+      },
     },
     {
       id: 'node7',
@@ -64,6 +82,7 @@ export const graph = {
       uiProps: {
         position: { x: 1100, y: 240 },
         icon: 'CreateClass',
+        comment: 'Set Request Status to FINISHED',
       },
     },
   ],
@@ -72,35 +91,35 @@ export const graph = {
       source: 'node1',
       target: 'node2',
       data_mapping: [{ source_output: 'ab', target_input: 'result' }],
-      sub_graph_nodes: {
-        sub_target: 'in1',
-      },
-    },
-    {
-      source: 'node4',
-      target: 'node2',
-      data_mapping: [{ source_output: 'ab3', target_input: 'result5' }],
-      sub_target: 'in2',
+      sub_target: 'in1',
     },
     {
       source: 'node2',
       target: 'node3',
       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-      sub_source: 'out',
     },
     {
-      source: 'node2',
+      source: 'node3',
+      target: 'node4',
+      data_mapping: [{ source_output: 'ab3', target_input: 'result5' }],
+    },
+    {
+      source: 'node3',
       target: 'node5',
       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-      sub_source: 'out',
     },
     {
-      source: 'node5',
+      source: 'node4',
       target: 'node6',
       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
     },
     {
       source: 'node6',
+      target: 'node7',
+      data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
+    },
+    {
+      source: 'node5',
       target: 'node7',
       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
     },
@@ -121,19 +140,19 @@ export const subgraph = {
       id: 'task1',
       task_type: 'method',
       task_identifier: 'tasks.methods.add2',
-      uiProps: { position: { x: 50, y: 80 } },
+      uiProps: { position: { x: 50, y: 80 }, icon: 'Continuize' },
     },
     {
       id: 'task2',
       task_type: 'method',
       task_identifier: 'tasks.methods.add3',
-      uiProps: { position: { x: 500, y: 180 } },
+      uiProps: { position: { x: 500, y: 180 }, icon: 'Correlations' },
     },
     {
       id: 'subsubgraph',
       task_type: 'graph',
       task_identifier: 'subsubgraph',
-      uiProps: { position: { x: 700, y: 480 } },
+      uiProps: { position: { x: 700, y: 480 }, icon: 'orange1' },
     },
   ],
   links: [
@@ -203,26 +222,49 @@ export const subsubsubgraph = {
   graph: {
     id: 'subsubsubgraph',
     input_nodes: [{ name: 'in1', id: 'task1' }],
-    output_nodes: [{ name: 'in2', id: 'task2' }],
+    output_nodes: [{ name: 'out1', id: 'task3' }],
   },
   nodes: [
     {
       id: 'task1',
       task_type: 'method',
       task_identifier: 'tasks.methods.add6',
-      uiProps: { position: { x: 50, y: 80 } },
+      uiProps: {
+        position: { x: 50, y: 80 },
+        icon: 'Continuize',
+        comment: 'Init workflow',
+      },
     },
     {
       id: 'task2',
       task_type: 'method',
       task_identifier: 'tasks.methods.add7',
-      uiProps: { position: { x: 300, y: 80 } },
+      uiProps: {
+        position: { x: 300, y: 180 },
+        icon: 'orange1',
+        comment: 'Read motor positions',
+      },
+    },
+    {
+      id: 'task3',
+      task_type: 'method',
+      task_identifier: 'tasks.methods.add7',
+      uiProps: {
+        position: { x: 550, y: 280 },
+        icon: 'Correlations',
+        comment: 'Default parameters',
+      },
     },
   ],
   links: [
     {
       source: 'task1',
       target: 'task2',
+      data_mapping: [{ source_output: 'ab', target_input: 'result' }],
+    },
+    {
+      source: 'task2',
+      target: 'task3',
       data_mapping: [{ source_output: 'ab', target_input: 'result' }],
     },
   ],

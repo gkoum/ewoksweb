@@ -1,17 +1,20 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Button } from '@material-ui/core';
+import type { Theme } from '@mui/material/styles';
+// import { createStyles, makeStyles } from '@material-ui/styles';
+import { Fab, Button } from '@mui/material';
 import { useState } from 'react';
 import useStore from '../store';
 import type { GraphRF } from '../types';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    openFileButton: {
-      backgroundColor: '#96a5f9',
-    },
-  })
-);
+const useStyles = () => {
+  return {};
+}; // makeStyles((theme: Theme) =>
+//   createStyles({
+//     openFileButton: {
+//       backgroundColor: '#96a5f9',
+//     },
+//   })
+// );
 
 const showFile = async (e) => {
   e.preventDefault();

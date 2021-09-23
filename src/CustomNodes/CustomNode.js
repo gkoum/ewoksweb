@@ -1,47 +1,49 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardActions from '@material-ui/core/CardActions';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
-import MoodIcon from '@material-ui/icons/Mood';
-import MoodBadIcon from '@material-ui/icons/MoodBad';
-import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
-import Typography from '@material-ui/core/Typography';
+// import { createStyles, makeStyles } from '@material-ui/styles';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardActions from '@mui/material/CardActions';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
+import MoodIcon from '@mui/icons-material/Mood';
+import MoodBadIcon from '@mui/icons-material/MoodBad';
+import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
+import Typography from '@mui/material/Typography';
 import orange2 from '../images/orange2.png';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    maxWidth: 300,
-    width: 120,
-    height: 180,
-  },
-  header: {
-    padding: '1px',
-  },
-  action: {
-    padding: '0px',
-    justifyContent: 'center',
-    marginRight: '14px',
-  },
-  large: {
-    width: theme.spacing(10),
-    height: theme.spacing(10),
-    display: 'inline-flex',
-    backgroundColor: '#1d428a',
-  },
-  icons: {
-    marginLeft: 0,
-    marginTop: 0,
-  },
-}));
+const useStyles = () => {
+  return {};
+}; // makeStyles((theme: Theme) =>
+//   root: {
+//     maxWidth: 300,
+//     width: 120,
+//     height: 180,
+//   },
+//   header: {
+//     padding: '1px',
+//   },
+//   action: {
+//     padding: '0px',
+//     justifyContent: 'center',
+//     marginRight: '14px',
+//   },
+//   large: {
+//     width: theme.spacing(10),
+//     height: theme.spacing(10),
+//     display: 'inline-flex',
+//     backgroundColor: '#1d428a',
+//   },
+//   icons: {
+//     marginLeft: 0,
+//     marginTop: 0,
+//   },
+// }));
 
 export default function CustomNode(props) {
   console.log(props);
@@ -67,14 +69,14 @@ export default function CustomNode(props) {
             aria-label="recipe"
           /> */}
           <img src={orange2} alt="orangeImage" />
-          {/* <span style={{ 'word-wrap': 'break-word' }}>
-            ACTGATCGAGCTGAAGCGCAGTGCGATGCTTCGATGATGCTGACGATGCTACGATGCGAGCATCTACGATCAGTC
-          </span> */}
+          <span style={{ 'word-wrap': 'break-word' }}>
+            Some comments about the graph that I need to remember
+          </span>
           <Typography gutterBottom component="h2">
             {props.name}
           </Typography>
         </div>
-        <FormGroup style={{ justifyContent: 'center' }}>
+        {/* <FormGroup style={{ justifyContent: 'center' }}>
           <FormControlLabel
             className={classes.icons}
             control={
@@ -109,7 +111,7 @@ export default function CustomNode(props) {
               />
             }
           />
-        </FormGroup>
+        </FormGroup> */}
       </div>
       <CardActions className={classes.action}>
         <IconButton

@@ -1,87 +1,10 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable unicorn/consistent-function-scoping */
-// import { useEffect, useState, MouseEvent, useRef } from 'react';
-// import ReactFlow, {
-//   ReactFlowProvider,
-//   Controls,
-//   useZoomPanHelper,
-//   Node,
-//   Edge,
-//   ReactFlowState,
-//   Background,
-//   MiniMap,
-//   removeElements,
-//   addEdge,
-// } from 'react-flow-renderer';
-// import type {
-//   ReactFlowProps,
-//   ReactFlowRefType,
-// } from 'react-flow-renderer/dist/container/ReactFlow';
-// import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
-// import ReactJson from 'react-json-view';
-// import { Rnd } from 'react-rnd';
-// import {
-//   getEdges,
-//   getNodes,
-//   positionNodes,
-//   ewoksNetwork,
-//   findGraphWithName,
-// } from './utils';
-// import Sidebar from './sidebar';
-// import Flow from './Flow';
-// import Popover from './Components/Popover';
-// import PrimarySearchAppBar from './layout/Navbar';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import AppBar from '@material-ui/core/AppBar';
-// import { Checkbox } from '@material-ui/core';
-// import IconButton from '@material-ui/core/IconButton';
-// import MenuIcon from '@material-ui/icons/Menu';
-// import Typography from '@material-ui/core/Typography';
-// import clsx from 'clsx';
-// import Paper from '@material-ui/core/Paper';
-// import Grid from '@material-ui/core/Grid';
-// import MyCard from './layout/MyCard';
-// import SideMenu from './layout/SideMenu';
-// import { cyan } from '@material-ui/core/colors';
-// import MinimizeIcon from '@material-ui/icons/Minimize';
-// import Icon from '@material-ui/core/Icon';
-// import useStore from './store';
-// import CustomNode from './CustomNodes/CustomNode';
-// import FunctionNode from './CustomNodes/FunctionNode';
-// import DataNode from './CustomNodes/DataNode';
 import Dashboard from './layout/Dashboard';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    hide: {
-      display: 'none',
-    },
-  })
-);
-
-// let id = 0;
-// const getId = () => `dndnode_${id++}`;
-
-// const nodeTypes = {
-//   special: CustomNode,
-//   graph: FunctionNode,
-//   method: DataNode,
-// };
+import Dashboard1 from './layout/Dashboard1';
 
 function App() {
-  const classes = useStyles();
+  // const classes = useStyles();
   // const { fitView } = useZoomPanHelper();
   // const [rfInstance, setRfInstance] = useState(null);
   // const [elementClicked, setElementClicked] = useState({ id: 'none' });
@@ -229,10 +152,10 @@ function App() {
   // console.log(ewoksElements);
 
   return (
-    <div className={classes.root}>
+    <div>
       {/* <SideMenu /> */}
-
-      <Dashboard />
+      <Dashboard1 />
+      {/* <Dashboard /> */}
       {/* <Rnd
         // style={{ backgroundColor: 'cyan', zIndex: 400 }}
         disableDragging={disableDragging}

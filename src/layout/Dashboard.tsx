@@ -1,164 +1,206 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
+import { styled, useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import CssBaseline from '@mui/material/CssBaseline';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+
 import React, { useEffect } from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
-import SaveIcon from '@material-ui/icons/Save';
+// import { createStyles, makeStyles } from '@material-ui/styles';
+
+// import AppBar from '@mui/material/AppBar';
+import Badge from '@mui/material/Badge';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Link from '@mui/material/Link';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import SaveIcon from '@mui/icons-material/Save';
 import Sidebar from '../sidebar';
 import useStore from '../store';
 import Canvas from './Canvas';
-import Card from '@material-ui/core/Card';
+import Card from '@mui/material/Card';
 import CanvasView from './CanvasView';
 import ButtonWrapper from '../Components/ButtonWrapper';
-import AddIcon from '@material-ui/icons/Add';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import { Fab, Button } from '@material-ui/core';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import AddIcon from '@mui/icons-material/Add';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { Fab, Button } from '@mui/material';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { findGraphWithName } from '../utils';
-import MyCard from '../layout/MyCard';
-
-// import { mainListItems, secondaryListItems } from './listItems';
-// import Chart from './Chart';
-// import Deposits from './Deposits';
-// import Orders from './Orders';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import MyCard from './MyCard';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
-  openFileButton: {
-    backgroundColor: '#96a5f9',
-  },
-  formControl: {
-    minWidth: '220px',
-    backgroundColor: '#7685dd',
-  },
-
-  canvasView: {
-    'z-index': 2000,
-  },
-
-  root: {
-    display: 'flex',
-    // width: '100%',
-  },
-  toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-  },
-  toolbarIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    ...theme.mixins.toolbar,
-  },
-  appBar: {
-    // height: 45,
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
+const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
+  open?: boolean;
+}>(({ theme, open }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  transition: theme.transitions.create('margin', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  marginLeft: `-${drawerWidth}px`,
+  ...(open && {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
-  },
-  menuButton: {
-    marginRight: 36,
-  },
-  menuButtonHidden: {
-    display: 'none',
-  },
-  title: {
-    flexGrow: 1,
-  },
-  drawerPaper: {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerPaperClose: {
-    overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    width: theme.spacing(7),
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
-    },
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    // width: '100%',
-    flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
-  },
-  container: {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-  },
-  fixedHeight: {
-    height: 1000,
-    padding_top: 45,
-  },
+    marginLeft: 0,
+  }),
 }));
+
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean;
+}
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})<AppBarProps>(({ theme, open }) => ({
+  transition: theme.transitions.create(['margin', 'width'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: `${drawerWidth}px`,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+  justifyContent: 'flex-end',
+}));
+
+const useStyles = () => {
+  return {};
+}; // makeStyles((theme: Theme) =>
+//   openFileButton: {
+//     backgroundColor: '#96a5f9',
+//   },
+//   formControl: {
+//     minWidth: '220px',
+//     backgroundColor: '#96a5f9',
+//   },
+
+//   canvasView: {
+//     'z-index': 2000,
+//   },
+//   root: {
+//     display: 'flex',
+//     // width: '100%',
+//   },
+//   toolbar: {
+//     paddingRight: 24, // keep right padding when drawer closed
+//     display: 'flex',
+//     alignItems: 'center',
+//     justifyContent: 'flex-end',
+//     // padding: theme.spacing(0, 1),
+//     // necessary for content to be below app bar
+//     // ...theme.mixins.toolbar,
+//   },
+//   toolbarIcon: {
+//     display: 'flex',
+//     alignItems: 'center',
+//     justifyContent: 'flex-end',
+//     padding: '0 8px',
+//     // ...theme.mixins.toolbar,
+//   },
+//   appBar: {
+//     // height: 45,
+//     // zIndex: theme.zIndex.drawer + 1,
+//     // transition: theme.transitions.create(['width', 'margin'], {
+//     //   easing: theme.transitions.easing.sharp,
+//     //   duration: theme.transitions.duration.leavingScreen,
+//     // }),
+//   },
+//   appBarShift: {
+//     marginLeft: drawerWidth,
+//     width: `calc(100% - ${drawerWidth}px)`,
+//     // transition: theme.transitions.create(['width', 'margin'], {
+//     //   easing: theme.transitions.easing.sharp,
+//     //   duration: theme.transitions.duration.enteringScreen,
+//     // }),
+//   },
+//   menuButton: {
+//     marginRight: 36,
+//   },
+//   menuButtonHidden: {
+//     display: 'none',
+//   },
+//   title: {
+//     flexGrow: 1,
+//   },
+//   drawerPaper: {
+//     position: 'relative',
+//     whiteSpace: 'nowrap',
+//     width: drawerWidth,
+//     // transition: theme.transitions.create('width', {
+//     //   easing: theme.transitions.easing.sharp,
+//     //   duration: theme.transitions.duration.enteringScreen,
+//     // }),
+//   },
+//   drawerPaperClose: {
+//     overflowX: 'hidden',
+//     // transition: theme.transitions.create('width', {
+//     //   easing: theme.transitions.easing.sharp,
+//     //   duration: theme.transitions.duration.leavingScreen,
+//     // }),
+//     // width: theme.spacing(7),
+//     // [theme.breakpoints.up('sm')]: {
+//     //   width: theme.spacing(9),
+//     // },
+//   },
+//   // appBarSpacer: theme.mixins.toolbar,
+//   content: {
+//     // width: '100%',
+//     flexGrow: 1,
+//     height: '100vh',
+//     overflow: 'auto',
+//   },
+//   container: {
+//     // paddingTop: theme.spacing(1),
+//     // paddingBottom: theme.spacing(1),
+//   },
+//   paper: {
+//     // padding: theme.spacing(2),
+//     display: 'flex',
+//     overflow: 'auto',
+//     flexDirection: 'column',
+//   },
+//   fixedHeight: {
+//     height: 1000,
+//     padding_top: 45,
+//   },
+// }));
 
 function download(content, fileName, contentType) {
   const a = document.createElement('a');
@@ -265,13 +307,16 @@ export default function Dashboard() {
             {subgraphsStack[subgraphsStack.length - 1]}
           </Typography>
 
-          <FormControl variant="filled" className={classes.formControl}>
-            <InputLabel id="demo-simple-select-filled-label">
+          <FormControl variant="standard" className={classes.formControl}>
+            <InputLabel
+              style={{ color: 'white' }}
+              id="demo-simple-select-standard-label"
+            >
               Recent Files
             </InputLabel>
             <Select
-              labelId="demo-simple-select-filled-label"
-              id="demo-simple-select-filled"
+              labelId="demo-simple-select-standard"
+              id="ddemo-simple-select-standard"
               value={selectedGraph}
               onChange={selectedGraphChange}
             >
