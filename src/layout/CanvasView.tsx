@@ -21,41 +21,44 @@ import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
 import ReactJson from 'react-json-view';
 import { Rnd } from 'react-rnd';
 import { findGraphWithName } from '../utils';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import type { Theme } from '@mui/material/styles';
+// import { createStyles, makeStyles } from '@material-ui/styles';
 import useStore from '../store';
 import CustomNode from '../CustomNodes/CustomNode';
 import FunctionNode from '../CustomNodes/FunctionNode';
 import DataNode from '../CustomNodes/DataNode';
 import type { Graph, EwoksLink, EwoksNode } from '../types';
-import Toolbar from '@material-ui/core/Toolbar';
-import AppBar from '@material-ui/core/AppBar';
-import { Checkbox } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Typography from '@material-ui/core/Typography';
+import Toolbar from '@mui/material/Toolbar';
+import AppBar from '@mui/material/AppBar';
+import { Checkbox } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
-import Icon from '@material-ui/core/Icon';
+import Icon from '@mui/material/Icon';
 import Flow from '../Flow';
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    hide: {
-      display: 'none',
-    },
-  })
-);
+const useStyles = () => {
+  return {};
+}; // makeStyles((theme: Theme) =>
+//   createStyles({
+//     root: {
+//       flexGrow: 1,
+//     },
+//     paper: {
+//       padding: theme.spacing(2),
+//       textAlign: 'center',
+//       color: theme.palette.text.secondary,
+//     },
+//     menuButton: {
+//       marginRight: theme.spacing(2),
+//     },
+//     hide: {
+//       display: 'none',
+//     },
+//   })
+// );
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;

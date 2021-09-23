@@ -9,8 +9,6 @@ import ReactFlow, {
   Edge,
   ReactFlowState,
   Background,
-  MiniMap,
-  removeElements,
   addEdge,
 } from 'react-flow-renderer';
 import type {
@@ -20,7 +18,8 @@ import type {
 import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
 import ReactJson from 'react-json-view';
 import { Rnd } from 'react-rnd';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import type { Theme } from '@mui/material/styles';
+// import { createStyles, makeStyles } from '@material-ui/styles';
 import useStore from '../store';
 import CustomNode from '../CustomNodes/CustomNode';
 import FunctionNode from '../CustomNodes/FunctionNode';
@@ -35,24 +34,26 @@ import {
   findGraphWithName,
 } from '../utils';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    hide: {
-      display: 'none',
-    },
-  })
-);
+const useStyles = () => {
+  return {};
+}; // makeStyles((theme: Theme) =>
+//   createStyles({
+//     root: {
+//       flexGrow: 1,
+//     },
+//     paper: {
+//       padding: theme.spacing(2),
+//       textAlign: 'center',
+//       color: theme.palette.text.secondary,
+//     },
+//     menuButton: {
+//       marginRight: theme.spacing(2),
+//     },
+//     hide: {
+//       display: 'none',
+//     },
+//   })
+// );
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -166,9 +167,25 @@ function Canvas() {
     });
   };
 
+  // data_mapping: Array [ {…} ]
+  // ​​​​source: "node1"
+  // ​​​​sub_graph_nodes: Object { sub_target: "in1" }
+  // ​​​​target: "node2"
+
+  // id: "reactflow__edge-node2o-out1: subsubgraph  -> out1__data -node7i__data"
+  // ​​​source: "node2"
+  // ​​​sourceHandle: "o-out1: subsubgraph  -> out1__data "
+  // ​​​target: "node7"
+  // ​​​targetHandle: "i__data"
+  // no data_mapping
   const onConnect = (params) => {
     console.log(params);
     setElements((els) => addEdge(params, els));
+    setGraphRF({
+      graph: graphRF.graph,
+      nodes: graphRF.nodes,
+      links: addEdge(params, graphRF.links),
+    });
   };
 
   const onRightClick = (event) => {

@@ -1,10 +1,24 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useEffect } from 'react';
-import TextField from '@material-ui/core/TextField';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import TextField from '@mui/material/TextField';
+import type { Theme } from '@mui/material/styles';
+// import { createStyles, makeStyles } from '@material-ui/styles';
 import useStore from './store';
 import type { Edge, Node } from 'react-flow-renderer';
-import { Button } from '@material-ui/core';
+// import {
+//   Button,
+//   FormControl,
+//   InputLabel,
+//   MenuItem,
+//   Select,
+// } from '@mui/material';
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from '@mui/material';
 import orangeFile from './images/orangeFile.png';
 import orange1 from './images/orange1.png';
 import orange2 from './images/orange2.png';
@@ -14,15 +28,15 @@ import Continuize from './images/Continuize.svg';
 import Correlations from './images/Correlations.svg';
 import CreateClass from './images/CreateClass.svg';
 import CSVFile from './images/CSVFile.svg';
-import Checkbox from '@material-ui/core/Checkbox';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import Typography from '@material-ui/core/Typography';
-// import ExpandMoreIcon from '@material-ui/core/ExpandMoreIcon';
+import Checkbox from '@mui/material/Checkbox';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+// import ExpandMoreIcon from '@mui/material/ExpandMoreIcon';
 
-import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
-import IconButton from '@material-ui/core/IconButton';
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
+import IconButton from '@mui/material/IconButton';
 import type { Graph, EwoksLink, EwoksNode } from './types';
 
 const onDragStart = (event, nodeType) => {
@@ -31,20 +45,22 @@ const onDragStart = (event, nodeType) => {
   event.dataTransfer.effectAllowed = 'move';
 };
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      '& > *': {
-        margin: theme.spacing(1),
-        // width: '25ch',
-      },
-    },
+const useStyles = () => {
+  return {};
+}; // makeStyles((theme: Theme) =>
+//   createStyles({
+//     root: {
+//       '& > *': {
+//         margin: theme.spacing(1),
+//         // width: '25ch',
+//       },
+//     },
 
-    iconBut: {
-      padding: '2px',
-    },
-  })
-);
+//     iconBut: {
+//       padding: '2px',
+//     },
+//   })
+// );
 
 export default function Sidebar(props) {
   const classes = useStyles();
@@ -52,10 +68,11 @@ export default function Sidebar(props) {
   const elementClickedStore = useStore<EwoksNode | EwoksLink>(
     (state) => state.selectedElement
   );
-  console.log(typeof elementClickedStore);
+
+  const graphRF = useStore((state) => state.graphRF);
+  const setGraphRF = useStore((state) => state.setGraphRF);
 
   const setSelectedElement = useStore((state) => state.setSelectedElement);
-  console.log(elementClickedStore);
 
   const ewoksElements = useStore((state) => {
     console.log(state);
@@ -93,11 +110,11 @@ export default function Sidebar(props) {
     }
   }, [elementClickedStore]);
 
-  const elementClickedStoreChanged = (event) => {
-    console.log(event);
-    // setName(event.target.value);
-    // setSelectedElement(element);
-  };
+  // const elementClickedStoreChanged = (event) => {
+  //   console.log(event);
+  //   // setName(event.target.value);
+  //   // setSelectedElement(element);
+  // };
 
   const labelChanged = (event) => {
     setLabel(event.target.value);
@@ -147,6 +164,10 @@ export default function Sidebar(props) {
 
   const positionYChanged = (event) => {
     setPositionY(event.target.value);
+  };
+
+  const saveGraph = (event) => {
+    console.log(graphRF);
   };
 
   return (
@@ -271,15 +292,33 @@ export default function Sidebar(props) {
                     onChange={taskIdentifierChanged}
                   />
                 </div>
-                <div>
-                  <TextField
+
+                <FormControl variant="filled" sx={{ m: 1, minWidth: 191 }}>
+                  <InputLabel id="demo-simple-select-filled-label">
+                    Task Type
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-filled-label"
+                    id="demo-simple-select-filled"
+                    value={taskType}
+                    onChange={taskTypeChanged}
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twentyfgfgfh</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem>
+                  </Select>
+                </FormControl>
+                {/* <TextField
                     id="outlined-basic"
                     label="Task type"
                     variant="outlined"
                     value={taskType || ''}
                     onChange={taskTypeChanged}
-                  />
-                </div>
+                  /> */}
+
                 <div>
                   <TextField
                     id="outlined-basic"
@@ -342,7 +381,7 @@ export default function Sidebar(props) {
             onChange={positionYChanged}
           />
         </div> */}
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={saveGraph}>
               Save
             </Button>
             <Button variant="contained" color="primary">

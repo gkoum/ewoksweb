@@ -10,7 +10,7 @@ import {
   TableCell,
   Grid,
   makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
 
 const useStyles = makeStyles({
   popoverPaper: {

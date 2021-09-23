@@ -14,10 +14,11 @@ const DataNode = ({ data, selected }) => {
   return (
     <Node
       type={data.type}
-      label={data.label.slice(-9)}
+      label={data.label}
       selected={selected}
       color={'#ced3ee'}
       image={data.icon}
+      comment={data.comment}
       content={
         <div style={{ ...style.io } as React.CSSProperties}>
           {!data.uploaded && (
