@@ -38,6 +38,10 @@ export const contentStyle = {
 };
 
 const style = {
+  icons: {
+    maxWidth: '120px',
+  },
+
   body: {
     display: 'flex',
     flexDirection: 'column',
@@ -69,6 +73,7 @@ interface NodeProps {
   color?: string;
   content: React.ReactNode;
   image?: string;
+  comment?: string;
 }
 
 const iconsObj = {
@@ -85,6 +90,10 @@ const randomProperty = function (obj) {
   return obj[keys[(keys.length * Math.random()) << 0]];
 };
 
+const onDragStart = (e) => {
+  e.preventDefault();
+};
+
 const Node: React.FC<NodeProps> = ({
   type,
   label,
@@ -92,6 +101,7 @@ const Node: React.FC<NodeProps> = ({
   color,
   content,
   image,
+  comment,
 }: NodeProps) => {
   // calculate the border if input/output/graph
   let border = '';
@@ -102,7 +112,7 @@ const Node: React.FC<NodeProps> = ({
   } else if (type === 'output') {
     border = '4px solid rgb(50, 130, 219)';
   }
-  const customTitle = { ...style.title };
+  const customTitle = { ...style.title, wordWrap: 'break-word' };
   if (color) {
     customTitle.backgroundColor = color;
     customTitle.borderRadius = '10px';
@@ -121,10 +131,17 @@ const Node: React.FC<NodeProps> = ({
         } as React.CSSProperties
       }
     >
-      <span className="icons">
+      <span style={{ maxWidth: '120px' }} className="icons">
+        <span style={{ wordWrap: 'break-word' }}>{comment}</span>
         <div style={customTitle}>{label}</div>
         {/* eslint-disable-next-line dot-notation */}
-        <img src={iconsObj[image]} alt="orangeImage" />
+        <img
+          role="presentation"
+          draggable="false"
+          onDragStart={(event) => onDragStart(event)}
+          src={iconsObj[image]}
+          alt="orangeImage"
+        />
         <span style={style.contentWrapper}>{content}</span>
       </span>
     </div>

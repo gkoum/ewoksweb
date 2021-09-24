@@ -169,6 +169,11 @@ function Canvas() {
   const onConnect = (params) => {
     console.log(params);
     setElements((els) => addEdge(params, els));
+    setGraphRF({
+      graph: graphRF.graph,
+      nodes: graphRF.nodes,
+      links: addEdge(params, graphRF.links),
+    });
   };
 
   const onRightClick = (event) => {

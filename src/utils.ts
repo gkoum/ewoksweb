@@ -104,6 +104,7 @@ export function getNodes(tempGraph): EwoksRFNode[] {
               label: uiProps.label ? uiProps.label : task_identifier,
               type: nodeType,
               icon: uiProps.icon,
+              comment: uiProps.comment,
             },
             sourcePosition: Position.Right,
             targetPosition: Position.Left,
@@ -149,6 +150,7 @@ export function getNodes(tempGraph): EwoksRFNode[] {
             outputs: outputsSub,
             inputsFlow,
             icon: uiProps.icon,
+            comment: uiProps.comment,
           },
           // inputs: inputsFlow, // for connecting graphically to different input
           sourcePosition: Position.Right,
@@ -165,7 +167,12 @@ export function getLinks(tempGraph): EwoksRFLink[] {
   console.log(tempGraph);
   if (tempGraph.links) {
     return tempGraph.links.map(
-      ({ source, target, data_mapping, sub_graph_nodes }) => ({
+      ({
+        source,
+        target,
+        data_mapping = [{ source_output: 'data', target_input: 'mapping' }],
+        sub_graph_nodes,
+      }) => ({
         id: `e${source}-${target}`,
         label: data_mapping
           .map((el) => el.source_output + '->' + el.target_input)

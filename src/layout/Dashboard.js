@@ -265,8 +265,11 @@ export default function Dashboard() {
             {subgraphsStack[subgraphsStack.length - 1]}
           </Typography>
 
-          <FormControl variant="filled" className={classes.formControl}>
-            <InputLabel id="demo-simple-select-filled-label">
+          <FormControl variant="standard" className={classes.formControl}>
+            <InputLabel
+              id="demo-simple-select-filled-label"
+              style={{ color: 'white' }}
+            >
               Recent Files
             </InputLabel>
             <Select
