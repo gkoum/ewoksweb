@@ -4,7 +4,13 @@ import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import useStore from './store';
 import type { Edge, Node } from 'react-flow-renderer';
-import { Button } from '@material-ui/core';
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from '@material-ui/core';
 import orangeFile from './images/orangeFile.png';
 import orange1 from './images/orange1.png';
 import orange2 from './images/orange2.png';
@@ -71,7 +77,7 @@ export default function Sidebar(props) {
   const [taskGenerator, setTaskGenerator] = React.useState('');
   const [defaultInputs, setDefaultInputs] = React.useState('');
   const [inputsComplete, setInputsComplete] = React.useState('');
-  const [type, setType] = React.useState('');
+  const [nodeType, setNodeType] = React.useState('');
   const [label, setLabel] = React.useState('');
   const [positionX, setPositionX] = React.useState(Number);
   const [positionY, setPositionY] = React.useState(Number);
@@ -79,7 +85,7 @@ export default function Sidebar(props) {
   useEffect(() => {
     console.log(elementClickedStore);
     setId(elementClickedStore.id);
-    setType(elementClickedStore.type);
+    setNodeType(elementClickedStore.type);
     if ('position' in elementClickedStore) {
       setLabel(elementClickedStore.data.label);
       setTaskIdentifier(elementClickedStore.task_identifier);
@@ -115,8 +121,8 @@ export default function Sidebar(props) {
     setSelectedElement(el);
   };
 
-  const typeChanged = (event) => {
-    setType(event.target.value);
+  const nodeTypeChanged = (event) => {
+    setNodeType(event.target.value);
     // elementClickedStore.type = event.target.value;
     setSelectedElement(elementClickedStore);
   };
@@ -158,63 +164,25 @@ export default function Sidebar(props) {
       >
         <img src={orangeFile} alt="orangeImage" />
       </span> */}
-      <span
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'default')}
-        draggable
-      >
-        <img src={orange1} alt="orangeImage" />
-      </span>
-      <span
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'default')}
-        draggable
-      >
-        <img src={orange2} alt="orangeImage" />
-      </span>
-      <span
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'default')}
-        draggable
-      >
-        <img src={orange3} alt="orangeImage" />
-      </span>
-      <span
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'default')}
-        draggable
-      >
-        <img src={AggregateColumns} alt="orangeImage" />
-      </span>
-      <span
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'default')}
-        draggable
-      >
-        <img src={Continuize} alt="orangeImage" />
-      </span>
-      <span
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'default')}
-        draggable
-      >
-        <img src={Correlations} alt="orangeImage" />
-      </span>
-      <span
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'default')}
-        draggable
-      >
-        <img src={CreateClass} alt="orangeImage" />
-      </span>
-      <span
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'default')}
-        draggable
-      >
-        <img src={CSVFile} alt="orangeImage" />
-      </span>
-
+      {[
+        { type: 'default', img: orange1 },
+        { type: 'default', img: orange2 },
+        { type: 'default', img: orange3 },
+        { type: 'default', img: AggregateColumns },
+        { type: 'default', img: Continuize },
+        { type: 'default', img: Correlations },
+        { type: 'default', img: CreateClass },
+        { type: 'default', img: CSVFile },
+        // { type: 'input', img: CSVFile },
+      ].map((elem, index) => (
+        <span
+          className="dndnode"
+          onDragStart={(event) => onDragStart(event, elem.type)}
+          draggable
+        >
+          <img src={elem.img} alt="orangeImage" />
+        </span>
+      ))}
       <span
         className="dndnode input"
         onDragStart={(event) => onDragStart(event, 'input')}
@@ -253,13 +221,8 @@ export default function Sidebar(props) {
           <Typography>Edit Graph Elements</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          {/* <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography> */}
           <form className={classes.root} noValidate autoComplete="off">
             <div>Id: {props.element.id}</div>
-
             {'position' in elementClickedStore && (
               <React.Fragment>
                 <div>
@@ -272,20 +235,33 @@ export default function Sidebar(props) {
                   />
                 </div>
                 <div>
-                  <TextField
-                    id="outlined-basic"
-                    label="Task type"
-                    variant="outlined"
-                    value={taskType || ''}
-                    onChange={taskTypeChanged}
-                  />
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Task type
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={taskType}
+                      label="Task type"
+                      onChange={taskTypeChanged}
+                    >
+                      {['method', 'function', 'graph', 'class'].map(
+                        (text, index) => (
+                          <MenuItem key={index} value={text}>
+                            {text}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  </FormControl>
                 </div>
                 <div>
                   <TextField
                     id="outlined-basic"
                     label="Task generator"
                     variant="outlined"
-                    value={taskGenerator || 'none'}
+                    value={taskGenerator}
                     onChange={taskGeneratorChanged}
                   />
                 </div>
@@ -295,7 +271,7 @@ export default function Sidebar(props) {
                     id="outlined-basic"
                     label="Default Inputs"
                     variant="outlined"
-                    value={defaultInputs || 'none'}
+                    value={defaultInputs}
                     onChange={defaultInputsChanged}
                   />
                 </div>
@@ -305,25 +281,31 @@ export default function Sidebar(props) {
                     value={inputsComplete}
                     onChange={inputsCompleteChanged}
                   />
-                  {/* <TextField
-                id="outlined-basic"
-                label="Inputs-complete"
-                variant="outlined"
-                value={inputsComplete || ''}
-                onChange={inputsCompleteChanged}
-              /> */}
+                </div>
+                <div>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Node type
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={nodeType}
+                      label="Task type"
+                      onChange={nodeTypeChanged}
+                    >
+                      {['input', 'output', 'graph', 'default'].map(
+                        (tex, index) => (
+                          <MenuItem key={index} value={tex}>
+                            {tex}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  </FormControl>
                 </div>
               </React.Fragment>
             )}
-            <div>
-              <TextField
-                id="outlined-basic"
-                label="Node type"
-                variant="outlined"
-                value={type || ''}
-                onChange={typeChanged}
-              />
-            </div>
             <div>
               <TextField
                 id="outlined-basic"
