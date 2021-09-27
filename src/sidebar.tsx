@@ -29,7 +29,14 @@ import Typography from '@material-ui/core/Typography';
 
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import IconButton from '@material-ui/core/IconButton';
-import type { Graph, EwoksLink, EwoksNode } from './types';
+import type {
+  Graph,
+  EwoksLink,
+  EwoksNode,
+  EwoksRFNode,
+  EwoksRFLink,
+  Inputs,
+} from './types';
 
 const onDragStart = (event, nodeType) => {
   console.log(event, nodeType);
@@ -55,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Sidebar(props) {
   const classes = useStyles();
 
-  const elementClickedStore = useStore<EwoksNode | EwoksLink>(
+  const elementClickedStore = useStore<EwoksRFNode | EwoksRFLink>(
     (state) => state.selectedElement
   );
   console.log(typeof elementClickedStore);
@@ -70,32 +77,36 @@ export default function Sidebar(props) {
   const setEwoksElements = useStore((state) => state.setEwoksElements);
 
   const [element, setElement] = React.useState({} as Node);
-
+  // default_inputs: [{ name: 'a', value: 1 }],
   const [id, setId] = React.useState('');
   const [taskIdentifier, setTaskIdentifier] = React.useState('');
   const [taskType, setTaskType] = React.useState('');
   const [taskGenerator, setTaskGenerator] = React.useState('');
-  const [defaultInputs, setDefaultInputs] = React.useState('');
-  const [inputsComplete, setInputsComplete] = React.useState('');
+  const [defaultInputs, setDefaultInputs] = React.useState<Inputs[]>([]);
+  const [inputsComplete, setInputsComplete] = React.useState<boolean>(false);
   const [nodeType, setNodeType] = React.useState('');
   const [label, setLabel] = React.useState('');
+  const [comment, setComment] = React.useState('');
   const [positionX, setPositionX] = React.useState(Number);
   const [positionY, setPositionY] = React.useState(Number);
 
   useEffect(() => {
     console.log(elementClickedStore);
     setId(elementClickedStore.id);
-    setNodeType(elementClickedStore.type);
     if ('position' in elementClickedStore) {
+      setNodeType(elementClickedStore.data.type);
       setLabel(elementClickedStore.data.label);
+      setComment(elementClickedStore.data.comment);
       setTaskIdentifier(elementClickedStore.task_identifier);
       setTaskType(elementClickedStore.task_type);
-      // setPositionX(elementClickedStore.position.x);
-      // setPositionY(elementClickedStore.position.y);
+      setTaskGenerator(elementClickedStore.task_generator);
+      setInputsComplete(elementClickedStore.inputs_complete);
+      setDefaultInputs(elementClickedStore.default_inputs);
+      console.log(elementClickedStore);
     } else {
       setLabel(elementClickedStore.label);
-      setPositionX(0);
-      setPositionY(0);
+      // setPositionX(0);
+      // setPositionY(0);
     }
   }, [elementClickedStore]);
 
@@ -119,6 +130,10 @@ export default function Sidebar(props) {
     temp.push(el);
     setEwoksElements(temp);
     setSelectedElement(el);
+  };
+
+  const commentChanged = (event) => {
+    setComment(event.target.value);
   };
 
   const nodeTypeChanged = (event) => {
@@ -235,7 +250,7 @@ export default function Sidebar(props) {
                   />
                 </div>
                 <div>
-                  <FormControl fullWidth>
+                  <FormControl variant="filled" fullWidth>
                     <InputLabel id="demo-simple-select-label">
                       Task type
                     </InputLabel>
@@ -271,7 +286,15 @@ export default function Sidebar(props) {
                     id="outlined-basic"
                     label="Default Inputs"
                     variant="outlined"
-                    value={defaultInputs}
+                    value={
+                      defaultInputs && defaultInputs.length > 0
+                        ? defaultInputs
+                            .map((input) => input.name + '-->' + input.value)
+                            .reduce((res, item) => {
+                              return res + ', ' + item;
+                            })
+                        : ''
+                    }
                     onChange={defaultInputsChanged}
                   />
                 </div>
@@ -283,7 +306,7 @@ export default function Sidebar(props) {
                   />
                 </div>
                 <div>
-                  <FormControl fullWidth>
+                  <FormControl variant="filled" fullWidth>
                     <InputLabel id="demo-simple-select-label">
                       Node type
                     </InputLabel>
@@ -313,6 +336,15 @@ export default function Sidebar(props) {
                 variant="outlined"
                 value={label || ''}
                 onChange={labelChanged}
+              />
+            </div>
+            <div>
+              <TextField
+                id="outlined-basic"
+                label="Comment"
+                variant="outlined"
+                value={comment || ''}
+                onChange={commentChanged}
               />
             </div>
             {/* <div>

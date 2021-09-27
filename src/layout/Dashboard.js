@@ -31,12 +31,12 @@ import useStore from '../store';
 import Canvas from './Canvas';
 import Card from '@material-ui/core/Card';
 import CanvasView from './CanvasView';
-import ButtonWrapper from '../Components/ButtonWrapper';
+import Upload from '../Components/Upload';
 import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import { findGraphWithName } from '../utils';
+import { findGraphWithName, rfToEwoks } from '../utils';
 import MyCard from '../layout/MyCard';
 
 // import { mainListItems, secondaryListItems } from './listItems';
@@ -210,8 +210,8 @@ export default function Dashboard() {
     console.log(val, inputFile);
   };
 
-  const saveToDisk = (val) => {
-    console.log(val, inputFile);
+  const saveToDisk = (event) => {
+    console.log(event.target.value, inputFile, graphRF, rfToEwoks(graphRF));
     download(JSON.stringify(graphRF), 'json.txt', 'text/plain');
   };
 
@@ -298,9 +298,9 @@ export default function Dashboard() {
             </Fab>
           </IconButton>
           <IconButton color="inherit">
-            <ButtonWrapper>
+            <Upload>
               <AddIcon onClick={loadFromDisk} />
-            </ButtonWrapper>
+            </Upload>
           </IconButton>
           <IconButton color="inherit">
             <Fab

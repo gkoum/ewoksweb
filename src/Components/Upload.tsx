@@ -4,6 +4,7 @@ import { Fab, Button } from '@material-ui/core';
 import { useState } from 'react';
 import useStore from '../store';
 import type { GraphRF } from '../types';
+import { getLinks, getNodes } from '../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,7 +27,7 @@ const showFile = async (e) => {
   return reader;
 };
 
-function ButtonWrapper(props) {
+function Upload(props) {
   const classes = useStyles();
 
   const [selectedFile, setSelectedFile] = useState();
@@ -36,14 +37,21 @@ function ButtonWrapper(props) {
 
   const fileNameChanged = async (event) => {
     console.log(event.target.files[0]);
-    setSelectedFile(event.target.files[0]);
+    // setSelectedFile(event.target.files[0]);
     const reader = showFile(event);
     const file = await reader.then((val) => val);
     file.onloadend = function () {
       // console.log('DONE', file.result); // readyState will be 2
       setSelectedFile(file.result);
-      console.log(selectedFile);
-      setGraphRF(JSON.parse(file.result) as GraphRF);
+      // console.log(selectedFile);
+      const nodes = getNodes(JSON.parse(file.result));
+      const links = getLinks(JSON.parse(file.result));
+      console.log(nodes, links);
+      setGraphRF({
+        graph: JSON.parse(file.result).graph,
+        nodes: nodes,
+        links: links,
+      } as GraphRF);
       setSubgraphsStack('initialiase');
       setSubgraphsStack(JSON.parse(file.result).graph.id);
     };
@@ -77,4 +85,4 @@ function ButtonWrapper(props) {
 
 const rootElement = document.querySelector('#root');
 
-export default ButtonWrapper;
+export default Upload;

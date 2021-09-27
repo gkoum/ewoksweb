@@ -16,7 +16,7 @@ function FunctionNode(all) {
   return (
     <Node
       type="graph"
-      label={all.data.name}
+      label={all.data.label}
       selected={all.selected}
       color="#ced3ee"
       image={all.data.icon}

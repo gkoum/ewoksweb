@@ -90,8 +90,34 @@ function Canvas() {
 
   useEffect(() => {
     console.log(graphRF);
-    console.log([...getNodes(graphRF), ...getLinks(graphRF)]);
-    setElements([...getNodes(graphRF), ...getLinks(graphRF)]);
+    // default_inputs: 0: Object { name: "a", value: 1 }
+    // id: "node1"
+    // task_identifier: "tasks.simplemethods.add12"
+    // task_type: "method"
+    // uiProps:
+    //  comment: "Prepare troubleshouting"
+    //  icon: "orange1"
+    //  label: "barmboutsalaMethod"
+    //  position: Object { x: 50, y: 80 }
+    // NEED TO SAVE THE TYPE calculated in getNodes in data.type to
+    // const nodes = getNodes(graphRF);
+    // const links = getLinks(graphRF);
+    // console.log(nodes, links);
+    // id: "node1"
+    // inputs_complete: undefined
+    // position: Object { x: 50, y: 80 }
+    // sourcePosition: "right"
+    // targetPosition: "left"
+    // task_generator: undefined
+    // task_identifier: "tasks.simplemethods.add12"
+    // task_type: "method"
+    // type: "method"
+    // data:
+    //      comment: "Prepare troubleshouting"
+    //      icon: "orange1"
+    //      label: "barmboutsalaMethod"
+    //      type: "input"
+    setElements([...graphRF.nodes, ...graphRF.links]);
   }, [graphRF, graphRF.graph.id]);
 
   const selectedElement = useStore((state) => state.selectedElement);
@@ -101,7 +127,15 @@ function Canvas() {
   const setSelectedSubgraph = useStore((state) => state.setSelectedSubgraph);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
-    console.log(element, elements);
+    // data:
+    //  comment: "Prepare troubleshouting"
+    //  icon: "orange1"
+    //  label: "barmboutsalaMethod"
+    //  type: "input"
+    // id: "node1"
+    // position: Object { x: 50, y: 80 }
+    // type: "method"
+    console.log(element, elements, graphRF.nodes);
     const graphElement = elements.find((el) => el.id === element.id);
     console.log(graphElement);
     setElementClicked(graphElement);

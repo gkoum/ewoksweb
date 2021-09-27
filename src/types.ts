@@ -60,7 +60,7 @@ export interface EwoksNode {
   id: string;
   task_type: string;
   task_identifier: string;
-  inputs?: Inputs;
+  default_inputs?: Inputs[];
   inputs_complete?: boolean;
   task_generator?: string;
   uiProps?: UiProps;
@@ -69,9 +69,8 @@ export interface EwoksNode {
 export interface EwoksRFNode {
   id: string;
   task_type?: string;
-  type?: string;
   task_identifier?: string;
-  inputs?: Inputs;
+  default_inputs?: Inputs[];
   inputs_complete?: boolean;
   task_generator?: string;
   data?: {
@@ -92,6 +91,7 @@ export interface EwoksRFLink {
   label?: string;
   data?: {
     data_mapping?: DataMapping;
+    type?: string;
   };
   conditions?: string;
   on_error?: Inputs;
@@ -103,4 +103,10 @@ export interface GraphRF {
   graph?: GraphDetails;
   nodes: Array<EwoksRFNode>;
   links: Array<EwoksRFLink>;
+}
+
+export interface GraphEwoks {
+  graph?: GraphDetails;
+  nodes: Array<EwoksNode>;
+  links: Array<EwoksLink>;
 }

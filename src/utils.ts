@@ -14,6 +14,7 @@ import type {
   EwoksRFNode,
   EwoksLink,
   EwoksRFLink,
+  GraphEwoks,
 } from './types';
 
 const { GraphDagre } = dagre.graphlib;
@@ -56,6 +57,110 @@ export function findGraphWithName(gname: string): Graph {
 // export function getSubNetwork(subNetName: string) {
 //   return subNetName;
 // }
+export function rfToEwoks(tempGraph): GraphEwoks {
+  console.log(tempGraph);
+
+  return tempGraph.nodes.map(
+    ({
+      id,
+      task_type,
+      task_identifier,
+      type,
+      inputs_complete,
+      task_generator,
+      default_inputs,
+      data:
+        // {
+        //   label: uiProps.label ? uiProps.label : task_identifier,
+        //   type: nodeType,
+        //   icon: uiProps.icon,
+        //   comment: uiProps.comment,
+        // },
+        // sourcePosition,
+        // targetPosition,
+        position,
+    }) => {
+      if (task_type != 'graph') {
+        //       id: string;
+        // task_type?: string;
+        // task_identifier?: string;
+        // default_inputs?: Inputs[];
+        // inputs_complete?: boolean;
+        // task_generator?: string;
+        // data?: {
+        //   label?: string;
+        //   type?: string;
+        //   inputs?: [string];
+        //   outputs?: [string];
+        // };
+        // sourcePosition?: Position;
+        // targetPosition?: Position;
+        // position?
+        return {
+          id: id.toString(),
+          task_type,
+          task_identifier,
+          inputs_complete,
+          task_generator,
+          default_inputs,
+          uiProps: {},
+          // data: {
+          //   label: uiProps.label ? uiProps.label : task_identifier,
+          //   type: nodeType,
+          //   icon: uiProps.icon,
+          //   comment: uiProps.comment,
+          // },
+          // sourcePosition: Position.Right,
+          // targetPosition: Position.Left,
+          // position: uiProps.position,
+        };
+      }
+      // const subgraphL = findGraphWithName(task_identifier);
+      // // get the inputs outputs of the graph
+      // const inputsSub = subgraphL.graph.input_nodes.map((alias) => {
+      //   return {
+      //     label: `${alias.name}: ${alias.id} ${
+      //       alias.sub_node ? `  -> ${alias.sub_node}` : ''
+      //     }`,
+      //     type: 'data ',
+      //   };
+      // });
+      // const inputsFlow = subgraphL.graph.input_nodes.map((alias) => alias.name);
+      // const outputsSub = subgraphL.graph.output_nodes.map((alias) => {
+      //   return {
+      //     label: `${alias.name}: ${alias.id} ${
+      //       alias.sub_node ? ` -> ${alias.sub_node}` : ''
+      //     }`,
+      //     type: 'data ',
+      //   };
+      // });
+      // console.log(default_inputs);
+      return {
+        id: id.toString(),
+        task_type,
+        task_identifier,
+        type: task_type,
+        inputs_complete,
+        task_generator,
+        default_inputs,
+        uiProps: {
+          // label: task_identifier,
+          // type: nodeType,
+          // inputs: inputsSub,
+          // outputs: outputsSub,
+          // inputsFlow,
+          // icon: uiProps.icon,
+          // comment: uiProps.comment,
+        },
+        // inputs: inputsFlow, // for connecting graphically to different input
+        // sourcePosition: Position.Right,
+        // targetPosition: Position.Left,
+        // position: uiProps.position,
+      };
+    }
+  );
+}
+
 export function getNodes(tempGraph): EwoksRFNode[] {
   // const tempGraph = findGraphWithName(id);
   console.log(tempGraph);
@@ -74,7 +179,7 @@ export function getNodes(tempGraph): EwoksRFNode[] {
         id,
         task_type,
         task_identifier,
-        inputs,
+        default_inputs,
         inputs_complete,
         task_generator,
         uiProps,
@@ -100,6 +205,7 @@ export function getNodes(tempGraph): EwoksRFNode[] {
             type: task_type,
             inputs_complete,
             task_generator,
+            default_inputs,
             data: {
               label: uiProps.label ? uiProps.label : task_identifier,
               type: nodeType,
@@ -132,7 +238,7 @@ export function getNodes(tempGraph): EwoksRFNode[] {
             type: 'data ',
           };
         });
-        console.log(inputs);
+        console.log(default_inputs);
         return {
           id: id.toString(),
           task_type,
@@ -140,12 +246,10 @@ export function getNodes(tempGraph): EwoksRFNode[] {
           type: task_type,
           inputs_complete,
           task_generator,
-          inputs,
+          default_inputs,
           data: {
-            name: `graph: ${task_identifier}`,
-            id: id.toString(),
-            task_type,
-            task_identifier,
+            label: task_identifier,
+            type: nodeType,
             inputs: inputsSub,
             outputs: outputsSub,
             inputsFlow,
