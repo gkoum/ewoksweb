@@ -166,6 +166,20 @@ function Canvas() {
     });
   };
 
+  // as ewoks nodes are:
+  // data_mapping: Array [ {…} ]
+  // ​​​​source: "node1"
+  // ​​​​sub_graph_nodes: Object { sub_target: "in1" }
+  // ​​​​target: "node2"
+
+  // As given back from the ReactFlow
+  // id: "reactflow__edge-node2o-out1: subsubgraph  -> out1__data -node7i__data"
+  // ​​​source: "node2"
+  // ​​​sourceHandle: "o-out1: subsubgraph  -> out1__data "
+  // ​​​target: "node7"
+  // ​​​targetHandle: "i__data"
+  // no data_mapping
+
   const onConnect = (params) => {
     console.log(params);
     setElements((els) => addEdge(params, els));
@@ -199,6 +213,16 @@ function Canvas() {
     } else {
       console.log('THIS IS A NODE');
     }
+  };
+
+  // const onNodeMouseMove = (event, node) => {
+  //   event.preventDefault();
+  //   console.log(event, node);
+  // };
+
+  const onSelectionDragStop = (event, node) => {
+    event.preventDefault();
+    console.log(event, node);
   };
 
   return (
@@ -247,6 +271,8 @@ function Canvas() {
             onPaneContextMenu={onRightClick}
             onNodeDoubleClick={onNodeDoubleClick}
             onSelectionChange={onSelectionChange}
+            // onNodeMouseMove={onNodeMouseMove}
+            onSelectionDragStop={onSelectionDragStop}
             nodeTypes={nodeTypes}
           >
             <Controls />
