@@ -22,18 +22,7 @@ const NODE_SIZE = { width: 270, height: 36 };
 
 export const ewoksNetwork = graph;
 
-// A map-engine for react-flow that needs to run with every change to the UI
-// Maps (ewoks -> react-flow) and (react-flow -> ewoks)
-
-// All graphs included in a given graph
-const allGraphs = [graph, subgraph, subsubgraph, subsubsubgraph];
-
 export function findGraphWithName(gname: string): Graph {
-  // find the subgraph it refers to
-  // const graph = allGraphs.find((gr) => {
-  //   console.log(gr);
-  //   return Object.keys({ gr })[0] === gname;
-  // });
   const thisSubgraph = gname;
   console.log(thisSubgraph);
   let subgraphL = {
@@ -50,52 +39,73 @@ export function findGraphWithName(gname: string): Graph {
   } else if (thisSubgraph === 'subsubsubgraph') {
     subgraphL = subsubsubgraph;
   }
-  // console.log(graph);
   return subgraphL;
 }
 
-// export function getSubNetwork(subNetName: string) {
-//   return subNetName;
-// }
 export function rfToEwoks(tempGraph): GraphEwoks {
   console.log(tempGraph);
 
-  return tempGraph.nodes.map(
+  return {
+    graph: tempGraph.graph,
+    nodes: toEwoksNodes(tempGraph.nodes),
+    links: toEwoksLinks(tempGraph.links),
+  };
+}
+
+// EwoksRFLinks --> EwoksLinks for saving
+export function toEwoksLinks(links): EwoksLink[] {
+  console.log(links);
+  // RF link from canvas
+  // data:
+  //  data_mapping: Array [ {…} ]
+  //  sub_source: undefined
+  //  sub_target: "in1"
+  // ​​​id: "enode1-node2"
+  // label: "ab->result"
+  // source: "node1"
+  // target: "node2"
+  return links.map(
+    ({
+      id,
+      label,
+      source,
+      target,
+      data: { data_mapping, subtarget, subsource },
+      conditions,
+      on_error,
+    }) => ({
+      id,
+      source,
+      target,
+      data_mapping,
+      conditions,
+      on_error,
+      subtarget,
+      subsource,
+      uiProps: { label: label },
+    })
+  );
+}
+
+// EwoksRFNode --> EwoksNode for saving
+export function toEwoksNodes(nodes): EwoksNode[] {
+  console.log(nodes);
+
+  return nodes.map(
     ({
       id,
       task_type,
       task_identifier,
-      type,
+      // type, exists in EwoksRFNode but is the same as task_type
       inputs_complete,
       task_generator,
       default_inputs,
-      data:
-        // {
-        //   label: uiProps.label ? uiProps.label : task_identifier,
-        //   type: nodeType,
-        //   icon: uiProps.icon,
-        //   comment: uiProps.comment,
-        // },
-        // sourcePosition,
-        // targetPosition,
-        position,
+      data: { label, type, icon, comment },
+      sourcePosition,
+      targetPosition,
+      position,
     }) => {
       if (task_type != 'graph') {
-        //       id: string;
-        // task_type?: string;
-        // task_identifier?: string;
-        // default_inputs?: Inputs[];
-        // inputs_complete?: boolean;
-        // task_generator?: string;
-        // data?: {
-        //   label?: string;
-        //   type?: string;
-        //   inputs?: [string];
-        //   outputs?: [string];
-        // };
-        // sourcePosition?: Position;
-        // targetPosition?: Position;
-        // position?
         return {
           id: id.toString(),
           task_type,
@@ -103,65 +113,30 @@ export function rfToEwoks(tempGraph): GraphEwoks {
           inputs_complete,
           task_generator,
           default_inputs,
-          uiProps: {},
-          // data: {
-          //   label: uiProps.label ? uiProps.label : task_identifier,
-          //   type: nodeType,
-          //   icon: uiProps.icon,
-          //   comment: uiProps.comment,
-          // },
-          // sourcePosition: Position.Right,
-          // targetPosition: Position.Left,
-          // position: uiProps.position,
+          uiProps: { label, type, icon, comment, position },
         };
-      }
-      // const subgraphL = findGraphWithName(task_identifier);
-      // // get the inputs outputs of the graph
-      // const inputsSub = subgraphL.graph.input_nodes.map((alias) => {
-      //   return {
-      //     label: `${alias.name}: ${alias.id} ${
-      //       alias.sub_node ? `  -> ${alias.sub_node}` : ''
-      //     }`,
-      //     type: 'data ',
-      //   };
-      // });
-      // const inputsFlow = subgraphL.graph.input_nodes.map((alias) => alias.name);
-      // const outputsSub = subgraphL.graph.output_nodes.map((alias) => {
-      //   return {
-      //     label: `${alias.name}: ${alias.id} ${
-      //       alias.sub_node ? ` -> ${alias.sub_node}` : ''
-      //     }`,
-      //     type: 'data ',
-      //   };
-      // });
-      // console.log(default_inputs);
-      return {
-        id: id.toString(),
-        task_type,
-        task_identifier,
-        type: task_type,
-        inputs_complete,
-        task_generator,
-        default_inputs,
-        uiProps: {
-          // label: task_identifier,
-          // type: nodeType,
+      } else {
+        // graphs separately only if a transformation is needed???
+        return {
+          id: id.toString(),
+          task_type,
+          task_identifier,
+          type: task_type,
+          inputs_complete,
+          task_generator,
+          default_inputs,
+          uiProps: { label, type, icon, comment, position },
           // inputs: inputsSub,
           // outputs: outputsSub,
           // inputsFlow,
-          // icon: uiProps.icon,
-          // comment: uiProps.comment,
-        },
-        // inputs: inputsFlow, // for connecting graphically to different input
-        // sourcePosition: Position.Right,
-        // targetPosition: Position.Left,
-        // position: uiProps.position,
-      };
+          // inputs: inputsFlow, // for connecting graphically to different input
+        };
+      }
     }
   );
 }
 
-export function getNodes(tempGraph): EwoksRFNode[] {
+export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
   // const tempGraph = findGraphWithName(id);
   console.log(tempGraph);
   const inputsAll =
@@ -227,9 +202,9 @@ export function getNodes(tempGraph): EwoksRFNode[] {
             type: 'data ',
           };
         });
-        const inputsFlow = subgraphL.graph.input_nodes.map(
-          (alias) => alias.name
-        );
+        // const inputsFlow = subgraphL.graph.input_nodes.map(
+        //   (alias) => alias.name
+        // );
         const outputsSub = subgraphL.graph.output_nodes.map((alias) => {
           return {
             label: `${alias.name}: ${alias.id} ${
@@ -252,7 +227,7 @@ export function getNodes(tempGraph): EwoksRFNode[] {
             type: nodeType,
             inputs: inputsSub,
             outputs: outputsSub,
-            inputsFlow,
+            // inputsFlow,
             icon: uiProps.icon,
             comment: uiProps.comment,
           },
@@ -266,7 +241,7 @@ export function getNodes(tempGraph): EwoksRFNode[] {
   } else return [] as EwoksRFNode[];
 }
 
-export function getLinks(tempGraph): EwoksRFLink[] {
+export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
   // const tempGraph = findGraphWithName(id);
   console.log(tempGraph);
   if (tempGraph.links) {
@@ -275,7 +250,8 @@ export function getLinks(tempGraph): EwoksRFLink[] {
         source,
         target,
         data_mapping = [{ source_output: 'data', target_input: 'mapping' }],
-        sub_graph_nodes,
+        sub_target,
+        sub_source,
       }) => ({
         id: `e${source}-${target}`,
         label: data_mapping
@@ -283,7 +259,7 @@ export function getLinks(tempGraph): EwoksRFLink[] {
           .join(', '),
         source: source.toString(),
         target: target.toString(),
-        data: { data_mapping, sub_graph_nodes },
+        data: { data_mapping, sub_target, sub_source },
       })
     );
   } else return [] as EwoksRFLink[];

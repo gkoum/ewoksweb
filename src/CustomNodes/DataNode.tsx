@@ -10,18 +10,36 @@ const isValidOutput = (connection) => {
   return true; // R.last(R.split("__", connection.target)) === "data";
 };
 
-const DataNode = ({ data, selected }) => {
+const DataNode = (args) => {
+  // args = some RF-related and a data that has args Ewoks-related
+  // data:
+  //  comment: "Prepare troubleshouting"
+  //  icon: "orange1"
+  //  label: "barmboutsalaMethod"
+  //  type: "input"
+  // id: "node1"
+  // isConnectable: true
+  // isDragging: false
+  // selected: false
+  // sourcePosition: "right"
+  // targetPosition: "left"
+  // type: "method"
+  // xPos: 50
+  // yPos: 80
+  // { data, selected }
+  console.log(args);
   return (
     <Node
-      type={data.type}
-      label={data.label}
-      selected={selected}
+      type={args.data.type}
+      label={args.data.label}
+      selected={args.selected}
       color={'#ced3ee'}
-      image={data.icon}
-      comment={data.comment}
+      image={args.data.icon}
+      comment={args.data.comment}
       content={
         <div style={{ ...style.io } as React.CSSProperties}>
-          {!data.uploaded && (
+          {args.data.type !== 'input' && (
+            // if node is graph-input-node remove input link handle
             <Handle
               type="target"
               position={Position.Left}
@@ -31,13 +49,16 @@ const DataNode = ({ data, selected }) => {
             />
           )}
           {'Data'}
-          <Handle
-            type="source"
-            position={Position.Right}
-            id="o__data"
-            style={{ ...style.handle, ...style.right }}
-            isValidConnection={isValidOutput}
-          />
+          {args.data.type !== 'output' && (
+            // if node is graph-output-node remove output link handle
+            <Handle
+              type="source"
+              position={Position.Right}
+              id="o__data"
+              style={{ ...style.handle, ...style.right }}
+              isValidConnection={isValidOutput}
+            />
+          )}
         </div>
       }
     />

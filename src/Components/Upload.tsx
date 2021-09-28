@@ -4,7 +4,7 @@ import { Fab, Button } from '@material-ui/core';
 import { useState } from 'react';
 import useStore from '../store';
 import type { GraphRF } from '../types';
-import { getLinks, getNodes } from '../utils';
+import { toRFEwoksLinks, toRFEwoksNodes } from '../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,8 +44,8 @@ function Upload(props) {
       // console.log('DONE', file.result); // readyState will be 2
       setSelectedFile(file.result);
       // console.log(selectedFile);
-      const nodes = getNodes(JSON.parse(file.result));
-      const links = getLinks(JSON.parse(file.result));
+      const nodes = toRFEwoksNodes(JSON.parse(file.result));
+      const links = toRFEwoksLinks(JSON.parse(file.result));
       console.log(nodes, links);
       setGraphRF({
         graph: JSON.parse(file.result).graph,

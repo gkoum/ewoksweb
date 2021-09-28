@@ -11,7 +11,6 @@ import {
   MenuItem,
   Select,
 } from '@material-ui/core';
-import orangeFile from './images/orangeFile.png';
 import orange1 from './images/orange1.png';
 import orange2 from './images/orange2.png';
 import orange3 from './images/orange3.png';
@@ -19,16 +18,15 @@ import AggregateColumns from './images/AggregateColumns.svg';
 import Continuize from './images/Continuize.svg';
 import Correlations from './images/Correlations.svg';
 import CreateClass from './images/CreateClass.svg';
+// import expandMore from './images/expandMore.svg';
 import CSVFile from './images/CSVFile.svg';
 import Checkbox from '@material-ui/core/Checkbox';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
-// import ExpandMoreIcon from '@material-ui/core/ExpandMoreIcon';
+import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 
-import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
-import IconButton from '@material-ui/core/IconButton';
 import type {
   Graph,
   EwoksLink,
@@ -62,21 +60,11 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Sidebar(props) {
   const classes = useStyles();
 
-  const elementClickedStore = useStore<EwoksRFNode | EwoksRFLink>(
+  const selectedElement = useStore<EwoksRFNode | EwoksRFLink>(
     (state) => state.selectedElement
   );
-  console.log(typeof elementClickedStore);
-
   const setSelectedElement = useStore((state) => state.setSelectedElement);
-  console.log(elementClickedStore);
 
-  const ewoksElements = useStore((state) => {
-    console.log(state);
-    return state.ewoksElements;
-  });
-  const setEwoksElements = useStore((state) => state.setEwoksElements);
-
-  const [element, setElement] = React.useState({} as Node);
   // default_inputs: [{ name: 'a', value: 1 }],
   const [id, setId] = React.useState('');
   const [taskIdentifier, setTaskIdentifier] = React.useState('');
@@ -89,47 +77,40 @@ export default function Sidebar(props) {
   const [comment, setComment] = React.useState('');
   const [positionX, setPositionX] = React.useState(Number);
   const [positionY, setPositionY] = React.useState(Number);
+  const [element, setElement] = React.useState<EwoksRFNode | EwoksRFLink>({});
 
   useEffect(() => {
-    console.log(elementClickedStore);
-    setId(elementClickedStore.id);
-    if ('position' in elementClickedStore) {
-      setNodeType(elementClickedStore.data.type);
-      setLabel(elementClickedStore.data.label);
-      setComment(elementClickedStore.data.comment);
-      setTaskIdentifier(elementClickedStore.task_identifier);
-      setTaskType(elementClickedStore.task_type);
-      setTaskGenerator(elementClickedStore.task_generator);
-      setInputsComplete(elementClickedStore.inputs_complete);
-      setDefaultInputs(elementClickedStore.default_inputs);
-      console.log(elementClickedStore);
+    console.log(selectedElement);
+    setElement(selectedElement);
+    setId(selectedElement.id);
+    if ('position' in selectedElement) {
+      setNodeType(selectedElement.data.type);
+      setLabel(selectedElement.data.label);
+      setComment(selectedElement.data.comment);
+      setTaskIdentifier(selectedElement.task_identifier);
+      setTaskType(selectedElement.task_type);
+      setTaskGenerator(selectedElement.task_generator);
+      setInputsComplete(selectedElement.inputs_complete);
+      setDefaultInputs(selectedElement.default_inputs);
+      console.log(selectedElement);
     } else {
-      setLabel(elementClickedStore.label);
+      setLabel(selectedElement.label);
       // setPositionX(0);
       // setPositionY(0);
     }
-  }, [elementClickedStore]);
-
-  const elementClickedStoreChanged = (event) => {
-    console.log(event);
-    // setName(event.target.value);
-    // setSelectedElement(element);
-  };
+  }, [selectedElement.id, selectedElement]);
 
   const labelChanged = (event) => {
     setLabel(event.target.value);
-    const el: Node | Edge = elementClickedStore;
-    if ('position' in elementClickedStore) {
-      el.data.label = event.target.value;
+    const tmpElement = { ...element, data: { ...element.data } };
+    console.log(tmpElement.data === element.data);
+    if ('position' in element) {
+      tmpElement.data.label = event.target.value;
     } else {
-      el.label = event.target.value;
+      tmpElement.label = event.target.value;
     }
-    const temp = ewoksElements.filter((elem) => {
-      return elem.id !== id;
-    });
-    temp.push(el);
-    setEwoksElements(temp);
-    setSelectedElement(el);
+    setElement(tmpElement);
+    console.log(selectedElement, tmpElement);
   };
 
   const commentChanged = (event) => {
@@ -138,8 +119,8 @@ export default function Sidebar(props) {
 
   const nodeTypeChanged = (event) => {
     setNodeType(event.target.value);
-    // elementClickedStore.type = event.target.value;
-    setSelectedElement(elementClickedStore);
+    // selectedElement.type = event.target.value;
+    setSelectedElement(selectedElement);
   };
 
   const taskIdentifierChanged = (event) => {
@@ -170,6 +151,11 @@ export default function Sidebar(props) {
     setPositionY(event.target.value);
   };
 
+  const saveElement = () => {
+    console.log(element, selectedElement);
+    setSelectedElement(element);
+  };
+
   return (
     <aside className="dndflow">
       {/* <span
@@ -191,6 +177,7 @@ export default function Sidebar(props) {
         // { type: 'input', img: CSVFile },
       ].map((elem, index) => (
         <span
+          key={elem.img}
           className="dndnode"
           onDragStart={(event) => onDragStart(event, elem.type)}
           draggable
@@ -229,7 +216,7 @@ export default function Sidebar(props) {
       </span>
       <Accordion>
         <AccordionSummary
-          // expandIcon={<ExpandMoreIcon />}
+          expandIcon={<OpenInBrowser />}
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
@@ -238,7 +225,7 @@ export default function Sidebar(props) {
         <AccordionDetails>
           <form className={classes.root} noValidate autoComplete="off">
             <div>Id: {props.element.id}</div>
-            {'position' in elementClickedStore && (
+            {'position' in selectedElement && (
               <React.Fragment>
                 <div>
                   <TextField
@@ -261,7 +248,7 @@ export default function Sidebar(props) {
                       label="Task type"
                       onChange={taskTypeChanged}
                     >
-                      {['method', 'function', 'graph', 'class'].map(
+                      {['method', 'function', 'graph', 'class', undefined].map(
                         (text, index) => (
                           <MenuItem key={index} value={text}>
                             {text}
@@ -317,7 +304,7 @@ export default function Sidebar(props) {
                       label="Task type"
                       onChange={nodeTypeChanged}
                     >
-                      {['input', 'output', 'graph', 'default'].map(
+                      {['input', 'output', 'graph', 'default', undefined].map(
                         (tex, index) => (
                           <MenuItem key={index} value={tex}>
                             {tex}
@@ -356,7 +343,7 @@ export default function Sidebar(props) {
             onChange={positionYChanged}
           />
         </div> */}
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={saveElement}>
               Save
             </Button>
             <Button variant="contained" color="primary">

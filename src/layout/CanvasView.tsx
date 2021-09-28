@@ -82,7 +82,6 @@ function CanvasView(props) {
     console.log(state);
     return state.ewoksElements;
   });
-  const setEwoksElements = useStore((state) => state.setEwoksElements);
 
   useEffect(() => {
     console.log(ewoksElements);
@@ -150,7 +149,6 @@ function CanvasView(props) {
     };
     console.log(rfInstance);
     // setElements((es) => [...es, newNode]);
-    setEwoksElements([...elements, newNode]);
   };
 
   const onConnect = (params) => {

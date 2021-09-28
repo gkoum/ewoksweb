@@ -23,8 +23,6 @@ export interface State {
   setSubgraphsStack?: (graphRF: string) => void;
   graphRF: GraphRF;
   setGraphRF: (graphRF: GraphRF) => void;
-  ewoksElements: Array<EwoksRFNode | EwoksRFLink>;
-  setEwoksElements: (elements: Array<EwoksRFNode | EwoksRFLink>) => void;
   selectedElement: EwoksRFNode | EwoksRFLink;
   setSelectedElement: (element: EwoksRFNode | EwoksRFLink) => void;
   selectedSubgraph: GraphRF;
@@ -47,12 +45,30 @@ export interface DataMapping {
 }
 
 export interface EwoksLink {
+  id?: string;
   source: string;
   target: string;
   data_mapping?: DataMapping[];
   conditions?: string;
   on_error?: Inputs;
-  sub_graph_nodes?: { subtarget?: string; subsource?: string };
+  subtarget?: string;
+  subsource?: string;
+  uiProps?: UiProps;
+}
+
+export interface EwoksRFLink {
+  id?: string;
+  source: string;
+  target: string;
+  label?: string;
+  data?: {
+    data_mapping?: DataMapping;
+    type?: string;
+  };
+  conditions?: string;
+  on_error?: Inputs;
+  subtarget?: string;
+  subsource?: string;
   uiProps?: UiProps;
 }
 
@@ -76,27 +92,14 @@ export interface EwoksRFNode {
   data?: {
     label?: string;
     type?: string;
-    inputs?: [string];
-    outputs?: [string];
+    inputs?: [string]; // ?
+    outputs?: [string]; // ?
+    icon?: string;
+    comment?: string;
   };
   sourcePosition?: Position;
   targetPosition?: Position;
   position?: { x: number; y: number };
-}
-
-export interface EwoksRFLink {
-  id?: string;
-  source: string;
-  target: string;
-  label?: string;
-  data?: {
-    data_mapping?: DataMapping;
-    type?: string;
-  };
-  conditions?: string;
-  on_error?: Inputs;
-  sub_graph_nodes?: { subtarget?: string; subsource?: string };
-  uiProps?: UiProps;
 }
 
 export interface GraphRF {

@@ -211,7 +211,7 @@ export default function Dashboard() {
   };
 
   const saveToDisk = (event) => {
-    console.log(event.target.value, inputFile, graphRF, rfToEwoks(graphRF));
+    console.log(graphRF, rfToEwoks(graphRF));
     download(JSON.stringify(graphRF), 'json.txt', 'text/plain');
   };
 

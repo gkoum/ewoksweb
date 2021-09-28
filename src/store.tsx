@@ -10,15 +10,15 @@ import type {
   GraphRF,
 } from './types';
 import {
-  getLinks,
-  getNodes,
+  toRFEwoksLinks,
+  toRFEwoksNodes,
   positionNodes,
   ewoksNetwork,
   findGraphWithName,
 } from './utils';
 
-const nodes: EwoksRFNode[] = []; //getNodes('graph');
-const edges: EwoksRFLink[] = []; // getLinks('graph');
+const nodes: EwoksRFNode[] = []; //toRFEwoksNodes('graph');
+const edges: EwoksRFLink[] = []; // toRFEwoksLinks('graph');
 console.log(nodes, edges);
 // const positionedNodes = positionNodes(nodes, edges);
 // console.log(positionedNodes);
@@ -62,16 +62,6 @@ const useStore = create<State>((set, get) => ({
     }));
   },
 
-  ewoksElements: [...nodes, ...edges],
-
-  setEwoksElements: (ewoksElements) => {
-    console.log(ewoksElements);
-    set((state) => ({
-      ...state,
-      ewoksElements,
-    }));
-  },
-
   selectedElement: {
     id: '',
     type: '',
@@ -79,11 +69,24 @@ const useStore = create<State>((set, get) => ({
     position: { x: 0, y: 0 },
   } as EwoksRFNode,
 
-  setSelectedElement: (element: EwoksNode | EwoksLink) =>
+  setSelectedElement: (element: EwoksNode | EwoksLink) => {
+    console.log(element);
+    let tempNods = [];
+    if ('position' in element) {
+      const nodes = [...get().graphRF.nodes];
+      tempNods = [...nodes.filter((nod) => nod.id !== element.id), element];
+      console.log(nodes, tempNods);
+    }
     set((state) => ({
       ...state,
+      graphRF: {
+        graph: get().graphRF.graph,
+        nodes: tempNods,
+        links: get().graphRF.links,
+      },
       selectedElement: element,
-    })),
+    }));
+  },
 
   selectedSubgraph: {
     graph: { id: '', input_nodes: [], output_nodes: [] },
@@ -99,8 +102,8 @@ const useStore = create<State>((set, get) => ({
       ...state,
       selectedSubgraph: {
         graph: graphRF.graph,
-        nodes: getNodes(graphRF.graph.id),
-        links: getLinks(graphRF.graph.id),
+        nodes: toRFEwoksNodes(graphRF.graph.id),
+        links: toRFEwoksLinks(graphRF.graph.id),
       },
     }));
   },

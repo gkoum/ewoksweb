@@ -72,9 +72,7 @@ export const graph = {
       source: 'node1',
       target: 'node2',
       data_mapping: [{ source_output: 'ab', target_input: 'result' }],
-      sub_graph_nodes: {
-        sub_target: 'in1',
-      },
+      sub_target: 'in1',
     },
     {
       source: 'node4',
@@ -146,9 +144,7 @@ export const subgraph = {
       source: 'task2',
       target: 'subsubgraph',
       data_mapping: [{ source_output: 'ab56', target_input: 'result56' }],
-      sub_graph_nodes: {
-        sub_target: 'in',
-      },
+      sub_target: 'in',
     },
   ],
 };
@@ -192,9 +188,7 @@ export const subsubgraph = {
       source: 'task2',
       target: 'subsubsubgraph',
       data_mapping: [{ source_output: 'ab78', target_input: 'result7' }],
-      sub_graph_nodes: {
-        sub_target: 'in',
-      },
+      sub_target: 'in',
     },
   ],
 };

@@ -28,8 +28,8 @@ import DataNode from '../CustomNodes/DataNode';
 import type { Graph, EwoksLink, EwoksNode } from '../types';
 import CanvasView from './CanvasView';
 import {
-  getLinks,
-  getNodes,
+  toRFEwoksLinks,
+  toRFEwoksNodes,
   positionNodes,
   ewoksNetwork,
   findGraphWithName,
@@ -81,7 +81,6 @@ function Canvas() {
     console.log(state);
     return state.ewoksElements;
   });
-  const setEwoksElements = useStore((state) => state.setEwoksElements);
 
   // useEffect(() => {
   //   console.log(ewoksElements);
@@ -100,7 +99,7 @@ function Canvas() {
     //  label: "barmboutsalaMethod"
     //  position: Object { x: 50, y: 80 }
     // NEED TO SAVE THE TYPE calculated in getNodes in data.type to
-    // const nodes = getNodes(graphRF);
+    // const nodes = toRFEwoksNodes(graphRF);
     // const links = getLinks(graphRF);
     // console.log(nodes, links);
     // id: "node1"
@@ -192,27 +191,12 @@ function Canvas() {
     };
     console.log(rfInstance);
     // setElements((es) => [...es, newNode]);
-    // setEwoksElements([...elements, newNode]);
     setGraphRF({
       graph: graphRF.graph,
       nodes: [...graphRF.nodes, newNode],
       links: graphRF.links,
     });
   };
-
-  // as ewoks nodes are:
-  // data_mapping: Array [ {…} ]
-  // ​​​​source: "node1"
-  // ​​​​sub_graph_nodes: Object { sub_target: "in1" }
-  // ​​​​target: "node2"
-
-  // As given back from the ReactFlow
-  // id: "reactflow__edge-node2o-out1: subsubgraph  -> out1__data -node7i__data"
-  // ​​​source: "node2"
-  // ​​​sourceHandle: "o-out1: subsubgraph  -> out1__data "
-  // ​​​target: "node7"
-  // ​​​targetHandle: "i__data"
-  // no data_mapping
 
   const onConnect = (params) => {
     console.log(params);
