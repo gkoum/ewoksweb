@@ -26,6 +26,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
+import EditableTable from './Components/EditableTable';
 
 import type {
   Graph,
@@ -103,14 +104,12 @@ export default function Sidebar(props) {
   const labelChanged = (event) => {
     setLabel(event.target.value);
     const tmpElement = { ...element, data: { ...element.data } };
-    console.log(tmpElement.data === element.data);
     if ('position' in element) {
       tmpElement.data.label = event.target.value;
     } else {
       tmpElement.label = event.target.value;
     }
     setElement(tmpElement);
-    console.log(selectedElement, tmpElement);
   };
 
   const commentChanged = (event) => {
@@ -137,6 +136,14 @@ export default function Sidebar(props) {
 
   const defaultInputsChanged = (event) => {
     setDefaultInputs(event.target.value);
+    console.log(event.target.value);
+    // setElement((prevState) => ({
+    //   ...prevState,
+    //   major: {
+    //     ...prevState.major,
+    //     name: 'Tan Long',
+    //   },
+    // }));
   };
 
   const inputsCompleteChanged = (event) => {
@@ -269,21 +276,22 @@ export default function Sidebar(props) {
                 </div>
 
                 <div>
-                  <TextField
+                  <EditableTable defaultValues={defaultInputs} />
+                  {/* <TextField
                     id="outlined-basic"
                     label="Default Inputs"
                     variant="outlined"
                     value={
                       defaultInputs && defaultInputs.length > 0
-                        ? defaultInputs
-                            .map((input) => input.name + '-->' + input.value)
-                            .reduce((res, item) => {
-                              return res + ', ' + item;
-                            })
+                        ? JSON.stringify(defaultInputs)
                         : ''
+                      // .map((input) => input.name + '-->' + input.value)
+                      //   .reduce((res, item) => {
+                      //     return res + ', ' + item;
+                      //   })
                     }
                     onChange={defaultInputsChanged}
-                  />
+                  /> */}
                 </div>
                 <div>
                   Inputs-complete

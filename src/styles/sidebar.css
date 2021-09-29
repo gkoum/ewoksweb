@@ -70,3 +70,7 @@
     max-width: 250px;
   }
 }
+
+.MuiTableCell-root {
+  padding: 1px;
+}
