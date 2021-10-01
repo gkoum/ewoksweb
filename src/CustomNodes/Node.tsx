@@ -133,7 +133,7 @@ const Node: React.FC<NodeProps> = ({
     >
       <span style={{ maxWidth: '120px' }} className="icons">
         <div style={customTitle}>{label}</div>
-        <span style={{ wordWrap: 'break-word' }}>{comment}</span>
+        <div style={{ wordWrap: 'break-word' }}>{comment}</div>
         {/* eslint-disable-next-line dot-notation */}
         <img
           role="presentation"

@@ -69,6 +69,7 @@ const useStore = create<State>((set, get) => ({
     position: { x: 0, y: 0 },
   } as EwoksRFNode,
 
+  // sets graphRF as well? should it?
   setSelectedElement: (element: EwoksNode | EwoksLink) => {
     console.log(element);
     let tempNods = [];
@@ -81,7 +82,7 @@ const useStore = create<State>((set, get) => ({
       ...state,
       graphRF: {
         graph: get().graphRF.graph,
-        nodes: tempNods,
+        nodes: 'position' in element ? tempNods : get().graphRF.nodes,
         links: get().graphRF.links,
       },
       selectedElement: element,

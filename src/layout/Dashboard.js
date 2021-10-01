@@ -36,7 +36,12 @@ import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import { findGraphWithName, rfToEwoks } from '../utils';
+import {
+  findGraphWithName,
+  rfToEwoks,
+  toRFEwoksLinks,
+  toRFEwoksNodes,
+} from '../utils';
 import MyCard from '../layout/MyCard';
 
 // import { mainListItems, secondaryListItems } from './listItems';
@@ -175,9 +180,7 @@ export default function Dashboard() {
 
   const graphRF = useStore((state) => state.graphRF);
   const setGraphRF = useStore((state) => state.setGraphRF);
-  const ewoksElements = useStore((state) => state.ewoksElements);
   const selectedElement = useStore((state) => state.selectedElement);
-  const setSelectedElement = useStore((state) => state.setSelectedElement);
   const selectedSubgraph = useStore((state) => {
     console.log(state);
     return state.selectedSubgraph;
@@ -217,8 +220,14 @@ export default function Dashboard() {
 
   const goToGraph = (e) => {
     e.preventDefault();
+    console.log(e.target.text);
     setSubgraphsStack(e.target.text);
-    setGraphRF(findGraphWithName(e.target.text));
+    const subgraph = findGraphWithName(e.target.text);
+    setGraphRF({
+      graph: subgraph.graph,
+      nodes: toRFEwoksNodes(subgraph),
+      links: toRFEwoksLinks(subgraph),
+    });
   };
 
   return (

@@ -74,7 +74,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
 
 function EditableTable(props) {
   const [rows, setRows] = React.useState([
-    createData({ name: '-', value: Number }),
+    createData({ name: '-', value: '' }),
   ]);
 
   useEffect(() => {
@@ -92,6 +92,7 @@ function EditableTable(props) {
   const classes = useStyles();
 
   const onToggleEditMode = (id) => {
+    console.log(id, props.defaultValues);
     setRows((state) => {
       return rows.map((row) => {
         if (row.id === id) {
@@ -100,10 +101,12 @@ function EditableTable(props) {
         return row;
       });
     });
+    props.defaultInputsChanged(rows);
   };
 
   const onChange = (e, row) => {
     console.log(e.target.value, e.target.name, row);
+
     if (!previous[row.id]) {
       setPrevious((state) => ({ ...state, [row.id]: row }));
     }
@@ -132,6 +135,7 @@ function EditableTable(props) {
     });
     console.log(newRows);
     setRows(newRows);
+    props.defaultInputsChanged(newRows);
     // setPrevious((state) => {
     //   delete state[id];
     //   return state;
@@ -143,7 +147,11 @@ function EditableTable(props) {
     <Paper className={classes.root}>
       <Table className={classes.table} aria-label="caption table">
         <TableHead>
-          <TableRow>Default values</TableRow>
+          <TableRow>
+            <TableCell style={{ padding: '1px' }} align="left">
+              Default values
+            </TableCell>
+          </TableRow>
           <TableRow>
             <TableCell style={{ padding: '1px' }} align="left">
               Name

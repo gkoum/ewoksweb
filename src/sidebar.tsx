@@ -76,8 +76,6 @@ export default function Sidebar(props) {
   const [nodeType, setNodeType] = React.useState('');
   const [label, setLabel] = React.useState('');
   const [comment, setComment] = React.useState('');
-  const [positionX, setPositionX] = React.useState(Number);
-  const [positionY, setPositionY] = React.useState(Number);
   const [element, setElement] = React.useState<EwoksRFNode | EwoksRFLink>({});
 
   useEffect(() => {
@@ -91,35 +89,56 @@ export default function Sidebar(props) {
       setTaskIdentifier(selectedElement.task_identifier);
       setTaskType(selectedElement.task_type);
       setTaskGenerator(selectedElement.task_generator);
-      setInputsComplete(selectedElement.inputs_complete);
+      setInputsComplete(!!selectedElement.inputs_complete);
+      console.log(selectedElement.default_inputs);
       setDefaultInputs(selectedElement.default_inputs);
       console.log(selectedElement);
     } else {
       setLabel(selectedElement.label);
-      // setPositionX(0);
-      // setPositionY(0);
     }
   }, [selectedElement.id, selectedElement]);
 
   const labelChanged = (event) => {
     setLabel(event.target.value);
-    const tmpElement = { ...element, data: { ...element.data } };
+    // const tmpElement = { ...element, data: { ...element.data } };
     if ('position' in element) {
-      tmpElement.data.label = event.target.value;
+      setElement({
+        ...element,
+        data: { ...element.data, label: event.target.value },
+      });
     } else {
-      tmpElement.label = event.target.value;
+      setElement({
+        ...element,
+        label: event.target.value,
+      });
     }
-    setElement(tmpElement);
   };
 
   const commentChanged = (event) => {
     setComment(event.target.value);
+    setElement({
+      ...element,
+      data: { ...element.data, comment: event.target.value },
+    });
   };
 
   const nodeTypeChanged = (event) => {
     setNodeType(event.target.value);
+    setElement({
+      ...element,
+      data: { ...element.data, type: event.target.value },
+    });
     // selectedElement.type = event.target.value;
-    setSelectedElement(selectedElement);
+    // setSelectedElement(selectedElement);
+  };
+
+  const defaultInputsChanged = (table) => {
+    // setDefaultInputs(table);
+    console.log(table);
+    setElement({
+      ...element,
+      default_inputs: table,
+    });
   };
 
   const taskIdentifierChanged = (event) => {
@@ -134,28 +153,13 @@ export default function Sidebar(props) {
     setTaskGenerator(event.target.value);
   };
 
-  const defaultInputsChanged = (event) => {
-    setDefaultInputs(event.target.value);
-    console.log(event.target.value);
-    // setElement((prevState) => ({
-    //   ...prevState,
-    //   major: {
-    //     ...prevState.major,
-    //     name: 'Tan Long',
-    //   },
-    // }));
-  };
-
   const inputsCompleteChanged = (event) => {
-    setInputsComplete(event.target.value);
-  };
-
-  const positionXChanged = (event) => {
-    setPositionX(event.target.value);
-  };
-
-  const positionYChanged = (event) => {
-    setPositionY(event.target.value);
+    console.log(inputsComplete, event.target.checked);
+    setInputsComplete(event.target.checked);
+    setElement({
+      ...element,
+      inputs_complete: event.target.checked,
+    });
   };
 
   const saveElement = () => {
@@ -276,7 +280,10 @@ export default function Sidebar(props) {
                 </div>
 
                 <div>
-                  <EditableTable defaultValues={defaultInputs} />
+                  <EditableTable
+                    defaultValues={defaultInputs}
+                    defaultInputsChanged={defaultInputsChanged}
+                  />
                   {/* <TextField
                     id="outlined-basic"
                     label="Default Inputs"
@@ -296,8 +303,9 @@ export default function Sidebar(props) {
                 <div>
                   Inputs-complete
                   <Checkbox
-                    value={inputsComplete}
+                    checked={inputsComplete}
                     onChange={inputsCompleteChanged}
+                    inputProps={{ 'aria-label': 'controlled' }}
                   />
                 </div>
                 <div>
@@ -342,15 +350,6 @@ export default function Sidebar(props) {
                 onChange={commentChanged}
               />
             </div>
-            {/* <div>
-          <TextField
-            id="outlined-basic"
-            label="positionY"
-            variant="outlined"
-            value={positionY || ''}
-            onChange={positionYChanged}
-          />
-        </div> */}
             <Button variant="contained" color="primary" onClick={saveElement}>
               Save
             </Button>

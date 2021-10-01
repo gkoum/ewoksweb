@@ -64,6 +64,7 @@ export interface EwoksRFLink {
   data?: {
     data_mapping?: DataMapping;
     type?: string;
+    comment?: string;
   };
   conditions?: string;
   on_error?: Inputs;

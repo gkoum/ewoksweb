@@ -25,7 +25,7 @@ import useStore from '../store';
 import CustomNode from '../CustomNodes/CustomNode';
 import FunctionNode from '../CustomNodes/FunctionNode';
 import DataNode from '../CustomNodes/DataNode';
-import type { Graph, EwoksLink, EwoksNode } from '../types';
+import type { Graph, EwoksLink, EwoksNode, GraphRF } from '../types';
 import CanvasView from './CanvasView';
 import {
   toRFEwoksLinks,
@@ -68,7 +68,6 @@ function Canvas() {
 
   const { fitView } = useZoomPanHelper();
   const [rfInstance, setRfInstance] = useState(null);
-  const [elementClicked, setElementClicked] = useState({ id: 'none' });
   // const [ewoksD, setEwoksD] = useState(ewoksNetwork);
   const [disableDragging, setDisableDragging] = useState(false);
   const [elements, setElements] = useState([]);
@@ -77,10 +76,10 @@ function Canvas() {
   const setGraphRF = useStore((state) => state.setGraphRF);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
 
-  const ewoksElements = useStore((state) => {
-    console.log(state);
-    return state.ewoksElements;
-  });
+  // const ewoksElements = useStore((state) => {
+  //   console.log(state);
+  //   return state.ewoksElements;
+  // });
 
   // useEffect(() => {
   //   console.log(ewoksElements);
@@ -135,10 +134,13 @@ function Canvas() {
     // position: Object { x: 50, y: 80 }
     // type: "method"
     console.log(element, elements, graphRF.nodes);
+    // if ('position' in element) {
     const graphElement = elements.find((el) => el.id === element.id);
     console.log(graphElement);
-    setElementClicked(graphElement);
     setSelectedElement(graphElement);
+    // } else {
+
+    // }
   };
 
   const onLoad = (reactFlowInstance) => setRfInstance(reactFlowInstance);
@@ -181,15 +183,16 @@ function Canvas() {
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     });
+    console.log(position);
     const newNode = {
       id: getId(),
-      task_type: 'special',
+      task_type: 'method',
       task_identifier: getId(),
       type,
-      uiProps: { position },
+      position,
       data: { label: CustomNewNode(id, name, image) },
     };
-    console.log(rfInstance);
+    console.log(newNode, graphRF);
     // setElements((es) => [...es, newNode]);
     setGraphRF({
       graph: graphRF.graph,
@@ -219,11 +222,16 @@ function Canvas() {
 
   const onNodeDoubleClick = (event, node) => {
     event.preventDefault();
-    console.log(event, node);
+    const nodeTmp = graphRF.nodes.find((el) => el.id === node.id);
+    console.log(event, node, nodeTmp);
     if (node.type === 'graph') {
-      const subgraph = findGraphWithName(node.data.task_identifier);
+      const subgraph = findGraphWithName(nodeTmp.task_identifier);
       setSelectedSubgraph(subgraph);
-      setGraphRF(subgraph);
+      setGraphRF({
+        graph: subgraph.graph,
+        nodes: toRFEwoksNodes(subgraph),
+        links: toRFEwoksLinks(subgraph),
+      } as GraphRF);
       setSubgraphsStack(subgraph.graph.id);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);
@@ -313,7 +321,7 @@ function Canvas() {
           </ReactFlow>
           {/* <Popover
               anchor={elementClicked || null}
-              onClose={() => setElementClicked(null)}
+              onClose={() => (null)}
               nodeData={elementClicked || null}
               onBottom={true}
             /> */}
