@@ -218,6 +218,8 @@ function Canvas() {
 
   const onSelectionChange = (elements) => {
     console.log(elements);
+    if (!elements) setSelectedElement({});
+    console.log(selectedElement);
   };
 
   const onNodeDoubleClick = (event, node) => {

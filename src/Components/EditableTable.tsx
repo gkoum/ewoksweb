@@ -13,6 +13,8 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DoneIcon from '@material-ui/icons/DoneAllTwoTone';
 import RevertIcon from '@material-ui/icons/NotInterestedOutlined';
+import { Icon } from '@material-ui/core';
+// import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,14 +45,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const createData = ({ name, value }) => {
-  console.log(name, value);
-  return {
-    id: name.replace(' ', '_'),
-    name,
-    value,
-    isEditMode: false,
-  };
+const createData = (pair) => {
+  console.log(
+    pair,
+    Object.keys(pair)[1],
+    Object.values(pair)[1],
+    Object.keys(pair)[2],
+    Object.values(pair)[2]
+  );
+  return pair.id
+    ? { ...pair, isEditMode: false }
+    : {
+        id: Object.values(pair)[0],
+        name: Object.values(pair)[0],
+        value: Object.values(pair)[1],
+        isEditMode: false,
+      };
 };
 
 const CustomTableCell = ({ row, name, onChange }) => {
@@ -73,9 +83,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
 };
 
 function EditableTable(props) {
-  const [rows, setRows] = React.useState([
-    createData({ name: '-', value: '' }),
-  ]);
+  const [rows, setRows] = React.useState([]);
 
   useEffect(() => {
     console.log(props.defaultValues);
@@ -84,7 +92,7 @@ function EditableTable(props) {
         ? props.defaultValues.map((pair) => {
             return createData(pair);
           })
-        : [createData({ name: '-', value: Number })]
+        : [] //[createData({ name: '-', value: Number })]
     );
   }, [props.defaultValues]);
 
@@ -96,29 +104,32 @@ function EditableTable(props) {
     setRows((state) => {
       return rows.map((row) => {
         if (row.id === id) {
-          return { ...row, isEditMode: !row.isEditMode };
+          return {
+            ...row,
+            id: row.name.replace(' ', '_'),
+            isEditMode: !row.isEditMode,
+          };
         }
         return row;
       });
     });
-    props.defaultInputsChanged(rows);
+    console.log(rows);
+    props.valuesChanged(rows);
   };
 
   const onChange = (e, row) => {
-    console.log(e.target.value, e.target.name, row);
+    console.log(e.target, row);
 
-    if (!previous[row.id]) {
-      setPrevious((state) => ({ ...state, [row.id]: row }));
-    }
     const value = e.target.value;
     const name = e.target.name;
     const { id } = row;
     const newRows = rows.map((row) => {
       if (row.id === id) {
-        return { ...row, [name]: value };
+        return { ...row, id: row.name.replace(' ', '_'), [name]: value };
       }
       return row;
     });
+    console.log(newRows);
     setRows(newRows);
   };
 
@@ -135,7 +146,7 @@ function EditableTable(props) {
     });
     console.log(newRows);
     setRows(newRows);
-    props.defaultInputsChanged(newRows);
+    props.valuesChanged(newRows);
     // setPrevious((state) => {
     //   delete state[id];
     //   return state;
@@ -147,17 +158,17 @@ function EditableTable(props) {
     <Paper className={classes.root}>
       <Table className={classes.table} aria-label="caption table">
         <TableHead>
-          <TableRow>
+          {/* <TableRow>
             <TableCell style={{ padding: '1px' }} align="left">
               Default values
             </TableCell>
-          </TableRow>
+          </TableRow> */}
           <TableRow>
             <TableCell style={{ padding: '1px' }} align="left">
-              Name
+              {props.headers[0]}
             </TableCell>
             <TableCell style={{ padding: '1px' }} align="left">
-              Value
+              {props.headers[1]}
             </TableCell>
           </TableRow>
         </TableHead>
@@ -185,13 +196,15 @@ function EditableTable(props) {
                     </IconButton>
                   </>
                 ) : (
-                  <IconButton
-                    style={{ padding: '1px' }}
-                    aria-label="delete"
-                    onClick={() => onToggleEditMode(row.id)}
-                  >
-                    <EditIcon />
-                  </IconButton>
+                  <span>
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="delete"
+                      onClick={() => onToggleEditMode(row.id)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </span>
                 )}
               </TableCell>
             </TableRow>

@@ -67,6 +67,7 @@ const useStore = create<State>((set, get) => ({
     type: '',
     data: { label: '' },
     position: { x: 0, y: 0 },
+    default_inputs: [],
   } as EwoksRFNode,
 
   // sets graphRF as well? should it?
