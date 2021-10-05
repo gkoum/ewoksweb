@@ -55,7 +55,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 let id = 0;
-const getId = () => `dndnode_${id++}`;
+const getId = () => `new_node_${id++}`;
+const getLinkId = () => `new_link_${id++}`;
 
 const nodeTypes = {
   special: CustomNode,
@@ -171,26 +172,56 @@ function Canvas() {
     );
   }
 
+  function dataNewNode({ type, label, image }) {
+    console.log(type, label, image);
+    return (
+      <DataNode
+        type
+        label
+        image
+        onElementClick={onElementClick}
+        // removeNode={removeNode}
+        // openContactDetails={openContactDetails}
+      />
+    );
+  }
+
   const onDrop = (event) => {
     event.preventDefault();
-    console.log(event);
+    console.log(event, event.dataTransfer);
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-    const type = event.dataTransfer.getData('application/reactflow');
-    const name = event.dataTransfer.getData('name');
-    const image = event.dataTransfer.getData('image');
-    console.log(type, name, image);
+    const task_identifier = event.dataTransfer.getData('task_identifier');
+    const task_type = event.dataTransfer.getData('task_type');
+    const icon = event.dataTransfer.getData('icon');
+    console.log(task_identifier, task_type, icon);
     const position = rfInstance.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     });
     console.log(position);
+    // data:
+    // comment: undefined
+    // icon: "CreateClass"
+    // label: "tasks.simplemethods.kep17"
+    // type: "output"
+    // default_inputs: undefined
+    // id: "node7"
+    // inputs_complete: undefined
+    // position: Object { x: 1100, y: 240 }
+    // sourcePosition: "right"
+    // targetPosition: "left"
+    // task_generator: undefined
+    // task_identifier: "tasks.simplemethods.kep17"
+    // task_type: "method"
+    // type: "method"
     const newNode = {
       id: getId(),
-      task_type: 'method',
-      task_identifier: getId(),
-      type,
+      task_type,
+      task_identifier,
+      type: task_type,
       position,
-      data: { label: CustomNewNode(id, name, image) },
+      data: { label: `${task_identifier} node`, type: 'default', icon: icon },
+      // data: { label: CustomNewNode(id, name, image) },
     };
     console.log(newNode, graphRF);
     // setElements((es) => [...es, newNode]);
@@ -203,11 +234,26 @@ function Canvas() {
 
   const onConnect = (params) => {
     console.log(params);
-    setElements((els) => addEdge(params, els));
+    const link = {
+      data: {
+        conditions: '',
+        data_mapping: [],
+        map_all_data: false,
+        sub_source: '',
+        sub_target: '',
+        sourceHandle: params.sourceHandle,
+        targetHandle: params.targetHandle,
+      },
+      id: getLinkId(),
+      label: getLinkId(),
+      source: params.source,
+      target: params.target,
+    };
+    // setElements((els) => addEdge(params, els));
     setGraphRF({
       graph: graphRF.graph,
       nodes: graphRF.nodes,
-      links: addEdge(params, graphRF.links),
+      links: [...graphRF.links, link], // addEdge(params, graphRF.links),
     });
   };
 

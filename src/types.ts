@@ -44,12 +44,17 @@ export interface DataMapping {
   target_input: string;
 }
 
+export interface Conditions {
+  source_output: string;
+  value: string;
+}
+
 export interface EwoksLink {
   id?: string;
   source: string;
   target: string;
   data_mapping?: DataMapping[];
-  conditions?: string;
+  conditions?: Conditions[];
   on_error?: Inputs;
   subtarget?: string;
   subsource?: string;
@@ -65,9 +70,9 @@ export interface EwoksRFLink {
     data_mapping?: DataMapping;
     type?: string;
     comment?: string;
+    conditions?: Conditions[];
+    on_error?: Inputs;
   };
-  conditions?: string;
-  on_error?: Inputs;
   subtarget?: string;
   subsource?: string;
   uiProps?: UiProps;

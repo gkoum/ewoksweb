@@ -6,6 +6,7 @@
   /* display: flex; */
   height: 100%;
   flex-wrap: wrap;
+  padding: '8px';
   /* background-color: DodgerBlue; */
 }
 

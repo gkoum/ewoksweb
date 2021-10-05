@@ -55,15 +55,6 @@ export function rfToEwoks(tempGraph): GraphEwoks {
 // EwoksRFLinks --> EwoksLinks for saving
 export function toEwoksLinks(links): EwoksLink[] {
   console.log(links);
-  // RF link from canvas
-  // data:
-  //  data_mapping: Array [ {…} ]
-  //  sub_source: undefined
-  //  sub_target: "in1"
-  // ​​​id: "enode1-node2"
-  // label: "ab->result"
-  // source: "node1"
-  // target: "node2"
   return links.map(
     ({
       id,
@@ -252,6 +243,8 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
         data_mapping = [{ source_output: 'data', target_input: 'mapping' }],
         sub_target,
         sub_source,
+        conditions,
+        map_all_data,
       }) => ({
         id: `e${source}-${target}`,
         label: data_mapping
@@ -259,7 +252,13 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
           .join(', '),
         source: source.toString(),
         target: target.toString(),
-        data: { data_mapping, sub_target, sub_source },
+        data: {
+          data_mapping,
+          sub_target,
+          sub_source,
+          conditions,
+          map_all_data: map_all_data ? true : false,
+        },
       })
     );
   } else return [] as EwoksRFLink[];

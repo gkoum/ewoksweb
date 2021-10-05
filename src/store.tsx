@@ -73,21 +73,38 @@ const useStore = create<State>((set, get) => ({
   // sets graphRF as well? should it?
   setSelectedElement: (element: EwoksNode | EwoksLink) => {
     console.log(element);
-    let tempNods = [];
     if ('position' in element) {
-      const nodes = [...get().graphRF.nodes];
-      tempNods = [...nodes.filter((nod) => nod.id !== element.id), element];
-      console.log(nodes, tempNods);
+      set((state) => ({
+        ...state,
+        graphRF: {
+          graph: get().graphRF.graph,
+          nodes: [
+            ...get().graphRF.nodes.filter((nod) => nod.id !== element.id),
+            element,
+          ],
+          links: get().graphRF.links,
+        },
+        selectedElement: element,
+      }));
+    } else if ('source' in element) {
+      set((state) => ({
+        ...state,
+        graphRF: {
+          graph: get().graphRF.graph,
+          nodes: get().graphRF.nodes,
+          links: [
+            ...get().graphRF.links.filter((link) => link.id !== element.id),
+            element,
+          ],
+        },
+        selectedElement: element,
+      }));
+    } else {
+      set((state) => ({
+        ...state,
+        selectedElement: element,
+      }));
     }
-    set((state) => ({
-      ...state,
-      graphRF: {
-        graph: get().graphRF.graph,
-        nodes: 'position' in element ? tempNods : get().graphRF.nodes,
-        links: get().graphRF.links,
-      },
-      selectedElement: element,
-    }));
   },
 
   selectedSubgraph: {

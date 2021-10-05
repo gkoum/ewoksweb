@@ -45,9 +45,11 @@ import type {
   Inputs,
 } from './types';
 
-const onDragStart = (event, nodeType) => {
-  console.log(event, nodeType);
-  event.dataTransfer.setData('application/reactflow', nodeType);
+const onDragStart = (event, { task_identifier, task_type, icon }) => {
+  console.log(event, icon);
+  event.dataTransfer.setData('task_identifier', task_identifier);
+  event.dataTransfer.setData('task_type', task_type);
+  event.dataTransfer.setData('icon', icon);
   event.dataTransfer.effectAllowed = 'move';
 };
 
@@ -72,6 +74,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const iconsObj = {
+  orange1: orange1,
+  Continuize: Continuize,
+  orange2: orange2,
+  orange3: orange3,
+  AggregateColumns: AggregateColumns,
+  Correlations: Correlations,
+  CreateClass: CreateClass,
+};
+
 export default function Sidebar(props) {
   const classes = useStyles();
 
@@ -87,12 +99,14 @@ export default function Sidebar(props) {
   const [taskGenerator, setTaskGenerator] = React.useState('');
   const [defaultInputs, setDefaultInputs] = React.useState<Inputs[]>([]);
   const [dataMapping, setDataMapping] = React.useState<Inputs[]>([]);
+  const [conditions, setConditions] = React.useState<Inputs[]>([]);
   const [inputsComplete, setInputsComplete] = React.useState<boolean>(false);
   const [mapAllData, setMapAllData] = React.useState<boolean>(false);
   const [nodeType, setNodeType] = React.useState('');
   const [label, setLabel] = React.useState('');
   const [comment, setComment] = React.useState('');
   const [element, setElement] = React.useState<EwoksRFNode | EwoksRFLink>({});
+  const [onError, setOnError] = React.useState<boolean>(false);
 
   useEffect(() => {
     console.log(selectedElement);
@@ -114,8 +128,14 @@ export default function Sidebar(props) {
         console.log(selectedElement);
       } else {
         setLabel(selectedElement.label);
-        setDataMapping(selectedElement.data.data_mapping);
-        setMapAllData(!!selectedElement.data.map_all_data);
+        if (selectedElement.data && selectedElement.data.data_mapping)
+          setDataMapping(selectedElement.data.data_mapping);
+        if (selectedElement.data && selectedElement.data.map_all_data)
+          setMapAllData(!!selectedElement.data.map_all_data);
+        if (selectedElement.data && selectedElement.data.on_error)
+          setOnError(selectedElement.data.on_error);
+        if (selectedElement.data && selectedElement.data.conditions)
+          setConditions(selectedElement.data.conditions);
         console.log(selectedElement);
       }
     }
@@ -164,12 +184,21 @@ export default function Sidebar(props) {
     });
   };
 
+  const conditionsValuesChanged = (table) => {
+    // setDefaultInputs(table);
+    console.log(table);
+    setElement({
+      ...element,
+      data: { ...element.data, conditions: table },
+    });
+  };
+
   const dataMappingValuesChanged = (table) => {
     // setDefaultInputs(table);
     console.log(table);
     setElement({
       ...element,
-      data_mapping: table,
+      data: { ...element.data, data_mapping: table },
     });
   };
 
@@ -194,18 +223,54 @@ export default function Sidebar(props) {
     });
   };
 
+  const onErrorChanged = (event) => {
+    console.log(event.target.checked);
+    setOnError(event.target.checked);
+    // setElement({
+    //   ...element,
+    //   inputs_complete: event.target.checked,
+    // });
+  };
+
   const mapAllDataChanged = (event) => {
     console.log(mapAllData, event.target.checked);
     setMapAllData(event.target.checked);
     setElement({
       ...element,
-      data: { ...element.data, map_all_data: event.target.value },
+      data: { ...element.data, map_all_data: event.target.checked },
     });
+    console.log(element);
   };
 
   const saveElement = () => {
     console.log(element, selectedElement);
     setSelectedElement(element);
+  };
+
+  const addConditions = () => {
+    console.log(selectedElement);
+    if (element.data.conditions && element.data.conditions.length > 0) {
+      console.log(element);
+      setSelectedElement({
+        ...element,
+        data: {
+          ...element.data,
+          conditions: [
+            ...element.data.conditions,
+            { id: '-', name: '-', value: '-' },
+          ],
+        },
+      });
+    } else {
+      console.log(element.data);
+      setSelectedElement({
+        ...element,
+        data: {
+          ...element.data,
+          conditions: [{ id: '-', name: '-', value: '-' }],
+        },
+      });
+    }
   };
 
   const addDataMapping = () => {
@@ -224,10 +289,13 @@ export default function Sidebar(props) {
       });
     } else {
       console.log(element.data);
-      // setSelectedElement({
-      //   ...element,
-      //   default_inputs: [{ id: '-', name: '-', value: '-' }],
-      // });
+      setSelectedElement({
+        ...element,
+        data: {
+          ...element.data,
+          data_mapping: [{ id: '-', name: '-', value: '-' }],
+        },
+      });
     }
   };
 
@@ -250,6 +318,10 @@ export default function Sidebar(props) {
     }
   };
 
+  const insertGraph = (val) => {
+    console.log(val, selectedElement);
+  };
+
   return (
     <aside className="dndflow">
       {/* <span
@@ -269,54 +341,49 @@ export default function Sidebar(props) {
         </AccordionSummary>
         <AccordionDetails style={{ flexWrap: 'wrap' }}>
           {[
-            { type: 'default', img: orange1 },
-            { type: 'default', img: orange2 },
-            { type: 'default', img: orange3 },
-            { type: 'default', img: AggregateColumns },
-            { type: 'default', img: Continuize },
-            { type: 'default', img: Correlations },
-            { type: 'default', img: CreateClass },
-            { type: 'default', img: CSVFile },
-            // { type: 'input', img: CSVFile },
+            { task_identifier: '1', task_type: 'method', icon: 'orange1' },
+            { task_identifier: '2', task_type: 'method', icon: 'orange2' },
+            { task_identifier: '3', task_type: 'method', icon: 'orange3' },
+            {
+              task_identifier: '4',
+              task_type: 'method',
+              icon: 'AggregateColumns',
+            },
+            { task_identifier: '5', task_type: 'method', icon: 'Continuize' },
+            { task_identifier: '6', task_type: 'method', icon: 'Correlations' },
+            { task_identifier: '7', task_type: 'method', icon: 'CreateClass' },
           ].map((elem, index) => (
             <span
-              key={elem.img}
+              key={index}
               className="dndnode"
-              onDragStart={(event) => onDragStart(event, elem.type)}
+              onDragStart={(event) =>
+                onDragStart(event, {
+                  task_identifier: elem.task_identifier,
+                  task_type: elem.task_type,
+                  icon: elem.icon,
+                })
+              }
               draggable
             >
-              <img src={elem.img} alt="orangeImage" />
+              <img src={iconsObj[elem.icon]} alt="orangeImage" />
             </span>
           ))}
           <span
-            className="dndnode input"
-            onDragStart={(event) => onDragStart(event, 'input')}
-            draggable
-          >
-            Input
-            {/* <img src={orangeFile} alt="orangeImage" /> */}
-          </span>
-          <span
-            className="dndnode default"
-            onDragStart={(event) => onDragStart(event, 'default')}
-            draggable
-          >
-            Default
-          </span>
-          <span
-            className="dndnode output"
-            onDragStart={(event) => onDragStart(event, 'output')}
-            draggable
-          >
-            Output
-          </span>
-          <span
             className="dndnode graph"
-            onDragStart={(event) => onDragStart(event, 'graph')}
+            onDragStart={(event) =>
+              onDragStart(event, {
+                task_identifier: 'graph',
+                task_type: 'graph',
+                icon: 'AggregateColumns',
+              })
+            }
             draggable
           >
-            Subgraph
+            graph
           </span>
+          <Button variant="contained" color="primary" onClick={insertGraph}>
+            Insert Graph
+          </Button>
         </AccordionDetails>
       </Accordion>
       <Accordion>
@@ -352,23 +419,6 @@ export default function Sidebar(props) {
                   </div>
                 )}
                 <div>
-                  <b>Data Mapping </b>
-                  <IconButton
-                    style={{ padding: '1px' }}
-                    aria-label="delete"
-                    onClick={() => addDataMapping()}
-                  >
-                    <AddCircleOutlineIcon />
-                  </IconButton>
-                  {dataMapping.length > 0 && (
-                    <EditableTable
-                      headers={['Source', 'Target']}
-                      defaultValues={dataMapping}
-                      valuesChanged={dataMappingValuesChanged}
-                    />
-                  )}
-                </div>
-                <div>
                   <b>Map all Data</b>
                   <Checkbox
                     checked={mapAllData}
@@ -376,36 +426,78 @@ export default function Sidebar(props) {
                     inputProps={{ 'aria-label': 'controlled' }}
                   />
                 </div>
-                <FormControl component="fieldset">
+                {!mapAllData && (
+                  <div>
+                    <b>Data Mapping </b>
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="delete"
+                      onClick={() => addDataMapping()}
+                    >
+                      <AddCircleOutlineIcon />
+                    </IconButton>
+                    {dataMapping.length > 0 && (
+                      <EditableTable
+                        headers={['Source', 'Target']}
+                        defaultValues={dataMapping}
+                        valuesChanged={dataMappingValuesChanged}
+                      />
+                    )}
+                  </div>
+                )}
+                {/* <FormControl component="fieldset">
                   <RadioGroup
                     row
                     aria-label="position"
                     name="position"
                     defaultValue="top"
+                    value={conditionsOrError}
+                    onChange={conditionsOrErrorChange}
                   >
                     <FormControlLabel
                       style={{ padding: '3px' }}
                       value="conditions"
-                      control={<Radio />}
+                      control={<Radio size="small" />}
                       label="conditions"
                       labelPlacement="top"
                     />
                     <FormControlLabel
                       style={{ padding: '3px' }}
-                      value="error"
-                      control={<Radio />}
-                      label="error"
+                      value="on_error"
+                      control={<Radio size="small" />}
+                      label="on_error"
                       labelPlacement="top"
                     />
                   </RadioGroup>
-                </FormControl>
+                </FormControl> */}
                 <div>
-                  <EditableTable
-                    headers={['Argument', 'Condition']}
-                    defaultValues={dataMapping}
-                    valuesChanged={dataMappingValuesChanged}
+                  <b>on_error</b>
+                  <Checkbox
+                    checked={onError}
+                    onChange={onErrorChanged}
+                    inputProps={{ 'aria-label': 'controlled' }}
                   />
                 </div>
+                {!onError && (
+                  <div>
+                    <b>Conditions </b>
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="delete"
+                      onClick={() => addConditions()}
+                    >
+                      <AddCircleOutlineIcon />
+                    </IconButton>
+                    {conditions && conditions.length > 0 && (
+                      <EditableTable
+                        headers={['Name', 'Value']}
+                        defaultValues={conditions}
+                        valuesChanged={conditionsValuesChanged}
+                      />
+                    )}
+                  </div>
+                )}
+                <div></div>
                 <hr />
               </React.Fragment>
             )}
@@ -525,7 +617,7 @@ export default function Sidebar(props) {
                 </div>
               </React.Fragment>
             )}
-            {'data' in selectedElement && (
+            {'id' in selectedElement && (
               <React.Fragment>
                 <div>
                   <TextField
