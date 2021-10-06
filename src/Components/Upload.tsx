@@ -28,12 +28,14 @@ const showFile = async (e) => {
 };
 
 function Upload(props) {
+  // console.log(props);
   const classes = useStyles();
 
   const [selectedFile, setSelectedFile] = useState();
   const graphRF = useStore((state) => state.graphRF);
   const setGraphRF = useStore((state) => state.setGraphRF);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
+  const graphOrSubgraph = useStore<Boolean>((state) => state.graphOrSubgraph);
 
   const fileNameChanged = async (event) => {
     console.log(event.target.files[0]);
@@ -46,13 +48,16 @@ function Upload(props) {
       // console.log(selectedFile);
       const nodes = toRFEwoksNodes(JSON.parse(file.result));
       const links = toRFEwoksLinks(JSON.parse(file.result));
-      console.log(nodes, links);
+      console.log(nodes, links, graphOrSubgraph);
       setGraphRF({
         graph: JSON.parse(file.result).graph,
         nodes: nodes,
         links: links,
       } as GraphRF);
-      setSubgraphsStack('initialiase');
+      if (graphOrSubgraph) {
+        console.log('initialiase');
+        setSubgraphsStack('initialiase');
+      }
       setSubgraphsStack(JSON.parse(file.result).graph.id);
     };
     // var data = require('json!./' + selectedFile.name);

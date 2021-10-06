@@ -35,6 +35,8 @@ import Typography from '@material-ui/core/Typography';
 import OpenInBrowser from '@material-ui/icons/OpenInBrowser';
 import EditableTable from './Components/EditableTable';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import Upload from './Components/Upload';
+import AddIcon from '@material-ui/icons/Add';
 
 import type {
   Graph,
@@ -43,6 +45,7 @@ import type {
   EwoksRFNode,
   EwoksRFLink,
   Inputs,
+  DataMapping,
 } from './types';
 
 const onDragStart = (event, { task_identifier, task_type, icon }) => {
@@ -91,6 +94,9 @@ export default function Sidebar(props) {
     (state) => state.selectedElement
   );
   const setSelectedElement = useStore((state) => state.setSelectedElement);
+
+  const graphOrSubgraph = useStore<Boolean>((state) => state.graphOrSubgraph);
+  const setGraphOrSubgraph = useStore((state) => state.setGraphOrSubgraph);
 
   // default_inputs: [{ name: 'a', value: 1 }],
   const [id, setId] = React.useState('');
@@ -198,8 +204,19 @@ export default function Sidebar(props) {
     console.log(table);
     setElement({
       ...element,
-      data: { ...element.data, data_mapping: table },
+      data: {
+        ...element.data,
+        data_mapping: table.map(
+          (row: { id: string; name: string; value: string }) => {
+            return {
+              source_output: row.name,
+              target_input: row.value,
+            };
+          }
+        ),
+      },
     });
+    console.log(element);
   };
 
   // const taskIdentifierChanged = (event) => {
@@ -320,6 +337,7 @@ export default function Sidebar(props) {
 
   const insertGraph = (val) => {
     console.log(val, selectedElement);
+    setGraphOrSubgraph(false);
   };
 
   return (
@@ -337,7 +355,7 @@ export default function Sidebar(props) {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography>Add New Nodes</Typography>
+          <Typography>Add Nodes</Typography>
         </AccordionSummary>
         <AccordionDetails style={{ flexWrap: 'wrap' }}>
           {[
@@ -368,7 +386,7 @@ export default function Sidebar(props) {
               <img src={iconsObj[elem.icon]} alt="orangeImage" />
             </span>
           ))}
-          <span
+          {/* <span
             className="dndnode graph"
             onDragStart={(event) =>
               onDragStart(event, {
@@ -380,10 +398,13 @@ export default function Sidebar(props) {
             draggable
           >
             graph
-          </span>
-          <Button variant="contained" color="primary" onClick={insertGraph}>
+          </span> */}
+          <Upload>
+            <AddIcon onClick={insertGraph} />G
+          </Upload>
+          {/* <Button variant="contained" color="primary" onClick={insertGraph}>
             Insert Graph
-          </Button>
+          </Button> */}
         </AccordionDetails>
       </Accordion>
       <Accordion>
@@ -396,9 +417,11 @@ export default function Sidebar(props) {
         </AccordionSummary>
         <AccordionDetails>
           <form className={classes.root} noValidate autoComplete="off">
-            <div>
-              <b>Id:</b> {props.element.id}
-            </div>
+            {'id' in selectedElement && (
+              <div>
+                <b>Id:</b> {props.element.id}
+              </div>
+            )}
             {'source' in selectedElement && (
               <React.Fragment>
                 <div className={classes.root}>
@@ -637,11 +660,16 @@ export default function Sidebar(props) {
                     onChange={commentChanged}
                   />
                 </div>
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={saveElement}
+                >
+                  Save
+                </Button>
               </React.Fragment>
             )}
-            <Button variant="contained" color="primary" onClick={saveElement}>
-              Save
-            </Button>
             {/* <Button variant="contained" color="primary">
               Subgraph
             </Button> */}

@@ -24,13 +24,22 @@ console.log(nodes, edges);
 // console.log(positionedNodes);
 
 const useStore = create<State>((set, get) => ({
+  graphOrSubgraph: true as Boolean,
+
+  setGraphOrSubgraph: (getGraph: Boolean) => {
+    set((state) => ({
+      ...state,
+      graphOrSubgraph: getGraph,
+    }));
+  },
+
   subgraphsStack: [] as string[],
 
   setSubgraphsStack: (name: string) => {
     let stack = [];
     const subStack = get().subgraphsStack;
     const exists = subStack.indexOf(name);
-    console.log(exists);
+    console.log(exists, name);
     if (name === 'initialiase') {
       stack = [];
     } else if (exists === -1) {
@@ -56,10 +65,14 @@ const useStore = create<State>((set, get) => ({
 
   setGraphRF: (graphRF) => {
     console.log(graphRF);
+    // if (get().graphOrSubgraph) {
     set((state) => ({
       ...state,
       graphRF,
     }));
+    // } else {
+    //   console.log(graphRF);
+    // }
   },
 
   selectedElement: {
@@ -71,7 +84,7 @@ const useStore = create<State>((set, get) => ({
   } as EwoksRFNode,
 
   // sets graphRF as well? should it?
-  setSelectedElement: (element: EwoksNode | EwoksLink) => {
+  setSelectedElement: (element: EwoksRFNode | EwoksRFLink) => {
     console.log(element);
     if ('position' in element) {
       set((state) => ({
@@ -87,6 +100,7 @@ const useStore = create<State>((set, get) => ({
         selectedElement: element,
       }));
     } else if ('source' in element) {
+      console.log('saving a link.');
       set((state) => ({
         ...state,
         graphRF: {

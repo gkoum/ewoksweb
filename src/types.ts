@@ -19,6 +19,8 @@ export interface Graph {
 }
 
 export interface State {
+  graphOrSubgraph?: Boolean;
+  setGraphOrSubgraph: (getGraph: Boolean) => void;
   subgraphsStack?: Array<string>;
   setSubgraphsStack?: (graphRF: string) => void;
   graphRF: GraphRF;

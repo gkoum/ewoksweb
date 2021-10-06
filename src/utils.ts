@@ -256,7 +256,7 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
           data_mapping,
           sub_target,
           sub_source,
-          conditions,
+          conditions: conditions ? conditions : [],
           map_all_data: map_all_data ? true : false,
         },
       })

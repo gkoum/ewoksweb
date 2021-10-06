@@ -350,12 +350,12 @@ function Canvas() {
             nodeTypes={nodeTypes}
           >
             <Controls />
-            <div
+            {/* <div
               style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}
             >
-              {/* <button type="button" onClick={logToObject}>
-                  toObject
-                </button> */}
+              <button type="button" onClick={logToObject}>
+                toObject
+              </button>
               <a
                 href={`data:text/json;charset=utf-8,${encodeURIComponent(
                   JSON.stringify(elements)
@@ -364,7 +364,7 @@ function Canvas() {
               >
                 Download Json
               </a>
-            </div>
+            </div> */}
             <Background />
           </ReactFlow>
           {/* <Popover
