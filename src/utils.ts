@@ -15,6 +15,7 @@ import type {
   EwoksLink,
   EwoksRFLink,
   GraphEwoks,
+  RFNode,
 } from './types';
 
 const { GraphDagre } = dagre.graphlib;
@@ -126,6 +127,30 @@ export function toEwoksNodes(nodes): EwoksNode[] {
     }
   );
 }
+
+// gets an RfNode finds the RFEwoksNode and updates it in graphRF
+// export function RFtoRFEwoksNode(rfNode: RFNode): EwoksRFNode[] {
+//   console.log(rfNode);
+//   const RFEwoksNode = .find((el) => el.id === element.id);
+//   return {
+//     id: rfNode.id.toString(),
+//     task_type: rfNode,
+//     task_identifier,
+//     type: task_type,
+//     inputs_complete,
+//     task_generator,
+//     default_inputs,
+//     data: {
+//       label: uiProps.label ? uiProps.label : task_identifier,
+//       type: nodeType,
+//       icon: uiProps.icon,
+//       comment: uiProps.comment,
+//     },
+//     sourcePosition: Position.Right,
+//     targetPosition: Position.Left,
+//     position: uiProps.position,
+//   };
+// }
 
 export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
   // const tempGraph = findGraphWithName(id);

@@ -50,10 +50,10 @@ const createData = (pair) => {
     pair,
     Object.keys(pair)[1],
     Object.values(pair)[1],
-    Object.keys(pair)[2],
-    Object.values(pair)[2]
+    Object.keys(pair)[0],
+    Object.values(pair)[0]
   );
-  return pair.id
+  return pair.id && pair.value
     ? { ...pair, isEditMode: false }
     : {
         id: Object.values(pair)[0],
@@ -86,13 +86,20 @@ function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
 
   useEffect(() => {
-    console.log(props.defaultValues);
+    console.log(
+      props.defaultValues,
+      props.defaultValues
+        ? props.defaultValues.map((pair) => {
+            return createData(pair);
+          })
+        : []
+    );
     setRows(
       props.defaultValues
         ? props.defaultValues.map((pair) => {
             return createData(pair);
           })
-        : [] //[createData({ name: '-', value: Number })]
+        : []
     );
   }, [props.defaultValues]);
 

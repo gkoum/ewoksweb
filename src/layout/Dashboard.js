@@ -26,6 +26,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import SaveIcon from '@material-ui/icons/Save';
+import FiberNew from '@material-ui/icons/FiberNew';
 import Sidebar from '../sidebar';
 import useStore from '../store';
 import Canvas from './Canvas';
@@ -219,6 +220,12 @@ export default function Dashboard() {
     download(JSON.stringify(graphRF), 'json.txt', 'text/plain');
   };
 
+  const newGraph = (event) => {
+    console.log(graphRF);
+    setGraphRF({ graph: {}, nodes: [], links: [] });
+    console.log('Start drawing please!');
+  };
+
   const goToGraph = (e) => {
     e.preventDefault();
     console.log(e.target.text);
@@ -305,6 +312,17 @@ export default function Dashboard() {
               aria-label="add"
             >
               <SaveIcon onClick={saveToDisk} />
+            </Fab>
+          </IconButton>
+          <IconButton color="inherit">
+            <Fab
+              className={classes.openFileButton}
+              color="primary"
+              size="small"
+              component="span"
+              aria-label="add"
+            >
+              <FiberNew onClick={newGraph} />
             </Fab>
           </IconButton>
           <IconButton color="inherit">

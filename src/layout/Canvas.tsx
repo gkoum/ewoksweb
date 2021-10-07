@@ -25,7 +25,13 @@ import useStore from '../store';
 import CustomNode from '../CustomNodes/CustomNode';
 import FunctionNode from '../CustomNodes/FunctionNode';
 import DataNode from '../CustomNodes/DataNode';
-import type { Graph, EwoksLink, EwoksNode, GraphRF } from '../types';
+import type {
+  Graph,
+  EwoksLink,
+  EwoksNode,
+  GraphRF,
+  EwoksRFNode,
+} from '../types';
 import CanvasView from './CanvasView';
 import {
   toRFEwoksLinks,
@@ -33,6 +39,7 @@ import {
   positionNodes,
   ewoksNetwork,
   findGraphWithName,
+  // RFtoRFEwoksNode,
 } from '../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -299,6 +306,36 @@ function Canvas() {
     console.log(event, node);
   };
 
+  const onSelectionDrag = (event, node) => {
+    event.preventDefault();
+    console.log(event, node);
+  };
+
+  // const onNodeDrag = (event, node) => {
+  //   event.preventDefault();
+  //   console.log(event, node);
+  // };
+
+  const onNodeDragStop = (event, node) => {
+    event.preventDefault();
+    console.log(event, node, toRFEwoksNodes[node]);
+    // find RFEwoksNode and update its position and save grapRF
+    const RFEwoksNode: EwoksRFNode = {
+      ...graphRF.nodes.find((nod) => nod.id === node.id),
+    };
+    RFEwoksNode.position = node.position;
+    console.log(RFEwoksNode, graphRF);
+
+    setGraphRF({
+      graph: graphRF.graph,
+      nodes: [
+        ...graphRF.nodes.filter((nod) => nod.id !== node.id),
+        RFEwoksNode,
+      ],
+      links: graphRF.links,
+    } as GraphRF);
+  };
+
   return (
     <div className={classes.root}>
       {/* <CanvasView /> */}
@@ -347,6 +384,9 @@ function Canvas() {
             onSelectionChange={onSelectionChange}
             // onNodeMouseMove={onNodeMouseMove}
             onSelectionDragStop={onSelectionDragStop}
+            // onSelectionDrag={onSelectionDrag}
+            // onNodeDrag={onNodeDrag}
+            onNodeDragStop={onNodeDragStop}
             nodeTypes={nodeTypes}
           >
             <Controls />

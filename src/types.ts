@@ -51,6 +51,16 @@ export interface Conditions {
   value: string;
 }
 
+export interface EwoksNode {
+  id: string;
+  task_type: string;
+  task_identifier: string;
+  default_inputs?: Inputs[];
+  inputs_complete?: boolean;
+  task_generator?: string;
+  uiProps?: UiProps;
+}
+
 export interface EwoksLink {
   id?: string;
   source: string;
@@ -61,6 +71,26 @@ export interface EwoksLink {
   subtarget?: string;
   subsource?: string;
   uiProps?: UiProps;
+}
+
+export interface EwoksRFNode {
+  id: string;
+  task_type?: string;
+  task_identifier?: string;
+  default_inputs?: Inputs[];
+  inputs_complete?: boolean;
+  task_generator?: string;
+  data?: {
+    label?: string;
+    type?: string;
+    inputs?: [string]; // ?
+    outputs?: [string]; // ?
+    icon?: string;
+    comment?: string;
+  };
+  sourcePosition?: Position;
+  targetPosition?: Position;
+  position?: { x: number; y: number };
 }
 
 export interface EwoksRFLink {
@@ -80,17 +110,39 @@ export interface EwoksRFLink {
   uiProps?: UiProps;
 }
 
-export interface EwoksNode {
-  id: string;
-  task_type: string;
-  task_identifier: string;
-  default_inputs?: Inputs[];
-  inputs_complete?: boolean;
-  task_generator?: string;
+export interface RFLink {
+  id?: string;
+  source: string;
+  target: string;
+  label?: string;
+  data?: {
+    data_mapping?: DataMapping;
+    type?: string;
+    comment?: string;
+    conditions?: Conditions[];
+    on_error?: Inputs;
+  };
+  subtarget?: string;
+  subsource?: string;
   uiProps?: UiProps;
 }
 
-export interface EwoksRFNode {
+// coming out of react-flow when selected
+// data:
+//   comment: "Prepare troubleshouting"
+//   icon: "orange1"
+//   label: "barmboutsalaMethod"
+//   type: "input"
+//   only when subgraph we have the following calculated
+//   inputs:
+//     0: Object { label: "in1: task1 ", type: "data " }
+//   outputs:
+//     0: Object { label: "out1: subsubgraph  -> out1", type: "data " }
+//     1: Object { label: "out2: subsubgraph  -> out2", type: "data " }
+// id: "node1"
+// position: Object { x: 155, y: 65 }
+// type: "method"
+export interface RFNode {
   id: string;
   task_type?: string;
   task_identifier?: string;

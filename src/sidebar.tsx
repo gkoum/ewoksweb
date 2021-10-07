@@ -113,6 +113,10 @@ export default function Sidebar(props) {
   const [comment, setComment] = React.useState('');
   const [element, setElement] = React.useState<EwoksRFNode | EwoksRFLink>({});
   const [onError, setOnError] = React.useState<boolean>(false);
+  const [graphInputs, setGraphInputs] = React.useState<Inputs[]>([]);
+  const [graphOutputs, setGraphOutputs] = React.useState<Inputs[]>([]);
+  const graphRF = useStore((state) => state.graphRF);
+  const setGraphRF = useStore((state) => state.setGraphRF);
 
   useEffect(() => {
     console.log(selectedElement);
@@ -144,8 +148,25 @@ export default function Sidebar(props) {
           setConditions(selectedElement.data.conditions);
         console.log(selectedElement);
       }
+    } else {
+      console.log(graphRF.graph.input_nodes, graphRF.graph.output_nodes);
+      setLabel(graphRF.graph.id);
+      setComment(graphRF.graph.comment);
+      setGraphInputs(
+        graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []
+      );
+      setGraphOutputs(
+        graphRF.graph.output_nodes ? graphRF.graph.output_nodes : []
+      );
     }
-  }, [selectedElement.id, selectedElement]);
+  }, [
+    selectedElement.id,
+    selectedElement,
+    graphRF.graph.input_nodes,
+    graphRF.graph.output_nodes,
+    graphRF.graph.id,
+    graphRF.graph.comment,
+  ]);
 
   const labelChanged = (event) => {
     setLabel(event.target.value);
@@ -217,6 +238,27 @@ export default function Sidebar(props) {
       },
     });
     console.log(element);
+  };
+
+  const graphInputsChanged = (table) => {
+    // setDefaultInputs(table);
+    console.log(table, element);
+    // setGraphRF({
+    //   nodes: graphRF.nodes,
+    //   links: graphRF.links,
+    //   graph: {
+    //     ...graphRF.graph,
+    //     input_nodes: [
+    //       ...(graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []),
+    //       { id: '-', name: '-', value: '-' },
+    //     ],
+    //   },
+    // });
+  };
+
+  const graphOutputsChanged = (table) => {
+    // setDefaultInputs(table);
+    console.log(table, element);
   };
 
   // const taskIdentifierChanged = (event) => {
@@ -335,6 +377,25 @@ export default function Sidebar(props) {
     }
   };
 
+  const addGraphInput = () => {
+    console.log(graphInputs);
+    setGraphRF({
+      nodes: graphRF.nodes,
+      links: graphRF.links,
+      graph: {
+        ...graphRF.graph,
+        input_nodes: [
+          ...(graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []),
+          { id: '-', name: '-', value: '-' },
+        ],
+      },
+    });
+  };
+
+  const addGraphOutput = () => {
+    console.log(selectedElement);
+  };
+
   const insertGraph = (val) => {
     console.log(val, selectedElement);
     setGraphOrSubgraph(false);
@@ -413,14 +474,85 @@ export default function Sidebar(props) {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography>Edit Graph Elements</Typography>
+          <Typography>
+            Edit{' '}
+            {'position' in selectedElement
+              ? 'Node'
+              : 'source' in selectedElement
+              ? 'Link'
+              : 'Graph'}
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <form className={classes.root} noValidate autoComplete="off">
-            {'id' in selectedElement && (
+            {'id' in selectedElement ? (
               <div>
                 <b>Id:</b> {props.element.id}
               </div>
+            ) : (
+              <React.Fragment>
+                <div>
+                  <b>Id:</b> {graphRF.graph.id}
+                </div>
+                <div>
+                  <TextField
+                    id="outlined-basic"
+                    label="Label"
+                    variant="outlined"
+                    value={label || ''}
+                    onChange={labelChanged}
+                  />
+                </div>
+                <div>
+                  <TextField
+                    id="outlined-basic"
+                    label="Comment"
+                    variant="outlined"
+                    value={comment || ''}
+                    onChange={commentChanged}
+                  />
+                </div>
+                <div>
+                  <b>Inputs </b>
+                  <IconButton
+                    style={{ padding: '1px' }}
+                    aria-label="delete"
+                    onClick={() => addGraphInput()}
+                  >
+                    <AddCircleOutlineIcon />
+                  </IconButton>
+                  {graphInputs.length > 0 && (
+                    <EditableTable
+                      headers={['Name', 'Node_Id']}
+                      defaultValues={graphInputs}
+                      valuesChanged={graphInputsChanged}
+                    />
+                  )}
+                </div>
+                <div>
+                  <b>Outputs </b>
+                  <IconButton
+                    style={{ padding: '1px' }}
+                    aria-label="delete"
+                    onClick={() => addGraphOutput()}
+                  >
+                    <AddCircleOutlineIcon />
+                  </IconButton>
+                  {graphOutputs.length > 0 && (
+                    <EditableTable
+                      headers={['Name', 'Node_Id']}
+                      defaultValues={graphOutputs}
+                      valuesChanged={graphOutputsChanged}
+                    />
+                  )}
+                </div>
+                {/* <div>
+                  <b>Inputs:</b> {graphRF.graph.input_nodes[0].id}
+                </div>
+                <div>
+                  <b>Outputs:</b> {graphRF.graph.output_nodes[0].id}
+                </div> */}
+              </React.Fragment>
             )}
             {'source' in selectedElement && (
               <React.Fragment>
@@ -660,16 +792,11 @@ export default function Sidebar(props) {
                     onChange={commentChanged}
                   />
                 </div>
-
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={saveElement}
-                >
-                  Save
-                </Button>
               </React.Fragment>
             )}
+            <Button variant="contained" color="primary" onClick={saveElement}>
+              Save
+            </Button>
             {/* <Button variant="contained" color="primary">
               Subgraph
             </Button> */}
