@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DoneIcon from '@material-ui/icons/DoneAllTwoTone';
 import RevertIcon from '@material-ui/icons/NotInterestedOutlined';
-import { Icon } from '@material-ui/core';
+import { Icon, MenuItem, Select } from '@material-ui/core';
 // import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const useStyles = makeStyles((theme) => ({
@@ -63,18 +63,37 @@ const createData = (pair) => {
       };
 };
 
-const CustomTableCell = ({ row, name, onChange }) => {
+const CustomTableCell = ({ row, name, onChange, typeOfValues }) => {
   const classes = useStyles();
   const { isEditMode } = row;
+  console.log('typeOfValues:', typeOfValues);
   return (
     <TableCell align="left" className={classes.tableCell}>
       {isEditMode ? (
-        <Input
-          value={row[name]}
-          name={name}
-          onChange={(e) => onChange(e, row)}
-          className={classes.input}
-        />
+        typeOfValues === 'input' ? (
+          <Input
+            value={row[name]}
+            name={name}
+            onChange={(e) => onChange(e, row)}
+            className={classes.input}
+          />
+        ) : (
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={row[name]}
+            label="Task type"
+            onChange={(e) => onChange(e, row)}
+          >
+            {['input', 'output', 'internal', 'input_output', undefined].map(
+              (tex, index) => (
+                <MenuItem key={index} value={tex}>
+                  {tex}
+                </MenuItem>
+              )
+            )}
+          </Select>
+        )
       ) : (
         row[name]
       )}
@@ -84,6 +103,7 @@ const CustomTableCell = ({ row, name, onChange }) => {
 
 function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
+  console.log('PROPS:', props);
 
   useEffect(() => {
     console.log(
@@ -182,8 +202,22 @@ function EditableTable(props) {
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.id}>
-              <CustomTableCell {...{ row, name: 'name', onChange }} />
-              <CustomTableCell {...{ row, name: 'value', onChange }} />
+              <CustomTableCell
+                {...{
+                  row,
+                  name: 'name',
+                  onChange,
+                  typeOfValues: props.typeOfValues && props.typeOfValues[0],
+                }}
+              />
+              <CustomTableCell
+                {...{
+                  row,
+                  name: 'value',
+                  onChange,
+                  typeOfValues: props.typeOfValues && props.typeOfValues[1],
+                }}
+              />
               <TableCell className={classes.selectTableCell}>
                 {row.isEditMode ? (
                   <>

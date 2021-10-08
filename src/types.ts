@@ -7,9 +7,10 @@ export interface GraphNodes {
 }
 
 export interface GraphDetails {
-  id: string;
+  name: string;
   input_nodes?: Array<GraphNodes>;
   output_nodes?: Array<GraphNodes>;
+  uiProps?: UiProps;
 }
 
 export interface Graph {

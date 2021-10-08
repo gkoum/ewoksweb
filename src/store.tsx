@@ -122,21 +122,21 @@ const useStore = create<State>((set, get) => ({
   },
 
   selectedSubgraph: {
-    graph: { id: '', input_nodes: [], output_nodes: [] },
+    graph: { name: '', input_nodes: [], output_nodes: [] },
     nodes: [],
     links: [],
   },
 
   setSelectedSubgraph: (graph: GraphRF) => {
     // get the subgraph from server?
-    const graphRF = findGraphWithName(graph.graph.id);
+    const graphRF = findGraphWithName(graph.graph.name);
     console.log(graphRF);
     set((state) => ({
       ...state,
       selectedSubgraph: {
         graph: graphRF.graph,
-        nodes: toRFEwoksNodes(graphRF.graph.id),
-        links: toRFEwoksLinks(graphRF.graph.id),
+        nodes: toRFEwoksNodes(graphRF.graph.name),
+        links: toRFEwoksLinks(graphRF.graph.name),
       },
     }));
   },

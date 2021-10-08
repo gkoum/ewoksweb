@@ -3,7 +3,7 @@
 // of ewoks and a map-engine to create a model for react-flow or another for vis etc.
 export const graph = {
   graph: {
-    id: 'graph',
+    name: 'graph',
     input_nodes: [
       { name: 'in1', id: 'node1' },
       { name: 'in2', id: 'node4' },
@@ -107,7 +107,7 @@ export const graph = {
 
 export const subgraph = {
   graph: {
-    id: 'subgraph',
+    name: 'subgraph',
     input_nodes: [{ name: 'in1', id: 'task1' }],
     output_nodes: [
       { name: 'out1', id: 'subsubgraph', sub_node: 'out1' },
@@ -151,7 +151,7 @@ export const subgraph = {
 
 export const subsubgraph = {
   graph: {
-    id: 'subsubgraph',
+    name: 'subsubgraph',
     input_nodes: [{ name: 'in1', id: 'task1' }],
     output_nodes: [
       { name: 'out1', id: 'subsubsubgraph', sub_node: 'out' },
@@ -195,7 +195,7 @@ export const subsubgraph = {
 
 export const subsubsubgraph = {
   graph: {
-    id: 'subsubsubgraph',
+    name: 'subsubsubgraph',
     input_nodes: [{ name: 'in1', id: 'task1' }],
     output_nodes: [{ name: 'in2', id: 'task2' }],
   },

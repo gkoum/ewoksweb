@@ -150,7 +150,7 @@ export default function Sidebar(props) {
       }
     } else {
       console.log(graphRF.graph.input_nodes, graphRF.graph.output_nodes);
-      setLabel(graphRF.graph.id);
+      setLabel(graphRF.graph.name);
       setComment(graphRF.graph.comment);
       setGraphInputs(
         graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []
@@ -164,7 +164,7 @@ export default function Sidebar(props) {
     selectedElement,
     graphRF.graph.input_nodes,
     graphRF.graph.output_nodes,
-    graphRF.graph.id,
+    graphRF.graph.name,
     graphRF.graph.comment,
   ]);
 
@@ -405,7 +405,7 @@ export default function Sidebar(props) {
     <aside className="dndflow">
       {/* <span
         className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'default')}
+        onDragStart={(event) => onDragStart(event, 'internal')}
         draggable
       >
         <img src={orangeFile} alt="orangeImage" />
@@ -419,6 +419,21 @@ export default function Sidebar(props) {
           <Typography>Add Nodes</Typography>
         </AccordionSummary>
         <AccordionDetails style={{ flexWrap: 'wrap' }}>
+          {/* [{
+            'optional_input_names': ['ppfport', 'ppfdict'],
+            'output_names': ['ppfdict'],
+            'required_input_names': [],
+            'task_identifier': 'ewokscore.ppftasks.PpfPortTask',
+            'task_type': 'class'
+          },
+          {
+            'optional_input_names': ['b'],
+            'output_names': ['result'],
+            'required_input_names': ['a'],
+            'task_identifier': 'ewokscore.tests.examples.tasks.sumtask.SumTask',
+            'task_type': 'class'}]
+          */}
+
           {[
             { task_identifier: '1', task_type: 'method', icon: 'orange1' },
             { task_identifier: '2', task_type: 'method', icon: 'orange2' },
@@ -492,7 +507,7 @@ export default function Sidebar(props) {
             ) : (
               <React.Fragment>
                 <div>
-                  <b>Id:</b> {graphRF.graph.id}
+                  <b>Name:</b> {graphRF.graph.name}
                 </div>
                 <div>
                   <TextField
@@ -526,6 +541,7 @@ export default function Sidebar(props) {
                       headers={['Name', 'Node_Id']}
                       defaultValues={graphInputs}
                       valuesChanged={graphInputsChanged}
+                      typeOfValues={['input', 'input']}
                     />
                   )}
                 </div>
@@ -543,6 +559,7 @@ export default function Sidebar(props) {
                       headers={['Name', 'Node_Id']}
                       defaultValues={graphOutputs}
                       valuesChanged={graphOutputsChanged}
+                      typeOfValues={['input', 'input']}
                     />
                   )}
                 </div>
@@ -596,6 +613,7 @@ export default function Sidebar(props) {
                         headers={['Source', 'Target']}
                         defaultValues={dataMapping}
                         valuesChanged={dataMappingValuesChanged}
+                        typeOfValues={['select', 'select']}
                       />
                     )}
                   </div>
@@ -760,13 +778,17 @@ export default function Sidebar(props) {
                       label="Task type"
                       onChange={nodeTypeChanged}
                     >
-                      {['input', 'output', 'graph', 'default', undefined].map(
-                        (tex, index) => (
-                          <MenuItem key={index} value={tex}>
-                            {tex}
-                          </MenuItem>
-                        )
-                      )}
+                      {[
+                        'input',
+                        'output',
+                        'internal',
+                        'input_output',
+                        undefined,
+                      ].map((tex, index) => (
+                        <MenuItem key={index} value={tex}>
+                          {tex}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </div>

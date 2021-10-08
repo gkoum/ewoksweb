@@ -124,7 +124,7 @@ function Canvas() {
     //      label: "barmboutsalaMethod"
     //      type: "input"
     setElements([...graphRF.nodes, ...graphRF.links]);
-  }, [graphRF, graphRF.graph.id]);
+  }, [graphRF, graphRF.graph.name]);
 
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
@@ -227,7 +227,7 @@ function Canvas() {
       task_identifier,
       type: task_type,
       position,
-      data: { label: `${task_identifier} node`, type: 'default', icon: icon },
+      data: { label: `${task_identifier} node`, type: 'internal', icon: icon },
       // data: { label: CustomNewNode(id, name, image) },
     };
     console.log(newNode, graphRF);
@@ -287,7 +287,7 @@ function Canvas() {
         nodes: toRFEwoksNodes(subgraph),
         links: toRFEwoksLinks(subgraph),
       } as GraphRF);
-      setSubgraphsStack(subgraph.graph.id);
+      setSubgraphsStack(subgraph.graph.name);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);
       console.log(selectedSubgraph);

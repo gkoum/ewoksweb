@@ -180,13 +180,13 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
         const isOutput = outputsAll && outputsAll.includes(id);
         let nodeType = '';
         if (isInput && isOutput) {
-          nodeType = 'inputOutput';
+          nodeType = 'input_output';
         } else if (isInput) {
           nodeType = 'input';
         } else if (isOutput) {
           nodeType = 'output';
         } else {
-          nodeType = 'default';
+          nodeType = 'internal';
         }
         if (task_type != 'graph') {
           return {
@@ -290,7 +290,7 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
 }
 
 function getNodeType(isSource: boolean, isTarget: boolean): string {
-  return isSource ? (isTarget ? 'default' : 'input') : 'output';
+  return isSource ? (isTarget ? 'internal' : 'input') : 'output';
 }
 
 export function positionNodes(nodes: Node[], edges: Edge[]): Node[] {

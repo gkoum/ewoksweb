@@ -58,7 +58,7 @@ function Upload(props) {
         console.log('initialiase');
         setSubgraphsStack('initialiase');
       }
-      setSubgraphsStack(JSON.parse(file.result).graph.id);
+      setSubgraphsStack(JSON.parse(file.result).graph.name);
     };
     // var data = require('json!./' + selectedFile.name);
     // console.log(data);
