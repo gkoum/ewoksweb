@@ -227,17 +227,22 @@ export default function Sidebar(props) {
       ...element,
       data: {
         ...element.data,
-        data_mapping: table.map(
-          (row: { id: string; name: string; value: string }) => {
-            return {
-              source_output: row.name,
-              target_input: row.value,
-            };
-          }
-        ),
+        data_mapping: table.map((row) => {
+          return {
+            source_output: row.name,
+            target_input: row.value,
+          };
+        }) as EwoksRFLink,
       },
     });
     console.log(element);
+    setLabel(
+      element.data.data_mapping
+        .map((el) => `${el.source_output}->${el.target_input}`)
+        .join(', ')
+    );
+    console.log(element);
+    // setSelectedElement(element);
   };
 
   const graphInputsChanged = (table) => {
@@ -541,7 +546,7 @@ export default function Sidebar(props) {
                       headers={['Name', 'Node_Id']}
                       defaultValues={graphInputs}
                       valuesChanged={graphInputsChanged}
-                      typeOfValues={['input', 'input']}
+                      typeOfValues={[{ type: 'input' }, { type: 'input' }]}
                     />
                   )}
                 </div>
@@ -559,7 +564,7 @@ export default function Sidebar(props) {
                       headers={['Name', 'Node_Id']}
                       defaultValues={graphOutputs}
                       valuesChanged={graphOutputsChanged}
-                      typeOfValues={['input', 'input']}
+                      typeOfValues={[{ type: 'input' }, { type: 'input' }]}
                     />
                   )}
                 </div>
@@ -613,7 +618,29 @@ export default function Sidebar(props) {
                         headers={['Source', 'Target']}
                         defaultValues={dataMapping}
                         valuesChanged={dataMappingValuesChanged}
-                        typeOfValues={['select', 'select']}
+                        // typeOfValues={[
+                        //   { type: 'select', values: [] },
+                        //   { type: 'select', values: [] },
+                        // ]}
+                        typeOfValues={[
+                          {
+                            type: 'select',
+                            values: props.element.data.links_input_names || [],
+                          },
+                          {
+                            type: 'select',
+                            values:
+                              [
+                                ...props.element.data
+                                  .links_required_output_names,
+                                ...props.element.data
+                                  .links_optional_output_names,
+                              ] || [],
+                          },
+                        ]}
+                        // all optional and required inputs + outputs of tasks are being used here
+                        // do we need to have these info in the graph? can he describe a task not in the
+                        // task list but still able to execute?
                       />
                     )}
                   </div>
@@ -739,6 +766,7 @@ export default function Sidebar(props) {
                       headers={['Name', 'Value']}
                       defaultValues={defaultInputs}
                       valuesChanged={defaultInputsChanged}
+                      typeOfValues={[{ type: 'input' }, { type: 'input' }]}
                     />
                   )}
                   {/* <TextField

@@ -70,29 +70,28 @@ const CustomTableCell = ({ row, name, onChange, typeOfValues }) => {
   return (
     <TableCell align="left" className={classes.tableCell}>
       {isEditMode ? (
-        typeOfValues === 'input' ? (
+        typeOfValues.type === 'select' ? (
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={row[name]}
+            name={name}
+            label="Task type"
+            onChange={(e) => onChange(e, row)}
+          >
+            {typeOfValues.values.map((tex, index) => (
+              <MenuItem key={index} value={tex}>
+                {tex}
+              </MenuItem>
+            ))}
+          </Select>
+        ) : (
           <Input
             value={row[name]}
             name={name}
             onChange={(e) => onChange(e, row)}
             className={classes.input}
           />
-        ) : (
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={row[name]}
-            label="Task type"
-            onChange={(e) => onChange(e, row)}
-          >
-            {['input', 'output', 'internal', 'input_output', undefined].map(
-              (tex, index) => (
-                <MenuItem key={index} value={tex}>
-                  {tex}
-                </MenuItem>
-              )
-            )}
-          </Select>
         )
       ) : (
         row[name]

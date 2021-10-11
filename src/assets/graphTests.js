@@ -17,7 +17,7 @@ export const graph = {
     {
       id: 'node1',
       task_type: 'method',
-      task_identifier: 'tasks.methods.add12',
+      task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
       default_inputs: [{ name: 'a', value: 1 }],
       uiProps: { position: { x: 50, y: 80 }, icon: 'orange1' },
     },
@@ -30,7 +30,7 @@ export const graph = {
     {
       id: 'node3',
       task_type: 'method',
-      task_identifier: 'tasks.methods.find13',
+      task_identifier: 'ewokscore.scripttask.ScriptExecutorTask',
       uiProps: {
         position: { x: 700, y: 580 },
         icon: 'orange3',
@@ -39,7 +39,7 @@ export const graph = {
     {
       id: 'node4',
       task_type: 'method',
-      task_identifier: 'tasks.methods.yut14',
+      task_identifier: 'ewokscore.ppftasks.PpfMethodExecutorTask',
       uiProps: { position: { x: 50, y: 380 }, icon: 'Continuize' },
     },
     {
@@ -54,13 +54,13 @@ export const graph = {
     {
       id: 'node6',
       task_type: 'method',
-      task_identifier: 'tasks.methods.track16',
+      task_identifier: 'ewokscore.ppftasks.PpfPortTask',
       uiProps: { position: { x: 900, y: 80 }, icon: 'Correlations' },
     },
     {
       id: 'node7',
       task_type: 'method',
-      task_identifier: 'tasks.methods.kep17',
+      task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
       uiProps: {
         position: { x: 1100, y: 240 },
         icon: 'CreateClass',
@@ -221,3 +221,41 @@ export const subsubsubgraph = {
     },
   ],
 };
+
+export const tasks = [
+  {
+    optional_input_names: [],
+    output_names: ['return_value'],
+    required_input_names: ['method'],
+    task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
+    task_type: 'class',
+  },
+  {
+    optional_input_names: [],
+    output_names: ['returncode'],
+    required_input_names: ['script'],
+    task_identifier: 'ewokscore.scripttask.ScriptExecutorTask',
+    task_type: 'class',
+  },
+  {
+    optional_input_names: ['ppfdict'],
+    output_names: ['ppfdict'],
+    required_input_names: ['method'],
+    task_identifier: 'ewokscore.ppftasks.PpfMethodExecutorTask',
+    task_type: 'class',
+  },
+  {
+    optional_input_names: ['ppfport', 'ppfdict'],
+    output_names: ['ppfdict'],
+    required_input_names: [],
+    task_identifier: 'ewokscore.ppftasks.PpfPortTask',
+    task_type: 'class',
+  },
+  {
+    optional_input_names: ['b'],
+    output_names: ['result'],
+    required_input_names: ['a'],
+    task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
+    task_type: 'class',
+  },
+];
