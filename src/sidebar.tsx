@@ -46,6 +46,7 @@ import type {
   EwoksRFLink,
   Inputs,
   DataMapping,
+  GraphDetails,
 } from './types';
 
 const onDragStart = (event, { task_identifier, task_type, icon }) => {
@@ -111,7 +112,9 @@ export default function Sidebar(props) {
   const [nodeType, setNodeType] = React.useState('');
   const [label, setLabel] = React.useState('');
   const [comment, setComment] = React.useState('');
-  const [element, setElement] = React.useState<EwoksRFNode | EwoksRFLink>({});
+  const [element, setElement] = React.useState<
+    EwoksRFNode | EwoksRFLink | GraphDetails
+  >({});
   const [onError, setOnError] = React.useState<boolean>(false);
   const [graphInputs, setGraphInputs] = React.useState<Inputs[]>([]);
   const [graphOutputs, setGraphOutputs] = React.useState<Inputs[]>([]);
@@ -236,34 +239,57 @@ export default function Sidebar(props) {
       },
     });
     console.log(element);
-    setLabel(
-      element.data.data_mapping
-        .map((el) => `${el.source_output}->${el.target_input}`)
-        .join(', ')
-    );
-    console.log(element);
+    // setLabel(
+    //   element.data.data_mapping
+    //     .map((el) => `${el.source_output}->${el.target_input}`)
+    //     .join(', ')
+    // );
     // setSelectedElement(element);
   };
 
   const graphInputsChanged = (table) => {
-    // setDefaultInputs(table);
     console.log(table, element);
+    // input_nodes: [{ name: 'in1', id: 'task1' }],
+    // output_nodes: [
+    //   { name: 'out1', id: 'subsubgraph', sub_node: 'out1' },
+    //   { name: 'out2', id: 'subsubgraph', sub_node: 'out2' },
+
+    setElement({
+      ...element,
+      input_nodes: [
+        ...table.map((input) => {
+          return { ...input, id: input.name };
+        }),
+      ],
+    });
     // setGraphRF({
     //   nodes: graphRF.nodes,
     //   links: graphRF.links,
     //   graph: {
     //     ...graphRF.graph,
     //     input_nodes: [
-    //       ...(graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []),
-    //       { id: '-', name: '-', value: '-' },
+    //       ...table.map((input) => {
+    //         return { ...input, id: input.name };
+    //       }),
     //     ],
     //   },
     // });
   };
 
   const graphOutputsChanged = (table) => {
-    // setDefaultInputs(table);
-    console.log(table, element);
+    // input_nodes: [{ name: 'in1', id: 'task1' }],
+    // output_nodes: [
+    //   { name: 'out1', id: 'subsubgraph', sub_node: 'out1' },
+    //   { name: 'out2', id: 'subsubgraph', sub_node: 'out2' },
+
+    setElement({
+      ...element,
+      output_nodes: [
+        ...table.map((output) => {
+          return { ...output, id: output.name };
+        }),
+      ],
+    });
   };
 
   // const taskIdentifierChanged = (event) => {
@@ -408,13 +434,6 @@ export default function Sidebar(props) {
 
   return (
     <aside className="dndflow">
-      {/* <span
-        className="dndnode"
-        onDragStart={(event) => onDragStart(event, 'internal')}
-        draggable
-      >
-        <img src={orangeFile} alt="orangeImage" />
-      </span> */}
       <Accordion>
         <AccordionSummary
           expandIcon={<OpenInBrowser />}
@@ -430,13 +449,7 @@ export default function Sidebar(props) {
             'required_input_names': [],
             'task_identifier': 'ewokscore.ppftasks.PpfPortTask',
             'task_type': 'class'
-          },
-          {
-            'optional_input_names': ['b'],
-            'output_names': ['result'],
-            'required_input_names': ['a'],
-            'task_identifier': 'ewokscore.tests.examples.tasks.sumtask.SumTask',
-            'task_type': 'class'}]
+            }]
           */}
 
           {[
@@ -467,25 +480,9 @@ export default function Sidebar(props) {
               <img src={iconsObj[elem.icon]} alt="orangeImage" />
             </span>
           ))}
-          {/* <span
-            className="dndnode graph"
-            onDragStart={(event) =>
-              onDragStart(event, {
-                task_identifier: 'graph',
-                task_type: 'graph',
-                icon: 'AggregateColumns',
-              })
-            }
-            draggable
-          >
-            graph
-          </span> */}
           <Upload>
             <AddIcon onClick={insertGraph} />G
           </Upload>
-          {/* <Button variant="contained" color="primary" onClick={insertGraph}>
-            Insert Graph
-          </Button> */}
         </AccordionDetails>
       </Accordion>
       <Accordion>
@@ -546,7 +543,13 @@ export default function Sidebar(props) {
                       headers={['Name', 'Node_Id']}
                       defaultValues={graphInputs}
                       valuesChanged={graphInputsChanged}
-                      typeOfValues={[{ type: 'input' }, { type: 'input' }]}
+                      typeOfValues={[
+                        { type: 'input' },
+                        {
+                          type: 'select',
+                          values: graphRF.nodes.map((nod) => nod.id),
+                        },
+                      ]}
                     />
                   )}
                 </div>
@@ -564,16 +567,16 @@ export default function Sidebar(props) {
                       headers={['Name', 'Node_Id']}
                       defaultValues={graphOutputs}
                       valuesChanged={graphOutputsChanged}
-                      typeOfValues={[{ type: 'input' }, { type: 'input' }]}
+                      typeOfValues={[
+                        { type: 'input' },
+                        {
+                          type: 'select',
+                          values: graphRF.nodes.map((nod) => nod.id),
+                        },
+                      ]}
                     />
                   )}
                 </div>
-                {/* <div>
-                  <b>Inputs:</b> {graphRF.graph.input_nodes[0].id}
-                </div>
-                <div>
-                  <b>Outputs:</b> {graphRF.graph.output_nodes[0].id}
-                </div> */}
               </React.Fragment>
             )}
             {'source' in selectedElement && (
@@ -618,10 +621,6 @@ export default function Sidebar(props) {
                         headers={['Source', 'Target']}
                         defaultValues={dataMapping}
                         valuesChanged={dataMappingValuesChanged}
-                        // typeOfValues={[
-                        //   { type: 'select', values: [] },
-                        //   { type: 'select', values: [] },
-                        // ]}
                         typeOfValues={[
                           {
                             type: 'select',
@@ -645,31 +644,6 @@ export default function Sidebar(props) {
                     )}
                   </div>
                 )}
-                {/* <FormControl component="fieldset">
-                  <RadioGroup
-                    row
-                    aria-label="position"
-                    name="position"
-                    defaultValue="top"
-                    value={conditionsOrError}
-                    onChange={conditionsOrErrorChange}
-                  >
-                    <FormControlLabel
-                      style={{ padding: '3px' }}
-                      value="conditions"
-                      control={<Radio size="small" />}
-                      label="conditions"
-                      labelPlacement="top"
-                    />
-                    <FormControlLabel
-                      style={{ padding: '3px' }}
-                      value="on_error"
-                      control={<Radio size="small" />}
-                      label="on_error"
-                      labelPlacement="top"
-                    />
-                  </RadioGroup>
-                </FormControl> */}
                 <div>
                   <b>on_error</b>
                   <Checkbox
@@ -693,6 +667,13 @@ export default function Sidebar(props) {
                         headers={['Name', 'Value']}
                         defaultValues={conditions}
                         valuesChanged={conditionsValuesChanged}
+                        typeOfValues={[
+                          {
+                            type: 'select',
+                            values: props.element.data.links_input_names || [],
+                          },
+                          { type: 'input' },
+                        ]}
                       />
                     )}
                   </div>
@@ -709,49 +690,9 @@ export default function Sidebar(props) {
                 <div className={classes.root}>
                   <b>Task type:</b> {props.element.task_type}
                 </div>
-                {/* <div>
-                  <TextField
-                    id="outlined-basic"
-                    label="Task identifier"
-                    variant="outlined"
-                    value={taskIdentifier || ''}
-                    onChange={taskIdentifierChanged}
-                  />
-                </div> */}
-                {/* <div>
-                  <FormControl variant="filled" fullWidth>
-                    <InputLabel id="demo-simple-select-label">
-                      Task type
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={taskType}
-                      label="Task type"
-                      onChange={taskTypeChanged}
-                    >
-                      {['method', 'function', 'graph', 'class', undefined].map(
-                        (text, index) => (
-                          <MenuItem key={index} value={text}>
-                            {text}
-                          </MenuItem>
-                        )
-                      )}
-                    </Select>
-                  </FormControl>
-                </div> */}
                 <div>
                   <b>Task generator:</b> {props.element.task_generator}
                 </div>
-                {/* <div>
-                  <TextField
-                    id="outlined-basic"
-                    label="Task generator"
-                    variant="outlined"
-                    value={taskGenerator}
-                    onChange={taskGeneratorChanged}
-                  />
-                </div> */}
                 <div>
                   <b>Default Values </b>
                   <IconButton
@@ -769,21 +710,6 @@ export default function Sidebar(props) {
                       typeOfValues={[{ type: 'input' }, { type: 'input' }]}
                     />
                   )}
-                  {/* <TextField
-                    id="outlined-basic"
-                    label="Default Inputs"
-                    variant="outlined"
-                    value={
-                      defaultInputs && defaultInputs.length > 0
-                        ? JSON.stringify(defaultInputs)
-                        : ''
-                      // .map((input) => input.name + '-->' + input.value)
-                      //   .reduce((res, item) => {
-                      //     return res + ', ' + item;
-                      //   })
-                    }
-                    onChange={defaultInputsChanged}
-                  /> */}
                 </div>
                 <div>
                   <b>Inputs-complete</b>

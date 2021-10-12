@@ -271,7 +271,7 @@ function Canvas() {
 
   const onSelectionChange = (elements) => {
     console.log(elements);
-    if (!elements) setSelectedElement({});
+    if (!elements) setSelectedElement(graphRF.graph);
     console.log(selectedElement);
   };
 

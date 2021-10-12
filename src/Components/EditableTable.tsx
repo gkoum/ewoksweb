@@ -144,7 +144,7 @@ function EditableTable(props) {
   };
 
   const onChange = (e, row) => {
-    console.log(e.target, row);
+    console.log(e.target.value, e.target.name, row, rows);
 
     const value = e.target.value;
     const name = e.target.name;

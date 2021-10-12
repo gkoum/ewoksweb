@@ -8,6 +8,7 @@ import type {
   EwoksRFLink,
   EwoksRFNode,
   GraphRF,
+  GraphDetails,
 } from './types';
 import {
   toRFEwoksLinks,
@@ -84,7 +85,7 @@ const useStore = create<State>((set, get) => ({
   } as EwoksRFNode,
 
   // sets graphRF as well? should it?
-  setSelectedElement: (element: EwoksRFNode | EwoksRFLink) => {
+  setSelectedElement: (element: EwoksRFNode | EwoksRFLink | GraphDetails) => {
     console.log(element);
     if ('position' in element) {
       set((state) => ({
@@ -116,6 +117,11 @@ const useStore = create<State>((set, get) => ({
     } else {
       set((state) => ({
         ...state,
+        graphRF: {
+          graph: element,
+          nodes: get().graphRF.nodes,
+          links: get().graphRF.links,
+        },
         selectedElement: element,
       }));
     }

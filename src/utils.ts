@@ -312,7 +312,6 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
             // required_input_names: sourceTask.required_input_names,
           };
         }
-
         if (targetTmp.task_type !== 'graph') {
           targetTask = tasks.find(
             (tas) => tas.task_identifier === targetTmp.task_identifier
@@ -342,9 +341,11 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
               optional_input_names: [],
               required_input_names: [],
             };
-        console.log('TASKS2:', sourceTask, targetTask);
+        console.log('TASKS2:', sourceTask, targetTask, data_mapping);
         return {
           id: `e${source}-${target}`,
+          // if label exists in uiProps? And general transformation of data...
+          // Label if empty use data-mapping
           label: data_mapping
             .map((el) => `${el.source_output}->${el.target_input}`)
             .join(', '),
