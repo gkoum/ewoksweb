@@ -20,8 +20,10 @@ export interface Graph {
 }
 
 export interface State {
+  recentGraphs?: Array<GraphRF>;
+  setRecentGraphs?: (graphRF: GraphRF) => void;
   graphOrSubgraph?: Boolean;
-  setGraphOrSubgraph: (getGraph: Boolean) => void;
+  setGraphOrSubgraph: (isItGraph: Boolean) => void;
   subgraphsStack?: Array<string>;
   setSubgraphsStack?: (graphRF: string) => void;
   graphRF: GraphRF;

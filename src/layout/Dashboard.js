@@ -191,9 +191,12 @@ export default function Dashboard() {
     console.log(state);
     return state.subgraphsStack;
   });
+  const setGraphOrSubgraph = useStore((state) => state.setGraphOrSubgraph);
   const [selectedGraph, setSelectedGraph] = React.useState('graph');
   const [open, setOpen] = React.useState(true);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
+  const recentGraphs = useStore((state) => state.recentGraphs);
+  const setRecentGraphs = useStore((state) => state.setRecentGraphs);
 
   useEffect(() => {
     console.log(subgraphsStack.length);
@@ -213,6 +216,7 @@ export default function Dashboard() {
 
   const loadFromDisk = (val) => {
     console.log(val, inputFile);
+    setGraphOrSubgraph(true);
   };
 
   const saveToDisk = (event) => {
@@ -228,9 +232,10 @@ export default function Dashboard() {
 
   const goToGraph = (e) => {
     e.preventDefault();
-    console.log(e.target.text);
+    console.log(e.target.text, recentGraphs);
     setSubgraphsStack(e.target.text);
-    const subgraph = findGraphWithName(e.target.text);
+    const subgraph = recentGraphs.find((gr) => gr.graph.name === e.target.text);
+    subgraph = subgraph ? subgraph : findGraphWithName(e.target.text);
     setGraphRF({
       graph: subgraph.graph,
       nodes: toRFEwoksNodes(subgraph),

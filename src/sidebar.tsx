@@ -226,16 +226,20 @@ export default function Sidebar(props) {
   const dataMappingValuesChanged = (table) => {
     // setDefaultInputs(table);
     console.log(table);
+    const dmap = table.map((row) => {
+      return {
+        source_output: row.name,
+        target_input: row.value,
+      };
+    });
     setElement({
       ...element,
       data: {
         ...element.data,
-        data_mapping: table.map((row) => {
-          return {
-            source_output: row.name,
-            target_input: row.value,
-          };
-        }) as EwoksRFLink,
+        data_mapping: dmap,
+        label: dmap
+          .map((el) => `${el.source_output}->${el.target_input}`)
+          .join(', ') as EwoksRFLink,
       },
     });
     console.log(element);
@@ -425,6 +429,17 @@ export default function Sidebar(props) {
 
   const addGraphOutput = () => {
     console.log(selectedElement);
+    setGraphRF({
+      nodes: graphRF.nodes,
+      links: graphRF.links,
+      graph: {
+        ...graphRF.graph,
+        output_nodes: [
+          ...(graphRF.graph.output_nodes ? graphRF.graph.output_nodes : []),
+          { id: '-', name: '-', value: '-' },
+        ],
+      },
+    });
   };
 
   const insertGraph = (val) => {

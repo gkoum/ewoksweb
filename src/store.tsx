@@ -25,12 +25,25 @@ console.log(nodes, edges);
 // console.log(positionedNodes);
 
 const useStore = create<State>((set, get) => ({
-  graphOrSubgraph: true as Boolean,
+  recentGraphs: [] as GraphRF[],
 
-  setGraphOrSubgraph: (getGraph: Boolean) => {
+  setRecentGraphs: (newGraph: GraphRF) => {
+    console.log('NEW GRAPH:', newGraph);
     set((state) => ({
       ...state,
-      graphOrSubgraph: getGraph,
+      recentGraphs: [
+        ...get().recentGraphs.map((gr) => gr.name !== newGraph.name),
+        newGraph,
+      ],
+    }));
+  },
+
+  graphOrSubgraph: true as Boolean,
+
+  setGraphOrSubgraph: (isItGraph: Boolean) => {
+    set((state) => ({
+      ...state,
+      graphOrSubgraph: isItGraph,
     }));
   },
 
