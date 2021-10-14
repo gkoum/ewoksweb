@@ -26,7 +26,7 @@ export const ewoksNetwork = graph;
 
 export function findGraphWithName(gname: string): Graph {
   const thisSubgraph = gname;
-  console.log(thisSubgraph);
+  // console.log(thisSubgraph);
   let subgraphL = {
     graph: { id: '', input_nodes: [], output_nodes: [] },
     nodes: [],
@@ -45,7 +45,7 @@ export function findGraphWithName(gname: string): Graph {
 }
 
 export function rfToEwoks(tempGraph): GraphEwoks {
-  console.log(tempGraph);
+  // console.log(tempGraph);
 
   return {
     graph: tempGraph.graph,
@@ -56,7 +56,7 @@ export function rfToEwoks(tempGraph): GraphEwoks {
 
 // EwoksRFLinks --> EwoksLinks for saving
 export function toEwoksLinks(links): EwoksLink[] {
-  console.log(links);
+  // console.log(links);
   return links.map(
     ({
       id,
@@ -82,7 +82,7 @@ export function toEwoksLinks(links): EwoksLink[] {
 
 // EwoksRFNode --> EwoksNode for saving
 export function toEwoksNodes(nodes): EwoksNode[] {
-  console.log(nodes);
+  // console.log(nodes);
 
   return nodes.map(
     ({
@@ -163,7 +163,7 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
     tempGraph.graph &&
     tempGraph.graph.output_nodes &&
     tempGraph.graph.output_nodes.map((nod) => nod.id);
-  console.log(inputsAll, outputsAll);
+  // console.log(inputsAll, outputsAll);
   if (tempGraph.nodes) {
     return tempGraph.nodes.map(
       ({
@@ -175,7 +175,7 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
         task_generator,
         uiProps,
       }) => {
-        console.log(uiProps);
+        // console.log(uiProps);
         const isInput = inputsAll && inputsAll.includes(id);
         const isOutput = outputsAll && outputsAll.includes(id);
         let nodeType = '';
@@ -189,19 +189,23 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
           nodeType = 'internal';
         }
         // locate the task and add required+optional-inputs + outputs
-        console.log('TASKS:', tasks);
         let tempTask = tasks.find(
           (tas) => tas.task_identifier === task_identifier
         );
-        // if not found app does not break, put an empty skeleton
+        // if it is not in the tasks list like a new subgraph?
+        // for subgraph calculate through input_nodes, output_nodes
         tempTask = tempTask
           ? tempTask
-          : {
+          : task_type === 'graph'
+          ? tempTask // calculate inputs-outputs from subgraph
+          : // will it have the subgraph from the beggining? NO.
+            // Needs to handle it until it get it
+            {
               optional_input_names: [],
               output_names: [],
               required_input_names: [],
             };
-        console.log('TASK:', tempTask);
+        // console.log('TASK:', tempTask);
         if (task_type != 'graph') {
           return {
             id: id.toString(),
@@ -235,9 +239,6 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
             type: 'data ',
           };
         });
-        // const inputsFlow = subgraphL.graph.input_nodes.map(
-        //   (alias) => alias.name
-        // );
         const outputsSub = subgraphL.graph.output_nodes.map((alias) => {
           return {
             label: `${alias.name}: ${alias.id} ${
@@ -246,7 +247,7 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
             type: 'data ',
           };
         });
-        console.log(default_inputs);
+        // console.log(default_inputs);
         return {
           id: id.toString(),
           task_type,
@@ -277,7 +278,7 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
 
 export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
   // const tempGraph = findGraphWithName(id);
-  console.log(tempGraph);
+  // console.log(tempGraph);
   if (tempGraph.links) {
     return tempGraph.links.map(
       ({
@@ -292,7 +293,7 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
         // find the outputs-inputs from the connected nodes
         const sourceTmp = tempGraph.nodes.find((nod) => nod.id === source);
         const targetTmp = tempGraph.nodes.find((nod) => nod.id === target);
-        console.log('TASKSTMP:', sourceTmp, targetTmp);
+        // console.log('TASKSTMP:', sourceTmp, targetTmp);
         let sourceTask = {};
         let targetTask = {};
         if (sourceTmp.task_type !== 'graph') {
@@ -328,7 +329,7 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
             required_input_names: [],
           };
         }
-        console.log('TASKS1:', sourceTask, targetTask);
+        // console.log('TASKS1:', sourceTask, targetTask);
         // if not found app does not break, put an empty skeleton
         sourceTask = sourceTask
           ? sourceTask
@@ -341,7 +342,7 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
               optional_input_names: [],
               required_input_names: [],
             };
-        console.log('TASKS2:', sourceTask, targetTask, data_mapping);
+        // console.log('TASKS2:', sourceTask, targetTask, data_mapping);
         return {
           id: `e${source}-${target}`,
           // if label exists in uiProps? And general transformation of data...

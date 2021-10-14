@@ -241,8 +241,18 @@ function Canvas() {
 
   const onConnect = (params) => {
     console.log(params);
+    // add links_required_output_names and links_optional_output_names from target
+    // links_input_names from source node
+    const sourceTask = graphRF.nodes.find((nod) => nod.id === params.source);
+    const targetTask = graphRF.nodes.find((nod) => nod.id === params.target);
     const link = {
       data: {
+        // node optional_input_names are link's optional_output_names
+        links_optional_output_names: targetTask.optional_input_names,
+        // node required_input_names are link's required_output_names
+        links_required_output_names: targetTask.required_input_names,
+        // node output_names are link's input_names
+        links_input_names: sourceTask.output_names,
         conditions: '',
         data_mapping: [],
         map_all_data: false,

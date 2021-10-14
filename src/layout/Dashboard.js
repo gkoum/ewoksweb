@@ -235,12 +235,18 @@ export default function Dashboard() {
     console.log(e.target.text, recentGraphs);
     setSubgraphsStack(e.target.text);
     const subgraph = recentGraphs.find((gr) => gr.graph.name === e.target.text);
-    subgraph = subgraph ? subgraph : findGraphWithName(e.target.text);
-    setGraphRF({
-      graph: subgraph.graph,
-      nodes: toRFEwoksNodes(subgraph),
-      links: toRFEwoksLinks(subgraph),
-    });
+    console.log(subgraph);
+    // subgraph = subgraph ? subgraph : findGraphWithName(e.target.text);
+    if (!subgraph) {
+      subgraph = findGraphWithName(e.target.text);
+      setGraphRF({
+        graph: subgraph.graph,
+        nodes: toRFEwoksNodes(subgraph),
+        links: toRFEwoksLinks(subgraph),
+      });
+    } else {
+      setGraphRF(subgraph);
+    }
   };
 
   return (

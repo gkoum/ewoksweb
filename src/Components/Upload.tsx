@@ -45,12 +45,19 @@ function Upload(props) {
     const reader = showFile(event);
     const file = await reader.then((val) => val);
     file.onloadend = function () {
-      console.log('DONE', file.result); // readyState will be 2
+      // console.log('DONE', file.result); // readyState will be 2
       setSelectedFile(file.result);
       const newGraph = JSON.parse(file.result);
       const nodes = toRFEwoksNodes(newGraph);
       const links = toRFEwoksLinks(newGraph);
-      console.log('Executed', nodes, links, graphOrSubgraph, recentGraphs);
+      console.log(
+        'Executed',
+        nodes,
+        links,
+        graphOrSubgraph,
+        recentGraphs,
+        newGraph
+      );
       // if it is a new graph opening
       if (graphOrSubgraph) {
         console.log('initialiase');
@@ -61,18 +68,44 @@ function Upload(props) {
           nodes: nodes,
           links: links,
         } as GraphRF);
+        console.log('RECENT GRAPHS', recentGraphs);
       } else {
         // if we are adding a subgraph to an existing graph:
         // save the super-graph in the recent graphs and add a new graph node to it
+        const inputsSub = newGraph.graph.input_nodes.map((alias) => {
+          return {
+            label: `${alias.name}: ${alias.id} ${
+              alias.sub_node ? `  -> ${alias.sub_node}` : ''
+            }`,
+            type: 'data ',
+          };
+        });
+        const outputsSub = newGraph.graph.output_nodes.map((alias) => {
+          return {
+            label: `${alias.name}: ${alias.id} ${
+              alias.sub_node ? ` -> ${alias.sub_node}` : ''
+            }`,
+            type: 'data ',
+          };
+        });
         const newNode = {
+          sourcePosition: 'right',
+          targetPosition: 'left',
+          task_generator: '',
           id: newGraph.graph.name,
-          task_type: newGraph.task_type,
-          task_identifier: newGraph.task_identifier,
-          type: newGraph.task_type,
+          task_type: newGraph.graph.name,
+          task_identifier: newGraph.graph.name,
+          type: 'graph',
           position: { x: 100, y: 100 },
+          default_inputs: '',
+          inputs_complete: false,
           data: {
-            label: newGraph.task_identifier,
+            label: newGraph.graph.name,
             type: 'internal',
+            comment: '',
+            icon: newGraph.graph.uiProps && newGraph.graph.uiProps.icon,
+            inputs: inputsSub,
+            outputs: outputsSub,
             // icon: newGraph.data.icon ? newGraph.data.icon : '',
           },
           // data: { label: CustomNewNode(id, name, image) },
@@ -92,7 +125,11 @@ function Upload(props) {
       } as GraphRF);
       // add the new graph to the recent graphs if not already there
       console.log('ADD a new graph3');
-      setRecentGraphs(graphRF);
+      setRecentGraphs({
+        graph: newGraph.graph,
+        nodes: nodes,
+        links: links,
+      });
       setSubgraphsStack(JSON.parse(file.result).graph.name);
     };
     // var data = require('json!./' + selectedFile.name);

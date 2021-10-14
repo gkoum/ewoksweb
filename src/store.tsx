@@ -28,14 +28,20 @@ const useStore = create<State>((set, get) => ({
   recentGraphs: [] as GraphRF[],
 
   setRecentGraphs: (newGraph: GraphRF) => {
-    console.log('NEW GRAPH:', newGraph);
+    console.log('NEW GRAPH:', get().recentGraphs, newGraph);
+    const rec =
+      get().recentGraphs.length > 0
+        ? get().recentGraphs.filter((gr) => {
+            console.log('GRR:', gr, newGraph);
+            return gr.graph.name !== newGraph.graph.name;
+          })
+        : [];
+    console.log('REC:', rec);
     set((state) => ({
       ...state,
-      recentGraphs: [
-        ...get().recentGraphs.map((gr) => gr.name !== newGraph.name),
-        newGraph,
-      ],
+      recentGraphs: [...rec, newGraph],
     }));
+    console.log('RECENT GRAPHS:', get().recentGraphs);
   },
 
   graphOrSubgraph: true as Boolean,

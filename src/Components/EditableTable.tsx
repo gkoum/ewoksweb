@@ -46,13 +46,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const createData = (pair) => {
-  console.log(
-    pair,
-    Object.keys(pair)[1],
-    Object.values(pair)[1],
-    Object.keys(pair)[0],
-    Object.values(pair)[0]
-  );
+  // console.log(
+  //   pair,
+  //   Object.keys(pair)[1],
+  //   Object.values(pair)[1],
+  //   Object.keys(pair)[0],
+  //   Object.values(pair)[0]
+  // );
   return pair.id && pair.value
     ? { ...pair, isEditMode: false }
     : {
@@ -66,7 +66,7 @@ const createData = (pair) => {
 const CustomTableCell = ({ row, name, onChange, typeOfValues }) => {
   const classes = useStyles();
   const { isEditMode } = row;
-  console.log('typeOfValues:', typeOfValues);
+  // console.log('typeOfValues:', typeOfValues);
   return (
     <TableCell align="left" className={classes.tableCell}>
       {isEditMode ? (
@@ -102,17 +102,17 @@ const CustomTableCell = ({ row, name, onChange, typeOfValues }) => {
 
 function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
-  console.log('PROPS:', props);
+  // console.log('PROPS:', props);
 
   useEffect(() => {
-    console.log(
-      props.defaultValues,
-      props.defaultValues
-        ? props.defaultValues.map((pair) => {
-            return createData(pair);
-          })
-        : []
-    );
+    // console.log(
+    //   props.defaultValues,
+    //   props.defaultValues
+    //     ? props.defaultValues.map((pair) => {
+    //         return createData(pair);
+    //       })
+    //     : []
+    // );
     setRows(
       props.defaultValues
         ? props.defaultValues.map((pair) => {
@@ -126,7 +126,7 @@ function EditableTable(props) {
   const classes = useStyles();
 
   const onToggleEditMode = (id) => {
-    console.log(id, props.defaultValues);
+    // console.log(id, props.defaultValues);
     setRows((state) => {
       return rows.map((row) => {
         if (row.id === id) {
@@ -139,12 +139,12 @@ function EditableTable(props) {
         return row;
       });
     });
-    console.log(rows);
+    // console.log(rows);
     props.valuesChanged(rows);
   };
 
   const onChange = (e, row) => {
-    console.log(e.target.value, e.target.name, row, rows);
+    // console.log(e.target.value, e.target.name, row, rows);
 
     const value = e.target.value;
     const name = e.target.name;
@@ -155,40 +155,24 @@ function EditableTable(props) {
       }
       return row;
     });
-    console.log(newRows);
+    // console.log(newRows);
     setRows(newRows);
   };
 
   const onRevert = (id) => {
-    console.log(id, rows);
     if (id === '') return;
     const newRows = rows.filter((row) => {
-      console.log(row.id);
-      // if (row.id === id) {
-      //   console.log(previous[id]);
-      //   return previous[id] ? previous[id] : row;
-      // }
       return row.id !== id; // row;
     });
-    console.log(newRows);
+    // console.log(newRows);
     setRows(newRows);
     props.valuesChanged(newRows);
-    // setPrevious((state) => {
-    //   delete state[id];
-    //   return state;
-    // });
-    // onToggleEditMode(id);
   };
 
   return (
     <Paper className={classes.root}>
       <Table className={classes.table} aria-label="caption table">
         <TableHead>
-          {/* <TableRow>
-            <TableCell style={{ padding: '1px' }} align="left">
-              Default values
-            </TableCell>
-          </TableRow> */}
           <TableRow>
             <TableCell style={{ padding: '1px' }} align="left">
               {props.headers[0]}
