@@ -468,17 +468,41 @@ export default function Sidebar(props) {
           */}
 
           {[
-            { task_identifier: '1', task_type: 'method', icon: 'orange1' },
-            { task_identifier: '2', task_type: 'method', icon: 'orange2' },
-            { task_identifier: '3', task_type: 'method', icon: 'orange3' },
+            {
+              task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
+              task_type: 'method',
+              icon: 'orange1',
+            },
+            {
+              task_identifier: 'ewokscore.scripttask.ScriptExecutorTask',
+              task_type: 'method',
+              icon: 'orange2',
+            },
+            {
+              task_identifier: 'ewokscore.ppftasks.PpfMethodExecutorTask',
+              task_type: 'method',
+              icon: 'orange3',
+            },
             {
               task_identifier: '4',
               task_type: 'method',
               icon: 'AggregateColumns',
             },
-            { task_identifier: '5', task_type: 'method', icon: 'Continuize' },
-            { task_identifier: '6', task_type: 'method', icon: 'Correlations' },
-            { task_identifier: '7', task_type: 'method', icon: 'CreateClass' },
+            {
+              task_identifier: 'ewokscore.ppftasks.PpfPortTask',
+              task_type: 'method',
+              icon: 'Continuize',
+            },
+            {
+              task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
+              task_type: 'method',
+              icon: 'Correlations',
+            },
+            {
+              task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
+              task_type: 'method',
+              icon: 'CreateClass',
+            },
           ].map((elem, index) => (
             <span
               key={index}
@@ -496,7 +520,9 @@ export default function Sidebar(props) {
             </span>
           ))}
           <Upload>
-            <AddIcon onClick={insertGraph} />G
+            <span onClick={insertGraph}>
+              <AddIcon />G
+            </span>
           </Upload>
         </AccordionDetails>
       </Accordion>

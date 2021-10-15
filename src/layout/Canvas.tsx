@@ -38,7 +38,7 @@ import {
   toRFEwoksNodes,
   positionNodes,
   ewoksNetwork,
-  findGraphWithName,
+  getGraph,
   // RFtoRFEwoksNode,
 } from '../utils';
 
@@ -83,6 +83,7 @@ function Canvas() {
   const graphRF = useStore((state) => state.graphRF);
   const setGraphRF = useStore((state) => state.setGraphRF);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
+  const setRecentGraphs = useStore((state) => state.setRecentGraphs);
 
   // const ewoksElements = useStore((state) => {
   //   console.log(state);
@@ -290,14 +291,16 @@ function Canvas() {
     const nodeTmp = graphRF.nodes.find((el) => el.id === node.id);
     console.log(event, node, nodeTmp);
     if (node.type === 'graph') {
-      const subgraph = findGraphWithName(nodeTmp.task_identifier);
+      // if type==graph get the subgraph from the local and if not from server
+      const subgraph = getGraph(nodeTmp.task_identifier);
       setSelectedSubgraph(subgraph);
       setGraphRF({
         graph: subgraph.graph,
         nodes: toRFEwoksNodes(subgraph),
         links: toRFEwoksLinks(subgraph),
       } as GraphRF);
-      setSubgraphsStack(subgraph.graph.name);
+      setSubgraphsStack({ id: subgraph.graph.id, name: subgraph.graph.name });
+      setRecentGraphs(subgraph);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);
       console.log(selectedSubgraph);

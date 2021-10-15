@@ -3,6 +3,7 @@
 // of ewoks and a map-engine to create a model for react-flow or another for vis etc.
 export const graph = {
   graph: {
+    id: 'graph1',
     name: 'graph',
     input_nodes: [
       { name: 'in1', id: 'node1' },
@@ -24,7 +25,7 @@ export const graph = {
     {
       id: 'node2',
       task_type: 'graph',
-      task_identifier: 'subgraph',
+      task_identifier: 'subgraph1',
       uiProps: { position: { x: 400, y: 80 }, icon: 'orange2' },
     },
     {
@@ -107,6 +108,7 @@ export const graph = {
 
 export const subgraph = {
   graph: {
+    id: 'subgraph1',
     name: 'subgraph',
     input_nodes: [{ name: 'in1', id: 'task1' }],
     output_nodes: [
@@ -130,7 +132,7 @@ export const subgraph = {
     {
       id: 'subsubgraph',
       task_type: 'graph',
-      task_identifier: 'subsubgraph',
+      task_identifier: 'subsubgraph1',
       uiProps: { position: { x: 700, y: 480 } },
     },
   ],
@@ -151,6 +153,7 @@ export const subgraph = {
 
 export const subsubgraph = {
   graph: {
+    id: 'subsubgraph1',
     name: 'subsubgraph',
     input_nodes: [{ name: 'in1', id: 'task1' }],
     output_nodes: [
@@ -174,7 +177,7 @@ export const subsubgraph = {
     {
       id: 'subsubsubgraph',
       task_type: 'graph',
-      task_identifier: 'subsubsubgraph',
+      task_identifier: 'subsubsubgraph1',
       uiProps: { position: { x: 700, y: 480 } },
     },
   ],
@@ -195,6 +198,7 @@ export const subsubgraph = {
 
 export const subsubsubgraph = {
   graph: {
+    id: 'subsubsubgraph1',
     name: 'subsubsubgraph',
     input_nodes: [{ name: 'in1', id: 'task1' }],
     output_nodes: [{ name: 'in2', id: 'task2' }],
@@ -256,6 +260,20 @@ export const tasks = [
     output_names: ['result'],
     required_input_names: ['a'],
     task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
+    task_type: 'class',
+  },
+  {
+    optional_input_names: ['b'],
+    output_names: ['result'],
+    required_input_names: ['a'],
+    task_identifier: 'subsubgraph1',
+    task_type: 'class',
+  },
+  {
+    optional_input_names: ['b'],
+    output_names: ['result'],
+    required_input_names: ['a'],
+    task_identifier: 'subgraph1',
     task_type: 'class',
   },
 ];

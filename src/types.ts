@@ -7,6 +7,7 @@ export interface GraphNodes {
 }
 
 export interface GraphDetails {
+  id: string;
   name: string;
   input_nodes?: Array<GraphNodes>;
   output_nodes?: Array<GraphNodes>;
@@ -24,8 +25,8 @@ export interface State {
   setRecentGraphs?: (graphRF: GraphRF) => void;
   graphOrSubgraph?: Boolean;
   setGraphOrSubgraph: (isItGraph: Boolean) => void;
-  subgraphsStack?: Array<string>;
-  setSubgraphsStack?: (graphRF: string) => void;
+  subgraphsStack?: Array<stackGraph>;
+  setSubgraphsStack?: (graphRF: stackGraph) => void;
   graphRF: GraphRF;
   setGraphRF: (graphRF: GraphRF) => void;
   selectedElement: EwoksRFNode | EwoksRFLink;
@@ -37,6 +38,11 @@ export interface State {
 export interface Inputs {
   key?: string;
   value?: string;
+}
+
+export interface stackGraph {
+  id: string;
+  name: string;
 }
 
 export interface UiProps {

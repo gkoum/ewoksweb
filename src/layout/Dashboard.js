@@ -37,12 +37,7 @@ import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import {
-  findGraphWithName,
-  rfToEwoks,
-  toRFEwoksLinks,
-  toRFEwoksNodes,
-} from '../utils';
+import { getGraph, rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
 import MyCard from '../layout/MyCard';
 
 // import { mainListItems, secondaryListItems } from './listItems';
@@ -184,7 +179,6 @@ export default function Dashboard() {
   const setGraphRF = useStore((state) => state.setGraphRF);
   const selectedElement = useStore((state) => state.selectedElement);
   const selectedSubgraph = useStore((state) => {
-    console.log(state);
     return state.selectedSubgraph;
   });
   const subgraphsStack = useStore((state) => {
@@ -225,20 +219,21 @@ export default function Dashboard() {
   };
 
   const newGraph = (event) => {
-    console.log(graphRF);
+    // Name of graph unique and used in recentGraphs, graphRF, subgraphsStack
     setGraphRF({ graph: {}, nodes: [], links: [] });
     console.log('Start drawing please!');
   };
 
   const goToGraph = (e) => {
     e.preventDefault();
-    console.log(e.target.text, recentGraphs);
-    setSubgraphsStack(e.target.text);
-    const subgraph = recentGraphs.find((gr) => gr.graph.name === e.target.text);
+    console.log(e.target.text, e.target.id, recentGraphs);
+    setSubgraphsStack({ id: e.target.id, name: e.target.text });
+    const subgraph = recentGraphs.find((gr) => gr.graph.id === e.target.id);
     console.log(subgraph);
-    // subgraph = subgraph ? subgraph : findGraphWithName(e.target.text);
+    // subgraph = subgraph ? subgraph : getGraph(e.target.text);
     if (!subgraph) {
-      subgraph = findGraphWithName(e.target.text);
+      // subgraph = getGraph(e.target.text);
+      // console.log(subgraph);
       setGraphRF({
         graph: subgraph.graph,
         nodes: toRFEwoksNodes(subgraph),
@@ -278,19 +273,22 @@ export default function Dashboard() {
           >
             <Breadcrumbs aria-label="breadcrumb" color="textPrimary">
               {subgraphsStack[0] &&
-                subgraphsStack.map((name) => (
+                subgraphsStack.map((gr) => (
                   <Link
                     underline="hover"
                     color="textPrimary"
                     href="/"
-                    key={name}
+                    id={gr.id}
+                    key={gr.id}
+                    value={gr.id}
                     onClick={goToGraph}
                   >
-                    {name}
+                    {gr.name}
                   </Link>
                 ))}
             </Breadcrumbs>
-            {subgraphsStack[subgraphsStack.length - 1]}
+            {subgraphsStack[0] &&
+              subgraphsStack[subgraphsStack.length - 1].name}
           </Typography>
 
           <FormControl variant="standard" className={classes.formControl}>

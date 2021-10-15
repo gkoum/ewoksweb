@@ -24,7 +24,8 @@ const NODE_SIZE = { width: 270, height: 36 };
 
 export const ewoksNetwork = graph;
 
-export function findGraphWithName(gname: string): Graph {
+// this wiil get graphs from the server async
+export function getGraph(gname: string): Graph {
   const thisSubgraph = gname;
   // console.log(thisSubgraph);
   let subgraphL = {
@@ -42,6 +43,21 @@ export function findGraphWithName(gname: string): Graph {
     subgraphL = subsubsubgraph;
   }
   return subgraphL;
+}
+
+const id = 'graph';
+export function createGraph() {
+  // server returns the basic structure of a graph
+  return {
+    graph: {
+      id: id + '1',
+      name: 'newGraph',
+      input_nodes: [],
+      output_nodes: [],
+    },
+    nodes: [],
+    links: [],
+  };
 }
 
 export function rfToEwoks(tempGraph): GraphEwoks {
@@ -153,7 +169,7 @@ export function toEwoksNodes(nodes): EwoksNode[] {
 // }
 
 export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
-  // const tempGraph = findGraphWithName(id);
+  // const tempGraph = getGraph(id);
   console.log(tempGraph);
   const inputsAll =
     tempGraph.graph &&
@@ -229,8 +245,9 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
             position: uiProps.position,
           };
         }
-        const subgraphL = findGraphWithName(task_identifier);
+        const subgraphL = getGraph(task_identifier);
         // get the inputs outputs of the graph
+        console.log(subgraphL, tempGraph);
         const inputsSub = subgraphL.graph.input_nodes.map((alias) => {
           return {
             label: `${alias.name}: ${alias.id} ${
@@ -277,7 +294,7 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
 }
 
 export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
-  // const tempGraph = findGraphWithName(id);
+  // const tempGraph = getGraph(id);
   // console.log(tempGraph);
   if (tempGraph.links) {
     return tempGraph.links.map(
@@ -301,7 +318,7 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
             (tas) => tas.task_identifier === sourceTmp.task_identifier
           );
         } else {
-          const subgraphL = findGraphWithName(sourceTmp.task_identifier);
+          const subgraphL = getGraph(sourceTmp.task_identifier);
           const outputs = [];
           subgraphL.graph.output_nodes.forEach((out) => outputs.push(out.name));
 
@@ -318,7 +335,7 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
             (tas) => tas.task_identifier === targetTmp.task_identifier
           );
         } else {
-          const subgraphL = findGraphWithName(targetTmp.task_identifier);
+          const subgraphL = getGraph(targetTmp.task_identifier);
           const inputs = [];
           subgraphL.graph.input_nodes.forEach((inp) => inputs.push(inp.name));
 

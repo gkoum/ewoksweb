@@ -9,13 +9,14 @@ import type {
   EwoksRFNode,
   GraphRF,
   GraphDetails,
+  stackGraph,
 } from './types';
 import {
   toRFEwoksLinks,
   toRFEwoksNodes,
   positionNodes,
   ewoksNetwork,
-  findGraphWithName,
+  getGraph,
 } from './utils';
 
 const nodes: EwoksRFNode[] = []; //toRFEwoksNodes('graph');
@@ -33,7 +34,7 @@ const useStore = create<State>((set, get) => ({
       get().recentGraphs.length > 0
         ? get().recentGraphs.filter((gr) => {
             console.log('GRR:', gr, newGraph);
-            return gr.graph.name !== newGraph.graph.name;
+            return gr.graph.id !== newGraph.graph.id;
           })
         : [];
     console.log('REC:', rec);
@@ -53,18 +54,19 @@ const useStore = create<State>((set, get) => ({
     }));
   },
 
-  subgraphsStack: [] as string[],
+  // stack has to hold name and id of graph
+  subgraphsStack: [] as stackGraph[],
 
-  setSubgraphsStack: (name: string) => {
+  setSubgraphsStack: (stackGraph: stackGraph) => {
     let stack = [];
     const subStack = get().subgraphsStack;
-    const exists = subStack.indexOf(name);
-    console.log(exists, name);
-    if (name === 'initialiase') {
+    const exists = subStack.map((gr) => gr.id).indexOf(stackGraph.id);
+    console.log(exists, stackGraph);
+    if (stackGraph.id === 'initialiase') {
       stack = [];
     } else if (exists === -1) {
       console.log('not exists');
-      stack = [...subStack, name];
+      stack = [...subStack, stackGraph];
     } else if (exists == subStack.length - 1) {
       console.log('exists the last');
       stack = subStack;
@@ -147,21 +149,21 @@ const useStore = create<State>((set, get) => ({
   },
 
   selectedSubgraph: {
-    graph: { name: '', input_nodes: [], output_nodes: [] },
+    graph: { id: '', name: '', input_nodes: [], output_nodes: [] },
     nodes: [],
     links: [],
   },
 
   setSelectedSubgraph: (graph: GraphRF) => {
     // get the subgraph from server?
-    const graphRF = findGraphWithName(graph.graph.name);
+    const graphRF = getGraph(graph.graph.id);
     console.log(graphRF);
     set((state) => ({
       ...state,
       selectedSubgraph: {
         graph: graphRF.graph,
-        nodes: toRFEwoksNodes(graphRF.graph.name),
-        links: toRFEwoksLinks(graphRF.graph.name),
+        nodes: toRFEwoksNodes(graphRF.graph.id),
+        links: toRFEwoksLinks(graphRF.graph.id),
       },
     }));
   },

@@ -20,7 +20,7 @@ import type {
 import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
 import ReactJson from 'react-json-view';
 import { Rnd } from 'react-rnd';
-import { findGraphWithName } from '../utils';
+import { getGraph } from '../utils';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import useStore from '../store';
 import CustomNode from '../CustomNodes/CustomNode';
@@ -165,7 +165,7 @@ function CanvasView(props) {
     event.preventDefault();
     console.log(event, node);
     if (node.type === 'graph') {
-      const subgraph = findGraphWithName(node.data.task_identifier);
+      const subgraph = getGraph(node.data.task_identifier);
       setSelectedSubgraph(subgraph);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);

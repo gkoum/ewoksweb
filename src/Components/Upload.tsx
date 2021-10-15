@@ -3,8 +3,8 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Fab, Button } from '@material-ui/core';
 import { useState } from 'react';
 import useStore from '../store';
-import type { GraphRF } from '../types';
-import { toRFEwoksLinks, toRFEwoksNodes } from '../utils';
+import type { Graph, GraphRF } from '../types';
+import { toRFEwoksLinks, toRFEwoksNodes, createGraph } from '../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -61,7 +61,7 @@ function Upload(props) {
       // if it is a new graph opening
       if (graphOrSubgraph) {
         console.log('initialiase');
-        setSubgraphsStack('initialiase');
+        setSubgraphsStack({ id: 'initialiase', name: '' });
         console.log('ADD a new graph1');
         setRecentGraphs({
           graph: newGraph.graph,
@@ -72,50 +72,65 @@ function Upload(props) {
       } else {
         // if we are adding a subgraph to an existing graph:
         // save the super-graph in the recent graphs and add a new graph node to it
-        const inputsSub = newGraph.graph.input_nodes.map((alias) => {
-          return {
-            label: `${alias.name}: ${alias.id} ${
-              alias.sub_node ? `  -> ${alias.sub_node}` : ''
-            }`,
-            type: 'data ',
+        // if there is no initial graph to drop-in the subgraph -> create one
+        let superGraph = {} as Graph;
+        if (recentGraphs.length === 0) {
+          // create a graph and get its id
+          superGraph = createGraph();
+          setSubgraphsStack({
+            id: superGraph.graph.id,
+            name: superGraph.graph.name,
+          });
+          setRecentGraphs(superGraph);
+        } else {
+          superGraph = recentGraphs.find(
+            (gr) => gr.graph.id === graphRF.graph.id
+          );
+        }
+
+        if (superGraph) {
+          const inputsSub = newGraph.graph.input_nodes.map((alias) => {
+            return {
+              label: `${alias.name}: ${alias.id} ${
+                alias.sub_node ? `  -> ${alias.sub_node}` : ''
+              }`,
+              type: 'data ',
+            };
+          });
+          const outputsSub = newGraph.graph.output_nodes.map((alias) => {
+            return {
+              label: `${alias.name}: ${alias.id} ${
+                alias.sub_node ? ` -> ${alias.sub_node}` : ''
+              }`,
+              type: 'data ',
+            };
+          });
+          const newNode = {
+            sourcePosition: 'right',
+            targetPosition: 'left',
+            task_generator: '',
+            id: newGraph.graph.name,
+            task_type: newGraph.graph.name,
+            task_identifier: newGraph.graph.name,
+            type: 'graph',
+            position: { x: 100, y: 100 },
+            default_inputs: '',
+            inputs_complete: false,
+            data: {
+              label: newGraph.graph.name,
+              type: 'internal',
+              comment: '',
+              icon: newGraph.graph.uiProps && newGraph.graph.uiProps.icon,
+              inputs: inputsSub,
+              outputs: outputsSub,
+              // icon: newGraph.data.icon ? newGraph.data.icon : '',
+            },
+            // data: { label: CustomNewNode(id, name, image) },
           };
-        });
-        const outputsSub = newGraph.graph.output_nodes.map((alias) => {
-          return {
-            label: `${alias.name}: ${alias.id} ${
-              alias.sub_node ? ` -> ${alias.sub_node}` : ''
-            }`,
-            type: 'data ',
-          };
-        });
-        const newNode = {
-          sourcePosition: 'right',
-          targetPosition: 'left',
-          task_generator: '',
-          id: newGraph.graph.name,
-          task_type: newGraph.graph.name,
-          task_identifier: newGraph.graph.name,
-          type: 'graph',
-          position: { x: 100, y: 100 },
-          default_inputs: '',
-          inputs_complete: false,
-          data: {
-            label: newGraph.graph.name,
-            type: 'internal',
-            comment: '',
-            icon: newGraph.graph.uiProps && newGraph.graph.uiProps.icon,
-            inputs: inputsSub,
-            outputs: outputsSub,
-            // icon: newGraph.data.icon ? newGraph.data.icon : '',
-          },
-          // data: { label: CustomNewNode(id, name, image) },
-        };
-        const superGraph = recentGraphs.find(
-          (gr) => gr.graph.name === graphRF.graph.name
-        );
-        superGraph.nodes.push(newNode);
-        console.log('ADD a new graph2', superGraph);
-        setRecentGraphs(superGraph);
+          superGraph.nodes.push(newNode);
+          console.log('ADD a new graph2', superGraph);
+          setRecentGraphs(superGraph);
+        }
       }
       // set the new graph as the working graph
       setGraphRF({
@@ -130,7 +145,7 @@ function Upload(props) {
         nodes: nodes,
         links: links,
       });
-      setSubgraphsStack(JSON.parse(file.result).graph.name);
+      setSubgraphsStack({ id: newGraph.graph.id, name: newGraph.graph.name });
     };
     // var data = require('json!./' + selectedFile.name);
     // console.log(data);
