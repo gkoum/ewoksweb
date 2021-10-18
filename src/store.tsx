@@ -1,26 +1,16 @@
-import type { Edge, Node } from 'react-flow-renderer';
 import create from 'zustand';
 import type {
   State,
-  Graph,
-  EwoksNode,
-  EwoksLink,
   EwoksRFLink,
   EwoksRFNode,
   GraphRF,
   GraphDetails,
   stackGraph,
 } from './types';
-import {
-  toRFEwoksLinks,
-  toRFEwoksNodes,
-  positionNodes,
-  ewoksNetwork,
-  getGraph,
-} from './utils';
+import { toRFEwoksLinks, toRFEwoksNodes, getGraph } from './utils';
 
-const nodes: EwoksRFNode[] = []; //toRFEwoksNodes('graph');
-const edges: EwoksRFLink[] = []; // toRFEwoksLinks('graph');
+const nodes: EwoksRFNode[] = [];
+const edges: EwoksRFLink[] = [];
 console.log(nodes, edges);
 // const positionedNodes = positionNodes(nodes, edges);
 // console.log(positionedNodes);
@@ -162,7 +152,7 @@ const useStore = create<State>((set, get) => ({
       ...state,
       selectedSubgraph: {
         graph: graphRF.graph,
-        nodes: toRFEwoksNodes(graphRF.graph.id),
+        nodes: toRFEwoksNodes(graphRF.graph.id, get().recentGraphs),
         links: toRFEwoksLinks(graphRF.graph.id),
       },
     }));

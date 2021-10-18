@@ -1,8 +1,8 @@
 import type { Node, Edge, Position } from 'react-flow-renderer';
 
 export interface GraphNodes {
-  name: string;
   id: string;
+  node: string;
   sub_node?: string;
 }
 
@@ -38,6 +38,12 @@ export interface State {
 export interface Inputs {
   key?: string;
   value?: string;
+}
+
+export interface nodeInputsOutputs {
+  optional_input_names?: Array<string>;
+  output_names?: Array<string>;
+  required_input_names?: Array<string>;
 }
 
 export interface stackGraph {
@@ -100,6 +106,9 @@ export interface EwoksRFNode {
   sourcePosition?: Position;
   targetPosition?: Position;
   position?: { x: number; y: number };
+  optional_input_names?: Array<string>;
+  output_names?: Array<string>;
+  required_input_names?: Array<string>;
 }
 
 export interface EwoksRFLink {

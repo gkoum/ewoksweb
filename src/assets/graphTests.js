@@ -1,17 +1,18 @@
 // the graphs we will get from the server or DB
 // decoupling from the Graph visualisation library used means we have a model
 // of ewoks and a map-engine to create a model for react-flow or another for vis etc.
+const PpfPortTask = 'ewokscore.ppftasks.PpfPortTask';
 export const graph = {
   graph: {
     id: 'graph1',
     name: 'graph',
     input_nodes: [
-      { name: 'in1', id: 'node1' },
-      { name: 'in2', id: 'node4' },
+      { id: 'in1', node: 'node1' },
+      { id: 'in2', node: 'node4' },
     ],
     output_nodes: [
-      { name: 'out1', id: 'node3' },
-      { name: 'out2', id: 'node7' },
+      { id: 'out1', node: 'node3' },
+      { id: 'out2', node: 'node7' },
     ],
   },
   nodes: [
@@ -55,7 +56,7 @@ export const graph = {
     {
       id: 'node6',
       task_type: 'method',
-      task_identifier: 'ewokscore.ppftasks.PpfPortTask',
+      task_identifier: PpfPortTask,
       uiProps: { position: { x: 900, y: 80 }, icon: 'Correlations' },
     },
     {
@@ -110,24 +111,36 @@ export const subgraph = {
   graph: {
     id: 'subgraph1',
     name: 'subgraph',
-    input_nodes: [{ name: 'in1', id: 'task1' }],
+    input_nodes: [
+      { id: 'in1', node: 'task1' },
+      { id: 'in2', node: 'task3' },
+    ],
     output_nodes: [
-      { name: 'out1', id: 'subsubgraph', sub_node: 'out1' },
-      { name: 'out2', id: 'subsubgraph', sub_node: 'out2' },
+      { id: 'out1', node: 'subsubgraph', sub_node: 'out1' },
+      { id: 'out2', node: 'subsubgraph', sub_node: 'out2' },
     ],
   },
   nodes: [
     {
       id: 'task1',
       task_type: 'method',
-      task_identifier: 'tasks.methods.add2',
-      uiProps: { position: { x: 50, y: 80 } },
+      task_identifier: PpfPortTask,
+      uiProps: { position: { x: 50, y: 80 }, icon: 'Correlations' },
     },
     {
       id: 'task2',
       task_type: 'method',
-      task_identifier: 'tasks.methods.add3',
-      uiProps: { position: { x: 500, y: 180 } },
+      task_identifier: 'tasks.methods.rerr15',
+      uiProps: {
+        position: { x: 500, y: 180 },
+        icon: 'AggregateColumns',
+      },
+    },
+    {
+      id: 'task3',
+      task_type: 'method',
+      task_identifier: 'tasks.methods.add4',
+      uiProps: { position: { x: 50, y: 500 } },
     },
     {
       id: 'subsubgraph',
@@ -155,10 +168,10 @@ export const subsubgraph = {
   graph: {
     id: 'subsubgraph1',
     name: 'subsubgraph',
-    input_nodes: [{ name: 'in1', id: 'task1' }],
+    input_nodes: [{ id: 'in1', node: 'task1' }],
     output_nodes: [
-      { name: 'out1', id: 'subsubsubgraph', sub_node: 'out' },
-      { name: 'out2', id: 'subsubsubgraph', sub_node: 'out' },
+      { id: 'out1', node: 'subsubsubgraph', sub_node: 'out' },
+      { id: 'out2', node: 'subsubsubgraph', sub_node: 'out' },
     ],
   },
   nodes: [
@@ -200,8 +213,8 @@ export const subsubsubgraph = {
   graph: {
     id: 'subsubsubgraph1',
     name: 'subsubsubgraph',
-    input_nodes: [{ name: 'in1', id: 'task1' }],
-    output_nodes: [{ name: 'in2', id: 'task2' }],
+    input_nodes: [{ id: 'in1', node: 'task1' }],
+    output_nodes: [{ id: 'in2', node: 'task2' }],
   },
   nodes: [
     {

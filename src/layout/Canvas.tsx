@@ -41,6 +41,7 @@ import {
   getGraph,
   // RFtoRFEwoksNode,
 } from '../utils';
+import useNodeInputsOutputs from '../hooks/useNodeInputsOutputs';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -79,6 +80,10 @@ function Canvas() {
   // const [ewoksD, setEwoksD] = useState(ewoksNetwork);
   const [disableDragging, setDisableDragging] = useState(false);
   const [elements, setElements] = useState([]);
+  // const inOut = useNodeInputsOutputs(
+  //   'ewokscore.methodtask.MethodExecutorTask',
+  //   'class'
+  // );
   const reactFlowWrapper = useRef(null);
   const graphRF = useStore((state) => state.graphRF);
   const setGraphRF = useStore((state) => state.setGraphRF);
@@ -207,27 +212,19 @@ function Canvas() {
       y: event.clientY - reactFlowBounds.top,
     });
     console.log(position);
-    // data:
-    // comment: undefined
-    // icon: "CreateClass"
-    // label: "tasks.simplemethods.kep17"
-    // type: "output"
-    // default_inputs: undefined
-    // id: "node7"
-    // inputs_complete: undefined
-    // position: Object { x: 1100, y: 240 }
-    // sourcePosition: "right"
-    // targetPosition: "left"
-    // task_generator: undefined
-    // task_identifier: "tasks.simplemethods.kep17"
-    // task_type: "method"
-    // type: "method"
+
     const newNode = {
       id: getId(),
       task_type,
       task_identifier,
       type: task_type,
+      task_generator: '',
       position,
+      default_inputs: [],
+      inputs_complete: false,
+      required_input_names: [],
+      optional_input_names: [],
+      output_names: [],
       data: { label: `${task_identifier} node`, type: 'internal', icon: icon },
       // data: { label: CustomNewNode(id, name, image) },
     };
@@ -242,10 +239,15 @@ function Canvas() {
 
   const onConnect = (params) => {
     console.log(params);
+    // IF is a link between pre-existing nodes:
     // add links_required_output_names and links_optional_output_names from target
     // links_input_names from source node
+
+    // ELSE IF there is a new node we need to find input and outputs
+
     const sourceTask = graphRF.nodes.find((nod) => nod.id === params.source);
     const targetTask = graphRF.nodes.find((nod) => nod.id === params.target);
+    console.log(sourceTask, targetTask);
     const link = {
       data: {
         // node optional_input_names are link's optional_output_names
@@ -296,7 +298,7 @@ function Canvas() {
       setSelectedSubgraph(subgraph);
       setGraphRF({
         graph: subgraph.graph,
-        nodes: toRFEwoksNodes(subgraph),
+        nodes: toRFEwoksNodes(subgraph, []),
         links: toRFEwoksLinks(subgraph),
       } as GraphRF);
       setSubgraphsStack({ id: subgraph.graph.id, name: subgraph.graph.name });

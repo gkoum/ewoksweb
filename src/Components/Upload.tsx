@@ -5,6 +5,7 @@ import { useState } from 'react';
 import useStore from '../store';
 import type { Graph, GraphRF } from '../types';
 import { toRFEwoksLinks, toRFEwoksNodes, createGraph } from '../utils';
+// import useToRFEwoksNodes from '../hooks/useToRFEwoksNodes';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,7 +49,7 @@ function Upload(props) {
       // console.log('DONE', file.result); // readyState will be 2
       setSelectedFile(file.result);
       const newGraph = JSON.parse(file.result);
-      const nodes = toRFEwoksNodes(newGraph);
+      const nodes = toRFEwoksNodes(newGraph, recentGraphs);
       const links = toRFEwoksLinks(newGraph);
       console.log(
         'Executed',

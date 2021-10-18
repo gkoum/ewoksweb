@@ -236,7 +236,7 @@ export default function Dashboard() {
       // console.log(subgraph);
       setGraphRF({
         graph: subgraph.graph,
-        nodes: toRFEwoksNodes(subgraph),
+        nodes: toRFEwoksNodes(subgraph, []),
         links: toRFEwoksLinks(subgraph),
       });
     } else {

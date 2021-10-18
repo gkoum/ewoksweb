@@ -17,7 +17,10 @@ import type {
   EwoksRFLink,
   GraphEwoks,
   RFNode,
+  nodeInputsOutputs,
+  GraphRF,
 } from './types';
+import useStore from './store';
 
 const { GraphDagre } = dagre.graphlib;
 const NODE_SIZE = { width: 270, height: 36 };
@@ -25,9 +28,9 @@ const NODE_SIZE = { width: 270, height: 36 };
 export const ewoksNetwork = graph;
 
 // this wiil get graphs from the server async
-export function getGraph(gname: string): Graph {
-  const thisSubgraph = gname;
-  // console.log(thisSubgraph);
+export function getGraph(byTaskIdentifier: string): Graph {
+  const thisSubgraph = byTaskIdentifier;
+  console.log(thisSubgraph);
   let subgraphL = {
     graph: { id: '', input_nodes: [], output_nodes: [] },
     nodes: [],
@@ -35,11 +38,11 @@ export function getGraph(gname: string): Graph {
   };
   if (thisSubgraph === 'graph') {
     subgraphL = graph;
-  } else if (thisSubgraph === 'subgraph') {
+  } else if (thisSubgraph === 'subgraph1') {
     subgraphL = subgraph;
-  } else if (thisSubgraph === 'subsubgraph') {
+  } else if (thisSubgraph === 'subsubgraph1') {
     subgraphL = subsubgraph;
-  } else if (thisSubgraph === 'subsubsubgraph') {
+  } else if (thisSubgraph === 'subsubsubgraph1') {
     subgraphL = subsubsubgraph;
   }
   return subgraphL;
@@ -167,18 +170,68 @@ export function toEwoksNodes(nodes): EwoksNode[] {
 //     position: uiProps.position,
 //   };
 // }
+export function calcNodeInputsOutputs(
+  task_identifier: string,
+  taskType: string,
+  recentGraphs: GraphRF[]
+): nodeInputsOutputs {
+  // locate the task and add required+optional-inputs + outputs
+  let tempTask = {};
+  console.log(task_identifier, taskType, recentGraphs);
+  // For subgraph calculate through input_nodes, output_nodes
+  if (taskType === 'graph') {
+    // locate subgraph
+    const subgraphL = getGraph(task_identifier);
+    // get inputs-outputs from each subnode connected to each input and map to nodeInOut
+    console.log(subgraphL);
+    const inputsSub = subgraphL.graph.input_nodes.map((input) => {
+      const nodeSubgraph = subgraphL.nodes.find((nod) => nod.id === input.node);
+      return {
+        optional_input_names: nodeSubgraph.optional_input_names,
+        output_names: [],
+        required_input_names: [],
+      };
+    });
+    // const outputsSub = subgraphL.graph.output_nodes.map((output) => {
+    //   return {
+    //     label: `${output.name}: ${output.id} ${
+    //       output.sub_node ? ` -> ${output.sub_node}` : ''
+    //     }`,
+    //     type: 'data ',
+    //   };
+    // });
+  } else if (tempTask) {
+    // If a know task get inputs-outputs
+    tempTask = tasks.find((tas) => tas.task_identifier === task_identifier);
+    return tempTask;
+  }
+  tempTask = tempTask
+    ? tempTask
+    : task_type === 'graph'
+    ? tempTask // calculate inputs-outputs from subgraph
+    : // will it have the subgraph from the beggining? NO.
+      // Needs to handle it until it get it
+      {
+        optional_input_names: [],
+        output_names: [],
+        required_input_names: [],
+      };
+  return tempTask;
+}
 
-export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
-  // const tempGraph = getGraph(id);
-  console.log(tempGraph);
+export function toRFEwoksNodes(
+  tempGraph,
+  recentGraphs: GraphRF[]
+): EwoksRFNode[] {
+  console.log(tempGraph, recentGraphs);
   const inputsAll =
     tempGraph.graph &&
     tempGraph.graph.input_nodes &&
-    tempGraph.graph.input_nodes.map((nod) => nod.id);
+    tempGraph.graph.input_nodes.map((nod) => nod.node);
   const outputsAll =
     tempGraph.graph &&
     tempGraph.graph.output_nodes &&
-    tempGraph.graph.output_nodes.map((nod) => nod.id);
+    tempGraph.graph.output_nodes.map((nod) => nod.node);
   // console.log(inputsAll, outputsAll);
   if (tempGraph.nodes) {
     return tempGraph.nodes.map(
@@ -204,9 +257,18 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
         } else {
           nodeType = 'internal';
         }
+
         // locate the task and add required+optional-inputs + outputs
         let tempTask = tasks.find(
           (tas) => tas.task_identifier === task_identifier
+        );
+        console.log(
+          tempTask,
+          nodeType,
+          isInput,
+          isOutput,
+          inputsAll,
+          outputsAll
         );
         // if it is not in the tasks list like a new subgraph?
         // for subgraph calculate through input_nodes, output_nodes
@@ -248,18 +310,18 @@ export function toRFEwoksNodes(tempGraph): EwoksRFNode[] {
         const subgraphL = getGraph(task_identifier);
         // get the inputs outputs of the graph
         console.log(subgraphL, tempGraph);
-        const inputsSub = subgraphL.graph.input_nodes.map((alias) => {
+        const inputsSub = subgraphL.graph.input_nodes.map((input) => {
           return {
-            label: `${alias.name}: ${alias.id} ${
-              alias.sub_node ? `  -> ${alias.sub_node}` : ''
+            label: `${input.id}: ${input.node} ${
+              input.sub_node ? `  -> ${input.sub_node}` : ''
             }`,
             type: 'data ',
           };
         });
-        const outputsSub = subgraphL.graph.output_nodes.map((alias) => {
+        const outputsSub = subgraphL.graph.output_nodes.map((output) => {
           return {
-            label: `${alias.name}: ${alias.id} ${
-              alias.sub_node ? ` -> ${alias.sub_node}` : ''
+            label: `${output.id}: ${output.node} ${
+              output.sub_node ? ` -> ${output.sub_node}` : ''
             }`,
             type: 'data ',
           };
@@ -337,7 +399,7 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
         } else {
           const subgraphL = getGraph(targetTmp.task_identifier);
           const inputs = [];
-          subgraphL.graph.input_nodes.forEach((inp) => inputs.push(inp.name));
+          subgraphL.graph.input_nodes.forEach((inp) => inputs.push(inp.id));
 
           targetTask = {
             task_type: targetTmp.task_type,
