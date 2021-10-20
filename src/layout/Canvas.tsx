@@ -70,6 +70,7 @@ const nodeTypes = {
   special: CustomNode,
   graph: FunctionNode,
   method: DataNode,
+  ppfmethod: DataNode,
 };
 
 function Canvas() {
