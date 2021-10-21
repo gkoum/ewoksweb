@@ -27,7 +27,7 @@ const NODE_SIZE = { width: 270, height: 36 };
 
 export const ewoksNetwork = graph;
 
-// this wiil get graphs from the server async
+// this wiil get graphs from the server async after checking the recentGraphs
 export function getGraph(byTaskIdentifier: string): Graph {
   const thisSubgraph = byTaskIdentifier;
   console.log(thisSubgraph);

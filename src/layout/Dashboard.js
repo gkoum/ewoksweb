@@ -210,6 +210,7 @@ export default function Dashboard() {
 
   const loadFromDisk = (val) => {
     console.log(val, inputFile);
+    // TODO: possible race situation with setting pgraphOrSubgraph
     setGraphOrSubgraph(true);
   };
 

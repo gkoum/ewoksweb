@@ -4,7 +4,12 @@ import { Fab, Button } from '@material-ui/core';
 import { useState } from 'react';
 import useStore from '../store';
 import type { Graph, GraphRF } from '../types';
-import { toRFEwoksLinks, toRFEwoksNodes, createGraph } from '../utils';
+import {
+  toRFEwoksLinks,
+  toRFEwoksNodes,
+  createGraph,
+  getGraph,
+} from '../utils';
 // import useToRFEwoksNodes from '../hooks/useToRFEwoksNodes';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -46,21 +51,26 @@ function Upload(props) {
     const reader = showFile(event);
     const file = await reader.then((val) => val);
     file.onloadend = function () {
-      // console.log('DONE', file.result); // readyState will be 2
       setSelectedFile(file.result);
       const newGraph = JSON.parse(file.result);
       const nodes = toRFEwoksNodes(newGraph, recentGraphs);
       const links = toRFEwoksLinks(newGraph);
-      console.log(
-        'Executed',
-        nodes,
-        links,
-        graphOrSubgraph,
-        recentGraphs,
-        newGraph
+      console.log(nodes, links, graphOrSubgraph, recentGraphs, newGraph);
+      // TODO: need to load first layer subgraphs with failsave if some not found
+      // Detect subgraphs and load them to recentGraphs
+      const existingNodeSubgraphs = nodes.filter(
+        (nod) => nod.task_type === 'graph'
       );
-      // if it is a new graph opening
+      console.log(existingNodeSubgraphs);
+      if (existingNodeSubgraphs.length > 0) {
+        // there are subgraphs get them to recentGraphs
+        existingNodeSubgraphs.forEach((graph) => {
+          setRecentGraphs(getGraph(graph.task_identifier));
+        });
+      }
+
       if (graphOrSubgraph) {
+        // if it is a new graph opening
         console.log('initialiase');
         setSubgraphsStack({ id: 'initialiase', name: '' });
         console.log('ADD a new graph1');
@@ -121,6 +131,7 @@ function Upload(props) {
               label: newGraph.graph.name,
               type: 'internal',
               comment: '',
+              // TODO: icon needs to be in the task and graph JSON specification
               icon: newGraph.graph.uiProps && newGraph.graph.uiProps.icon,
               inputs: inputsSub,
               outputs: outputsSub,

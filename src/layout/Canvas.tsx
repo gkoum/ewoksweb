@@ -138,6 +138,7 @@ function Canvas() {
 
   const selectedSubgraph = useStore((state) => state.selectedSubgraph);
   const setSelectedSubgraph = useStore((state) => state.setSelectedSubgraph);
+  const recentGraphs = useStore((state) => state.recentGraphs);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     // data:
@@ -294,8 +295,12 @@ function Canvas() {
     const nodeTmp = graphRF.nodes.find((el) => el.id === node.id);
     console.log(event, node, nodeTmp);
     if (node.type === 'graph') {
-      // if type==graph get the subgraph from the local and if not from server
-      const subgraph = getGraph(nodeTmp.task_identifier);
+      // if type==graph get the subgraph from the recentGraphs (and if not from server?)
+      const subgraph = recentGraphs.find(
+        (gr) => gr.graph.id === nodeTmp.task_identifier
+      );
+      // TODO: if the subgraph does not exist on recent? Re-ask server and failsafe
+      // const subgraph = getGraph(nodeTmp.task_identifier).then(save-to-recent).catch(failSafe)
       setSelectedSubgraph(subgraph);
       setGraphRF({
         graph: subgraph.graph,
@@ -303,11 +308,12 @@ function Canvas() {
         links: toRFEwoksLinks(subgraph),
       } as GraphRF);
       setSubgraphsStack({ id: subgraph.graph.id, name: subgraph.graph.name });
-      setRecentGraphs(subgraph);
+      // setRecentGraphs(subgraph);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);
       console.log(selectedSubgraph);
     } else {
+      // TODO: need doubleClick on simple nodes?
       console.log('THIS IS A NODE');
     }
   };

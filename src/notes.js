@@ -157,14 +157,27 @@ const subgraph = {
     },
   ],
 };
-// The subgraph should be a decoupled entity that could change any given moment.
-// Even the first node can change its name and the super-graph should remain unaltered.
-// So the subgraph has it own json representation and should only be referenced from the supergraph.
-// When using a subgraph we create an instance of it upon which changes can be made to alter it from the original one?
-// The outer graph needs to just assign 1 or more links to the inputs of the subgraph with the abstraction name we use
-// in the uper-graph for the subgraph and take get an output. TREAT IT LIKE A NODE in every way.
-// The rest of the info will be included at the decoupled subgraph as if it was an upper-graph as it can as well be.
-// subgraph then has input1 and input2 defined not as nodes but as inputs and the same goes for outputs.
+
+// recentGraphs is GrahRF[] ready to by used
+
+
+// 1. The subgraph should be a decoupled entity that could change any given moment.
+// 2. Even the subgraph input node can change its name and the super-graph should remain unaltered.
+// 3. The subgraph has its own json representation and should only be referenced from the supergraph with id.
+// 4. All graphs have a unique id (or name?)
+// 5. When using a subgraph we create an instance of it upon which changes can be made to alter it from the original one?
+// 6. The supergraph needs to just assign 1 or more links to the inputs of the subgraph
+// 7. TREAT IT LIKE A NODE in every way.
+// 8. The rest of the info will be included at the decoupled subgraph as if it was an supergraph as it can as well be.
+
+// we need when a graph is presented to search and fetch any first layer subgraphs
+// 1. new graph from dashboard
+// 2. add subgraph from sidebar
+// 3. on doubleClick node-subgraph from canvas
+
+// WE NEED A HOOK TO GET SUBGRAPHS OF ANY GRAPH:
+// has access to recentGraphs and if not find them: useSubGraphs
+//
 
 const graph = {
   inputs: [

@@ -124,7 +124,7 @@ export const subgraph = {
     {
       id: 'task1',
       task_type: 'method',
-      task_identifier: PpfPortTask,
+      task_identifier: 'PpfPortTask',
       uiProps: { position: { x: 50, y: 80 }, icon: 'Correlations' },
     },
     {
@@ -246,6 +246,7 @@ export const tasks = [
     required_input_names: ['method'],
     task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
     task_type: 'class',
+    uiProps: { icon: 'orange1' },
   },
   {
     optional_input_names: [],
