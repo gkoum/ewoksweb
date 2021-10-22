@@ -182,11 +182,11 @@ export default function Dashboard() {
     return state.selectedSubgraph;
   });
   const subgraphsStack = useStore((state) => {
-    console.log(state);
+    // console.log(state);
     return state.subgraphsStack;
   });
   const setGraphOrSubgraph = useStore((state) => state.setGraphOrSubgraph);
-  const [selectedGraph, setSelectedGraph] = React.useState('graph');
+  const [selectedGraph, setSelectedGraph] = React.useState('');
   const [open, setOpen] = React.useState(true);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const recentGraphs = useStore((state) => state.recentGraphs);
@@ -205,7 +205,8 @@ export default function Dashboard() {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   const selectedGraphChange = (event) => {
-    console.log(event, selectedGraph);
+    console.log(event.target.value, selectedGraph);
+    setSelectedGraph(event.target.value);
   };
 
   const loadFromDisk = (val) => {
@@ -228,7 +229,7 @@ export default function Dashboard() {
   const goToGraph = (e) => {
     e.preventDefault();
     console.log(e.target.text, e.target.id, recentGraphs);
-    setSubgraphsStack({ id: e.target.id, name: e.target.text });
+    setSubgraphsStack({ id: e.target.id, label: e.target.text });
     const subgraph = recentGraphs.find((gr) => gr.graph.id === e.target.id);
     console.log(subgraph);
     // subgraph = subgraph ? subgraph : getGraph(e.target.text);
@@ -284,12 +285,12 @@ export default function Dashboard() {
                     value={gr.id}
                     onClick={goToGraph}
                   >
-                    {gr.name}
+                    {gr.label}
                   </Link>
                 ))}
             </Breadcrumbs>
             {subgraphsStack[0] &&
-              subgraphsStack[subgraphsStack.length - 1].name}
+              subgraphsStack[subgraphsStack.length - 1].label}
           </Typography>
 
           <FormControl variant="standard" className={classes.formControl}>
@@ -305,12 +306,11 @@ export default function Dashboard() {
               value={selectedGraph}
               onChange={selectedGraphChange}
             >
-              <MenuItem value={1}>
-                <em>Graph</em>
-              </MenuItem>
-              <MenuItem value={10}>subGraph</MenuItem>
-              <MenuItem value={20}>subsubGraph</MenuItem>
-              <MenuItem value={30}>subsubsubGraph</MenuItem>
+              {recentGraphs.map((gr, index) => (
+                <MenuItem value={gr.graph.label} key={gr.graph.id}>
+                  <em>{gr.graph.label}</em>
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <IconButton color="inherit">

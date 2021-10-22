@@ -153,7 +153,7 @@ export default function Sidebar(props) {
       }
     } else {
       console.log(graphRF.graph.input_nodes, graphRF.graph.output_nodes);
-      setLabel(graphRF.graph.name);
+      setLabel(graphRF.graph.label);
       setComment(graphRF.graph.comment);
       setGraphInputs(
         graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []
@@ -167,7 +167,7 @@ export default function Sidebar(props) {
     selectedElement,
     graphRF.graph.input_nodes,
     graphRF.graph.output_nodes,
-    graphRF.graph.name,
+    graphRF.graph.label,
     graphRF.graph.comment,
   ]);
 
@@ -550,7 +550,7 @@ export default function Sidebar(props) {
             ) : (
               <React.Fragment>
                 <div>
-                  <b>Name:</b> {graphRF.graph.name}
+                  <b>Name:</b> {graphRF.graph.label}
                 </div>
                 <div>
                   <TextField

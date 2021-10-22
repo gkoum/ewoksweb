@@ -5,7 +5,7 @@ const PpfPortTask = 'ewokscore.ppftasks.PpfPortTask';
 export const graph = {
   graph: {
     id: 'graph1',
-    name: 'graph',
+    label: 'graph',
     input_nodes: [
       { id: 'in1', node: 'node1' },
       { id: 'in2', node: 'node4' },
@@ -110,7 +110,7 @@ export const graph = {
 export const subgraph = {
   graph: {
     id: 'subgraph1',
-    name: 'subgraph',
+    label: 'subgraph',
     input_nodes: [
       { id: 'in1', node: 'task1' },
       { id: 'in2', node: 'task3' },
@@ -167,7 +167,7 @@ export const subgraph = {
 export const subsubgraph = {
   graph: {
     id: 'subsubgraph1',
-    name: 'subsubgraph',
+    label: 'subsubgraph',
     input_nodes: [{ id: 'in1', node: 'task1' }],
     output_nodes: [
       { id: 'out1', node: 'subsubsubgraph', sub_node: 'out' },
@@ -212,7 +212,7 @@ export const subsubgraph = {
 export const subsubsubgraph = {
   graph: {
     id: 'subsubsubgraph1',
-    name: 'subsubsubgraph',
+    label: 'subsubsubgraph',
     input_nodes: [{ id: 'in1', node: 'task1' }],
     output_nodes: [{ id: 'in2', node: 'task2' }],
   },

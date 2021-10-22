@@ -39,6 +39,7 @@ import {
   positionNodes,
   ewoksNetwork,
   getGraph,
+  getSubgraphs,
   // RFtoRFEwoksNode,
 } from '../utils';
 import useNodeInputsOutputs from '../hooks/useNodeInputsOutputs';
@@ -78,60 +79,19 @@ function Canvas() {
 
   const { fitView } = useZoomPanHelper();
   const [rfInstance, setRfInstance] = useState(null);
-  // const [ewoksD, setEwoksD] = useState(ewoksNetwork);
   const [disableDragging, setDisableDragging] = useState(false);
   const [elements, setElements] = useState([]);
-  // const inOut = useNodeInputsOutputs(
-  //   'ewokscore.methodtask.MethodExecutorTask',
-  //   'class'
-  // );
+
   const reactFlowWrapper = useRef(null);
   const graphRF = useStore((state) => state.graphRF);
   const setGraphRF = useStore((state) => state.setGraphRF);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
 
-  // const ewoksElements = useStore((state) => {
-  //   console.log(state);
-  //   return state.ewoksElements;
-  // });
-
-  // useEffect(() => {
-  //   console.log(ewoksElements);
-  //   setElements(ewoksElements);
-  // }, [ewoksElements]);
-
   useEffect(() => {
     console.log(graphRF);
-    // default_inputs: 0: Object { name: "a", value: 1 }
-    // id: "node1"
-    // task_identifier: "tasks.simplemethods.add12"
-    // task_type: "method"
-    // uiProps:
-    //  comment: "Prepare troubleshouting"
-    //  icon: "orange1"
-    //  label: "barmboutsalaMethod"
-    //  position: Object { x: 50, y: 80 }
-    // NEED TO SAVE THE TYPE calculated in getNodes in data.type to
-    // const nodes = toRFEwoksNodes(graphRF);
-    // const links = getLinks(graphRF);
-    // console.log(nodes, links);
-    // id: "node1"
-    // inputs_complete: undefined
-    // position: Object { x: 50, y: 80 }
-    // sourcePosition: "right"
-    // targetPosition: "left"
-    // task_generator: undefined
-    // task_identifier: "tasks.simplemethods.add12"
-    // task_type: "method"
-    // type: "method"
-    // data:
-    //      comment: "Prepare troubleshouting"
-    //      icon: "orange1"
-    //      label: "barmboutsalaMethod"
-    //      type: "input"
     setElements([...graphRF.nodes, ...graphRF.links]);
-  }, [graphRF, graphRF.graph.name]);
+  }, [graphRF, graphRF.graph.id]);
 
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
@@ -141,14 +101,6 @@ function Canvas() {
   const recentGraphs = useStore((state) => state.recentGraphs);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
-    // data:
-    //  comment: "Prepare troubleshouting"
-    //  icon: "orange1"
-    //  label: "barmboutsalaMethod"
-    //  type: "input"
-    // id: "node1"
-    // position: Object { x: 50, y: 80 }
-    // type: "method"
     console.log(element, elements, graphRF.nodes);
     // if ('position' in element) {
     const graphElement = elements.find((el) => el.id === element.id);
@@ -232,11 +184,15 @@ function Canvas() {
     };
     console.log(newNode, graphRF);
     // setElements((es) => [...es, newNode]);
-    setGraphRF({
+    const newGraph = {
       graph: graphRF.graph,
       nodes: [...graphRF.nodes, newNode],
       links: graphRF.links,
-    });
+    };
+    // setElements((els) => addEdge(params, els));
+    setGraphRF(newGraph as GraphRF);
+    // need to also save it in recentGraphs if we leave and come back to the graph?
+    setRecentGraphs(newGraph as GraphRF);
   };
 
   const onConnect = (params) => {
@@ -271,12 +227,16 @@ function Canvas() {
       source: params.source,
       target: params.target,
     };
-    // setElements((els) => addEdge(params, els));
-    setGraphRF({
+
+    const newGraph = {
       graph: graphRF.graph,
       nodes: graphRF.nodes,
       links: [...graphRF.links, link], // addEdge(params, graphRF.links),
-    });
+    };
+    // setElements((els) => addEdge(params, els));
+    setGraphRF(newGraph as GraphRF);
+    // need to also save it in recentGraphs if we leave and come back to the graph?
+    setRecentGraphs(newGraph as GraphRF);
   };
 
   const onRightClick = (event) => {
@@ -294,20 +254,24 @@ function Canvas() {
     event.preventDefault();
     const nodeTmp = graphRF.nodes.find((el) => el.id === node.id);
     console.log(event, node, nodeTmp);
-    if (node.type === 'graph') {
+    if (nodeTmp.task_type === 'graph') {
       // if type==graph get the subgraph from the recentGraphs (and if not from server?)
       const subgraph = recentGraphs.find(
         (gr) => gr.graph.id === nodeTmp.task_identifier
       );
+      console.log(subgraph);
+      getSubgraphs(subgraph, recentGraphs, setRecentGraphs);
+      console.log(recentGraphs);
       // TODO: if the subgraph does not exist on recent? Re-ask server and failsafe
       // const subgraph = getGraph(nodeTmp.task_identifier).then(save-to-recent).catch(failSafe)
       setSelectedSubgraph(subgraph);
-      setGraphRF({
-        graph: subgraph.graph,
-        nodes: toRFEwoksNodes(subgraph, []),
-        links: toRFEwoksLinks(subgraph),
-      } as GraphRF);
-      setSubgraphsStack({ id: subgraph.graph.id, name: subgraph.graph.name });
+      setGraphRF(subgraph);
+      //   {
+      //   graph: subgraph.graph,
+      //   nodes: toRFEwoksNodes(subgraph, recentGraphs),
+      //   links: toRFEwoksLinks(subgraph),
+      // } as GraphRF);
+      setSubgraphsStack({ id: subgraph.graph.id, label: subgraph.graph.label });
       // setRecentGraphs(subgraph);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);
@@ -347,15 +311,18 @@ function Canvas() {
     };
     RFEwoksNode.position = node.position;
     console.log(RFEwoksNode, graphRF);
-
-    setGraphRF({
+    const newGraph = {
       graph: graphRF.graph,
       nodes: [
         ...graphRF.nodes.filter((nod) => nod.id !== node.id),
         RFEwoksNode,
       ],
       links: graphRF.links,
-    } as GraphRF);
+    };
+
+    setGraphRF(newGraph as GraphRF);
+    // need to also save it in recentGraphs if we leave and come back to the graph?
+    setRecentGraphs(newGraph);
   };
 
   return (

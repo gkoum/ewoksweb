@@ -8,7 +8,7 @@ export interface GraphNodes {
 
 export interface GraphDetails {
   id: string;
-  name: string;
+  label: string;
   input_nodes?: Array<GraphNodes>;
   output_nodes?: Array<GraphNodes>;
   uiProps?: UiProps;
@@ -48,7 +48,7 @@ export interface nodeInputsOutputs {
 
 export interface stackGraph {
   id: string;
-  name: string;
+  label: string;
 }
 
 export interface UiProps {
@@ -68,6 +68,7 @@ export interface Conditions {
 
 export interface EwoksNode {
   id: string;
+  label?: string;
   task_type: string;
   task_identifier: string;
   default_inputs?: Inputs[];
@@ -90,6 +91,7 @@ export interface EwoksLink {
 
 export interface EwoksRFNode {
   id: string;
+  label?: string;
   task_type?: string;
   task_identifier?: string;
   default_inputs?: Inputs[];
@@ -162,6 +164,7 @@ export interface RFLink {
 // type: "method"
 export interface RFNode {
   id: string;
+  label?: string;
   task_type?: string;
   task_identifier?: string;
   default_inputs?: Inputs[];

@@ -44,7 +44,7 @@ const useStore = create<State>((set, get) => ({
     }));
   },
 
-  // stack has to hold name and id of graph
+  // stack has to hold label and id of graph
   subgraphsStack: [] as stackGraph[],
 
   setSubgraphsStack: (stackGraph: stackGraph) => {
@@ -89,6 +89,7 @@ const useStore = create<State>((set, get) => ({
 
   selectedElement: {
     id: '',
+    label: '',
     type: '',
     data: { label: '' },
     position: { x: 0, y: 0 },
@@ -139,7 +140,7 @@ const useStore = create<State>((set, get) => ({
   },
 
   selectedSubgraph: {
-    graph: { id: '', name: '', input_nodes: [], output_nodes: [] },
+    graph: { id: '', label: '', input_nodes: [], output_nodes: [] },
     nodes: [],
     links: [],
   },

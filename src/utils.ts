@@ -54,13 +54,39 @@ export function createGraph() {
   return {
     graph: {
       id: id + '1',
-      name: 'newGraph',
+      label: 'newGraph',
       input_nodes: [],
       output_nodes: [],
     },
     nodes: [],
     links: [],
   };
+}
+
+export function getSubgraphs(
+  graph: GraphEwoks | GraphRF,
+  recentGraphs: GraphRF[],
+  setRecentGraphs
+) {
+  // TODO: need to load first layer subgraphs with failsave if some not found
+  // Detect subgraphs and load them to recentGraphs
+  const existingNodeSubgraphs = graph.nodes.filter(
+    (nod) => nod.task_type === 'graph'
+  );
+  console.log(existingNodeSubgraphs);
+  if (existingNodeSubgraphs.length > 0) {
+    // there are subgraphs get them to recentGraphs
+    existingNodeSubgraphs.forEach((graph) => {
+      if (!recentGraphs.find((gr) => gr.graph.id === graph.task_identifier)) {
+        const ewoksGraph = getGraph(graph.task_identifier);
+        setRecentGraphs({
+          graph: ewoksGraph.graph,
+          nodes: toRFEwoksNodes(ewoksGraph, recentGraphs),
+          links: toRFEwoksLinks(ewoksGraph),
+        });
+      }
+    });
+  }
 }
 
 export function rfToEwoks(tempGraph): GraphEwoks {
@@ -133,7 +159,7 @@ export function toEwoksNodes(nodes): EwoksNode[] {
         id: id.toString(),
         task_type,
         task_identifier,
-        type: task_type,
+        // type: task_type,
         inputs_complete,
         task_generator,
         default_inputs,
@@ -171,6 +197,7 @@ export function toEwoksNodes(nodes): EwoksNode[] {
 //   };
 // }
 export function calcNodeInputsOutputs(
+  // TODO
   task_identifier: string,
   taskType: string,
   recentGraphs: GraphRF[]
@@ -289,7 +316,7 @@ export function toRFEwoksNodes(
             id: id.toString(),
             task_type,
             task_identifier,
-            type: task_type,
+            type: task_type, // need it for visualizing dataNodes
             inputs_complete,
             task_generator,
             default_inputs,
@@ -382,7 +409,7 @@ export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
         } else {
           const subgraphL = getGraph(sourceTmp.task_identifier);
           const outputs = [];
-          subgraphL.graph.output_nodes.forEach((out) => outputs.push(out.name));
+          subgraphL.graph.output_nodes.forEach((out) => outputs.push(out.id));
 
           sourceTask = {
             task_type: sourceTmp.task_type,
