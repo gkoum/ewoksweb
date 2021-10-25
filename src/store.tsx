@@ -97,7 +97,7 @@ const useStore = create<State>((set, get) => ({
   } as EwoksRFNode,
 
   // sets graphRF as well? should it?
-  setSelectedElement: (element: EwoksRFNode | EwoksRFLink | GraphDetails) => {
+  setSelectedElement: (element: EwoksRFNode | EwoksRFLink | GraphRF) => {
     console.log(element);
     if ('position' in element) {
       set((state) => ({
@@ -143,7 +143,7 @@ const useStore = create<State>((set, get) => ({
     graph: { id: '', label: '', input_nodes: [], output_nodes: [] },
     nodes: [],
     links: [],
-  },
+  } as GraphRF,
 
   setSelectedSubgraph: (graph: GraphRF) => {
     // get the subgraph from server?

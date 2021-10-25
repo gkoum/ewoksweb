@@ -1,5 +1,4 @@
 import { Node, Edge, Position } from 'react-flow-renderer';
-import { nodes as rawNodes, links as rawLinks } from './data/directed.json';
 // @ts-ignore
 import dagre from 'dagre';
 import {
@@ -251,6 +250,7 @@ export function toRFEwoksNodes(
   recentGraphs: GraphRF[]
 ): EwoksRFNode[] {
   console.log(tempGraph, recentGraphs);
+  // Find input and output nodes of the graph
   const inputsAll =
     tempGraph.graph &&
     tempGraph.graph.input_nodes &&
@@ -297,14 +297,14 @@ export function toRFEwoksNodes(
           inputsAll,
           outputsAll
         );
-        // if it is not in the tasks list like a new subgraph?
+        // if it is not in the tasks list like a new task or subgraph?
+        // Not in the list => add a default one FAILSAFE TODO
         // for subgraph calculate through input_nodes, output_nodes
         tempTask = tempTask
           ? tempTask
           : task_type === 'graph'
-          ? tempTask // calculate inputs-outputs from subgraph
-          : // will it have the subgraph from the beggining? NO.
-            // Needs to handle it until it get it
+          ? tempTask
+          :
             {
               optional_input_names: [],
               output_names: [],
@@ -335,24 +335,33 @@ export function toRFEwoksNodes(
           };
         }
         const subgraphL = getGraph(task_identifier);
-        // get the inputs outputs of the graph
         console.log(subgraphL, tempGraph);
-        const inputsSub = subgraphL.graph.input_nodes.map((input) => {
-          return {
-            label: `${input.id}: ${input.node} ${
-              input.sub_node ? `  -> ${input.sub_node}` : ''
-            }`,
-            type: 'data ',
-          };
-        });
-        const outputsSub = subgraphL.graph.output_nodes.map((output) => {
-          return {
-            label: `${output.id}: ${output.node} ${
-              output.sub_node ? ` -> ${output.sub_node}` : ''
-            }`,
-            type: 'data ',
-          };
-        });
+        // get the inputs outputs of the graph
+        // subgraph not exists failsafe
+        let inputsSub = [];
+        let outputsSub = [];
+        if(subgraphL.graph.id) {
+          inputsSub = subgraphL.graph.input_nodes.map((input) => {
+            return {
+              label: `${input.id}: ${input.node} ${
+                input.sub_node ? `  -> ${input.sub_node}` : ''
+              }`,
+              type: 'data ',
+            };
+          });
+          outputsSub = subgraphL.graph.output_nodes.map((output) => {
+            return {
+              label: `${output.id}: ${output.node} ${
+                output.sub_node ? ` -> ${output.sub_node}` : ''
+              }`,
+              type: 'data ',
+            };
+          });
+        } else {
+          inputsSub = [{label: 'unknown_input', type: 'data'}]
+          outputsSub = [{label: 'unknown_output', type: 'data'}]
+        }
+
         // console.log(default_inputs);
         return {
           id: id.toString(),
@@ -365,6 +374,7 @@ export function toRFEwoksNodes(
           data: {
             label: task_identifier,
             type: nodeType,
+            exists: !!subgraphL.graph.id,
             inputs: inputsSub,
             outputs: outputsSub,
             // inputsFlow,

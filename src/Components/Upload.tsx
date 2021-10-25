@@ -86,6 +86,7 @@ function Upload(props) {
       //   });
       // }
 
+      // when a base graph or a sugraph of a graph
       if (graphOrSubgraph) {
         // if it is a new graph opening
         console.log('initialiase');

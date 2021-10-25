@@ -18,7 +18,7 @@ function FunctionNode(all) {
       type="graph"
       label={all.data.label}
       selected={all.selected}
-      color="#ced3ee"
+      color= {all.data.exists ? "#ced3ee" : 'red'}
       image={all.data.icon}
       comment={all.data.comment}
       content={

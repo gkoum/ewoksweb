@@ -125,7 +125,7 @@ export default function Sidebar(props) {
     console.log(selectedElement);
     setElement(selectedElement);
     setId(selectedElement.id);
-    if (selectedElement.id) {
+    if (!selectedElement.graph) {
       if ('position' in selectedElement) {
         setNodeType(selectedElement.data.type);
         setLabel(selectedElement.data.label);
