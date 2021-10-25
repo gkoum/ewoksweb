@@ -128,7 +128,11 @@ export default function Sidebar(props) {
     if (!selectedElement.graph) {
       if ('position' in selectedElement) {
         setNodeType(selectedElement.data.type);
-        setLabel(selectedElement.data.label);
+        setLabel(
+          selectedElement.label
+            ? selectedElement.label
+            : selectedElement.data.label
+        );
         setComment(selectedElement.data.comment);
         setTaskIdentifier(selectedElement.task_identifier);
         setTaskType(selectedElement.task_type);
@@ -177,6 +181,7 @@ export default function Sidebar(props) {
     if ('position' in element) {
       setElement({
         ...element,
+        label,
         data: { ...element.data, label: event.target.value },
       });
     } else {

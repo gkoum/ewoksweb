@@ -16,9 +16,9 @@ function FunctionNode(all) {
   return (
     <Node
       type="graph"
-      label={all.data.label}
+      label={all.label ? all.label : all.data.label}
       selected={all.selected}
-      color= {all.data.exists ? "#ced3ee" : 'red'}
+      color={all.data.exists ? '#ced3ee' : 'red'}
       image={all.data.icon}
       comment={all.data.comment}
       content={

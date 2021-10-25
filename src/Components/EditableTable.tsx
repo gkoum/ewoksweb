@@ -63,9 +63,10 @@ const createData = (pair) => {
       };
 };
 
-const CustomTableCell = ({ row, name, onChange, typeOfValues }) => {
+function CustomTableCell({ row, name, onChange, typeOfValues }) {
   const classes = useStyles();
   const { isEditMode } = row;
+  console.log(row, name, onChange, typeOfValues);
   // console.log('typeOfValues:', typeOfValues);
   return (
     <TableCell align="left" className={classes.tableCell}>
@@ -94,11 +95,11 @@ const CustomTableCell = ({ row, name, onChange, typeOfValues }) => {
           />
         )
       ) : (
-        row[name]
+        row[name].toString()
       )}
     </TableCell>
   );
-};
+}
 
 function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
@@ -146,8 +147,8 @@ function EditableTable(props) {
   const onChange = (e, row) => {
     // console.log(e.target.value, e.target.name, row, rows);
 
-    const value = e.target.value;
-    const name = e.target.name;
+    const { value } = e.target;
+    const { name } = e.target;
     const { id } = row;
     const newRows = rows.map((row) => {
       if (row.id === id) {
@@ -160,7 +161,9 @@ function EditableTable(props) {
   };
 
   const onRevert = (id) => {
-    if (id === '') return;
+    if (id === '') {
+      return;
+    }
     const newRows = rows.filter((row) => {
       return row.id !== id; // row;
     });

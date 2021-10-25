@@ -75,6 +75,7 @@ export const graph = {
       target: 'node2',
       data_mapping: [{ source_output: 'ab', target_input: 'result' }],
       sub_target: 'in1',
+      conditions: [{ source_output: 'return_value', value: 10 }],
     },
     {
       source: 'node4',
@@ -119,6 +120,7 @@ export const subgraph = {
       { id: 'out1', node: 'subsubgraph', sub_node: 'out1' },
       { id: 'out2', node: 'subsubgraph', sub_node: 'out2' },
     ],
+    uiProps: { icon: 'orange2' },
   },
   nodes: [
     {
@@ -173,6 +175,7 @@ export const subsubgraph = {
       { id: 'out1', node: 'subsubsubgraph', sub_node: 'out' },
       { id: 'out2', node: 'subsubsubgraph', sub_node: 'out' },
     ],
+    uiProps: { icon: 'orange2' },
   },
   nodes: [
     {
@@ -215,6 +218,7 @@ export const subsubsubgraph = {
     label: 'subsubsubgraph',
     input_nodes: [{ id: 'in1', node: 'task1' }],
     output_nodes: [{ id: 'in2', node: 'task2' }],
+    uiProps: { icon: 'orange2' },
   },
   nodes: [
     {

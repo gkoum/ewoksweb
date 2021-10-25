@@ -19,15 +19,23 @@ import type {
   nodeInputsOutputs,
   GraphRF,
 } from './types';
-import useStore from './store';
+import axios from 'axios';
 
 const { GraphDagre } = dagre.graphlib;
 const NODE_SIZE = { width: 270, height: 36 };
 
 export const ewoksNetwork = graph;
 
-// this wiil get graphs from the server async after checking the recentGraphs
+// this will get graphs from the server async after checking the recentGraphs
 export function getGraph(byTaskIdentifier: string): Graph {
+  axios
+    .get('http://mxbes2-1707:38280/ewoks/workflow/CommonPrepareExperiment.json')
+    .then((response) => {
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   const thisSubgraph = byTaskIdentifier;
   console.log(thisSubgraph);
   let subgraphL = {
@@ -40,7 +48,7 @@ export function getGraph(byTaskIdentifier: string): Graph {
   } else if (thisSubgraph === 'subgraph1') {
     subgraphL = subgraph;
   } else if (thisSubgraph === 'subsubgraph1') {
-    subgraphL = subsubgraph;
+    // subgraphL = subsubgraph;
   } else if (thisSubgraph === 'subsubsubgraph1') {
     subgraphL = subsubsubgraph;
   }
@@ -62,10 +70,9 @@ export function createGraph() {
   };
 }
 
-export function getSubgraphs(
+export async function getSubgraphs(
   graph: GraphEwoks | GraphRF,
-  recentGraphs: GraphRF[],
-  setRecentGraphs
+  recentGraphs: GraphRF[]
 ) {
   // TODO: need to load first layer subgraphs with failsave if some not found
   // Detect subgraphs and load them to recentGraphs
@@ -73,19 +80,48 @@ export function getSubgraphs(
     (nod) => nod.task_type === 'graph'
   );
   console.log(existingNodeSubgraphs);
+  let results = [];
   if (existingNodeSubgraphs.length > 0) {
-    // there are subgraphs get them to recentGraphs
+    // there are subgraphs first search in the recentGraphs for them
+    const notInRecent = [];
     existingNodeSubgraphs.forEach((graph) => {
       if (!recentGraphs.find((gr) => gr.graph.id === graph.task_identifier)) {
-        const ewoksGraph = getGraph(graph.task_identifier);
-        setRecentGraphs({
-          graph: ewoksGraph.graph,
-          nodes: toRFEwoksNodes(ewoksGraph, recentGraphs),
-          links: toRFEwoksLinks(ewoksGraph),
-        });
+        // add them in an array to request them from the server
+        notInRecent.push(graph.task_identifier);
       }
     });
+    console.log(notInRecent);
+    // const ewoksGraph = getGraph(graph.task_identifier);
+    // const linksArr = [
+    //   'http://mxbes2-1707:38280/ewoks/workflow/CommonPrepareExperiment.json',
+    //   'http://mxbes2-1707:38280/ewoks/workflow/TroubleShooting.json',
+    // ];
+
+    results = await axios
+      .all(
+        notInRecent.map((id) =>
+          axios.get('http://mxbes2-1707:38280/ewoks/workflow/' + id)
+        )
+      )
+      .then(
+        axios.spread(function (...res) {
+          // all requests are now complete in an array
+          console.log(res);
+          // res.forEach((result) => {
+          //   // setRecentGraphs({
+          //   //   graph: result.data.graph,
+          //   //   nodes: toRFEwoksNodes(result.data, recentGraphs),
+          //   //   links: toRFEwoksLinks(result.data),
+          //   // });
+          // });
+          return res.map((result) => result.data);
+          // parse them -> compare with requested graph array and see what is 200 ok
+          // existingNodeSubgraphs === res
+          // then save them to recentGraphs
+        })
+      );
   }
+  return results;
 }
 
 export function rfToEwoks(tempGraph): GraphEwoks {
@@ -266,6 +302,7 @@ export function toRFEwoksNodes(
         id,
         task_type,
         task_identifier,
+        label,
         default_inputs,
         inputs_complete,
         task_generator,
@@ -290,6 +327,7 @@ export function toRFEwoksNodes(
           (tas) => tas.task_identifier === task_identifier
         );
         console.log(
+          task_type,
           tempTask,
           nodeType,
           isInput,
@@ -304,8 +342,7 @@ export function toRFEwoksNodes(
           ? tempTask
           : task_type === 'graph'
           ? tempTask
-          :
-            {
+          : {
               optional_input_names: [],
               output_names: [],
               required_input_names: [],
@@ -323,8 +360,9 @@ export function toRFEwoksNodes(
             optional_input_names: tempTask.optional_input_names,
             output_names: tempTask.output_names,
             required_input_names: tempTask.required_input_names,
+            label,
             data: {
-              label: uiProps.label ? uiProps.label : task_identifier,
+              label: label ? label : task_identifier,
               type: nodeType,
               icon: uiProps.icon,
               comment: uiProps.comment,
@@ -340,7 +378,7 @@ export function toRFEwoksNodes(
         // subgraph not exists failsafe
         let inputsSub = [];
         let outputsSub = [];
-        if(subgraphL.graph.id) {
+        if (subgraphL.graph.id) {
           inputsSub = subgraphL.graph.input_nodes.map((input) => {
             return {
               label: `${input.id}: ${input.node} ${
@@ -358,8 +396,8 @@ export function toRFEwoksNodes(
             };
           });
         } else {
-          inputsSub = [{label: 'unknown_input', type: 'data'}]
-          outputsSub = [{label: 'unknown_output', type: 'data'}]
+          inputsSub = [{ label: 'unknown_input', type: 'data' }];
+          outputsSub = [{ label: 'unknown_output', type: 'data' }];
         }
 
         // console.log(default_inputs);
@@ -371,8 +409,9 @@ export function toRFEwoksNodes(
           inputs_complete,
           task_generator,
           default_inputs,
+          label,
           data: {
-            label: task_identifier,
+            label,
             type: nodeType,
             exists: !!subgraphL.graph.id,
             inputs: inputsSub,
@@ -394,13 +433,13 @@ export function toRFEwoksNodes(
 
 export function toRFEwoksLinks(tempGraph): EwoksRFLink[] {
   // const tempGraph = getGraph(id);
-  // console.log(tempGraph);
+  console.log(tempGraph);
   if (tempGraph.links) {
     return tempGraph.links.map(
       ({
         source,
         target,
-        data_mapping = [{ source_output: 'data', target_input: 'mapping' }],
+        data_mapping = [{ source_output: '', target_input: '' }],
         sub_target,
         sub_source,
         conditions,

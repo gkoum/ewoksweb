@@ -260,22 +260,18 @@ function Canvas() {
         (gr) => gr.graph.id === nodeTmp.task_identifier
       );
       console.log(subgraph);
-      getSubgraphs(subgraph, recentGraphs, setRecentGraphs);
-      console.log(recentGraphs);
-      // TODO: if the subgraph does not exist on recent? Re-ask server and failsafe
-      // const subgraph = getGraph(nodeTmp.task_identifier).then(save-to-recent).catch(failSafe)
-      setSelectedSubgraph(subgraph);
-      setGraphRF(subgraph);
-      //   {
-      //   graph: subgraph.graph,
-      //   nodes: toRFEwoksNodes(subgraph, recentGraphs),
-      //   links: toRFEwoksLinks(subgraph),
-      // } as GraphRF);
-      setSubgraphsStack({ id: subgraph.graph.id, label: subgraph.graph.label });
-      // setRecentGraphs(subgraph);
-      console.log('THIS IS A GRAPH');
-      console.log(subgraph);
-      console.log(selectedSubgraph);
+      if (subgraph && subgraph.graph.id) {
+        getSubgraphs(subgraph, recentGraphs);
+        // TODO: if the subgraph does not exist on recent? Re-ask server and failsafe
+        // const subgraph = getGraph(nodeTmp.task_identifier).then(save-to-recent).catch(failSafe)
+        setSelectedSubgraph(subgraph);
+        setGraphRF(subgraph);
+        setSubgraphsStack({
+          id: subgraph.graph.id,
+          label: subgraph.graph.label,
+        });
+        console.log(subgraph, recentGraphs);
+      }
     } else {
       // TODO: need doubleClick on simple nodes?
       console.log('THIS IS A NODE');

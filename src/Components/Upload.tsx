@@ -47,11 +47,16 @@ function Upload(props) {
   const graphOrSubgraph = useStore<Boolean>((state) => state.graphOrSubgraph);
 
   const getId = (graphName) => {
+    console.log(
+      graphName,
+      graphRF.nodes.find((nod) => nod.id === graphName)
+    );
     let id = 0;
     let graphId = graphName;
-    while (graphRF.nodes.find((nod) => nod.id === graphName)) {
+    while (graphRF.nodes.find((nod) => nod.id === graphId)) {
       graphId += id++;
     }
+    console.log(graphId);
     return graphId; // `${graphName}_${id++}`;
   };
 
@@ -73,8 +78,7 @@ function Upload(props) {
       console.log(nodes, links, graphOrSubgraph, recentGraphs, newGraph);
       // TODO: need to load first layer subgraphs with failsave if some not found
       // Detect subgraphs and load them to recentGraphs
-      getSubgraphs(graph, recentGraphs, setRecentGraphs);
-      console.log(recentGraphs);
+
       // const existingNodeSubgraphs = nodes.filter(
       //   (nod) => nod.task_type === 'graph'
       // );
@@ -147,6 +151,7 @@ function Upload(props) {
             default_inputs: [],
             inputs_complete: false,
             data: {
+              exists: true,
               label: newGraph.graph.label,
               type: 'internal',
               comment: '',
@@ -158,17 +163,18 @@ function Upload(props) {
             },
             // data: { label: CustomNewNode(id, name, image) },
           };
+          console.log(newNode, newGraph);
           superGraph.nodes.push(newNode);
           console.log('ADD a new graph2', superGraph);
           setRecentGraphs(superGraph);
         }
       }
       // set the new graph as the working graph
-      setGraphRF({
-        graph: newGraph.graph,
-        nodes: nodes,
-        links: links,
-      } as GraphRF);
+      // setGraphRF({
+      //   graph: newGraph.graph,
+      //   nodes: nodes,
+      //   links: links,
+      // } as GraphRF);
       // add the new graph to the recent graphs if not already there
       console.log('ADD a new graph3');
       setRecentGraphs({
@@ -177,6 +183,27 @@ function Upload(props) {
         links: links,
       });
       setSubgraphsStack({ id: newGraph.graph.id, label: newGraph.graph.label });
+
+      const exRecent = recentGraphs;
+      getSubgraphs(graph, recentGraphs).then((res) => {
+        console.log(res, recentGraphs, exRecent);
+        res.forEach((gr) =>
+          setRecentGraphs({
+            graph: gr.graph,
+            nodes: toRFEwoksNodes(gr, recentGraphs),
+            links: toRFEwoksLinks(gr),
+          })
+        );
+        // set the new graph as the working graph
+        console.log(graphRF);
+        setGraphRF({
+          graph: newGraph.graph,
+          nodes: nodes,
+          links: links,
+        } as GraphRF);
+        console.log(graphRF);
+        console.log(recentGraphs);
+      });
     };
     // var data = require('json!./' + selectedFile.name);
     // console.log(data);

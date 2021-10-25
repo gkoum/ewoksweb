@@ -51,16 +51,19 @@ const useStore = create<State>((set, get) => ({
     let stack = [];
     const subStack = get().subgraphsStack;
     const exists = subStack.map((gr) => gr.id).indexOf(stackGraph.id);
-    console.log(exists, stackGraph);
+    console.log(exists, stackGraph, subStack);
     if (stackGraph.id === 'initialiase') {
       stack = [];
     } else if (exists === -1) {
       console.log('not exists');
       stack = [...subStack, stackGraph];
     } else if (exists == subStack.length - 1) {
+      // TODO: if user insert the same 'graph' and is the first then stack is not updated
       console.log('exists the last');
       stack = subStack;
     } else {
+      // TODO: if the same graph is inserted again lower in the subgraphs this is activated
+      // and resets the stack without adding. If it is an addition this stack needs to know it
       console.log('exists');
       // subStack.length = exists + 1;
       stack = subStack.slice(0, exists + 1);
@@ -73,7 +76,7 @@ const useStore = create<State>((set, get) => ({
     }));
   },
 
-  graphRF: { graph: {}, nodes: [], links: [] } as GraphRF,
+  graphRF: { graph: { id: 0 }, nodes: [], links: [] } as GraphRF,
 
   setGraphRF: (graphRF) => {
     console.log(graphRF);
