@@ -299,7 +299,7 @@ export const tasks = [
     output_names: ['result'],
     required_input_names: ['a'],
     task_identifier: 'CommonPrepareExperiment.json',
-    task_type: 'class',
+    task_type: 'graph',
   },
   {
     optional_input_names: ['b'],

@@ -16,6 +16,15 @@ console.log(nodes, edges);
 // console.log(positionedNodes);
 
 const useStore = create<State>((set, get) => ({
+  updateNeeded: 0,
+
+  setUpdateNeeded: (num: number) => {
+    set((state) => ({
+      ...state,
+      updateNeeded: get().updateNeeded + num,
+    }));
+  },
+
   recentGraphs: [] as GraphRF[],
 
   setRecentGraphs: (newGraph: GraphRF) => {
@@ -150,13 +159,13 @@ const useStore = create<State>((set, get) => ({
 
   setSelectedSubgraph: (graph: GraphRF) => {
     // get the subgraph from server?
-    const graphRF = getGraph(graph.graph.id);
+    const graphRF = getGraph(graph.graph.id, false);
     console.log(graphRF);
     set((state) => ({
       ...state,
       selectedSubgraph: {
         graph: graphRF.graph,
-        nodes: toRFEwoksNodes(graphRF.graph.id, get().recentGraphs),
+        nodes: toRFEwoksNodes(graphRF.graph.id),
         links: toRFEwoksLinks(graphRF.graph.id),
       },
     }));

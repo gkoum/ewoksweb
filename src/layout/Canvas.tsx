@@ -87,18 +87,19 @@ function Canvas() {
   const setGraphRF = useStore((state) => state.setGraphRF);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
-
-  useEffect(() => {
-    console.log(graphRF);
-    setElements([...graphRF.nodes, ...graphRF.links]);
-  }, [graphRF, graphRF.graph.id]);
-
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
+
+  const updateNeeded = useStore((state) => state.updateNeeded);
 
   const selectedSubgraph = useStore((state) => state.selectedSubgraph);
   const setSelectedSubgraph = useStore((state) => state.setSelectedSubgraph);
   const recentGraphs = useStore((state) => state.recentGraphs);
+
+  useEffect(() => {
+    console.log('rerender Canvas', graphRF, recentGraphs.length, updateNeeded);
+    setElements([...graphRF.nodes, ...graphRF.links]);
+  }, [graphRF, graphRF.graph.id, recentGraphs.length, updateNeeded]);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     console.log(element, elements, graphRF.nodes);
@@ -253,9 +254,13 @@ function Canvas() {
   const onNodeDoubleClick = (event, node) => {
     event.preventDefault();
     const nodeTmp = graphRF.nodes.find((el) => el.id === node.id);
-    console.log(event, node, nodeTmp);
+    console.log(event, node, nodeTmp, recentGraphs);
     if (nodeTmp.task_type === 'graph') {
       // if type==graph get the subgraph from the recentGraphs (and if not from server?)
+      // TODO: clear the relation of task_identifier and the id of a subgraph...
+      // The same subgraph inserted twice in a superGraph must have its own id
+      // create a unique id for this graph
+
       const subgraph = recentGraphs.find(
         (gr) => gr.graph.id === nodeTmp.task_identifier
       );
@@ -264,7 +269,7 @@ function Canvas() {
         getSubgraphs(subgraph, recentGraphs);
         // TODO: if the subgraph does not exist on recent? Re-ask server and failsafe
         // const subgraph = getGraph(nodeTmp.task_identifier).then(save-to-recent).catch(failSafe)
-        setSelectedSubgraph(subgraph);
+        // setSelectedSubgraph(subgraph);
         setGraphRF(subgraph);
         setSubgraphsStack({
           id: subgraph.graph.id,

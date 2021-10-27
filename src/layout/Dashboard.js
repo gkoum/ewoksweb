@@ -39,6 +39,7 @@ import { Fab, Button } from '@material-ui/core';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import { getGraph, rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
 import MyCard from '../layout/MyCard';
+import axios from 'axios';
 
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
@@ -182,7 +183,7 @@ export default function Dashboard() {
     return state.selectedSubgraph;
   });
   const subgraphsStack = useStore((state) => {
-    // console.log(state);
+    console.log(state);
     return state.subgraphsStack;
   });
   const setGraphOrSubgraph = useStore((state) => state.setGraphOrSubgraph);
@@ -220,6 +221,19 @@ export default function Dashboard() {
     download(JSON.stringify(graphRF), 'json.txt', 'text/plain');
   };
 
+  const getFromServer = (event) => {
+    console.log('Get graphs from server', graphRF);
+    axios
+      .get('http://mxbes2-1707:38280/ewoks/workflow/TroubleShooting.json')
+      .then((response) => {
+        console.log(response.data);
+        subgraphL = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const newGraph = (event) => {
     // Name of graph unique and used in recentGraphs, graphRF, subgraphsStack
     setGraphRF({ graph: {}, nodes: [], links: [] });
@@ -238,7 +252,7 @@ export default function Dashboard() {
       // console.log(subgraph);
       setGraphRF({
         graph: subgraph.graph,
-        nodes: toRFEwoksNodes(subgraph, []),
+        nodes: toRFEwoksNodes(subgraph),
         links: toRFEwoksLinks(subgraph),
       });
     } else {
@@ -348,7 +362,7 @@ export default function Dashboard() {
               component="span"
               aria-label="add"
             >
-              <CloudDownloadIcon />
+              <CloudDownloadIcon onClick={getFromServer} />
             </Fab>
           </IconButton>
           <IconButton color="inherit">

@@ -140,7 +140,7 @@ const Node: React.FC<NodeProps> = ({
           role="presentation"
           draggable="false"
           onDragStart={(event) => onDragStart(event)}
-          src={iconsObj[image]}
+          src={iconsObj[image] || orange1}
           alt="orangeImage"
         />
         <span style={style.contentWrapper}>{content}</span>

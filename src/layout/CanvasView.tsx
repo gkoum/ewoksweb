@@ -165,7 +165,7 @@ function CanvasView(props) {
     event.preventDefault();
     console.log(event, node);
     if (node.type === 'graph') {
-      const subgraph = getGraph(node.data.task_identifier);
+      const subgraph = getGraph(node.data.task_identifier, true);
       setSelectedSubgraph(subgraph);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);

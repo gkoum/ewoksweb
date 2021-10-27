@@ -44,7 +44,11 @@ function Upload(props) {
   const recentGraphs = useStore((state) => state.recentGraphs);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
+  const subgraphsStack = useStore((state) => state.subgraphsStack);
   const graphOrSubgraph = useStore<Boolean>((state) => state.graphOrSubgraph);
+
+  const updateNeeded = useStore((state) => state.updateNeeded);
+  const setUpdateNeeded = useStore((state) => state.setUpdateNeeded);
 
   const getId = (graphName) => {
     console.log(
@@ -61,34 +65,44 @@ function Upload(props) {
   };
 
   const fileNameChanged = async (event) => {
-    console.log(event.target.files[0]);
+    console.log(event.target.files[0], recentGraphs, graphRF, subgraphsStack);
     // setSelectedFile(event.target.files[0]);
     const reader = showFile(event);
     const file = await reader.then((val) => val);
-    file.onloadend = function () {
+    file.onloadend = async function () {
       setSelectedFile(file.result);
+      const links = [];
+
+      // 1. get the graph
       const newGraph = JSON.parse(file.result);
-      const nodes = toRFEwoksNodes(newGraph, recentGraphs);
-      const links = toRFEwoksLinks(newGraph);
+
+      // 2. search for subgraphs in it (async)
+      console.log('getSubgraphs:', newGraph, recentGraphs);
+      const newNodeSubgraphs = await getSubgraphs(newGraph, recentGraphs);
+
+      // 3. Put the newNodeSubgraphs into recent in their graphRF form (sync)
+      newNodeSubgraphs.forEach((gr) => {
+        console.log('putting newNodeSubgraph in recent', gr);
+        // calculate the rfNodes using the fetched subgraphs
+        const rfNodes = toRFEwoksNodes(gr, newNodeSubgraphs);
+        console.log('rfNodes', rfNodes, toRFEwoksLinks(gr, newNodeSubgraphs));
+
+        setRecentGraphs({
+          graph: gr.graph,
+          nodes: rfNodes,
+          links: toRFEwoksLinks(gr, newNodeSubgraphs), // needs graphEwoks or graphRF?
+        });
+        // 4. for the superGraph I only need inputs-outputs in gr.graph
+        //    to draw node-subgraph before a draw links
+      });
+
+      const grfNodes = toRFEwoksNodes(newGraph, newNodeSubgraphs);
       const graph = {
         graph: newGraph.graph,
-        nodes: nodes,
-        links: links,
+        nodes: grfNodes,
+        links: toRFEwoksLinks(newGraph, newNodeSubgraphs),
       };
-      console.log(nodes, links, graphOrSubgraph, recentGraphs, newGraph);
-      // TODO: need to load first layer subgraphs with failsave if some not found
-      // Detect subgraphs and load them to recentGraphs
-
-      // const existingNodeSubgraphs = nodes.filter(
-      //   (nod) => nod.task_type === 'graph'
-      // );
-      // console.log(existingNodeSubgraphs);
-      // if (existingNodeSubgraphs.length > 0) {
-      //   // there are subgraphs get them to recentGraphs
-      //   existingNodeSubgraphs.forEach((graph) => {
-      //     setRecentGraphs(getGraph(graph.task_identifier));
-      //   });
-      // }
+      console.log(grfNodes, graph, graphOrSubgraph, recentGraphs, newGraph);
 
       // when a base graph or a sugraph of a graph
       if (graphOrSubgraph) {
@@ -99,11 +113,13 @@ function Upload(props) {
         setRecentGraphs(graph as GraphRF);
         console.log('RECENT GRAPHS', recentGraphs);
       } else {
+        console.log('adding a subgraph:', graph, recentGraphs);
         // if we are adding a subgraph to an existing graph:
         // save the super-graph in the recent graphs and add a new graph node to it
         // if there is no initial graph to drop-in the subgraph -> create one
         let superGraph = {} as Graph;
         if (recentGraphs.length === 0) {
+          // can never happen? adding to existing graph..
           // create a graph and get its id
           superGraph = createGraph();
           setSubgraphsStack({
@@ -113,11 +129,12 @@ function Upload(props) {
           setRecentGraphs(superGraph);
         } else {
           // TODO: if not in the recentGraphs?
+          console.log(recentGraphs, graphRF);
           superGraph = recentGraphs.find(
             (gr) => gr.graph.id === graphRF.graph.id
           );
         }
-
+        console.log(superGraph);
         if (superGraph) {
           const inputsSub = newGraph.graph.input_nodes.map((input) => {
             return {
@@ -141,7 +158,6 @@ function Upload(props) {
             task_generator: '',
             // TODO: ids should be unique to this graph only as a node for this subgraph
             // human readable but automatically generated?
-            // Not a string for sure?
             id: getId(newGraph.graph.label),
             // TODO: can we upload a task too like a subgraph
             task_type: 'graph',
@@ -170,43 +186,19 @@ function Upload(props) {
         }
       }
       // set the new graph as the working graph
-      // setGraphRF({
-      //   graph: newGraph.graph,
-      //   nodes: nodes,
-      //   links: links,
-      // } as GraphRF);
+      setGraphRF(graph as GraphRF);
       // add the new graph to the recent graphs if not already there
-      console.log('ADD a new graph3');
+      console.log('ADD the new supergraph to recent');
       setRecentGraphs({
         graph: newGraph.graph,
-        nodes: nodes,
-        links: links,
+        nodes: grfNodes,
+        links: toRFEwoksLinks(newGraph, newNodeSubgraphs),
       });
-      setSubgraphsStack({ id: newGraph.graph.id, label: newGraph.graph.label });
-
-      const exRecent = recentGraphs;
-      getSubgraphs(graph, recentGraphs).then((res) => {
-        console.log(res, recentGraphs, exRecent);
-        res.forEach((gr) =>
-          setRecentGraphs({
-            graph: gr.graph,
-            nodes: toRFEwoksNodes(gr, recentGraphs),
-            links: toRFEwoksLinks(gr),
-          })
-        );
-        // set the new graph as the working graph
-        console.log(graphRF);
-        setGraphRF({
-          graph: newGraph.graph,
-          nodes: nodes,
-          links: links,
-        } as GraphRF);
-        console.log(graphRF);
-        console.log(recentGraphs);
+      setSubgraphsStack({
+        id: newGraph.graph.id,
+        label: newGraph.graph.label,
       });
     };
-    // var data = require('json!./' + selectedFile.name);
-    // console.log(data);
   };
 
   return (

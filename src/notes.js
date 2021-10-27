@@ -158,6 +158,11 @@ const subgraph = {
   ],
 };
 
+// 1. get the graph ->
+// 2. search for subgraphs in it (async) ->
+// 3. draw node-subgraphs and handle missing (async) ->
+// 4. draw links of a graph and complete graph in react flow
+
 // recentGraphs is GrahRF[] ready to by used
 
 
@@ -178,6 +183,12 @@ const subgraph = {
 // WE NEED A HOOK TO GET SUBGRAPHS OF ANY GRAPH:
 // has access to recentGraphs and if not find them: useSubGraphs
 //
+
+    // const ewoksGraph = getGraph(graph.task_identifier);
+    // const linksArr = [
+    //   'http://mxbes2-1707:38280/ewoks/workflow/CommonPrepareExperiment.json',
+    //   'http://mxbes2-1707:38280/ewoks/workflow/TroubleShooting.json',
+    // ];
 
 const graph = {
   inputs: [

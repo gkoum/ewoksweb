@@ -21,6 +21,8 @@ export interface Graph {
 }
 
 export interface State {
+  updateNeeded: number;
+  setUpdateNeeded: (num: number) => void;
   recentGraphs?: Array<GraphRF>;
   setRecentGraphs?: (graphRF: GraphRF) => void;
   graphOrSubgraph?: Boolean;
