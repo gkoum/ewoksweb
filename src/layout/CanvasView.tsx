@@ -92,7 +92,7 @@ function CanvasView(props) {
   const setSelectedElement = useStore((state) => state.setSelectedElement);
 
   const selectedSubgraph = useStore((state) => state.selectedElement);
-  const setSelectedSubgraph = useStore((state) => state.setSelectedElement);
+  const setSubgraph = useStore((state) => state.setSubgraph);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     console.log(element);
@@ -166,7 +166,7 @@ function CanvasView(props) {
     console.log(event, node);
     if (node.type === 'graph') {
       const subgraph = getGraph(node.data.task_identifier, true);
-      setSelectedSubgraph(subgraph);
+      setSubgraph(subgraph);
       console.log('THIS IS A GRAPH');
       console.log(subgraph);
     } else {
@@ -177,7 +177,7 @@ function CanvasView(props) {
   const closeSubgraph = (event) => {
     event.preventDefault();
     console.log(event);
-    setSelectedSubgraph({ graph: { id: 0 }, nodes: [], links: [] });
+    setSubgraph({ graph: { id: 0 }, nodes: [], links: [] });
   };
 
   return (

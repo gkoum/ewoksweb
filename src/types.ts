@@ -21,8 +21,8 @@ export interface Graph {
 }
 
 export interface State {
-  updateNeeded: number;
-  setUpdateNeeded: (num: number) => void;
+  // updateNeeded: number;
+  // setUpdateNeeded: (num: number) => void;
   recentGraphs?: Array<GraphRF>;
   setRecentGraphs?: (graphRF: GraphRF) => void;
   graphOrSubgraph?: Boolean;
@@ -33,8 +33,10 @@ export interface State {
   setGraphRF: (graphRF: GraphRF) => void;
   selectedElement: EwoksRFNode | EwoksRFLink;
   setSelectedElement: (element: EwoksRFNode | EwoksRFLink) => void;
-  selectedSubgraph: GraphRF;
-  setSelectedSubgraph: (graph: GraphRF) => void;
+  subGraph: GraphRF;
+  setSubGraph: (graph: GraphRF) => Promise<GraphRF>;
+  workingGraph: GraphRF;
+  setWorkingGraph: (graph: GraphEwoks) => Promise<GraphRF>;
 }
 
 export interface Inputs {

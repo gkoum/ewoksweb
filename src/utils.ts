@@ -26,6 +26,13 @@ const NODE_SIZE = { width: 270, height: 36 };
 
 export const ewoksNetwork = graph;
 
+export async function getWorkflows() {
+  const workflows = await axios.get('http://mxbes2-1707:38280/ewoks/workflows');
+  return workflows.map((work) => {
+    return { label: work };
+  });
+}
+
 // this will get graphs from the server async after checking the recentGraphs
 export async function getGraph(
   byTaskIdentifier: string,

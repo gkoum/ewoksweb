@@ -93,7 +93,7 @@ function Canvas() {
   const updateNeeded = useStore((state) => state.updateNeeded);
 
   const selectedSubgraph = useStore((state) => state.selectedSubgraph);
-  const setSelectedSubgraph = useStore((state) => state.setSelectedSubgraph);
+  const setSubgraph = useStore((state) => state.setSubgraph);
   const recentGraphs = useStore((state) => state.recentGraphs);
 
   useEffect(() => {
@@ -266,10 +266,7 @@ function Canvas() {
       );
       console.log(subgraph);
       if (subgraph && subgraph.graph.id) {
-        getSubgraphs(subgraph, recentGraphs);
         // TODO: if the subgraph does not exist on recent? Re-ask server and failsafe
-        // const subgraph = getGraph(nodeTmp.task_identifier).then(save-to-recent).catch(failSafe)
-        // setSelectedSubgraph(subgraph);
         setGraphRF(subgraph);
         setSubgraphsStack({
           id: subgraph.graph.id,

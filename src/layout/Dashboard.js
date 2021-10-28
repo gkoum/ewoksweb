@@ -33,13 +33,17 @@ import Canvas from './Canvas';
 import Card from '@material-ui/core/Card';
 import CanvasView from './CanvasView';
 import Upload from '../Components/Upload';
+import AutocompleteDrop from '../Components/AutocompleteDrop';
 import AddIcon from '@material-ui/icons/Add';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 import { getGraph, rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
 import MyCard from '../layout/MyCard';
 import axios from 'axios';
+import { getWorkflows } from '../utils';
 
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
@@ -227,7 +231,7 @@ export default function Dashboard() {
       .get('http://mxbes2-1707:38280/ewoks/workflow/TroubleShooting.json')
       .then((response) => {
         console.log(response.data);
-        subgraphL = response.data;
+        // subgraphL = response.data;
       })
       .catch((error) => {
         console.log(error);
@@ -259,6 +263,14 @@ export default function Dashboard() {
       setGraphRF(subgraph);
     }
   };
+
+  const nbaTeams = [
+    { id: 1, name: 'Atlanta Hawks' },
+    { id: 2, name: 'Boston Celtics' },
+    { id: 3, name: 'Brooklyn Nets' },
+    { id: 4, name: 'Charlotte Hornets' },
+    { id: 5, name: 'Chicago Bulls' },
+  ];
 
   return (
     <div className={classes.root}>
@@ -306,7 +318,6 @@ export default function Dashboard() {
             {subgraphsStack[0] &&
               subgraphsStack[subgraphsStack.length - 1].label}
           </Typography>
-
           <FormControl variant="standard" className={classes.formControl}>
             <InputLabel
               id="demo-simple-select-filled-label"
@@ -376,6 +387,9 @@ export default function Dashboard() {
               <CloudUploadIcon />
             </Fab>
           </IconButton>
+          <FormControl variant="standard" className={classes.formControl}>
+            <AutocompleteDrop />
+          </FormControl>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
