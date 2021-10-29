@@ -4,6 +4,41 @@
 // https://discourse.jupyter.org/t/tool-for-notebook-workflows/3764
 // https://gitlab.esrf.fr/denolf/workflow_concepts/-/blob/master/doc/workflows_meeting_march2021.pdf
 
+
+// -AnalyseKappa positioning problem
+// -BesTestExecution missing link
+// -BurnStrategy
+
+// -Characterisation.json breaks because a (target: "Join") is used in a link
+// but it is not in the nodes -> Handle error in graph "name"?
+
+
+// -EnhancedCharacterisation.json a loop is not visuilized well as
+// links cross nodes. Fix by custom link that bends around nodes?
+
+// -CollectAndProcessBurningStrategy.json breaks with 500 as it has
+// task_identifier: "com.isencia.passerelle.edm.actor.transform.AddResultActor.json"
+// in a task_type: "graph" but there is no such graph id to fetch
+
+// -CryoEMDataArchive.json again the loop results in a bad graph
+// -CryoEMProcessGrid.json worst loop
+
+// -DIMPLE.json strainge 2 independet graphs
+
+// -ExecuteBurnStrategy breaks 500 com.isencia.passerelle.edm.actor.transform.AddResultActor.json
+
+// -ExecuteHelicalCharacterisation.json 2 indipendant graphs
+// links ending also up and down? resolves loop visulization too
+
+// -ExecuteKappaReorientation.json multiple outputs to subgraphs are not working
+
+// BUGS
+// Node type on sidebar is not updated when I click on different node
+// ExecuteMXPressOrig.json: Multiple calls are being made as subgraphs are re-requested in a single draw
+// Spinner for each load...
+// Validator for graphs and not break in any conditions
+// sidebar text changes the width of sidebar when long especialy in task_identifier
+
 const nodes = {
   id: '',
   type: 'class, method, graph ...', // must be clear and draw conclusions from both key and value of a dictionary,

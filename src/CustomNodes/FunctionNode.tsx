@@ -15,7 +15,7 @@ function FunctionNode(all) {
   console.log(all.data, all);
   return (
     <Node
-      type="graph"
+      type={all.data.type}
       label={all.label ? all.label : all.data.label}
       selected={all.selected}
       color={all.data.exists ? '#ced3ee' : 'red'}

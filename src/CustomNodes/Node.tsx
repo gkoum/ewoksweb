@@ -106,12 +106,14 @@ const Node: React.FC<NodeProps> = ({
   console.log(type);
   // calculate the border if input/output/graph
   let border = '';
-  if (type === 'graph') {
-    border = '4px solid rgb(150, 165, 249)';
-  } else if (type === 'input') {
+  if (type === 'input') {
     border = '4px solid rgb(62, 80, 180)';
   } else if (type === 'output') {
     border = '4px solid rgb(50, 130, 219)';
+  } else if (type === 'input_output') {
+    border = '4px solid rgb(200, 130, 219)';
+  } else if (type === 'graph') {
+    border = '4px solid rgb(150, 165, 249)';
   }
   const customTitle = { ...style.title, wordWrap: 'break-word' };
   if (color) {
@@ -143,6 +145,7 @@ const Node: React.FC<NodeProps> = ({
           src={iconsObj[image] || orange1}
           alt="orangeImage"
         />
+        <span style={style.contentWrapper}>{type}</span>
         <span style={style.contentWrapper}>{content}</span>
       </span>
     </div>

@@ -3,21 +3,24 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { getWorkflows } from '../utils';
 
 interface Film {
   title: string;
   year: number;
 }
 
-function sleep(delay = 0) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-}
+// function sleep(delay = 0) {
+//   return new Promise((resolve) => {
+//     setTimeout(resolve, delay);
+//   });
+// }
 
-function AutocompleteDrop() {
+function AutocompleteDrop(props) {
+  const [options, setOptions] = useState<readonly WorkflowList[]>([]);
+  const [value, setValue] = React.useState<string | null>(options[0]);
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState<readonly Film[]>([]);
+  // const [inputValue, setInputValue] = React.useState('');
   const loading = open && options.length === 0;
 
   useEffect(() => {
@@ -28,10 +31,10 @@ function AutocompleteDrop() {
     }
 
     (async () => {
-      await sleep(1e3); // For demo purposes.
+      const workF = await getWorkflows(); // sleep(1e3)
 
       if (active) {
-        setOptions([...topFilms]);
+        setOptions([...workF]);
       }
     })();
 
@@ -46,9 +49,14 @@ function AutocompleteDrop() {
     }
   }, [open]);
 
+  const setInputValue = (newInputValue) => {
+    console.log(props, newInputValue);
+    props.setInputValue(newInputValue);
+  };
+
   return (
     <Autocomplete
-      id="asynchronous-demo"
+      id="async-autocomplete-drop"
       sx={{ width: 300 }}
       open={open}
       onOpen={() => {
@@ -57,14 +65,18 @@ function AutocompleteDrop() {
       onClose={() => {
         setOpen(false);
       }}
-      isOptionEqualToValue={(option, value) => option.title === value.title}
+      // isOptionEqualToValue={(option, value) => option.title === value.title}
       getOptionLabel={(option) => option.title}
       options={options}
       loading={loading}
+      value={value}
+      onInputChange={(event, newInputValue) => {
+        setInputValue(newInputValue);
+      }}
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Asynchronous"
+          label="Get Workflows"
           InputProps={{
             ...params.InputProps,
             endAdornment: (

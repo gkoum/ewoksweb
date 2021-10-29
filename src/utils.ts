@@ -28,8 +28,9 @@ export const ewoksNetwork = graph;
 
 export async function getWorkflows() {
   const workflows = await axios.get('http://mxbes2-1707:38280/ewoks/workflows');
-  return workflows.map((work) => {
-    return { label: work };
+  console.log(workflows.data.workflows);
+  return workflows.data.workflows.map((work) => {
+    return { title: work };
   });
 }
 
@@ -299,7 +300,7 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
         let tempTask = tasks.find(
           (tas) => tas.task_identifier === task_identifier
         );
-        console.log(task_type, tempTask, nodeType);
+        console.log(task_type, tempTask, nodeType, task_identifier);
         // if it is not in the tasks list like a new task or subgraph?
         // Not in the list => add a default one FAILSAFE TODO
         console.log('found Task and go for inputs-outputs');
@@ -413,6 +414,7 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
         conditions,
         map_all_data,
       }) => {
+        console.log(source, target);
         // find the outputs-inputs from the connected nodes
         const sourceTmp = tempGraph.nodes.find((nod) => nod.id === source);
         const targetTmp = tempGraph.nodes.find((nod) => nod.id === target);

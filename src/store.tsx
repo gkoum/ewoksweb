@@ -106,13 +106,63 @@ const useStore = create<State>((set, get) => ({
     get().setRecentGraphs({ graph: { id: '' } } as GraphRF, true);
 
     console.log(workingGraph);
+    // run the tree and find all subgraphs
+    let subsToGet = [workingGraph];
+    const newNodeSubgraphs = [];
 
-    // 2. search for subgraphs in it (async)
-    console.log('getSubgraphs:', workingGraph, get().recentGraphs);
-    const newNodeSubgraphs = await getSubgraphs(
-      workingGraph,
-      get().recentGraphs
-    );
+    while (subsToGet.length > 0) {
+      console.log('getting subgraphs for:', subsToGet[0]);
+      // eslint-disable-next-line no-await-in-loop
+      const allGraphSubs = await getSubgraphs(subsToGet[0], get().recentGraphs);
+      console.log('allGraphSubs', allGraphSubs, subsToGet);
+      allGraphSubs.forEach((gr) => newNodeSubgraphs.push(gr));
+      console.log(newNodeSubgraphs);
+      subsToGet.shift();
+      subsToGet = [...subsToGet, ...allGraphSubs];
+      console.log(subsToGet);
+    }
+
+    // Attempt to remove re-fetching the same subgraph
+    // let subsToGet = [workingGraph];
+    // const allSubs = new Set();
+    // allSubs.add(workingGraph.graph.id);
+    // const newNodeSubgraphs = [];
+
+    // while (subsToGet.length > 0) {
+    //   console.log('getting subgraphs for:', subsToGet[0]);
+    //   // eslint-disable-next-line no-await-in-loop
+    //   const allGraphSubs = await getSubgraphs(subsToGet[0], get().recentGraphs);
+    //   console.log('allGraphSubs', allGraphSubs, subsToGet);
+    //   allGraphSubs.map((gr) => gr.graph.id).forEach((gra) => allSubs.add(gra));
+
+    //   allGraphSubs.forEach((gr) => {
+    //     console.log('allSubs', allSubs, gr.graph.id);
+    //     if (!allSubs.has(gr.graph.id)) {
+    //       newNodeSubgraphs.push(gr);
+    //     }
+    //   });
+    //   console.log(newNodeSubgraphs);
+    //   subsToGet.shift();
+    //   subsToGet = [...subsToGet, ...allGraphSubs];
+    //   console.log(subsToGet);
+    // }
+
+    // 2. search for  1st layer subgraphs in it (async)
+    // console.log('getSubgraphs:', workingGraph, get().recentGraphs);
+    // const newNodeSubgraphs = await getSubgraphs(
+    //   workingGraph,
+    //   get().recentGraphs
+    // );
+
+    // const newNodeSubgraphs2 = [];
+    // newNodeSubgraphs.forEach(async (sub) => {
+    //   const subgraph = await getSubgraphs(sub, get().recentGraphs);
+    //   console.log(subgraph);
+    //   if (subgraph) {
+    //     newNodeSubgraphs2.push(subgraph.data);
+    //   }
+    // });
+
     // 3. Put the newNodeSubgraphs into recent in their graphRF form (sync)
     newNodeSubgraphs.forEach((gr) => {
       console.log('putting newNodeSubgraph in recent', gr);
@@ -135,86 +185,11 @@ const useStore = create<State>((set, get) => ({
       links: toRFEwoksLinks(workingGraph, newNodeSubgraphs),
     };
     console.log(grfNodes, graph, get().graphOrSubgraph, get().recentGraphs);
-    if (get().graphOrSubgraph) {
-      console.log('ADD a new graph1');
-      get().setRecentGraphs(graph as GraphRF);
-      console.log('RECENT GRAPHS', get().recentGraphs);
-    } else {
-      //   // Adding a subgraph to an existing workingGraph:
-      //   // save the workingGraph in the recent graphs and add a new graph node to it
-      console.log('adding a subgraph:', graph, get().recentGraphs);
-      // let superGraph = {} as Graph;
-      // if (get().recentGraphs.length === 0) {
-      //   // if there is no initial graph to drop-in the subgraph -> create one
-      //   superGraph = createGraph();
-      //   get().setSubgraphsStack({
-      //     id: superGraph.graph.id,
-      //     label: superGraph.graph.label,
-      //   });
-      //   get().setRecentGraphs(superGraph);
-      // } else {
-      //   // TODO: if not in the recentGraphs?
-      //   console.log(get().recentGraphs, get().graphRF);
-      //   superGraph = get().recentGraphs.find(
-      //     (gr) => gr.graph.id === get().graphRF.graph.id
-      //   );
-      // }
-      // console.log(superGraph);
-      // if (superGraph) {
-      //   const inputsSub = workingGraph.graph.input_nodes.map((input) => {
-      //     return {
-      //       label: `${input.id}: ${input.node} ${
-      //         input.sub_node ? `  -> ${input.sub_node}` : ''
-      //       }`,
-      //       type: 'data ',
-      //     };
-      //   });
-      //   const outputsSub = workingGraph.graph.output_nodes.map((input) => {
-      //     return {
-      //       label: `${input.id}: ${input.node} ${
-      //         input.sub_node ? ` -> ${input.sub_node}` : ''
-      //       }`,
-      //       type: 'data ',
-      //     };
-      //   });
-      //   let id = 0;
-      //   let graphId = workingGraph.graph.label;
-      //   while (get().graphRF.nodes.find((nod) => nod.id === graphId)) {
-      //     graphId += id++;
-      //   }
-      //   const newNode = {
-      //     sourcePosition: 'right',
-      //     targetPosition: 'left',
-      //     task_generator: '',
-      //     // TODO: ids should be unique to this graph only as a node for this subgraph
-      //     // human readable but automatically generated?
-      //     id: graphId,
-      //     // TODO: can we upload a task too like a subgraph
-      //     task_type: 'graph',
-      //     task_identifier: workingGraph.graph.id,
-      //     type: 'graph',
-      //     position: { x: 100, y: 500 },
-      //     default_inputs: [],
-      //     inputs_complete: false,
-      //     data: {
-      //       exists: true,
-      //       label: workingGraph.graph.label,
-      //       type: 'internal',
-      //       comment: '',
-      //       // TODO: icon needs to be in the task and graph JSON specification
-      //       icon: workingGraph.graph.uiProps && workingGraph.graph.uiProps.icon,
-      //       inputs: inputsSub,
-      //       outputs: outputsSub,
-      //       // icon: workingGraph.data.icon ? workingGraph.data.icon : '',
-      //     },
-      //     // data: { label: CustomNewNode(id, name, image) },
-      //   };
-      //   console.log(newNode, workingGraph);
-      //   superGraph.nodes.push(newNode);
-      //   console.log('ADD a new graph2', superGraph);
-      //   get().setRecentGraphs(superGraph);
-      // }
-    }
+
+    console.log('ADD a new graph1');
+    get().setRecentGraphs(graph as GraphRF);
+    console.log('RECENT GRAPHS', get().recentGraphs);
+
     // set the new graph as the working graph
     get().setGraphRF(graph as GraphRF);
     // add the new graph to the recent graphs if not already there

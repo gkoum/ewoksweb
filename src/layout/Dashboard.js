@@ -35,6 +35,9 @@ import CanvasView from './CanvasView';
 import Upload from '../Components/Upload';
 import AutocompleteDrop from '../Components/AutocompleteDrop';
 import AddIcon from '@material-ui/icons/Add';
+import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+// import UploadFileIcon from '@material-ui/icons/UploadFile';
+// import FileUploadIcon from '@material-ui/icons/FileUpload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
@@ -180,6 +183,7 @@ export default function Dashboard() {
 
   const inputFile = React.useRef(null);
 
+  const [workflowValue, setWorkflowValue] = React.useState('');
   const graphRF = useStore((state) => state.graphRF);
   const setGraphRF = useStore((state) => state.setGraphRF);
   const selectedElement = useStore((state) => state.selectedElement);
@@ -196,6 +200,7 @@ export default function Dashboard() {
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const recentGraphs = useStore((state) => state.recentGraphs);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
+  const setWorkingGraph = useStore((state) => state.setWorkingGraph);
 
   useEffect(() => {
     console.log(subgraphsStack.length);
@@ -225,17 +230,12 @@ export default function Dashboard() {
     download(JSON.stringify(graphRF), 'json.txt', 'text/plain');
   };
 
-  const getFromServer = (event) => {
-    console.log('Get graphs from server', graphRF);
-    axios
-      .get('http://mxbes2-1707:38280/ewoks/workflow/TroubleShooting.json')
-      .then((response) => {
-        console.log(response.data);
-        // subgraphL = response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const getFromServer = async (event) => {
+    console.log('Get graphs from server', workflowValue);
+    const response = await axios.get(
+      `http://mxbes2-1707:38280/ewoks/workflow/${workflowValue}`
+    );
+    setWorkingGraph(response.data);
   };
 
   const newGraph = (event) => {
@@ -264,13 +264,10 @@ export default function Dashboard() {
     }
   };
 
-  const nbaTeams = [
-    { id: 1, name: 'Atlanta Hawks' },
-    { id: 2, name: 'Boston Celtics' },
-    { id: 3, name: 'Brooklyn Nets' },
-    { id: 4, name: 'Charlotte Hornets' },
-    { id: 5, name: 'Chicago Bulls' },
-  ];
+  const setInputValue = (val) => {
+    console.log(val, recentGraphs);
+    setWorkflowValue(val);
+  };
 
   return (
     <div className={classes.root}>
@@ -388,8 +385,20 @@ export default function Dashboard() {
             </Fab>
           </IconButton>
           <FormControl variant="standard" className={classes.formControl}>
-            <AutocompleteDrop />
+            <AutocompleteDrop setInputValue={setInputValue} />
           </FormControl>
+          <IconButton color="inherit">
+            <Fab
+              className={classes.openFileButton}
+              color="primary"
+              size="small"
+              component="span"
+              aria-label="add"
+            >
+              {/* <b>Open</b> */}
+              <DoubleArrowIcon onClick={getFromServer} />
+            </Fab>
+          </IconButton>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
