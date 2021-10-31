@@ -3,6 +3,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Fab, Button } from '@material-ui/core';
 import { useState } from 'react';
 import useStore from '../store';
+import { validateEwoksGraph } from '../utils/EwoksValidator';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,12 +53,15 @@ function Upload(props) {
       const newGraph = JSON.parse(file.result);
       let working = {};
       if (graphOrSubgraph) {
-        working = await setWorkingGraph(newGraph);
+        const { result, logs } = validateEwoksGraph(newGraph);
+        // console.log(validateEwoksGraph(newGraph));
+        if (result) {
+          working = await setWorkingGraph(newGraph);
+        }
       } else {
         console.log('ADDING SUBGRAPH:', newGraph);
         working = await setSubGraph(newGraph);
       }
-      console.log(working);
     };
   };
 

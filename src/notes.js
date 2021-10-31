@@ -7,7 +7,7 @@
 
 // -AnalyseKappa positioning problem
 // -BesTestExecution missing link
-// -BurnStrategy
+// -BurnStrategy 500
 
 // -Characterisation.json breaks because a (target: "Join") is used in a link
 // but it is not in the nodes -> Handle error in graph "name"?
@@ -38,7 +38,7 @@
 // Spinner for each load...
 // Validator for graphs and not break in any conditions
 // sidebar text changes the width of sidebar when long especialy in task_identifier
-
+// fetches workflows with each click in Get Workflows -> if not in the store
 const nodes = {
   id: '',
   type: 'class, method, graph ...', // must be clear and draw conclusions from both key and value of a dictionary,
@@ -199,7 +199,6 @@ const subgraph = {
 // 4. draw links of a graph and complete graph in react flow
 
 // recentGraphs is GrahRF[] ready to by used
-
 
 // 1. The subgraph should be a decoupled entity that could change any given moment.
 // 2. Even the subgraph input node can change its name and the super-graph should remain unaltered.
@@ -582,4 +581,556 @@ let subsubsubgraph = {
       }
     }
   ]
+}
+
+
+{
+	"workflows": [
+		"AnalyseKappa.json",
+		"BesTestExecution.json",
+		"BurnStrategy.json",
+		"CalibrateKappa.json",
+		"CenterRotationAxis.json",
+		"CentreBeam.json",
+		"CentrePin.json",
+		"Characterisation.json",
+		"CollectAndProcessBurningStrategy.json",
+		"CollectReferenceImages.json",
+		"CollectWithoutStrategy.json",
+		"CommonDataCollection.json",
+		"CommonErrorReporter.json",
+		"CommonPrepareExperiment.json",
+		"CreateLucidBackgroundImage.json",
+		"CreateThumbnails.json",
+		"CryoEMDataArchive.json",
+		"CryoEMProcessGrid.json",
+		"CryoEMProcessGridSquare.json",
+		"CryoEMProcessMovie.json",
+		"DIMPLE.json",
+		"Dehydration.json",
+		"DistanceCalibration.json",
+		"DozorAndXDSAPP_OAR.json",
+		"EDNAStrategy.json",
+		"EDNA_dp.json",
+		"EDNA_proc.json",
+		"EDNA_proc_OAR.json",
+		"EDNA_proc_SLURM.json",
+		"EnergyInterleavedMAD.json",
+		"EnhancedCharacterisation.json",
+		"ExecuteBurnStrategy.json",
+		"ExecuteDehydration.json",
+		"ExecuteEnhancedCharacterisation.json",
+		"ExecuteHelicalCharacterisation.json",
+		"ExecuteKappaReorientation.json",
+		"ExecuteMXPress.json",
+		"ExecuteMXPressOrig.json",
+		"ExecuteMXPressTest.json",
+		"ExecuteMesh.json",
+		"ExecuteMeshAndCollect.json",
+		"ExecuteMeshBest3D.json",
+		"ExecuteMeshBest3DGrid.json",
+		"ExecuteMeshBest3D_2.json",
+		"ExecuteVerticalLineScan.json",
+		"ExecuteVisualReorientation.json",
+		"HelicalCharacterisation.json",
+		"ImprovedXrayCentring.json",
+		"Is4a_MERGE.json",
+		"Is4a_REPROCESS.json",
+		"KappaReorientation.json",
+		"LowDoseDC.json",
+		"LowSymmetryOpenKappa.json",
+		"MXPressA.json",
+		"MXPressA_3500Gy.json",
+		"MXPressA_aperture_100um.json",
+		"MXPressA_aperture_10um.json",
+		"MXPressA_aperture_15um.json",
+		"MXPressA_aperture_30um.json",
+		"MXPressA_aperture_50um.json",
+		"MXPressA_aperture_Outbeam.json",
+		"MXPressA_dozor.json",
+		"MXPressA_dozorm.json",
+		"MXPressA_meshBest.json",
+		"MXPressDataCollection.json",
+		"MXPressE.json",
+		"MXPressEMulti.json",
+		"MXPressERed.json",
+		"MXPressESAD.json",
+		"MXPressF.json",
+		"MXPressH.json",
+		"MXPressI.json",
+		"MXPressK.json",
+		"MXPressL.json",
+		"MXPressM.json",
+		"MXPressMultiCrystal.json",
+		"MXPressO.json",
+		"MXPressO_540.json",
+		"MXPressP.json",
+		"MXPressP_SAD.json",
+		"MXPressPseudoHelical.json",
+		"MXPressR.json",
+		"MXPressR_180.json",
+		"MXPressR_dehydration.json",
+		"MXPressR_dehydration_1min_1pc.json",
+		"MXPressR_dehydration_2min_1pc.json",
+		"MXPressR_dehydration_2min_5pc.json",
+		"MXPressR_dehydration_5min_5pc.json",
+		"MXPressS.json",
+		"MXScore.json",
+		"Massif1DepositionsTwitter.json",
+		"Massif1LongestLengthTwitter.json",
+		"Massif1SamplesTwitter.json",
+		"Massif1ShortestLengthTwitter.json",
+		"Massif1VolumeTwitter.json",
+		"Mesh2D.json",
+		"MeshAndCollect.json",
+		"MeshAndCollectFromFile.json",
+		"MeshAndCollectUserInput.json",
+		"MeshBest3D.json",
+		"MeshScan.json",
+		"PrepareAutoMesh.json",
+		"PrepareMesh.json",
+		"ShortXrayCentringVertical.json",
+		"SmallXrayCentringExecute.json",
+		"TestAutoInsitu.json",
+		"TestBest3DCharacterisation.json",
+		"TestCenterOfRotationAxis.json",
+		"TestCollectAndSpectra.json",
+		"TestInterleavedMad.json",
+		"TestInversedLineScans.json",
+		"TestLowDoseDC.json",
+		"TestRDExpress.json",
+		"TestSetGridData.json",
+		"TestShortVerticalLineScan.json",
+		"TroubleShooting.json",
+		"TroubleShootingWithDialog.json",
+		"TwoCentredPositionInput.json",
+		"TwoMeshScans2.json",
+		"VisualReorientation.json",
+		"XDSAPP.json",
+		"XDSAPP_OAR.json",
+		"XDSAPP_SLURM.json",
+		"XIA2_DIALS_OAR.json",
+		"XIA2_DIALS_SLURM.json",
+		"XrayCentring.json",
+		"XrayCentringExecute.json",
+		"XrayCentringVertical.json",
+		"autoPROC.json",
+		"autoPROC_OAR.json",
+		"autoPROC_SLURM.json",
+		"dozor_OAR.json",
+		"dozor_SLURM.json",
+		"grenades_fastproc_OAR.json",
+		"grenades_fastproc_SLURM.json",
+		"grenades_parallelproc_OAR.json",
+		"grenades_parallelproc_SLURM.json",
+		"xia2DIALS.json",
+		"xia2DIALS_OAR.json",
+		"xia2DIALS_SLURM.json",
+		"MXPressR_setup.json"
+	]
+}
+
+
+troubleshooting
+{
+	"graph": {
+		"id": "TroubleShooting.json",
+		"input_nodes": [
+			{
+				"id": "Start",
+				"node": "Prepare trouble shooting"
+			}
+		],
+		"label": "TroubleShooting",
+		"output_nodes": [
+			{
+				"id": "Stop",
+				"node": "Set Request Status to FINISHED"
+			}
+		],
+		"uiProps": {}
+	},
+	"links": [
+		{
+			"map_all_data": true,
+			"source": "Prepare trouble shooting",
+			"sub_target": "In",
+			"target": "CommonPrepareExperiment"
+		},
+		{
+			"map_all_data": true,
+			"source": "CommonPrepareExperiment",
+			"sub_source": "Out",
+			"target": "Check move of phi"
+		},
+		{
+			"conditions": [
+				{
+					"source_output": "flagPhiMoved",
+					"value": true
+				}
+			],
+			"map_all_data": true,
+			"source": "Check move of phi",
+			"target": "All tests ok"
+		},
+		{
+			"conditions": [
+				{
+					"source_output": "flagPhiMoved",
+					"value": false
+				}
+			],
+			"map_all_data": true,
+			"source": "Check move of phi",
+			"target": "Set ISPyB status to success with error message"
+		},
+		{
+			"map_all_data": true,
+			"source": "Set ISPyB status to success with error message",
+			"target": "Set Request Status to FINISHED"
+		},
+		{
+			"map_all_data": true,
+			"source": "All tests ok",
+			"target": "Set ISPyB to success"
+		},
+		{
+			"map_all_data": true,
+			"source": "Set ISPyB to success",
+			"target": "Set Request Status to FINISHED"
+		}
+	],
+	"nodes": [
+		{
+			"id": "CommonPrepareExperiment",
+			"label": "CommonPrepareExperiment",
+			"task_identifier": "CommonPrepareExperiment.json",
+			"task_type": "graph",
+			"uiProps": {
+				"position": {
+					"x": 380,
+					"y": 214
+				},
+				"type": "internal"
+			}
+		},
+		{
+			"id": "Prepare trouble shooting",
+			"label": "Prepare trouble shooting",
+			"task_identifier": "mx.src.prepareTroubleShooting.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 191,
+					"y": 214
+				}
+			}
+		},
+		{
+			"id": "Set Request Status to FINISHED",
+			"label": "Set Request Status to FINISHED",
+			"task_identifier": "mx.src.requestStatusFINISHED.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 1390,
+					"y": 328
+				}
+			}
+		},
+		{
+			"id": "Check move of phi",
+			"label": "Check move of phi",
+			"task_identifier": "mx.src.checkMoveOfPhi.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 553,
+					"y": 214
+				}
+			}
+		},
+		{
+			"id": "Set ISPyB status to success with error message",
+			"label": "Set ISPyB status to success with error message",
+			"task_identifier": "mx.src.ispyb_set_status_success_with_errors.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 867,
+					"y": 455
+				}
+			}
+		},
+		{
+			"id": "All tests ok",
+			"label": "All tests ok",
+			"task_identifier": "mx.src.troubleShootingAllTestsOk.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 841,
+					"y": 214
+				}
+			}
+		},
+		{
+			"id": "Set ISPyB to success",
+			"label": "Set ISPyB to success",
+			"task_identifier": "mx.src.ispyb_set_status_success.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 1019,
+					"y": 214
+				}
+			}
+		}
+	]
+}
+
+CommonPrepareExperiment
+{
+	"graph": {
+		"id": "CommonPrepareExperiment.json",
+		"input_nodes": [
+			{
+				"id": "In",
+				"node": "Init workflow"
+			}
+		],
+		"label": "CommonPrepareExperiment",
+		"output_nodes": [
+			{
+				"id": "Out",
+				"node": "Default parameters"
+			}
+		],
+		"uiProps": {}
+	},
+	"links": [
+		{
+			"map_all_data": true,
+			"source": "Init workflow",
+			"target": "Read motor positions"
+		},
+		{
+			"map_all_data": true,
+			"source": "Read motor positions",
+			"target": "Default parameters"
+		}
+	],
+	"nodes": [
+		{
+			"id": "Init workflow",
+			"label": "Init workflow",
+			"task_identifier": "mx.src.init_workflow.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 301,
+					"y": 95
+				}
+			}
+		},
+		{
+			"id": "Default parameters",
+			"label": "Default parameters",
+			"task_identifier": "mx.src.common_default_parameters.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 706,
+					"y": 131
+				}
+			}
+		},
+		{
+			"id": "Read motor positions",
+			"label": "Read motor positions",
+			"task_identifier": "mx.src.read_motor_positions.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 496,
+					"y": 114
+				}
+			}
+		}
+	]
+}
+
+
+CryoEMProcessGrid
+{
+	"graph": {
+		"id": "CryoEMProcessGrid.json",
+		"input_nodes": [
+			{
+				"id": "Start",
+				"node": "Init grid processing"
+			}
+		],
+		"label": "CryoEMProcessGrid",
+		"output_nodes": [
+			{
+				"id": "Stop actor",
+				"node": "Set Request Status"
+			}
+		],
+		"uiProps": {}
+	},
+	"links": [
+		{
+			"map_all_data": true,
+			"source": "Init grid processing",
+			"target": "Get grid square lists"
+		},
+		{
+			"conditions": [
+				{
+					"source_output": "doProcessGridSquare",
+					"value": true
+				}
+			],
+			"map_all_data": true,
+			"source": "Get grid square lists",
+			"target": "Process grid"
+		},
+		{
+			"conditions": [
+				{
+					"source_output": "doProcessGridSquare",
+					"value": false
+				}
+			],
+			"map_all_data": true,
+			"source": "Get grid square lists",
+			"target": "Wait for new movie or grid square"
+		},
+		{
+			"conditions": [
+				{
+					"source_output": "doProcessMovie",
+					"value": true
+				}
+			],
+			"map_all_data": true,
+			"source": "Process grid",
+			"target": "Launch movie processing"
+		},
+		{
+			"conditions": [
+				{
+					"source_output": "doProcessMovie",
+					"value": false
+				}
+			],
+			"map_all_data": true,
+			"source": "Process grid",
+			"target": "Wait for new movie or grid square"
+		},
+		{
+			"conditions": [
+				{
+					"source_output": "timeOut",
+					"value": true
+				}
+			],
+			"map_all_data": true,
+			"source": "Wait for new movie or grid square",
+			"target": "Set Request Status"
+		},
+		{
+			"conditions": [
+				{
+					"source_output": "timeOut",
+					"value": false
+				}
+			],
+			"map_all_data": true,
+			"source": "Wait for new movie or grid square",
+			"target": "Get grid square lists"
+		},
+		{
+			"map_all_data": true,
+			"source": "Launch movie processing",
+			"target": "Get grid square lists"
+		}
+	],
+	"nodes": [
+		{
+			"id": "Init grid processing",
+			"label": "Init grid processing",
+			"task_identifier": "mx.src.cryoemInitGridProcess.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 264,
+					"y": 280
+				}
+			}
+		},
+		{
+			"id": "Set Request Status",
+			"label": "Set Request Status",
+			"task_identifier": "mx.src.requestStatusFINISHED.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 1877,
+					"y": 380
+				}
+			}
+		},
+		{
+			"id": "Get grid square lists",
+			"label": "Get grid square lists",
+			"task_identifier": "mx.src.cryoemInitGridSquareLists.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 612,
+					"y": 280
+				}
+			}
+		},
+		{
+			"id": "Process grid",
+			"label": "Process grid",
+			"task_identifier": "mx.src.cryoemProcessGridSquare.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 1078,
+					"y": 192
+				}
+			}
+		},
+		{
+			"id": "Wait for new movie or grid square",
+			"label": "Wait for new movie or grid square",
+			"task_identifier": "mx.src.cryoemWaitForNewMovieOrGridSquare.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 1417,
+					"y": 330
+				}
+			}
+		},
+		{
+			"id": "Launch movie processing",
+			"label": "Launch movie processing",
+			"task_identifier": "mx.src.cryoemLaunchMovieProcessing.run",
+			"task_type": "ppfmethod",
+			"uiProps": {
+				"position": {
+					"x": 1667,
+					"y": 204
+				}
+			}
+		}
+	]
 }

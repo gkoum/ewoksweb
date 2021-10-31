@@ -47,6 +47,7 @@ import { getGraph, rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
 import MyCard from '../layout/MyCard';
 import axios from 'axios';
 import { getWorkflows } from '../utils';
+import { validateEwoksGraph } from '../utils/EwoksValidator';
 
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
@@ -211,6 +212,7 @@ export default function Dashboard() {
   };
   const handleDrawerClose = () => {
     setOpen(false);
+    validateEwoksGraph(graphRF);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
