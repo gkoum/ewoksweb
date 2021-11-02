@@ -32,6 +32,14 @@ const useStore = create<State>((set, get) => ({
   //     updateNeeded: get().updateNeeded + num,
   //   }));
   // },
+  allWorkflows: [],
+
+  setAllWorkflows: (workflows: String[]) => {
+    set((state) => ({
+      ...state,
+      allWorkflows: workflows,
+    }));
+  },
 
   recentGraphs: [] as GraphRF[],
 

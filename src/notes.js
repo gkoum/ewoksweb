@@ -39,6 +39,7 @@
 // Validator for graphs and not break in any conditions
 // sidebar text changes the width of sidebar when long especialy in task_identifier
 // fetches workflows with each click in Get Workflows -> if not in the store
+
 const nodes = {
   id: '',
   type: 'class, method, graph ...', // must be clear and draw conclusions from both key and value of a dictionary,

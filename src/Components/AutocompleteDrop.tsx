@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { getWorkflows } from '../utils';
+import useStore from '../store';
 
 interface Film {
   title: string;
@@ -20,7 +21,8 @@ function AutocompleteDrop(props) {
   const [options, setOptions] = useState<readonly WorkflowList[]>([]);
   const [value, setValue] = React.useState<string | null>(options[0]);
   const [open, setOpen] = useState(false);
-  // const [inputValue, setInputValue] = React.useState('');
+  const allWorkflows = useStore((state) => state.allWorkflows);
+  const setAllWorkflows = useStore((state) => state.setAllWorkflows);
   const loading = open && options.length === 0;
 
   useEffect(() => {
@@ -29,19 +31,24 @@ function AutocompleteDrop(props) {
     if (!loading) {
       return undefined;
     }
-
-    (async () => {
-      const workF = await getWorkflows(); // sleep(1e3)
-
-      if (active) {
-        setOptions([...workF]);
-      }
-    })();
+    if (allWorkflows.length === 0) {
+      (async () => {
+        const workF = await getWorkflows().catch((error) => {
+          console.log(error);
+        });
+        if (workF && workF.length > 0) {
+          setAllWorkflows(workF);
+          if (active) setOptions([...workF]);
+        }
+      })();
+    } else {
+      setOptions(allWorkflows);
+    }
 
     return () => {
       active = false;
     };
-  }, [loading]);
+  }, [loading, allWorkflows, setAllWorkflows]);
 
   useEffect(() => {
     if (!open) {
