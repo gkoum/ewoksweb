@@ -54,7 +54,6 @@ function Upload(props) {
       let working = {};
       if (graphOrSubgraph) {
         const { result, logs } = validateEwoksGraph(newGraph);
-        // console.log(validateEwoksGraph(newGraph));
         if (result) {
           working = await setWorkingGraph(newGraph);
         }

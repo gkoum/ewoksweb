@@ -16,6 +16,7 @@ import {
   getGraph,
   getSubgraphs,
 } from './utils';
+import { validateEwoksGraph } from './utils/EwoksValidator';
 
 const nodes: EwoksRFNode[] = [];
 const edges: EwoksRFLink[] = [];
@@ -118,15 +119,26 @@ const useStore = create<State>((set, get) => ({
     let subsToGet = [workingGraph];
     const newNodeSubgraphs = [];
 
+    // Get for each graph all subgraphs it includes
     while (subsToGet.length > 0) {
       console.log('getting subgraphs for:', subsToGet[0]);
+      // Get for the first in subsToGet all subgraphs
       // eslint-disable-next-line no-await-in-loop
       const allGraphSubs = await getSubgraphs(subsToGet[0], get().recentGraphs);
       console.log('allGraphSubs', allGraphSubs, subsToGet);
+      // store them as ewoksGraphs for later
       allGraphSubs.forEach((gr) => newNodeSubgraphs.push(gr));
       console.log(newNodeSubgraphs);
       subsToGet.shift();
       subsToGet = [...subsToGet, ...allGraphSubs];
+      console.log('subsToGet', subsToGet);
+      if (subsToGet.length > 0 && validateEwoksGraph(subsToGet[0])) {
+        console.log('validated:', subsToGet[0].graph.id);
+      } else if (subsToGet.length === 0) {
+        console.log('Finished ok');
+      } else {
+        console.log('NOT validated');
+      }
       console.log(subsToGet);
     }
 

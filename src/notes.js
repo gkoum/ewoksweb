@@ -4,6 +4,11 @@
 // https://discourse.jupyter.org/t/tool-for-notebook-workflows/3764
 // https://gitlab.esrf.fr/denolf/workflow_concepts/-/blob/master/doc/workflows_meeting_march2021.pdf
 
+// Links dont need an id as long as source-target is unique -
+// but if subgraph has two inputs then the subinput needs to be included to make a link unique
+// "sub_target": "", "sub_source": "", not handled in subgraphs when saving as EwoksGraph
+// also not a way to work with 2 or more inputs-outputs in subgraphs graphically
+
 
 // -AnalyseKappa positioning problem
 // -BesTestExecution missing link

@@ -52,14 +52,14 @@ export function validateEwoksGraph(graph) {
       'label',
       'input_nodes',
       'output_nodes',
-      'uiProps',
+      // 'uiProps',
     ])
   );
   result.push(
     graph.nodes.forEach((nod) =>
       includes(nod, `node: ${nod.id}`, [
         'id',
-        'label',
+        // 'label',
         'task_type',
         'task_identifier',
         'uiProps',
@@ -93,6 +93,8 @@ export function validateEwoksGraph(graph) {
       console.error(`link ${index} has wrong source and/or target node id`);
     }
   });
+
+  // if subgraphs exist look for the whole tree if it exists and warn
 
   console.log(result);
   return { result: !result.includes(false), logs: {} };

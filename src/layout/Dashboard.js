@@ -38,6 +38,8 @@ import AddIcon from '@material-ui/icons/Add';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 // import UploadFileIcon from '@material-ui/icons/UploadFile';
 // import FileUploadIcon from '@material-ui/icons/FileUpload';
+// import DriveFolderUploadIcon from '@material-ui/icons/DriveFolderUpload';
+// import UploadIcon from '@material-ui/icons/Upload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
@@ -47,7 +49,6 @@ import { getGraph, rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
 import MyCard from '../layout/MyCard';
 import axios from 'axios';
 import { getWorkflows } from '../utils';
-import { validateEwoksGraph } from '../utils/EwoksValidator';
 
 // import { mainListItems, secondaryListItems } from './listItems';
 // import Chart from './Chart';
@@ -212,7 +213,6 @@ export default function Dashboard() {
   };
   const handleDrawerClose = () => {
     setOpen(false);
-    validateEwoksGraph(graphRF);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
