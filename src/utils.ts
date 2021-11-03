@@ -340,8 +340,6 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
               icon: uiProps.icon,
               comment: uiProps.comment,
             },
-            sourcePosition: Position.Right,
-            targetPosition: Position.Left,
             position: uiProps.position,
           };
         }
@@ -395,8 +393,6 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
             comment: uiProps.comment,
           },
           // inputs: inputsFlow, // for connecting graphically to different input
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
           position: uiProps.position,
         };
       }
@@ -407,7 +403,9 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
 
 // Accepts a GraphEwoks and returns an EwoksRFLink[]
 export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
-  // const tempGraph = getGraph(id);
+  // tempGraph: the graph to transform its links
+  // newNodeSubgraphs: the subgraphs located in the supergraph.
+  // If wrong task_identifier or non-existing graph tempGraph is not in there
   console.log(tempGraph, newNodeSubgraphs);
   if (tempGraph.links) {
     return tempGraph.links.map(
@@ -419,62 +417,75 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
         sub_source,
         conditions,
         map_all_data,
+        uiProps,
       }) => {
         console.log(source, target);
         // find the outputs-inputs from the connected nodes
         const sourceTmp = tempGraph.nodes.find((nod) => nod.id === source);
         const targetTmp = tempGraph.nodes.find((nod) => nod.id === target);
-        // console.log('TASKSTMP:', sourceTmp, targetTmp);
+        // if undefined source or/and target node does not exist
+
+        console.log('TASKSTMP:', sourceTmp, targetTmp);
         let sourceTask = {};
         let targetTask = {};
-        if (sourceTmp.task_type !== 'graph') {
-          // TODO: if a task find it in tasks. IF NOT THERE?
-          sourceTask = tasks.find(
-            (tas) => tas.task_identifier === sourceTmp.task_identifier
-          );
-        } else {
-          // TODO following line examine
-          // if node=subgraph calculate inputs-outputs from subgraph.graph
-          const subgraphNodeSource = newNodeSubgraphs.find(
-            (subGr) => subGr.graph.id === sourceTmp.task_identifier
-          );
-          console.log(sourceTmp, subgraphNodeSource, newNodeSubgraphs);
+        if (sourceTmp) {
+          if (sourceTmp.task_type !== 'graph') {
+            // TODO: if a task find it in tasks. IF NOT THERE?
+            sourceTask = tasks.find(
+              (tas) => tas.task_identifier === sourceTmp.task_identifier
+            );
+          } else {
+            // TODO following line examine
+            // if node=subgraph calculate inputs-outputs from subgraph.graph
+            const subgraphNodeSource = newNodeSubgraphs.find(
+              (subGr) => subGr.graph.id === sourceTmp.task_identifier
+            );
+            console.log(sourceTmp, subgraphNodeSource, newNodeSubgraphs);
 
-          // const subgraphL = getGraph(sourceTmp.task_identifier, false);
-          const outputs = [];
-          subgraphNodeSource.graph.output_nodes.forEach((out) =>
-            outputs.push(out.id)
-          );
-          sourceTask = {
-            task_type: sourceTmp.task_type,
-            task_identifier: sourceTmp.task_identifier,
-            // optional_input_names: sourceTmp.optional_input_names,
-            output_names: outputs,
-            // required_input_names: sourceTask.required_input_names,
-          };
+            // const subgraphL = getGraph(sourceTmp.task_identifier, false);
+            const outputs = [];
+
+            if (subgraphNodeSource) {
+              subgraphNodeSource.graph.output_nodes.forEach((out) =>
+                outputs.push(out.id)
+              );
+            }
+            sourceTask = {
+              task_type: sourceTmp.task_type,
+              task_identifier: sourceTmp.task_identifier,
+              // optional_input_names: sourceTmp.optional_input_names,
+              output_names: outputs,
+              // required_input_names: sourceTask.required_input_names,
+            };
+          }
         }
         console.log(targetTmp, newNodeSubgraphs);
-        if (targetTmp && targetTmp.task_type !== 'graph') {
-          // TODO: if a task find it in tasks. IF NOT THERE?
-          targetTask = tasks.find(
-            (tas) => tas.task_identifier === targetTmp.task_identifier
-          );
-        } else {
-          // TODO following line examine
-          const subgraphNodeTarget = newNodeSubgraphs.find(
-            (subGr) => subGr.graph.id === targetTmp.task_identifier
-          );
-          const inputs = [];
-          subgraphNodeTarget.graph.input_nodes.forEach((inp) =>
-            inputs.push(inp.id)
-          );
+        if (targetTmp) {
+          if (targetTmp.task_type !== 'graph') {
+            // TODO: if a task find it in tasks. IF NOT THERE? add a default?
+            targetTask = tasks.find(
+              (tas) => tas.task_identifier === targetTmp.task_identifier
+            );
+          } else {
+            // TODO following line examine
+            const subgraphNodeTarget = newNodeSubgraphs.find(
+              (subGr) => subGr.graph.id === targetTmp.task_identifier
+            );
+            // if subgraphNodeTarget undefined = not fount
+            const inputs = [];
+            if (subgraphNodeTarget) {
+              subgraphNodeTarget.graph.input_nodes.forEach((inp) =>
+                inputs.push(inp.id)
+              );
+            }
 
-          targetTask = {
-            task_type: targetTmp.task_type,
-            task_identifier: targetTmp.task_identifier,
-            optional_input_names: inputs,
-            required_input_names: [],
-          };
+            targetTask = {
+              task_type: targetTmp.task_type,
+              task_identifier: targetTmp.task_identifier,
+              optional_input_names: inputs,
+              required_input_names: [],
+            };
+          }
         }
         // console.log('TASKS1:', sourceTask, targetTask);
         // if not found app does not break, put an empty skeleton
@@ -502,6 +513,11 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
               : '->',
           source: source.toString(),
           target: target.toString(),
+          targetHandle:
+            uiProps && uiProps.targetHandle ? uiProps.targetHandle : '',
+          sourceHandle:
+            uiProps && uiProps.sourceHandle ? uiProps.sourceHandle : '',
+          // type: 'smoothstep',
           data: {
             // node optional_input_names are link's optional_output_names
             links_optional_output_names: targetTask.optional_input_names,
@@ -509,7 +525,6 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
             links_required_output_names: targetTask.required_input_names,
             // node output_names are link's input_names
             links_input_names: sourceTask.output_names,
-
             data_mapping,
             sub_target,
             sub_source,

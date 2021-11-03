@@ -50,11 +50,6 @@ import MyCard from '../layout/MyCard';
 import axios from 'axios';
 import { getWorkflows } from '../utils';
 
-// import { mainListItems, secondaryListItems } from './listItems';
-// import Chart from './Chart';
-// import Deposits from './Deposits';
-// import Orders from './Orders';
-
 // function Copyright() {
 //   return (
 //     <Typography variant="body2" color="textSecondary" align="center">

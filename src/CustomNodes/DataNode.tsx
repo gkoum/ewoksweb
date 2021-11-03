@@ -38,27 +38,39 @@ const DataNode = (args) => {
       comment={args.data.comment}
       content={
         <div style={{ ...style.io } as React.CSSProperties}>
-          {args.data.type !== 'input' && (
-            // if node is graph-input-node remove input link handle
-            <Handle
-              type="target"
-              position={Position.Left}
-              id="i__data"
-              style={{ ...style.handle, ...style.left }}
-              isValidConnection={isValidInput}
-            />
-          )}
+          {/* {args.data.type !== 'input' && ( */}
+          {/* <Handle
+            type="target"
+            position={Position.Left}
+            id="i__data"
+            style={{ ...style.handle, ...style.left }}
+            isValidConnection={isValidInput}
+          /> */}
+          {/* <Handle
+            type="target"
+            position={Position.Bottom}
+            id="i__data"
+            style={{ ...style.handle }}
+            isValidConnection={isValidInput}
+          /> */}
+          {/* )} */}
           {'Data'}
-          {args.data.type !== 'output' && (
-            // if node is graph-output-node remove output link handle
-            <Handle
-              type="source"
-              position={Position.Right}
-              id="o__data"
-              style={{ ...style.handle, ...style.right }}
-              isValidConnection={isValidOutput}
-            />
-          )}
+          {/* {args.data.type !== 'output' && ( */}
+          {/* <Handle
+            type="source"
+            position={Position.Right}
+            id="o__data"
+            style={{ ...style.handle, ...style.right }}
+            isValidConnection={isValidOutput}
+          /> */}
+          {/* <Handle
+            type="source"
+            position={Position.Top}
+            id="o__data"
+            style={{ ...style.handle }}
+            isValidConnection={isValidOutput}
+          /> */}
+          {/* )} */}
         </div>
       }
     />

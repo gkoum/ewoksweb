@@ -27,6 +27,7 @@
 
 // -CryoEMDataArchive.json again the loop results in a bad graph
 // -CryoEMProcessGrid.json worst loop
+// -MXPressDataCOllection absolut mess
 
 // -DIMPLE.json strainge 2 independet graphs
 
@@ -1139,4 +1140,176 @@ CryoEMProcessGrid
 			}
 		}
 	]
+}
+
+{
+  "graph": {
+    "id": "CryoEMProcessGrid.json",
+    "input_nodes": [
+      {
+        "id": "Start",
+        "node": "Init grid processing"
+      }
+    ],
+    "label": "CryoEMProcessGrid",
+    "output_nodes": [
+      {
+        "id": "Stop actor",
+        "node": "Set Request Status"
+      }
+    ],
+    "uiProps": {}
+  },
+  "links": [
+    {
+      "map_all_data": true,
+      "source": "Init grid processing",
+      "target": "Get grid square lists"
+    },
+    {
+      "conditions": [
+        {
+          "source_output": "doProcessGridSquare",
+          "value": true
+        }
+      ],
+      "map_all_data": true,
+      "source": "Get grid square lists",
+      "target": "Process grid"
+    },
+    {
+      "conditions": [
+        {
+          "source_output": "doProcessGridSquare",
+          "value": false
+        }
+      ],
+      "map_all_data": true,
+      "source": "Get grid square lists",
+      "target": "Wait for new movie or grid square"
+    },
+    {
+      "conditions": [
+        {
+          "source_output": "doProcessMovie",
+          "value": true
+        }
+      ],
+      "map_all_data": true,
+      "source": "Process grid",
+      "target": "Launch movie processing"
+    },
+    {
+      "conditions": [
+        {
+          "source_output": "doProcessMovie",
+          "value": false
+        }
+      ],
+      "map_all_data": true,
+      "source": "Process grid",
+      "target": "Wait for new movie or grid square"
+    },
+    {
+      "conditions": [
+        {
+          "source_output": "timeOut",
+          "value": true
+        }
+      ],
+      "map_all_data": true,
+      "source": "Wait for new movie or grid square",
+      "target": "Set Request Status"
+    },
+    {
+      "conditions": [
+        {
+          "source_output": "timeOut",
+          "value": false
+        }
+      ],
+      "map_all_data": true,
+      "source": "Wait for new movie or grid square",
+      "target": "Get grid square lists"
+    },
+    {
+      "map_all_data": true,
+      "source": "Launch movie processing",
+      "target": "Get grid square lists"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "Init grid processing",
+      "label": "Init grid processing",
+      "task_identifier": "mx.src.cryoemInitGridProcess.run",
+      "task_type": "ppfmethod",
+      "uiProps": {
+        "position": {
+          "x": 264,
+          "y": 280
+        }
+      }
+    },
+    {
+      "id": "Set Request Status",
+      "label": "Set Request Status",
+      "task_identifier": "mx.src.requestStatusFINISHED.run",
+      "task_type": "ppfmethod",
+      "uiProps": {
+        "position": {
+          "x": 1877,
+          "y": 380
+        }
+      }
+    },
+    {
+      "id": "Get grid square lists",
+      "label": "Get grid square lists",
+      "task_identifier": "mx.src.cryoemInitGridSquareLists.run",
+      "task_type": "ppfmethod",
+      "uiProps": {
+        "position": {
+          "x": 612,
+          "y": 280
+        }
+      }
+    },
+    {
+      "id": "Process grid",
+      "label": "Process grid",
+      "task_identifier": "mx.src.cryoemProcessGridSquare.run",
+      "task_type": "ppfmethod",
+      "uiProps": {
+        "position": {
+          "x": 1078,
+          "y": 192
+        }
+      }
+    },
+    {
+      "id": "Wait for new movie or grid square",
+      "label": "Wait for new movie or grid square",
+      "task_identifier": "mx.src.cryoemWaitForNewMovieOrGridSquare.run",
+      "task_type": "ppfmethod",
+      "uiProps": {
+        "position": {
+          "x": 1417,
+          "y": 330
+        }
+      }
+    },
+    {
+      "id": "Launch movie processing",
+      "label": "Launch movie processing",
+      "task_identifier": "mx.src.cryoemLaunchMovieProcessing.run",
+      "task_type": "ppfmethod",
+      "uiProps": {
+        "position": {
+          "x": 1667,
+          "y": 204
+        }
+      }
+    }
+  ]
 }

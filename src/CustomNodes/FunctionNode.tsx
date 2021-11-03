@@ -15,6 +15,7 @@ function FunctionNode(all) {
   console.log(all.data, all);
   return (
     <Node
+      isGraph
       type={all.data.type}
       label={all.label ? all.label : all.data.label}
       selected={all.selected}

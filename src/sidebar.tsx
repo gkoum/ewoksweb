@@ -17,6 +17,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  TextareaAutosize,
 } from '@material-ui/core';
 import orange1 from './images/orange1.png';
 import orange2 from './images/orange2.png';
@@ -62,6 +63,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       '& > *': {
         margin: theme.spacing(1, 0),
+        wordBreak: 'break-word',
         // width: '25ch',
       },
     },
@@ -346,6 +348,23 @@ export default function Sidebar(props) {
     setSelectedElement(element);
   };
 
+  const deleteElement = () => {
+    console.log(element, selectedElement, graphRF);
+    let newGraph = {};
+    if (element.position) {
+      newGraph = {
+        ...graphRF,
+        nodes: graphRF.nodes.filter((nod) => nod.id !== element.id),
+      };
+    } else if (element.source) {
+      newGraph = {
+        ...graphRF,
+        links: graphRF.links.filter((link) => link.id !== element.id),
+      };
+    }
+    setGraphRF(newGraph);
+  };
+
   const addConditions = () => {
     console.log(selectedElement);
     if (element.data.conditions && element.data.conditions.length > 0) {
@@ -555,7 +574,7 @@ export default function Sidebar(props) {
             ) : (
               <React.Fragment>
                 <div>
-                  <b>Name:</b> {graphRF.graph.label}
+                  <b>Label:</b> {graphRF.graph.label}
                 </div>
                 <div>
                   <TextField
@@ -730,94 +749,141 @@ export default function Sidebar(props) {
             )}
             {'position' in selectedElement && (
               <React.Fragment>
-                <div className={classes.root}>
-                  <b>Task Identifier:</b> {props.element.task_identifier}
-                </div>
-                <div className={classes.root}>
-                  <b>Task type:</b> {props.element.task_type}
-                </div>
-                <div>
-                  <b>Task generator:</b> {props.element.task_generator}
-                </div>
-                <div>
-                  <b>Default Values </b>
-                  <IconButton
-                    style={{ padding: '1px' }}
-                    aria-label="delete"
-                    onClick={() => addDefaultInputs()}
-                  >
-                    <AddCircleOutlineIcon />
-                  </IconButton>
-                  {defaultInputs.length > 0 && (
-                    <EditableTable
-                      headers={['Name', 'Value']}
-                      defaultValues={defaultInputs}
-                      valuesChanged={defaultInputsChanged}
-                      typeOfValues={[{ type: 'input' }, { type: 'input' }]}
-                    />
-                  )}
-                </div>
-                <div>
-                  <b>Inputs-complete</b>
-                  <Checkbox
-                    checked={inputsComplete}
-                    onChange={inputsCompleteChanged}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                  />
-                </div>
-                <hr></hr>
-                <div>
-                  <FormControl variant="filled" fullWidth>
-                    <InputLabel id="demo-simple-select-label">
-                      Node type
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={nodeType}
-                      label="Task type"
-                      onChange={nodeTypeChanged}
+                <Box
+                  component="form"
+                  sx={{
+                    '& > :not(style)': { m: 1, width: '27ch' },
+                  }}
+                  noValidate
+                  autoComplete="off"
+                >
+                  <div className={classes.root}>
+                    <b>Task Identifier:</b> {props.element.task_identifier}
+                  </div>
+                  <div className={classes.root}>
+                    <b>Task type:</b> {props.element.task_type}
+                  </div>
+                  <div>
+                    <b>Task generator:</b> {props.element.task_generator}
+                  </div>
+                  <div>
+                    <b>Default Values </b>
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="delete"
+                      onClick={() => addDefaultInputs()}
                     >
-                      {[
-                        'input',
-                        'output',
-                        'internal',
-                        'input_output',
-                        undefined,
-                      ].map((tex, index) => (
-                        <MenuItem key={index} value={tex}>
-                          {tex}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
+                      <AddCircleOutlineIcon />
+                    </IconButton>
+                    {defaultInputs.length > 0 && (
+                      <EditableTable
+                        headers={['Name', 'Value']}
+                        defaultValues={defaultInputs}
+                        valuesChanged={defaultInputsChanged}
+                        typeOfValues={[{ type: 'input' }, { type: 'input' }]}
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <b>Inputs-complete</b>
+                    <Checkbox
+                      checked={inputsComplete}
+                      onChange={inputsCompleteChanged}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                  </div>
+                  <hr></hr>
+                  <div>
+                    <FormControl variant="filled" fullWidth>
+                      <InputLabel id="demo-simple-select-label">
+                        Node type
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={nodeType}
+                        label="Task type"
+                        onChange={nodeTypeChanged}
+                      >
+                        {[
+                          'input',
+                          'output',
+                          'internal',
+                          'input_output',
+                          undefined,
+                        ].map((tex, index) => (
+                          <MenuItem key={index} value={tex}>
+                            {tex}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+                </Box>
               </React.Fragment>
             )}
             {'id' in selectedElement && (
               <React.Fragment>
                 <div>
-                  <TextField
-                    id="outlined-basic"
-                    label="Label"
-                    variant="outlined"
-                    value={label || ''}
-                    onChange={labelChanged}
-                  />
+                  <Box
+                    component="form"
+                    sx={{
+                      '& > :not(style)': { m: 1, width: '27ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    {/* if text size big use a text area
+                    <TextareaAutosize
+                      aria-label="empty textarea"
+                      placeholder="Empty"
+                      style={{ width: 200 }}
+                      value={label || ''}
+                      onChange={labelChanged}
+                    /> */}
+                    <TextField
+                      id="outlined-basic"
+                      label="Label"
+                      variant="outlined"
+                      value={label || ''}
+                      onChange={labelChanged}
+                    />
+                  </Box>
                 </div>
                 <div>
-                  <TextField
-                    id="outlined-basic"
-                    label="Comment"
-                    variant="outlined"
-                    value={comment || ''}
-                    onChange={commentChanged}
-                  />
+                  <Box
+                    component="form"
+                    sx={{
+                      '& > :not(style)': { m: 1, width: '27ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="outlined-basic"
+                      label="Comment"
+                      variant="outlined"
+                      value={comment || ''}
+                      onChange={commentChanged}
+                    />
+                  </Box>
                 </div>
               </React.Fragment>
             )}
-            <Button variant="contained" color="primary" onClick={saveElement}>
+            <Button
+              style={{ margin: '10px' }}
+              variant="contained"
+              color="primary"
+              onClick={saveElement}
+            >
               Save
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={deleteElement}
+            >
+              Delete
             </Button>
             {/* <Button variant="contained" color="primary">
               Subgraph

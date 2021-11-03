@@ -9,6 +9,7 @@ import Continuize from '../images/Continuize.svg';
 import Correlations from '../images/Correlations.svg';
 import CreateClass from '../images/CreateClass.svg';
 import CSVFile from '../images/CSVFile.svg';
+import { Handle, Position } from 'react-flow-renderer';
 
 export const contentStyle = {
   contentHeader: {
@@ -26,8 +27,8 @@ export const contentStyle = {
   right: { right: '-8px' },
   textRight: { textAlign: 'right' },
   handle: {
-    widht: '10px', // Does not work
-    height: '10px',
+    widht: '20px', // Does not work
+    height: '30px',
     margin: 'auto',
     background: '#ddd',
     borderRadius: '15px',
@@ -67,6 +68,7 @@ const style = {
 };
 
 interface NodeProps {
+  isGraph: boolean;
   type: string;
   label: string;
   selected: boolean;
@@ -95,6 +97,7 @@ const onDragStart = (e) => {
 };
 
 const Node: React.FC<NodeProps> = ({
+  isGraph,
   type,
   label,
   selected,
@@ -103,7 +106,7 @@ const Node: React.FC<NodeProps> = ({
   image,
   comment,
 }: NodeProps) => {
-  console.log(type);
+  console.log(type, isGraph);
   // calculate the border if input/output/graph
   let border = '';
   if (type === 'input') {
@@ -112,7 +115,8 @@ const Node: React.FC<NodeProps> = ({
     border = '4px solid rgb(50, 130, 219)';
   } else if (type === 'input_output') {
     border = '4px solid rgb(200, 130, 219)';
-  } else if (type === 'graph') {
+  } else if (isGraph) {
+    // type === 'graph'
     border = '4px solid rgb(150, 165, 249)';
   }
   const customTitle = { ...style.title, wordWrap: 'break-word' };
@@ -135,7 +139,21 @@ const Node: React.FC<NodeProps> = ({
       }
     >
       <span style={{ maxWidth: '120px' }} className="icons">
+        {!isGraph && (
+          <>
+            <Handle
+              type="source"
+              position={Position.Right}
+              id="sr"
+              // style={{ ...style.handle }}
+              // isValidConnection={isValidOutput}
+            />
+          </>
+        )}
+        <Handle type="source" position={Position.Top} id="st" />
+        <Handle type="source" position={Position.Bottom} id="sb" />
         <div style={customTitle}>{label}</div>
+
         <div style={{ wordWrap: 'break-word' }}>{comment}</div>
         {/* eslint-disable-next-line dot-notation */}
         <img
@@ -146,6 +164,13 @@ const Node: React.FC<NodeProps> = ({
           alt="orangeImage"
         />
         <span style={style.contentWrapper}>{type}</span>
+        {!isGraph && (
+          <>
+            <Handle type="target" position={Position.Left} id="tl" />
+          </>
+        )}
+        <Handle type="target" position={Position.Bottom} id="tb" />
+        <Handle type="target" position={Position.Top} id="tt" />
         <span style={style.contentWrapper}>{content}</span>
       </span>
     </div>

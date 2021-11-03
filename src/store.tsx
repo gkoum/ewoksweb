@@ -116,6 +116,7 @@ const useStore = create<State>((set, get) => ({
 
     console.log(workingGraph);
     // run the tree and find all subgraphs
+    // set the first supergraph to search for subgraphs
     let subsToGet = [workingGraph];
     const newNodeSubgraphs = [];
 
@@ -126,12 +127,15 @@ const useStore = create<State>((set, get) => ({
       // eslint-disable-next-line no-await-in-loop
       const allGraphSubs = await getSubgraphs(subsToGet[0], get().recentGraphs);
       console.log('allGraphSubs', allGraphSubs, subsToGet);
-      // store them as ewoksGraphs for later
+      // store them as ewoksGraphs for later transforming to RFGraphs
       allGraphSubs.forEach((gr) => newNodeSubgraphs.push(gr));
       console.log(newNodeSubgraphs);
+      // drop the one we searched for its subgraphs
       subsToGet.shift();
+      // add the new subgraphs in the existing subgraphs we need to search
       subsToGet = [...subsToGet, ...allGraphSubs];
       console.log('subsToGet', subsToGet);
+      // validate the next graph to search for subgraphs
       if (subsToGet.length > 0 && validateEwoksGraph(subsToGet[0])) {
         console.log('validated:', subsToGet[0].graph.id);
       } else if (subsToGet.length === 0) {
