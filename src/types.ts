@@ -134,6 +134,9 @@ export interface EwoksRFLink {
   subtarget?: string;
   subsource?: string;
   uiProps?: UiProps;
+  type?: string;
+  arrowHeadType?: string;
+  animated?: string;
 }
 
 export interface RFLink {

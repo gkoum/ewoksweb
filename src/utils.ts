@@ -20,6 +20,7 @@ import type {
   GraphRF,
 } from './types';
 import axios from 'axios';
+import { TurnedIn } from '@material-ui/icons';
 
 const { GraphDagre } = dagre.graphlib;
 const NODE_SIZE = { width: 270, height: 36 };
@@ -510,14 +511,16 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
               ? data_mapping
                   .map((el) => `${el.source_output}->${el.target_input}`)
                   .join(', ')
-              : '->',
+              : '...',
           source: source.toString(),
           target: target.toString(),
-          targetHandle:
-            uiProps && uiProps.targetHandle ? uiProps.targetHandle : '',
-          sourceHandle:
-            uiProps && uiProps.sourceHandle ? uiProps.sourceHandle : '',
-          // type: 'smoothstep',
+          targetHandle: sub_target ? sub_target : '',
+          sourceHandle: sub_source ? sub_source : '',
+          type: uiProps && uiProps.type ? uiProps.type : '',
+          arrowHeadType:
+            uiProps && uiProps.arrowHeadType ? uiProps.arrowHeadType : '',
+          labelStyle: uiProps && uiProps.labelStyle ? uiProps.labelStyle : {},
+          animated: uiProps && uiProps.animated ? uiProps.animated : '',
           data: {
             // node optional_input_names are link's optional_output_names
             links_optional_output_names: targetTask.optional_input_names,

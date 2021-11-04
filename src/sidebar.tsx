@@ -112,12 +112,15 @@ export default function Sidebar(props) {
   const [inputsComplete, setInputsComplete] = React.useState<boolean>(false);
   const [mapAllData, setMapAllData] = React.useState<boolean>(false);
   const [nodeType, setNodeType] = React.useState('');
+  const [linkType, setLinkType] = React.useState('');
+  const [arrowType, setArrowType] = React.useState('');
   const [label, setLabel] = React.useState('');
   const [comment, setComment] = React.useState('');
   const [element, setElement] = React.useState<
     EwoksRFNode | EwoksRFLink | GraphDetails
   >({});
   const [onError, setOnError] = React.useState<boolean>(false);
+  const [animated, setAnimated] = React.useState<boolean>(false);
   const [graphInputs, setGraphInputs] = React.useState<Inputs[]>([]);
   const [graphOutputs, setGraphOutputs] = React.useState<Inputs[]>([]);
   const graphRF = useStore((state) => state.graphRF);
@@ -129,11 +132,12 @@ export default function Sidebar(props) {
     setId(selectedElement.id);
     if (!selectedElement.graph) {
       if ('position' in selectedElement) {
+        console.log(nodeType, selectedElement.data.type);
         setNodeType(selectedElement.data.type);
         setLabel(
           selectedElement.label
             ? selectedElement.label
-            : selectedElement.data.label
+            : selectedElement.data.label // Remove when graphs ok
         );
         setComment(selectedElement.data.comment);
         setTaskIdentifier(selectedElement.task_identifier);
@@ -144,8 +148,11 @@ export default function Sidebar(props) {
         setDefaultInputs(
           selectedElement.default_inputs ? selectedElement.default_inputs : []
         );
-        console.log(selectedElement);
+        console.log(selectedElement, nodeType);
       } else {
+        setLinkType(selectedElement.type);
+        setArrowType(selectedElement.arrowHeadType);
+        setAnimated(selectedElement.animated);
         setLabel(selectedElement.label);
         if (selectedElement.data && selectedElement.data.data_mapping)
           setDataMapping(selectedElement.data.data_mapping);
@@ -169,6 +176,7 @@ export default function Sidebar(props) {
       );
     }
   }, [
+    nodeType,
     selectedElement.id,
     selectedElement,
     graphRF.graph.input_nodes,
@@ -208,8 +216,24 @@ export default function Sidebar(props) {
       ...element,
       data: { ...element.data, type: event.target.value },
     });
-    // selectedElement.type = event.target.value;
-    // setSelectedElement(selectedElement);
+  };
+
+  const linkTypeChanged = (event) => {
+    console.log(event.target.value, element);
+    setLinkType(event.target.value);
+    setElement({
+      ...element,
+      type: event.target.value,
+    });
+  };
+
+  const arrowTypeChanged = (event) => {
+    console.log(event.target.value, element);
+    setArrowType(event.target.value);
+    setElement({
+      ...element,
+      arrowHeadType: event.target.value,
+    });
   };
 
   const defaultInputsChanged = (table) => {
@@ -331,6 +355,15 @@ export default function Sidebar(props) {
     //   ...element,
     //   inputs_complete: event.target.checked,
     // });
+  };
+
+  const animatedChanged = (event) => {
+    console.log(event.target.checked);
+    setAnimated(event.target.checked);
+    setElement({
+      ...element,
+      animated: event.target.checked,
+    });
   };
 
   const mapAllDataChanged = (event) => {
@@ -743,7 +776,49 @@ export default function Sidebar(props) {
                     )}
                   </div>
                 )}
-                <div></div>
+                <hr />
+                <div>
+                  <FormControl variant="filled" fullWidth>
+                    <InputLabel id="linkTypeLabel">Link type</InputLabel>
+                    <Select
+                      labelId="linkTypeLabel"
+                      value={linkType ? linkType : 'internal'}
+                      label="Link type"
+                      onChange={linkTypeChanged}
+                    >
+                      {['straight', 'smoothstep', 'step', 'default'].map(
+                        (tex, index) => (
+                          <MenuItem key={index} value={tex}>
+                            {tex}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  </FormControl>
+                </div>
+                <div>
+                  <FormControl variant="filled" fullWidth>
+                    <InputLabel id="ArrowHeadType">Arrow Head Type</InputLabel>
+                    <Select
+                      value={arrowType ? arrowType : 'internal'}
+                      label="Node type"
+                      onChange={arrowTypeChanged}
+                    >
+                      {['arrow', 'arrowclosed', 'none'].map((tex) => (
+                        <MenuItem value={tex}>{tex}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+                <div>
+                  <b>animated</b>
+                  <Checkbox
+                    checked={animated ? animated : false}
+                    onChange={animatedChanged}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                  />
+                </div>
+                labelStyle
                 <hr />
               </React.Fragment>
             )}
@@ -801,21 +876,17 @@ export default function Sidebar(props) {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={nodeType}
-                        label="Task type"
+                        value={nodeType ? nodeType : 'internal'}
+                        label="Node type"
                         onChange={nodeTypeChanged}
                       >
-                        {[
-                          'input',
-                          'output',
-                          'internal',
-                          'input_output',
-                          undefined,
-                        ].map((tex, index) => (
-                          <MenuItem key={index} value={tex}>
-                            {tex}
-                          </MenuItem>
-                        ))}
+                        {['input', 'output', 'internal', 'input_output'].map(
+                          (tex, index) => (
+                            <MenuItem key={index} value={tex}>
+                              {tex}
+                            </MenuItem>
+                          )
+                        )}
                       </Select>
                     </FormControl>
                   </div>

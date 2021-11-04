@@ -28,13 +28,19 @@ export const contentStyle = {
   textRight: { textAlign: 'right' },
   handle: {
     widht: '20px', // Does not work
-    height: '30px',
+    height: '20px',
     margin: 'auto',
     background: '#ddd',
     borderRadius: '15px',
-    border: '2px solid #ddd',
+    border: '2px solid rgb(118, 133, 221)',
     boxShadow:
       'rgba(0, 0, 0, 0.2) 0px 1px 3px 0px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 2px 1px -1px',
+  },
+  handleSource: {
+    border: '2px solid rgb(118, 133, 221)',
+  },
+  handleTarget: {
+    border: '2px solid rgb(230, 190, 118)',
   },
 };
 
@@ -95,6 +101,9 @@ const randomProperty = function (obj) {
 const onDragStart = (e) => {
   e.preventDefault();
 };
+const isValidOutput = (connection) => {
+  return true; // R.last(R.split('__', connection.target)) === type;
+};
 
 const Node: React.FC<NodeProps> = ({
   isGraph,
@@ -145,13 +154,41 @@ const Node: React.FC<NodeProps> = ({
               type="source"
               position={Position.Right}
               id="sr"
-              // style={{ ...style.handle }}
-              // isValidConnection={isValidOutput}
+              style={{ ...contentStyle.handle, ...contentStyle.handleSource }}
+              isValidConnection={(connection) => isValidOutput(connection)}
+              isConnectable
+              onConnect={(params) => console.log('handle sr onConnect', params)}
+            />
+            <Handle
+              type="source"
+              position={Position.Top}
+              id="st"
+              style={{
+                right: 20,
+                left: 'auto',
+                background: '#555',
+                ...contentStyle.handleSource,
+              }}
+              isValidConnection={(connection) => isValidOutput(connection)}
+              isConnectable
+              onConnect={(params) => console.log('handle st onConnect', params)}
+            />
+            <Handle
+              type="source"
+              position={Position.Bottom}
+              id="sb"
+              style={{
+                right: 20,
+                left: 'auto',
+                background: '#555',
+                ...contentStyle.handleSource,
+              }}
+              isValidConnection={(connection) => isValidOutput(connection)}
+              isConnectable
+              onConnect={(params) => console.log('handle sb onConnect', params)}
             />
           </>
         )}
-        <Handle type="source" position={Position.Top} id="st" />
-        <Handle type="source" position={Position.Bottom} id="sb" />
         <div style={customTitle}>{label}</div>
 
         <div style={{ wordWrap: 'break-word' }}>{comment}</div>
@@ -166,11 +203,42 @@ const Node: React.FC<NodeProps> = ({
         <span style={style.contentWrapper}>{type}</span>
         {!isGraph && (
           <>
-            <Handle type="target" position={Position.Left} id="tl" />
+            <Handle
+              type="target"
+              position={Position.Left}
+              id="tl"
+              style={{ ...contentStyle.handle, ...contentStyle.handleTarget }}
+              isConnectable
+              onConnect={(params) => console.log('handle tl onConnect', params)}
+            />
+            <Handle
+              type="target"
+              position={Position.Bottom}
+              id="tb"
+              style={{
+                left: 20,
+                background: '#555',
+                ...contentStyle.handleTarget,
+              }}
+              isValidConnection={(connection) => isValidOutput(connection)}
+              isConnectable
+              onConnect={(params) => console.log('handle tb onConnect', params)}
+            />
+            <Handle
+              type="target"
+              position={Position.Top}
+              id="tt"
+              style={{
+                left: 20,
+                background: '#555',
+                ...contentStyle.handleTarget,
+              }}
+              isValidConnection={(connection) => isValidOutput(connection)}
+              isConnectable
+              onConnect={(params) => console.log('handle tt onConnect', params)}
+            />
           </>
         )}
-        <Handle type="target" position={Position.Bottom} id="tb" />
-        <Handle type="target" position={Position.Top} id="tt" />
         <span style={style.contentWrapper}>{content}</span>
       </span>
     </div>

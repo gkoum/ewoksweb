@@ -218,15 +218,17 @@ function Canvas() {
         conditions: '',
         data_mapping: [],
         map_all_data: false,
-        sub_source: '',
-        sub_target: '',
-        sourceHandle: params.sourceHandle,
-        targetHandle: params.targetHandle,
+        sub_source: params.sourceHandle,
+        sub_target: params.targetHandle,
       },
       id: getLinkId(),
       label: getLinkId(),
       source: params.source,
       target: params.target,
+      sourceHandle: params.sourceHandle,
+      targetHandle: params.targetHandle,
+      type: 'smoothstep',
+      arrowHeadType: 'arrow',
     };
 
     const newGraph = {
