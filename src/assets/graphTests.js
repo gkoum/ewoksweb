@@ -246,6 +246,14 @@ export const subsubsubgraph = {
 export const tasks = [
   {
     optional_input_names: [],
+    output_names: [],
+    required_input_names: [],
+    task_identifier: 'arrow1',
+    task_type: 'inout',
+    uiProps: { icon: 'arrow1' },
+  },
+  {
+    optional_input_names: [],
     output_names: ['return_value'],
     required_input_names: ['method'],
     task_identifier: 'ewokscore.methodtask.MethodExecutorTask',

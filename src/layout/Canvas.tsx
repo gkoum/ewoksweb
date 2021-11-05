@@ -72,6 +72,7 @@ const nodeTypes = {
   graph: FunctionNode,
   method: DataNode,
   ppfmethod: DataNode,
+  inout: DataNode,
 };
 
 function Canvas() {

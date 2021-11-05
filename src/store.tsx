@@ -146,46 +146,11 @@ const useStore = create<State>((set, get) => ({
       console.log(subsToGet);
     }
 
-    // Attempt to remove re-fetching the same subgraph
+    // TODO: Attempt to remove re-fetching the same subgraph
     // let subsToGet = [workingGraph];
     // const allSubs = new Set();
     // allSubs.add(workingGraph.graph.id);
     // const newNodeSubgraphs = [];
-
-    // while (subsToGet.length > 0) {
-    //   console.log('getting subgraphs for:', subsToGet[0]);
-    //   // eslint-disable-next-line no-await-in-loop
-    //   const allGraphSubs = await getSubgraphs(subsToGet[0], get().recentGraphs);
-    //   console.log('allGraphSubs', allGraphSubs, subsToGet);
-    //   allGraphSubs.map((gr) => gr.graph.id).forEach((gra) => allSubs.add(gra));
-
-    //   allGraphSubs.forEach((gr) => {
-    //     console.log('allSubs', allSubs, gr.graph.id);
-    //     if (!allSubs.has(gr.graph.id)) {
-    //       newNodeSubgraphs.push(gr);
-    //     }
-    //   });
-    //   console.log(newNodeSubgraphs);
-    //   subsToGet.shift();
-    //   subsToGet = [...subsToGet, ...allGraphSubs];
-    //   console.log(subsToGet);
-    // }
-
-    // 2. search for  1st layer subgraphs in it (async)
-    // console.log('getSubgraphs:', workingGraph, get().recentGraphs);
-    // const newNodeSubgraphs = await getSubgraphs(
-    //   workingGraph,
-    //   get().recentGraphs
-    // );
-
-    // const newNodeSubgraphs2 = [];
-    // newNodeSubgraphs.forEach(async (sub) => {
-    //   const subgraph = await getSubgraphs(sub, get().recentGraphs);
-    //   console.log(subgraph);
-    //   if (subgraph) {
-    //     newNodeSubgraphs2.push(subgraph.data);
-    //   }
-    // });
 
     // 3. Put the newNodeSubgraphs into recent in their graphRF form (sync)
     newNodeSubgraphs.forEach((gr) => {

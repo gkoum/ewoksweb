@@ -6,6 +6,7 @@ import orange2 from '../images/orange2.png';
 import orange3 from '../images/orange3.png';
 import AggregateColumns from '../images/AggregateColumns.svg';
 import Continuize from '../images/Continuize.svg';
+import arrow1 from '../images/arrow1.svg';
 import Correlations from '../images/Correlations.svg';
 import CreateClass from '../images/CreateClass.svg';
 import CSVFile from '../images/CSVFile.svg';
@@ -85,6 +86,7 @@ interface NodeProps {
 }
 
 const iconsObj = {
+  arrow1: arrow1,
   orange1: orange1,
   Continuize: Continuize,
   orange2: orange2,
@@ -190,7 +192,6 @@ const Node: React.FC<NodeProps> = ({
           </>
         )}
         <div style={customTitle}>{label}</div>
-
         <div style={{ wordWrap: 'break-word' }}>{comment}</div>
         {/* eslint-disable-next-line dot-notation */}
         <img
@@ -200,7 +201,7 @@ const Node: React.FC<NodeProps> = ({
           src={iconsObj[image] || orange1}
           alt="orangeImage"
         />
-        <span style={style.contentWrapper}>{type}</span>
+        {type !== 'inout' && <span style={style.contentWrapper}>{type}</span>}
         {!isGraph && (
           <>
             <Handle
@@ -239,7 +240,9 @@ const Node: React.FC<NodeProps> = ({
             />
           </>
         )}
-        <span style={style.contentWrapper}>{content}</span>
+        {type !== 'inout' && (
+          <span style={style.contentWrapper}>{content}</span>
+        )}
       </span>
     </div>
   );

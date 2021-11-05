@@ -24,6 +24,7 @@ import orange2 from './images/orange2.png';
 import orange3 from './images/orange3.png';
 import AggregateColumns from './images/AggregateColumns.svg';
 import Continuize from './images/Continuize.svg';
+import arrow1 from './images/arrow1.svg';
 import Correlations from './images/Correlations.svg';
 import CreateClass from './images/CreateClass.svg';
 // import expandMore from './images/expandMore.svg';
@@ -83,6 +84,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const iconsObj = {
   orange1: orange1,
   Continuize: Continuize,
+  arrow1: arrow1,
   orange2: orange2,
   orange3: orange3,
   AggregateColumns: AggregateColumns,
@@ -559,6 +561,11 @@ export default function Sidebar(props) {
               task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
               task_type: 'method',
               icon: 'CreateClass',
+            },
+            {
+              task_identifier: 'arrow1',
+              task_type: 'inout',
+              icon: 'arrow1',
             },
           ].map((elem, index) => (
             <span
