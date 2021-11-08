@@ -90,8 +90,6 @@ function CanvasView(props) {
 
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
-
-  const selectedSubgraph = useStore((state) => state.selectedElement);
   const setSubgraph = useStore((state) => state.setSubgraph);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
@@ -177,7 +175,7 @@ function CanvasView(props) {
   const closeSubgraph = (event) => {
     event.preventDefault();
     console.log(event);
-    setSubgraph({ graph: { id: 0 }, nodes: [], links: [] });
+    setSubgraph({ graph: { id: '0' }, nodes: [], links: [] });
   };
 
   return (

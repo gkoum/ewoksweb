@@ -43,25 +43,31 @@ function Upload(props) {
   const setWorkingGraph = useStore((state) => state.setWorkingGraph);
   const subGraph = useStore((state) => state.subGraph);
   const setSubGraph = useStore((state) => state.setSubGraph);
+  const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
 
   const fileNameChanged = async (event) => {
     console.log(event.target.files[0], recentGraphs, graphRF, subgraphsStack);
-    const reader = showFile(event);
-    const file = await reader.then((val) => val);
-    file.onloadend = async function () {
-      const links = [];
-      const newGraph = JSON.parse(file.result);
-      let working = {};
-      if (graphOrSubgraph) {
-        const { result, logs } = validateEwoksGraph(newGraph);
-        if (result) {
-          working = await setWorkingGraph(newGraph);
+    if (workingGraph.graph.id === graphRF.graph.id) {
+      const reader = showFile(event);
+      const file = await reader.then((val) => val);
+      file.onloadend = async function () {
+        const links = [];
+        const newGraph = JSON.parse(file.result);
+        let working = {};
+        if (graphOrSubgraph) {
+          const { result, logs } = validateEwoksGraph(newGraph);
+          if (result) {
+            working = await setWorkingGraph(newGraph);
+          }
+        } else {
+          console.log('ADDING SUBGRAPH:', newGraph);
+          working = await setSubGraph(newGraph);
         }
-      } else {
-        console.log('ADDING SUBGRAPH:', newGraph);
-        working = await setSubGraph(newGraph);
-      }
-    };
+      };
+    } else {
+      // cannot add subgraph to not working graph
+      setOpenSnackbar(true);
+    }
   };
 
   return (

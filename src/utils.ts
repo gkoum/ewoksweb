@@ -152,7 +152,9 @@ export function toEwoksLinks(links): EwoksLink[] {
     ({
       label,
       source,
+      sourceHandle,
       target,
+      targetHandle,
       data: { data_mapping, sub_target, sub_source, map_all_data, conditions },
       on_error,
       type,
@@ -168,7 +170,15 @@ export function toEwoksLinks(links): EwoksLink[] {
       sub_target,
       sub_source,
       map_all_data,
-      uiProps: { label, type, arrowHeadType, labelStyle, animated },
+      uiProps: {
+        label,
+        type,
+        arrowHeadType,
+        labelStyle,
+        animated,
+        sourceHandle,
+        targetHandle,
+      },
     })
   );
 }
@@ -193,6 +203,7 @@ export function toEwoksNodes(nodes): EwoksNode[] {
       if (task_type != 'graph') {
         return {
           id: id.toString(),
+          label,
           task_type,
           task_identifier,
           inputs_complete,
@@ -219,49 +230,6 @@ export function toEwoksNodes(nodes): EwoksNode[] {
     }
   );
 }
-
-// export function calcNodeInputsOutputs(
-//   // TODO
-//   task_identifier: string,
-//   taskType: string,
-//   recentGraphs: GraphRF[]
-// ): nodeInputsOutputs {
-//   // locate the task and add required+optional-inputs + outputs
-//   let tempTask = {};
-//   console.log(task_identifier, taskType, recentGraphs);
-//   // For subgraph calculate through input_nodes, output_nodes
-//   if (taskType === 'graph') {
-//     // locate subgraph
-//     let subgraphL = getGraph(task_identifier, true);
-//     subgraphL = subgraphL.then((res) => res);
-//     // get inputs-outputs from each subnode connected to each input and map to nodeInOut
-//     console.log(subgraphL);
-//     const inputsSub = subgraphL.graph.input_nodes.map((input) => {
-//       const nodeSubgraph = subgraphL.nodes.find((nod) => nod.id === input.node);
-//       return {
-//         optional_input_names: nodeSubgraph.optional_input_names,
-//         output_names: [],
-//         required_input_names: [],
-//       };
-//     });
-//   } else if (tempTask) {
-//     // If a know task get inputs-outputs
-//     tempTask = tasks.find((tas) => tas.task_identifier === task_identifier);
-//     return tempTask;
-//   }
-//   tempTask = tempTask
-//     ? tempTask
-//     : task_type === 'graph'
-//     ? tempTask // calculate inputs-outputs from subgraph
-//     : // will it have the subgraph from the beggining? NO.
-//       // Needs to handle it until it get it
-//       {
-//         optional_input_names: [],
-//         output_names: [],
-//         required_input_names: [],
-//       };
-//   return tempTask;
-// }
 
 function inNodesLinks(graph) {
   const inputs = { nodes: [], links: [] };
@@ -609,7 +577,9 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
           // if label exists in uiProps? And general transformation of data...
           // Label if empty use data-mapping
           label:
-            data_mapping.length > 0
+            uiProps && uiProps.label
+              ? uiProps.label
+              : data_mapping.length > 0
               ? data_mapping
                   .map((el) => `${el.source_output}->${el.target_input}`)
                   .join(', ')
@@ -617,8 +587,8 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
           source: source.toString(),
           target: target.toString(),
           on_error,
-          // targetHandle: sub_target ? sub_target : '',
-          // sourceHandle: sub_source ? sub_source : '',
+          targetHandle: uiProps && uiProps.targetHandle,
+          sourceHandle: uiProps && uiProps.sourceHandle,
           type: uiProps && uiProps.type ? uiProps.type : '',
           arrowHeadType:
             uiProps && uiProps.arrowHeadType ? uiProps.arrowHeadType : '',
@@ -644,39 +614,39 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
   return [] as EwoksRFLink[];
 }
 
-function getNodeType(isSource: boolean, isTarget: boolean): string {
-  return isSource ? (isTarget ? 'internal' : 'input') : 'output';
-}
+// function getNodeType(isSource: boolean, isTarget: boolean): string {
+//   return isSource ? (isTarget ? 'internal' : 'input') : 'output';
+// }
 
-export function positionNodes(nodes: Node[], edges: Edge[]): Node[] {
-  const graph = new GraphDagre();
-  graph.setDefaultEdgeLabel(() => ({}));
-  graph.setGraph({ rankdir: 'LR' });
+// export function positionNodes(nodes: Node[], edges: Edge[]): Node[] {
+//   const graph = new GraphDagre();
+//   graph.setDefaultEdgeLabel(() => ({}));
+//   graph.setGraph({ rankdir: 'LR' });
 
-  const sourceNodes = new Set();
-  const targetNodes = new Set();
+//   const sourceNodes = new Set();
+//   const targetNodes = new Set();
 
-  edges.forEach((e) => {
-    sourceNodes.add(e.source);
-    targetNodes.add(e.target);
-    graph.setEdge(e.source, e.target);
-  });
+//   edges.forEach((e) => {
+//     sourceNodes.add(e.source);
+//     targetNodes.add(e.target);
+//     graph.setEdge(e.source, e.target);
+//   });
 
-  nodes.forEach((n) => graph.setNode(n.id, { ...NODE_SIZE }));
+//   nodes.forEach((n) => graph.setNode(n.id, { ...NODE_SIZE }));
 
-  dagre.layout(graph);
+//   dagre.layout(graph);
 
-  return nodes.map<Node>((node) => {
-    const { id } = node;
-    const { x, y } = graph.node(id);
+//   return nodes.map<Node>((node) => {
+//     const { id } = node;
+//     const { x, y } = graph.node(id);
 
-    return {
-      ...node,
-      type: getNodeType(sourceNodes.has(id), targetNodes.has(id)),
-      position: {
-        x: x - NODE_SIZE.width / 2,
-        y: y - NODE_SIZE.height / 2,
-      },
-    };
-  });
-}
+//     return {
+//       ...node,
+//       type: getNodeType(sourceNodes.has(id), targetNodes.has(id)),
+//       position: {
+//         x: x - NODE_SIZE.width / 2,
+//         y: y - NODE_SIZE.height / 2,
+//       },
+//     };
+//   });
+// }

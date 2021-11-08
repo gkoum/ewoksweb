@@ -49,6 +49,7 @@ import { getGraph, rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
 import MyCard from '../layout/MyCard';
 import axios from 'axios';
 import { getWorkflows } from '../utils';
+import SimpleSnackbar from '../Components/Snackbar';
 
 // function Copyright() {
 //   return (
@@ -184,9 +185,6 @@ export default function Dashboard() {
   const graphRF = useStore((state) => state.graphRF);
   const setGraphRF = useStore((state) => state.setGraphRF);
   const selectedElement = useStore((state) => state.selectedElement);
-  const selectedSubgraph = useStore((state) => {
-    return state.selectedSubgraph;
-  });
   const subgraphsStack = useStore((state) => {
     console.log(state);
     return state.subgraphsStack;
@@ -224,7 +222,7 @@ export default function Dashboard() {
 
   const saveToDisk = (event) => {
     console.log(graphRF, rfToEwoks(graphRF));
-    download(JSON.stringify(graphRF), 'json.txt', 'text/plain');
+    download(JSON.stringify(rfToEwoks(graphRF)), 'graph.json', 'text/plain');
   };
 
   const getFromServer = async (event) => {
@@ -269,6 +267,7 @@ export default function Dashboard() {
   return (
     <div className={classes.root}>
       <CssBaseline />
+      <SimpleSnackbar />
       <AppBar
         position="absolute"
         className={clsx(classes.appBar, open && classes.appBarShift)}
@@ -428,11 +427,6 @@ export default function Dashboard() {
         <div className={classes.toolbar} />
         <Paper className={fixedHeightPaper}>
           <Canvas />
-          {/* {selectedSubgraph.graph && selectedSubgraph.graph.id && (
-            <span className={classes.canvasView}>
-              <CanvasView subgraph={selectedSubgraph} />
-            </span>
-          )} */}
           {/* <span className={classes.canvasView}>
             <CanvasView />
           </span>

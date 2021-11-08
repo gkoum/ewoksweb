@@ -93,9 +93,10 @@ function Canvas() {
 
   const updateNeeded = useStore((state) => state.updateNeeded);
 
-  const selectedSubgraph = useStore((state) => state.selectedSubgraph);
-  const setSubgraph = useStore((state) => state.setSubgraph);
+  const setSubGraph = useStore((state) => state.setSubGraph);
   const recentGraphs = useStore((state) => state.recentGraphs);
+  const workingGraph = useStore((state) => state.workingGraph);
+  const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
 
   useEffect(() => {
     console.log('rerender Canvas', graphRF, recentGraphs.length, updateNeeded);
@@ -157,44 +158,58 @@ function Canvas() {
 
   const onDrop = (event) => {
     event.preventDefault();
-    console.log(event, event.dataTransfer);
-    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-    const task_identifier = event.dataTransfer.getData('task_identifier');
-    const task_type = event.dataTransfer.getData('task_type');
-    const icon = event.dataTransfer.getData('icon');
-    console.log(task_identifier, task_type, icon);
-    const position = rfInstance.project({
-      x: event.clientX - reactFlowBounds.left,
-      y: event.clientY - reactFlowBounds.top,
-    });
-    console.log(position);
+    if (graphRF.graph.id === '0') {
+      setSubgraphsStack({
+        id: graphRF.graph.id,
+        label: graphRF.graph.label,
+      });
+    }
 
-    const newNode = {
-      id: getId(),
-      task_type,
-      task_identifier,
-      type: task_type,
-      task_generator: '',
-      position,
-      default_inputs: [],
-      inputs_complete: false,
-      required_input_names: [],
-      optional_input_names: [],
-      output_names: [],
-      data: { label: `${task_identifier} node`, type: 'internal', icon: icon },
-      // data: { label: CustomNewNode(id, name, image) },
-    };
-    console.log(newNode, graphRF);
-    // setElements((es) => [...es, newNode]);
-    const newGraph = {
-      graph: graphRF.graph,
-      nodes: [...graphRF.nodes, newNode],
-      links: graphRF.links,
-    };
-    // setElements((els) => addEdge(params, els));
-    setGraphRF(newGraph as GraphRF);
-    // need to also save it in recentGraphs if we leave and come back to the graph?
-    setRecentGraphs(newGraph as GraphRF);
+    if (workingGraph.graph.id === graphRF.graph.id) {
+      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+      const task_identifier = event.dataTransfer.getData('task_identifier');
+      const task_type = event.dataTransfer.getData('task_type');
+      const icon = event.dataTransfer.getData('icon');
+      console.log(task_identifier, task_type, icon);
+      const position = rfInstance.project({
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      });
+      console.log(position);
+
+      const newNode = {
+        id: getId(),
+        task_type,
+        task_identifier,
+        type: task_type,
+        task_generator: '',
+        position,
+        default_inputs: [],
+        inputs_complete: false,
+        required_input_names: [],
+        optional_input_names: [],
+        output_names: [],
+        data: {
+          label: `${task_identifier} node`,
+          type: 'internal',
+          icon: icon,
+        },
+        // data: { label: CustomNewNode(id, name, image) },
+      };
+      console.log(newNode, graphRF);
+      // setElements((es) => [...es, newNode]);
+      const newGraph = {
+        graph: graphRF.graph,
+        nodes: [...graphRF.nodes, newNode],
+        links: graphRF.links,
+      };
+      // setElements((els) => addEdge(params, els));
+      setGraphRF(newGraph as GraphRF);
+      // need to also save it in recentGraphs if we leave and come back to the graph?
+      setRecentGraphs(newGraph as GraphRF);
+    } else {
+      setOpenSnackbar(true);
+    }
   };
 
   const onConnect = (params) => {
@@ -204,43 +219,49 @@ function Canvas() {
     // links_input_names from source node
 
     // ELSE IF there is a new node we need to find input and outputs
+    if (workingGraph.graph.id === graphRF.graph.id) {
+      const sourceTask = graphRF.nodes.find((nod) => nod.id === params.source);
+      const targetTask = graphRF.nodes.find((nod) => nod.id === params.target);
+      console.log(sourceTask, targetTask);
+      const link = {
+        data: {
+          // node optional_input_names are link's optional_output_names
+          links_optional_output_names: targetTask.optional_input_names,
+          // node required_input_names are link's required_output_names
+          links_required_output_names: targetTask.required_input_names,
+          // node output_names are link's input_names
+          links_input_names: sourceTask.output_names,
+          conditions: '',
+          data_mapping: [],
+          map_all_data: false,
+          sub_source: params.sourceHandle,
+          sub_target: params.targetHandle,
+        },
+        id: getLinkId(),
+        label: getLinkId(),
+        source: params.source,
+        target: params.target,
+        sourceHandle: params.sourceHandle,
+        targetHandle: params.targetHandle,
+        type: 'smoothstep',
+        arrowHeadType: 'arrow',
+      };
 
-    const sourceTask = graphRF.nodes.find((nod) => nod.id === params.source);
-    const targetTask = graphRF.nodes.find((nod) => nod.id === params.target);
-    console.log(sourceTask, targetTask);
-    const link = {
-      data: {
-        // node optional_input_names are link's optional_output_names
-        links_optional_output_names: targetTask.optional_input_names,
-        // node required_input_names are link's required_output_names
-        links_required_output_names: targetTask.required_input_names,
-        // node output_names are link's input_names
-        links_input_names: sourceTask.output_names,
-        conditions: '',
-        data_mapping: [],
-        map_all_data: false,
-        sub_source: params.sourceHandle,
-        sub_target: params.targetHandle,
-      },
-      id: getLinkId(),
-      label: getLinkId(),
-      source: params.source,
-      target: params.target,
-      sourceHandle: params.sourceHandle,
-      targetHandle: params.targetHandle,
-      type: 'smoothstep',
-      arrowHeadType: 'arrow',
-    };
+      const newGraph = {
+        graph: graphRF.graph,
+        nodes: graphRF.nodes,
+        links: [...graphRF.links, link], // addEdge(params, graphRF.links),
+      };
 
-    const newGraph = {
-      graph: graphRF.graph,
-      nodes: graphRF.nodes,
-      links: [...graphRF.links, link], // addEdge(params, graphRF.links),
-    };
-    // setElements((els) => addEdge(params, els));
-    setGraphRF(newGraph as GraphRF);
-    // need to also save it in recentGraphs if we leave and come back to the graph?
-    setRecentGraphs(newGraph as GraphRF);
+      console.log(link, newGraph);
+      // setElements((els) => addEdge(params, els));
+      setGraphRF(newGraph as GraphRF);
+      // need to also save it in recentGraphs if we leave and come back to the graph?
+
+      setRecentGraphs(newGraph as GraphRF);
+    } else {
+      setOpenSnackbar(true);
+    }
   };
 
   const onRightClick = (event) => {
@@ -305,25 +326,29 @@ function Canvas() {
 
   const onNodeDragStop = (event, node) => {
     event.preventDefault();
-    console.log(event, node, toRFEwoksNodes[node]);
-    // find RFEwoksNode and update its position and save grapRF
-    const RFEwoksNode: EwoksRFNode = {
-      ...graphRF.nodes.find((nod) => nod.id === node.id),
-    };
-    RFEwoksNode.position = node.position;
-    console.log(RFEwoksNode, graphRF);
-    const newGraph = {
-      graph: graphRF.graph,
-      nodes: [
-        ...graphRF.nodes.filter((nod) => nod.id !== node.id),
-        RFEwoksNode,
-      ],
-      links: graphRF.links,
-    };
+    if (workingGraph.graph.id === graphRF.graph.id) {
+      console.log(event, node, toRFEwoksNodes[node]);
+      // find RFEwoksNode and update its position and save grapRF
+      const RFEwoksNode: EwoksRFNode = {
+        ...graphRF.nodes.find((nod) => nod.id === node.id),
+      };
+      RFEwoksNode.position = node.position;
+      console.log(RFEwoksNode, graphRF);
+      const newGraph = {
+        graph: graphRF.graph,
+        nodes: [
+          ...graphRF.nodes.filter((nod) => nod.id !== node.id),
+          RFEwoksNode,
+        ],
+        links: graphRF.links,
+      };
 
-    setGraphRF(newGraph as GraphRF);
-    // need to also save it in recentGraphs if we leave and come back to the graph?
-    setRecentGraphs(newGraph);
+      setGraphRF(newGraph as GraphRF);
+      // need to also save it in recentGraphs if we leave and come back to the graph?
+      setRecentGraphs(newGraph);
+    } else {
+      setOpenSnackbar(true);
+    }
   };
 
   return (

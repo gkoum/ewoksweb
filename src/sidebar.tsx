@@ -127,6 +127,8 @@ export default function Sidebar(props) {
   const [graphOutputs, setGraphOutputs] = React.useState<Inputs[]>([]);
   const graphRF = useStore((state) => state.graphRF);
   const setGraphRF = useStore((state) => state.setGraphRF);
+  const workingGraph = useStore((state) => state.workingGraph);
+  const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
 
   useEffect(() => {
     console.log(selectedElement);
@@ -134,7 +136,6 @@ export default function Sidebar(props) {
     setId(selectedElement.id);
     if (!selectedElement.graph) {
       if ('position' in selectedElement) {
-        console.log(nodeType, selectedElement.data.type);
         setNodeType(selectedElement.data.type);
         setLabel(
           selectedElement.label
@@ -150,7 +151,6 @@ export default function Sidebar(props) {
         setDefaultInputs(
           selectedElement.default_inputs ? selectedElement.default_inputs : []
         );
-        console.log(selectedElement, nodeType);
       } else {
         setLinkType(selectedElement.type);
         setArrowType(selectedElement.arrowHeadType);
@@ -178,7 +178,6 @@ export default function Sidebar(props) {
       );
     }
   }, [
-    nodeType,
     selectedElement.id,
     selectedElement,
     graphRF.graph.input_nodes,
@@ -213,6 +212,7 @@ export default function Sidebar(props) {
   };
 
   const nodeTypeChanged = (event) => {
+    console.log(event.target.value);
     setNodeType(event.target.value);
     setElement({
       ...element,
@@ -397,7 +397,11 @@ export default function Sidebar(props) {
         links: graphRF.links.filter((link) => link.id !== element.id),
       };
     }
-    setGraphRF(newGraph);
+    if (workingGraph.graph.id === graphRF.graph.id) {
+      setGraphRF(newGraph);
+    } else {
+      setOpenSnackbar(true);
+    }
   };
 
   const addConditions = () => {
@@ -808,7 +812,7 @@ export default function Sidebar(props) {
                     <InputLabel id="ArrowHeadType">Arrow Head Type</InputLabel>
                     <Select
                       value={arrowType ? arrowType : 'internal'}
-                      label="Node type"
+                      label="Arrow head"
                       onChange={arrowTypeChanged}
                     >
                       {['arrow', 'arrowclosed', 'none'].map((tex) => (
@@ -877,11 +881,8 @@ export default function Sidebar(props) {
                   <hr></hr>
                   <div>
                     <FormControl variant="filled" fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Node type
-                      </InputLabel>
+                      <InputLabel>Node type</InputLabel>
                       <Select
-                        labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={nodeType ? nodeType : 'internal'}
                         label="Node type"

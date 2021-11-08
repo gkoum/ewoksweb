@@ -21,6 +21,9 @@ export interface Graph {
 }
 
 export interface State {
+  openSnackbar: boolean;
+  setOpenSnackbar: (setOpen: boolean) => void;
+  updateNeeded: any;
   // updateNeeded: number;
   // setUpdateNeeded: (num: number) => void;
   allWorkflows: Array<String>;
