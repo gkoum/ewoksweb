@@ -65,8 +65,11 @@ function Upload(props) {
         }
       };
     } else {
-      // cannot add subgraph to not working graph
-      setOpenSnackbar(true);
+      setOpenSnackbar({
+        open: true,
+        text: 'Not allowed to add a new node-graph to any sub-graph!',
+        severity: 'success',
+      });
     }
   };
 

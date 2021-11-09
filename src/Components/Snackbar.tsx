@@ -5,13 +5,18 @@ import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import useStore from '../store';
+import { Alert } from '@material-ui/lab';
 
-function SimpleSnackbar() {
+function SimpleSnackbar(props) {
   const openSnackbar = useStore((state) => state.openSnackbar);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
 
   const handleClick = () => {
-    setOpenSnackbar(true);
+    setOpenSnackbar({
+      open: true,
+      text: '',
+      severity: 'success',
+    });
   };
 
   const handleClose = (
@@ -22,14 +27,18 @@ function SimpleSnackbar() {
       return;
     }
 
-    setOpenSnackbar(false);
+    setOpenSnackbar({
+      open: false,
+      text: '',
+      severity: 'success',
+    });
   };
 
   const action = (
     <React.Fragment>
-      <Button color="secondary" size="small" onClick={handleClose}>
+      {/* <Button color="secondary" size="small" onClick={handleClose}>
         UNDO
-      </Button>
+      </Button> */}
       <IconButton
         size="small"
         aria-label="close"
@@ -42,16 +51,21 @@ function SimpleSnackbar() {
   );
 
   return (
-    <div>
-      {/* <Button onClick={handleClick}>Open simple snackbar</Button> */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
+    <Snackbar
+      open={openSnackbar.open}
+      autoHideDuration={6000}
+      onClose={handleClose}
+      message={openSnackbar.text}
+      action={action}
+    >
+      <Alert
         onClose={handleClose}
-        message="Note archived"
-        action={action}
-      />
-    </div>
+        severity={openSnackbar.severity}
+        sx={{ width: '100%' }}
+      >
+        {openSnackbar.text}
+      </Alert>
+    </Snackbar>
   );
 }
 

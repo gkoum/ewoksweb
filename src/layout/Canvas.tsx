@@ -32,7 +32,6 @@ import type {
   GraphRF,
   EwoksRFNode,
 } from '../types';
-import CanvasView from './CanvasView';
 import {
   toRFEwoksLinks,
   toRFEwoksNodes,
@@ -73,6 +72,7 @@ const nodeTypes = {
   method: DataNode,
   ppfmethod: DataNode,
   inout: DataNode,
+  class: DataNode,
 };
 
 function Canvas() {
@@ -208,7 +208,11 @@ function Canvas() {
       // need to also save it in recentGraphs if we leave and come back to the graph?
       setRecentGraphs(newGraph as GraphRF);
     } else {
-      setOpenSnackbar(true);
+      setOpenSnackbar({
+        open: true,
+        text: 'Not allowed to add a new node to any sub-graph!',
+        severity: 'success',
+      });
     }
   };
 
@@ -260,7 +264,11 @@ function Canvas() {
 
       setRecentGraphs(newGraph as GraphRF);
     } else {
-      setOpenSnackbar(true);
+      setOpenSnackbar({
+        open: true,
+        text: 'Not allowed to create new links to any sub-graph!',
+        severity: 'success',
+      });
     }
   };
 
@@ -347,7 +355,11 @@ function Canvas() {
       // need to also save it in recentGraphs if we leave and come back to the graph?
       setRecentGraphs(newGraph);
     } else {
-      setOpenSnackbar(true);
+      setOpenSnackbar({
+        open: true,
+        text: 'Any positional change in any subgraph wont be saved!',
+        severity: 'success',
+      });
     }
   };
 

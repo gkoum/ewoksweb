@@ -7,17 +7,11 @@ import type { Edge, Node } from 'react-flow-renderer';
 import {
   Box,
   Button,
-  Container,
   FormControl,
-  FormControlLabel,
-  FormLabel,
   IconButton,
   InputLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
-  TextareaAutosize,
 } from '@material-ui/core';
 import orange1 from './images/orange1.png';
 import orange2 from './images/orange2.png';
@@ -248,7 +242,6 @@ export default function Sidebar(props) {
   };
 
   const conditionsValuesChanged = (table) => {
-    // setDefaultInputs(table);
     console.log(table);
     setElement({
       ...element,
@@ -257,7 +250,6 @@ export default function Sidebar(props) {
   };
 
   const dataMappingValuesChanged = (table) => {
-    // setDefaultInputs(table);
     console.log(table);
     const dmap = table.map((row) => {
       return {
@@ -276,21 +268,10 @@ export default function Sidebar(props) {
       },
     });
     console.log(element);
-    // setLabel(
-    //   element.data.data_mapping
-    //     .map((el) => `${el.source_output}->${el.target_input}`)
-    //     .join(', ')
-    // );
-    // setSelectedElement(element);
   };
 
   const graphInputsChanged = (table) => {
     console.log(table, element);
-    // input_nodes: [{ name: 'in1', id: 'task1' }],
-    // output_nodes: [
-    //   { name: 'out1', id: 'subsubgraph', sub_node: 'out1' },
-    //   { name: 'out2', id: 'subsubgraph', sub_node: 'out2' },
-
     setElement({
       ...element,
       input_nodes: [
@@ -299,26 +280,9 @@ export default function Sidebar(props) {
         }),
       ],
     });
-    // setGraphRF({
-    //   nodes: graphRF.nodes,
-    //   links: graphRF.links,
-    //   graph: {
-    //     ...graphRF.graph,
-    //     input_nodes: [
-    //       ...table.map((input) => {
-    //         return { ...input, id: input.name };
-    //       }),
-    //     ],
-    //   },
-    // });
   };
 
   const graphOutputsChanged = (table) => {
-    // input_nodes: [{ name: 'in1', id: 'task1' }],
-    // output_nodes: [
-    //   { name: 'out1', id: 'subsubgraph', sub_node: 'out1' },
-    //   { name: 'out2', id: 'subsubgraph', sub_node: 'out2' },
-
     setElement({
       ...element,
       output_nodes: [
@@ -328,14 +292,6 @@ export default function Sidebar(props) {
       ],
     });
   };
-
-  // const taskIdentifierChanged = (event) => {
-  //   setTaskIdentifier(event.target.value);
-  // };
-
-  // const taskTypeChanged = (event) => {
-  //   setTaskType(event.target.value);
-  // };
 
   const taskGeneratorChanged = (event) => {
     setTaskGenerator(event.target.value);
@@ -400,7 +356,11 @@ export default function Sidebar(props) {
     if (workingGraph.graph.id === graphRF.graph.id) {
       setGraphRF(newGraph);
     } else {
-      setOpenSnackbar(true);
+      setOpenSnackbar({
+        open: true,
+        text: 'Not allowed to delete any element in a sub-graph!',
+        severity: 'success',
+      });
     }
   };
 
@@ -521,15 +481,6 @@ export default function Sidebar(props) {
           <Typography>Add Nodes</Typography>
         </AccordionSummary>
         <AccordionDetails style={{ flexWrap: 'wrap' }}>
-          {/* [{
-            'optional_input_names': ['ppfport', 'ppfdict'],
-            'output_names': ['ppfdict'],
-            'required_input_names': [],
-            'task_identifier': 'ewokscore.ppftasks.PpfPortTask',
-            'task_type': 'class'
-            }]
-          */}
-
           {[
             {
               task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
@@ -746,9 +697,6 @@ export default function Sidebar(props) {
                               ] || [],
                           },
                         ]}
-                        // all optional and required inputs + outputs of tasks are being used here
-                        // do we need to have these info in the graph? can he describe a task not in the
-                        // task list but still able to execute?
                       />
                     )}
                   </div>
@@ -964,9 +912,6 @@ export default function Sidebar(props) {
             >
               Delete
             </Button>
-            {/* <Button variant="contained" color="primary">
-              Subgraph
-            </Button> */}
           </form>
         </AccordionDetails>
       </Accordion>

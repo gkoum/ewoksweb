@@ -147,7 +147,8 @@ export function rfToEwoks(tempGraph): GraphEwoks {
 
 // EwoksRFLinks --> EwoksLinks for saving
 export function toEwoksLinks(links): EwoksLink[] {
-  // console.log(links);
+  // TODO: when input-arrow fake nodes exist remove their links to get an Ewoks description
+  const tempLinks: EwoksRFNode[] = [...links].filter((link) => !link.startEnd);
   return links.map(
     ({
       label,
@@ -184,9 +185,12 @@ export function toEwoksLinks(links): EwoksLink[] {
 }
 
 // EwoksRFNode --> EwoksNode for saving
-export function toEwoksNodes(nodes): EwoksNode[] {
-  // console.log(nodes);
-  return nodes.map(
+export function toEwoksNodes(nodes: EwoksRFNode[]): EwoksNode[] {
+  // TODO: when input-arrow fake nodes exist remove them to get an Ewoks description
+  const tempNodes: EwoksRFNode[] = [...nodes].filter(
+    (nod) => nod.task_identifier !== 'Start-End'
+  );
+  return tempNodes.map(
     ({
       id,
       task_type,
@@ -196,8 +200,6 @@ export function toEwoksNodes(nodes): EwoksNode[] {
       task_generator,
       default_inputs,
       data: { label, type, icon, comment },
-      sourcePosition,
-      targetPosition,
       position,
     }) => {
       if (task_type != 'graph') {
@@ -244,7 +246,7 @@ function inNodesLinks(graph) {
           id: inNod.id,
           label: inNod.id,
           task_type: 'inout',
-          task_identifier: 'arrow1',
+          task_identifier: 'Start-End',
           uiProps: {
             type: 'input',
             position: inNod.uiProps.position,
@@ -252,6 +254,7 @@ function inNodesLinks(graph) {
           },
         });
         inputs.links.push({
+          startEnd: true,
           source: inNod.id,
           target: inNod.node,
           uiProps: {
@@ -278,7 +281,7 @@ function outNodesLinks(graph) {
           id: outNod.id,
           label: outNod.id,
           task_type: 'inout',
-          task_identifier: 'arrow1',
+          task_identifier: 'Start-End',
           uiProps: {
             type: 'output',
             position: outNod.uiProps.position,
@@ -286,6 +289,7 @@ function outNodesLinks(graph) {
           },
         });
         outputs.links.push({
+          startEnd: true,
           source: outNod.node,
           target: outNod.id,
           uiProps: {
@@ -395,10 +399,13 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
             data: {
               label: label ? label : task_identifier,
               type: nodeType,
-              icon: uiProps.icon,
-              comment: uiProps.comment,
+              icon: uiProps && uiProps.icon,
+              comment: uiProps && uiProps.comment,
             },
-            position: uiProps.position,
+            position:
+              uiProps && uiProps.position
+                ? uiProps.position
+                : { x: 100, y: 100 },
           };
         }
         // if node=subgraph calculate inputs-outputs from subgraph.graph
@@ -592,8 +599,15 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
           type: uiProps && uiProps.type ? uiProps.type : '',
           arrowHeadType:
             uiProps && uiProps.arrowHeadType ? uiProps.arrowHeadType : '',
-          labelStyle: uiProps && uiProps.labelStyle ? uiProps.labelStyle : {},
+          // labelStyle: uiProps && uiProps.labelStyle ? uiProps.labelStyle : {},
           animated: uiProps && uiProps.animated ? uiProps.animated : '',
+          style: { stroke: '#96a5f9', strokeWidth: '2.5' },
+          labelBgStyle: {
+            fill: '#fff',
+            color: 'rgb(50, 130, 219)',
+            fillOpacity: 0.7,
+          },
+          labelStyle: { fill: 'blue', fontWeight: 500, fontSize: 14 },
           data: {
             // node optional_input_names are link's optional_output_names
             links_optional_output_names: targetTask.optional_input_names,

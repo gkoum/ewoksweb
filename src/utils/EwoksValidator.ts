@@ -90,7 +90,9 @@ export function validateEwoksGraph(graph) {
       result.push(true);
     } else {
       result.push(false);
-      console.error(`link ${index} has wrong source and/or target node id`);
+      console.error(
+        `link ${index} ${link.source} ${link.target} has wrong source and/or target node id`
+      );
     }
   });
 

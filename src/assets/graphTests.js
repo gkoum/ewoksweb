@@ -248,7 +248,7 @@ export const tasks = [
     optional_input_names: [],
     output_names: [],
     required_input_names: [],
-    task_identifier: 'arrow1',
+    task_identifier: 'Start-End',
     task_type: 'inout',
     uiProps: { icon: 'arrow1' },
   },

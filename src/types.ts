@@ -1,3 +1,4 @@
+import type { Color } from '@material-ui/lab';
 import type { Node, Edge, Position } from 'react-flow-renderer';
 
 export interface GraphNodes {
@@ -20,9 +21,15 @@ export interface Graph {
   links: Array<EwoksLink>;
 }
 
+export interface SnackbarParams {
+  open: boolean;
+  text: string;
+  severity: Color;
+}
+
 export interface State {
-  openSnackbar: boolean;
-  setOpenSnackbar: (setOpen: boolean) => void;
+  openSnackbar: SnackbarParams;
+  setOpenSnackbar: (params: SnackbarParams) => void;
   updateNeeded: any;
   // updateNeeded: number;
   // setUpdateNeeded: (num: number) => void;
@@ -61,8 +68,11 @@ export interface stackGraph {
 }
 
 export interface UiProps {
-  key?: string;
-  value?: string;
+  label?: string;
+  type?: string;
+  icon?: string;
+  comment?: string;
+  position?: string;
 }
 
 export interface DataMapping {

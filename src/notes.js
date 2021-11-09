@@ -9,6 +9,7 @@
 // "sub_target": "", "sub_source": "", not handled in subgraphs when saving as EwoksGraph
 // also not a way to work with 2 or more inputs-outputs in subgraphs graphically
 
+// conditions and styling
 
 // -AnalyseKappa positioning problem
 // -BesTestExecution missing link

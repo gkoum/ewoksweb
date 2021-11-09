@@ -24,7 +24,7 @@ const edges: EwoksRFLink[] = [];
 console.log(nodes, edges);
 
 const useStore = create<State>((set, get) => ({
-  openSnackbar: false,
+  openSnackbar: { open: false, text: '', severity: 'success' },
 
   setOpenSnackbar: (setOpen) => {
     set((state) => ({
@@ -245,7 +245,11 @@ const useStore = create<State>((set, get) => ({
         }));
       }
     } else {
-      get().setOpenSnackbar(true);
+      get().setOpenSnackbar({
+        open: true,
+        text: 'Not allowed to modify sub-graphs!',
+        severity: 'success',
+      });
       set((state) => ({
         ...state,
         selectedElement: element,

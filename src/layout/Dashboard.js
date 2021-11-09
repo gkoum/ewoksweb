@@ -31,7 +31,6 @@ import Sidebar from '../sidebar';
 import useStore from '../store';
 import Canvas from './Canvas';
 import Card from '@material-ui/core/Card';
-import CanvasView from './CanvasView';
 import Upload from '../Components/Upload';
 import AutocompleteDrop from '../Components/AutocompleteDrop';
 import AddIcon from '@material-ui/icons/Add';
