@@ -580,17 +580,23 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
             };
         // console.log('TASKS2:', sourceTask, targetTask, data_mapping);
         return {
-          id: `e${source}-${target}`,
-          // if label exists in uiProps? And general transformation of data...
+          // TODO: does not accept 2 links between the same nodes?
+          id: `${source}:${uiProps && uiProps.sourceHandle}->${target}:${
+            uiProps && uiProps.targetHandle
+          }`,
           // Label if empty use data-mapping
           label:
             uiProps && uiProps.label
               ? uiProps.label
-              : data_mapping.length > 0
+              : conditions && conditions.length > 0
+              ? conditions
+                  .map((el) => `${el.source_output}->${el.target_input}`)
+                  .join(', ')
+              : data_mapping && data_mapping.length > 0
               ? data_mapping
                   .map((el) => `${el.source_output}->${el.target_input}`)
                   .join(', ')
-              : '...',
+              : '',
           source: source.toString(),
           target: target.toString(),
           on_error,

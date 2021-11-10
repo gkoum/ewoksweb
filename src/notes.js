@@ -8,8 +8,8 @@
 // but if subgraph has two inputs then the subinput needs to be included to make a link unique
 // "sub_target": "", "sub_source": "", not handled in subgraphs when saving as EwoksGraph
 // also not a way to work with 2 or more inputs-outputs in subgraphs graphically
-
-// conditions and styling
+// ----------------------------------------
+// PROBLEMS with certain workflows
 
 // -AnalyseKappa positioning problem
 // -BesTestExecution missing link
@@ -38,14 +38,27 @@
 // links ending also up and down? resolves loop visulization too
 
 // -ExecuteKappaReorientation.json multiple outputs to subgraphs are not working
+// ---------------------------------------------
+// FEATURES
 
-// BUGS
-// Node type on sidebar is not updated when I click on different node
-// ExecuteMXPressOrig.json: Multiple calls are being made as subgraphs are re-requested in a single draw
 // Spinner for each load...
+// conditions and styling
 // Validator for graphs and not break in any conditions
+// ----------------------------------------
+// BUGS
+
+// conditions get saved like that
+// "conditions": [
+// { "id": "ppfdict", "name": "ppfdict", "value": "4", "isEditMode": true }
+//  ],
+// keep only name and value
+
+// Node type on sidebar is not updated when I click on different node
+
+// ExecuteMXPressOrig.json: Multiple calls are being made as subgraphs are re-requested in a single draw
+
 // sidebar text changes the width of sidebar when long especialy in task_identifier
-// fetches workflows with each click in Get Workflows -> if not in the store
+
 
 const nodes = {
   id: '',

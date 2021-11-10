@@ -49,7 +49,7 @@ export function validateEwoksGraph(graph) {
   result.push(
     includes(graph.graph, `graph.graph: ${graph.graph.id}`, [
       'id',
-      'label',
+      // 'label',
       'input_nodes',
       'output_nodes',
       // 'uiProps',

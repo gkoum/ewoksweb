@@ -18,10 +18,23 @@ import {
 } from './utils';
 import { validateEwoksGraph } from './utils/EwoksValidator';
 import { findAllSubgraphs } from './utils/FindAllSubgraphs';
+import { calcGraphInputsOutputs } from './utils/CalcGraphInputsOutputs';
 
 const nodes: EwoksRFNode[] = [];
 const edges: EwoksRFLink[] = [];
 console.log(nodes, edges);
+
+const initializedGraph = {
+  graph: {
+    id: '0',
+    label: 'New-Graph',
+    input_nodes: [],
+    output_nodes: [],
+    uiProps: {},
+  },
+  nodes: [],
+  links: [],
+} as GraphRF;
 
 const useStore = create<State>((set, get) => ({
   openSnackbar: { open: false, text: '', severity: 'success' },
@@ -113,18 +126,14 @@ const useStore = create<State>((set, get) => ({
     }));
   },
 
-  workingGraph: {
-    graph: { id: '0', label: 'New-Graph' },
-    nodes: [],
-    links: [],
-  } as GraphRF,
+  workingGraph: initializedGraph,
 
   setWorkingGraph: async (workingGraph: GraphEwoks): Promise<GraphRF> => {
     // 1. if it is a new graph opening initialize
     // TODO: remove initialise or id: 0. Send clear messages
     get().setSubgraphsStack({ id: 'initialiase', label: '' });
-    get().setGraphRF({ graph: { id: '0' }, nodes: [], links: [] } as GraphRF);
-    // Is the following needed as to not get existing graphs?
+    get().setGraphRF(initializedGraph);
+    // Is the following needed as to not get existing graphs? Better an empty array?
     get().setRecentGraphs({ graph: { id: '' } } as GraphRF, true);
 
     console.log(workingGraph);
@@ -177,14 +186,14 @@ const useStore = create<State>((set, get) => ({
     return graph;
   },
 
-  graphRF: {
-    graph: { id: '0', label: 'New-Graph' },
-    nodes: [],
-    links: [],
-  } as GraphRF,
+  graphRF: initializedGraph,
 
   setGraphRF: (graphRF) => {
     console.log(graphRF);
+    // If missing uiProps or other fill it here
+    if (!graphRF.graph.uiProps) {
+      graphRF.graph.uiProps = {};
+    }
     set((state) => ({
       ...state,
       graphRF,
@@ -201,12 +210,24 @@ const useStore = create<State>((set, get) => ({
   } as EwoksRFNode,
 
   // sets graphRF as well? should it?
-  setSelectedElement: (element: EwoksRFNode | EwoksRFLink | GraphRF) => {
-    console.log(element);
+  setSelectedElement: (element: EwoksRFNode | EwoksRFLink | GraphDetails) => {
+    console.log(element, get().selectedElement);
     const wg = get().workingGraph.graph.id;
     console.log(get().graphRF, wg);
     if (wg === '0' || wg === get().graphRF.graph.id) {
       if ('position' in element) {
+        // TODO: if node type was changed the inputs-outputs of the graph might need updating
+        if (element.data.type !== get().selectedElement.data.type) {
+          // calculate new inputs-outputs for graph
+          calcGraphInputsOutputs({
+            graph: get().graphRF.graph,
+            nodes: [
+              ...get().graphRF.nodes.filter((nod) => nod.id !== element.id),
+              element,
+            ],
+            links: get().graphRF.links,
+          });
+        }
         set((state) => ({
           ...state,
           graphRF: {

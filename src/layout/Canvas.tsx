@@ -12,6 +12,8 @@ import ReactFlow, {
   MiniMap,
   removeElements,
   addEdge,
+  isEdge,
+  isNode,
 } from 'react-flow-renderer';
 import type {
   ReactFlowProps,
@@ -31,6 +33,10 @@ import type {
   EwoksNode,
   GraphRF,
   EwoksRFNode,
+  GraphDetails,
+  EwoksRFLink,
+  RFNode,
+  RFLink,
 } from '../types';
 import {
   toRFEwoksLinks,
@@ -104,14 +110,12 @@ function Canvas() {
   }, [graphRF, graphRF.graph.id, recentGraphs.length, updateNeeded]);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
-    console.log(element, elements, graphRF.nodes);
-    // if ('position' in element) {
-    const graphElement = elements.find((el) => el.id === element.id);
+    console.log(isEdge(element), isNode(element), elements, graphRF.nodes);
+    const graphElement: RFNode | RFLink = elements.find(
+      (el) => el.id === element.id
+    );
     console.log(graphElement);
     setSelectedElement(graphElement);
-    // } else {
-
-    // }
   };
 
   const onLoad = (reactFlowInstance) => setRfInstance(reactFlowInstance);
@@ -179,6 +183,7 @@ function Canvas() {
 
       const newNode = {
         id: getId(),
+        label: task_identifier,
         task_type,
         task_identifier,
         type: task_type,
@@ -190,9 +195,9 @@ function Canvas() {
         optional_input_names: [],
         output_names: [],
         data: {
-          label: `${task_identifier} node`,
+          label: task_identifier,
           type: 'internal',
-          icon: icon,
+          icon,
         },
         // data: { label: CustomNewNode(id, name, image) },
       };
@@ -241,13 +246,13 @@ function Canvas() {
           sub_source: params.sourceHandle,
           sub_target: params.targetHandle,
         },
-        id: getLinkId(),
+        id: `${params.source}:${params.sourceHandle}->${params.target}:${params.targetHandle}`,
         label: getLinkId(),
         source: params.source,
         target: params.target,
         sourceHandle: params.sourceHandle,
         targetHandle: params.targetHandle,
-        type: 'smoothstep',
+        type: 'default',
         arrowHeadType: 'arrow',
       };
 
@@ -278,9 +283,10 @@ function Canvas() {
   };
 
   const onSelectionChange = (elements) => {
-    console.log(elements);
-    if (!elements) setSelectedElement(graphRF.graph);
-    console.log(selectedElement);
+    console.log(elements, graphRF.graph);
+    if (!elements) {
+      setSelectedElement(graphRF.graph);
+    }
   };
 
   const onNodeDoubleClick = (event, node) => {
@@ -365,29 +371,6 @@ function Canvas() {
 
   return (
     <div className={classes.root}>
-      {/* <CanvasView /> */}
-      {/* <Rnd
-        // style={{ backgroundColor: 'cyan', zIndex: 400 }}
-        disableDragging={disableDragging}
-        default={{
-          x: 100,
-          y: 100,
-          width: 1000,
-          height: 800,
-        }}
-      > */}
-      {/* <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" noWrap>
-            Graphs Name
-          </Typography>
-          <Checkbox
-            checked={disableDragging}
-            onChange={handlDisableDragging}
-            inputProps={{ 'aria-label': 'primary checkbox' }}
-          />
-        </Toolbar>
-      </AppBar> */}
       <ReactFlowProvider>
         <div
           className="reactflow-wrapper"
@@ -417,21 +400,6 @@ function Canvas() {
             nodeTypes={nodeTypes}
           >
             <Controls />
-            {/* <div
-              style={{ position: 'absolute', right: 10, top: 10, zIndex: 4 }}
-            >
-              <button type="button" onClick={logToObject}>
-                toObject
-              </button>
-              <a
-                href={`data:text/json;charset=utf-8,${encodeURIComponent(
-                  JSON.stringify(elements)
-                )}`}
-                download="filename.json"
-              >
-                Download Json
-              </a>
-            </div> */}
             <Background />
           </ReactFlow>
           {/* <Popover
@@ -442,7 +410,6 @@ function Canvas() {
             /> */}
         </div>
       </ReactFlowProvider>
-      {/* </Rnd> */}
     </div>
   );
 }

@@ -35,6 +35,7 @@ import Upload from '../Components/Upload';
 import AutocompleteDrop from '../Components/AutocompleteDrop';
 import AddIcon from '@material-ui/icons/Add';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 // import UploadFileIcon from '@material-ui/icons/UploadFile';
 // import FileUploadIcon from '@material-ui/icons/FileUpload';
 // import DriveFolderUploadIcon from '@material-ui/icons/DriveFolderUpload';
@@ -195,6 +196,7 @@ export default function Dashboard() {
   const recentGraphs = useStore((state) => state.recentGraphs);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
   const setWorkingGraph = useStore((state) => state.setWorkingGraph);
+  const setSubGraph = useStore((state) => state.setSubGraph);
 
   useEffect(() => {
     console.log(subgraphsStack.length);
@@ -224,17 +226,26 @@ export default function Dashboard() {
     download(JSON.stringify(rfToEwoks(graphRF)), 'graph.json', 'text/plain');
   };
 
-  const getFromServer = async (event) => {
-    console.log('Get graphs from server', workflowValue);
+  const getFromServer = async (isSubgraph) => {
+    console.log('Get graphs from server', workflowValue, isSubgraph);
     const response = await axios.get(
       `http://mxbes2-1707:38280/ewoks/workflow/${workflowValue}`
     );
-    setWorkingGraph(response.data);
+    if (isSubgraph === 'subgraph') {
+      setSubGraph(response.data);
+    } else {
+      setWorkingGraph(response.data);
+    }
   };
 
   const newGraph = (event) => {
     // Name of graph unique and used in recentGraphs, graphRF, subgraphsStack
-    setGraphRF({ graph: {}, nodes: [], links: [] });
+    setGraphRF({ graph: { id: 'new_graph' }, nodes: [], links: [] });
+    setWorkingGraph({
+      graph: { id: 'new_graph', input_nodes: [], output_nodes: [] },
+      nodes: [],
+      links: [],
+    });
     console.log('Start drawing please!');
   };
 
@@ -392,6 +403,17 @@ export default function Dashboard() {
             >
               {/* <b>Open</b> */}
               <DoubleArrowIcon onClick={getFromServer} />
+            </Fab>
+          </IconButton>
+          <IconButton color="inherit">
+            <Fab
+              className={classes.openFileButton}
+              color="primary"
+              size="small"
+              component="span"
+              aria-label="add"
+            >
+              <ArrowDownwardIcon onClick={() => getFromServer('subgraph')} />
             </Fab>
           </IconButton>
           <IconButton color="inherit">

@@ -128,47 +128,50 @@ export default function Sidebar(props) {
     console.log(selectedElement);
     setElement(selectedElement);
     setId(selectedElement.id);
-    if (!selectedElement.graph) {
-      if ('position' in selectedElement) {
-        setNodeType(selectedElement.data.type);
-        setLabel(
-          selectedElement.label
-            ? selectedElement.label
-            : selectedElement.data.label // Remove when graphs ok
-        );
-        setComment(selectedElement.data.comment);
-        setTaskIdentifier(selectedElement.task_identifier);
-        setTaskType(selectedElement.task_type);
-        setTaskGenerator(selectedElement.task_generator);
-        setInputsComplete(!!selectedElement.inputs_complete);
-        console.log(selectedElement.default_inputs);
-        setDefaultInputs(
-          selectedElement.default_inputs ? selectedElement.default_inputs : []
-        );
-      } else {
-        setLinkType(selectedElement.type);
-        setArrowType(selectedElement.arrowHeadType);
-        setAnimated(selectedElement.animated);
-        setLabel(selectedElement.label);
-        if (selectedElement.data && selectedElement.data.data_mapping)
-          setDataMapping(selectedElement.data.data_mapping);
-        if (selectedElement.data && selectedElement.data.map_all_data)
-          setMapAllData(!!selectedElement.data.map_all_data);
-        if (selectedElement.data && selectedElement.data.on_error)
-          setOnError(selectedElement.data.on_error);
-        if (selectedElement.data && selectedElement.data.conditions)
-          setConditions(selectedElement.data.conditions);
-        console.log(selectedElement);
-      }
+
+    if ('position' in selectedElement) {
+      console.log('SHOW NODE DETAILS');
+      setNodeType(selectedElement.data.type);
+      setLabel(
+        selectedElement.label
+          ? selectedElement.label
+          : selectedElement.data.label // Remove when graphs ok
+      );
+      setComment(selectedElement.data.comment);
+      setTaskIdentifier(selectedElement.task_identifier);
+      setTaskType(selectedElement.task_type);
+      setTaskGenerator(selectedElement.task_generator);
+      setInputsComplete(!!selectedElement.inputs_complete);
+      console.log(selectedElement.default_inputs);
+      setDefaultInputs(
+        selectedElement.default_inputs ? selectedElement.default_inputs : []
+      );
+    } else if ('source' in selectedElement) {
+      console.log('SHOW LINK DETAILS');
+      setLinkType(selectedElement.type);
+      setArrowType(selectedElement.arrowHeadType);
+      setAnimated(selectedElement.animated);
+      setLabel(selectedElement.label);
+      setComment(selectedElement.data && selectedElement.data.comment);
+      if (selectedElement.data && selectedElement.data.data_mapping)
+        setDataMapping(selectedElement.data.data_mapping);
+      if (selectedElement.data && selectedElement.data.map_all_data)
+        setMapAllData(!!selectedElement.data.map_all_data);
+      if (selectedElement.data && selectedElement.data.on_error)
+        setOnError(selectedElement.data.on_error);
+      if (selectedElement.data && selectedElement.data.conditions)
+        setConditions(selectedElement.data.conditions);
+      console.log(selectedElement);
     } else {
-      console.log(graphRF.graph.input_nodes, graphRF.graph.output_nodes);
-      setLabel(graphRF.graph.label);
-      setComment(graphRF.graph.comment);
+      console.log('SHOW GRAPH DETAILS');
+      console.log(selectedElement.input_nodes, selectedElement.output_nodes);
+      setLabel(selectedElement.label);
+      setComment(selectedElement.uiProps && selectedElement.uiProps.comment);
       setGraphInputs(
-        graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []
+        selectedElement.input_nodes ? selectedElement.input_nodes : []
       );
       setGraphOutputs(
-        graphRF.graph.output_nodes ? graphRF.graph.output_nodes : []
+        selectedElement.output_nodes ? selectedElement.output_nodes : []
       );
     }
   }, [
@@ -177,7 +180,7 @@ export default function Sidebar(props) {
     graphRF.graph.input_nodes,
     graphRF.graph.output_nodes,
     graphRF.graph.label,
-    graphRF.graph.comment,
+    graphRF.graph.uiProps,
   ]);
 
   const labelChanged = (event) => {
@@ -186,7 +189,7 @@ export default function Sidebar(props) {
     if ('position' in element) {
       setElement({
         ...element,
-        label,
+        label: event.target.value,
         data: { ...element.data, label: event.target.value },
       });
     } else {
@@ -205,8 +208,16 @@ export default function Sidebar(props) {
     });
   };
 
+  const graphCommentChanged = (event) => {
+    setComment(event.target.value);
+    setElement({
+      ...element,
+      uiProps: { ...element.uiProps, comment: event.target.value },
+    });
+  };
+
   const nodeTypeChanged = (event) => {
-    console.log(event.target.value);
+    console.log(event.target.value, element.data.type);
     setNodeType(event.target.value);
     setElement({
       ...element,
@@ -562,7 +573,8 @@ export default function Sidebar(props) {
         </AccordionSummary>
         <AccordionDetails>
           <form className={classes.root} noValidate autoComplete="off">
-            {'id' in selectedElement ? (
+            {/* {'id' in selectedElement ? ( */}
+            {('position' || 'source') in selectedElement ? (
               <div>
                 <b>Id:</b> {props.element.id}
               </div>
@@ -586,7 +598,7 @@ export default function Sidebar(props) {
                     label="Comment"
                     variant="outlined"
                     value={comment || ''}
-                    onChange={commentChanged}
+                    onChange={graphCommentChanged}
                   />
                 </div>
                 <div>
@@ -849,7 +861,7 @@ export default function Sidebar(props) {
                 </Box>
               </React.Fragment>
             )}
-            {'id' in selectedElement && (
+            {('position' || 'source') in selectedElement && (
               <React.Fragment>
                 <div>
                   <Box
