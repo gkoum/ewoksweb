@@ -4,10 +4,6 @@
 // https://discourse.jupyter.org/t/tool-for-notebook-workflows/3764
 // https://gitlab.esrf.fr/denolf/workflow_concepts/-/blob/master/doc/workflows_meeting_march2021.pdf
 
-// Links dont need an id as long as source-target is unique -
-// but if subgraph has two inputs then the subinput needs to be included to make a link unique
-// "sub_target": "", "sub_source": "", not handled in subgraphs when saving as EwoksGraph
-// also not a way to work with 2 or more inputs-outputs in subgraphs graphically
 // ----------------------------------------
 // PROBLEMS with certain workflows
 
@@ -41,19 +37,26 @@
 // ---------------------------------------------
 // FEATURES
 
+// input-outputs for graph dont change in the graph when edited in the left pane
+// also when a new input is declared and colored inputs-outputs of the graph are not updated
+
 // Spinner for each load...
-// conditions and styling
+
+// conditions
+
+// styling options in a new accordion inside nodes-edges accordion with more choices
+
 // Validator for graphs and not break in any conditions
+
 // ----------------------------------------
 // BUGS
+
 
 // conditions get saved like that
 // "conditions": [
 // { "id": "ppfdict", "name": "ppfdict", "value": "4", "isEditMode": true }
 //  ],
 // keep only name and value
-
-// Node type on sidebar is not updated when I click on different node
 
 // ExecuteMXPressOrig.json: Multiple calls are being made as subgraphs are re-requested in a single draw
 

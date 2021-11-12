@@ -574,11 +574,7 @@ export default function Sidebar(props) {
         <AccordionDetails>
           <form className={classes.root} noValidate autoComplete="off">
             {/* {'id' in selectedElement ? ( */}
-            {('position' || 'source') in selectedElement ? (
-              <div>
-                <b>Id:</b> {props.element.id}
-              </div>
-            ) : (
+            {'input_nodes' in selectedElement ? (
               <React.Fragment>
                 <div>
                   <b>Label:</b> {graphRF.graph.label}
@@ -650,6 +646,10 @@ export default function Sidebar(props) {
                   )}
                 </div>
               </React.Fragment>
+            ) : (
+              <div>
+                <b>Id:</b> {props.element.id}
+              </div>
             )}
             {'source' in selectedElement && (
               <React.Fragment>
@@ -861,7 +861,8 @@ export default function Sidebar(props) {
                 </Box>
               </React.Fragment>
             )}
-            {('position' || 'source') in selectedElement && (
+            {(Object.keys(selectedElement).includes('position') ||
+              Object.keys(selectedElement).includes('source')) && (
               <React.Fragment>
                 <div>
                   <Box

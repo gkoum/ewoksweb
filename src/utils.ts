@@ -489,7 +489,7 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
       ({
         source,
         target,
-        data_mapping = [], // { source_output: '', target_input: '' }
+        data_mapping = [],
         sub_target,
         sub_source,
         on_error,
@@ -590,11 +590,11 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
               ? uiProps.label
               : conditions && conditions.length > 0
               ? conditions
-                  .map((el) => `${el.source_output}->${el.target_input}`)
+                  .map((el) => `${el.source_output}->${el.value}`)
                   .join(', ')
               : data_mapping && data_mapping.length > 0
               ? data_mapping
-                  .map((el) => `${el.source_output}->${el.target_input}`)
+                  .map((el) => `${el.source_output}->${el.value}`)
                   .join(', ')
               : '',
           source: source.toString(),

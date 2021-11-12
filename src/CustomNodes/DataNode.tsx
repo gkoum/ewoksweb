@@ -54,7 +54,7 @@ const DataNode = (args) => {
             isValidConnection={isValidInput}
           /> */}
           {/* )} */}
-          {'Data'}
+          {/* {'Data'} */}
           {/* {args.data.type !== 'output' && ( */}
           {/* <Handle
             type="source"

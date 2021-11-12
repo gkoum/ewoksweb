@@ -201,7 +201,7 @@ const Node: React.FC<NodeProps> = ({
           src={iconsObj[image] || orange1}
           alt="orangeImage"
         />
-        {type !== 'inout' && <span style={style.contentWrapper}>{type}</span>}
+        {/* {type !== 'inout' && <span style={style.contentWrapper}>{type}</span>} */}
         {!isGraph && (
           <>
             <Handle
