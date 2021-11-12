@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 let id = 0;
-const getId = () => `new_node_${id++}`;
+const getId = (text) => `${text}_${id++}`;
 const getLinkId = () => `new_link_${id++}`;
 
 const nodeTypes = {
@@ -77,7 +77,8 @@ const nodeTypes = {
   graph: FunctionNode,
   method: DataNode,
   ppfmethod: DataNode,
-  inout: DataNode,
+  graphInput: DataNode,
+  graphOutput: DataNode,
   class: DataNode,
 };
 
@@ -182,7 +183,12 @@ function Canvas() {
       console.log(position);
 
       const newNode = {
-        id: getId(),
+        id:
+          task_identifier === 'graphInput'
+            ? getId('In')
+            : task_identifier === 'graphOutput'
+            ? getId('Out')
+            : getId('new_node'),
         label: task_identifier,
         task_type,
         task_identifier,
@@ -254,6 +260,9 @@ function Canvas() {
         targetHandle: params.targetHandle,
         type: 'default',
         arrowHeadType: 'arrow',
+        startEnd:
+          sourceTask.task_identifier === 'graphInput' ||
+          targetTask.task_identifier === 'graphOutput',
       };
 
       const newGraph = {

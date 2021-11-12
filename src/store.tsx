@@ -18,7 +18,6 @@ import {
 } from './utils';
 import { validateEwoksGraph } from './utils/EwoksValidator';
 import { findAllSubgraphs } from './utils/FindAllSubgraphs';
-import { calcGraphInputsOutputs } from './utils/CalcGraphInputsOutputs';
 
 const nodes: EwoksRFNode[] = [];
 const edges: EwoksRFLink[] = [];
@@ -216,18 +215,6 @@ const useStore = create<State>((set, get) => ({
     console.log(get().graphRF, wg);
     if (wg === '0' || wg === get().graphRF.graph.id) {
       if ('position' in element) {
-        // TODO: if node type was changed the inputs-outputs of the graph might need updating
-        // if (element.data.type !== get().selectedElement.data.type) {
-        //   // calculate new inputs-outputs for graph
-        //   calcGraphInputsOutputs({
-        //     graph: get().graphRF.graph,
-        //     nodes: [
-        //       ...get().graphRF.nodes.filter((nod) => nod.id !== element.id),
-        //       element,
-        //     ],
-        //     links: get().graphRF.links,
-        //   });
-        // }
         set((state) => ({
           ...state,
           graphRF: {

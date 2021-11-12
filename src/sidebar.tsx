@@ -18,7 +18,8 @@ import orange2 from './images/orange2.png';
 import orange3 from './images/orange3.png';
 import AggregateColumns from './images/AggregateColumns.svg';
 import Continuize from './images/Continuize.svg';
-import arrow1 from './images/arrow1.svg';
+import graphInput from './images/graphInput.svg';
+import graphOutput from './images/graphOutput.svg';
 import Correlations from './images/Correlations.svg';
 import CreateClass from './images/CreateClass.svg';
 // import expandMore from './images/expandMore.svg';
@@ -78,7 +79,8 @@ const useStyles = makeStyles((theme: Theme) =>
 const iconsObj = {
   orange1: orange1,
   Continuize: Continuize,
-  arrow1: arrow1,
+  graphInput: graphInput,
+  graphOutput: graphOutput,
   orange2: orange2,
   orange3: orange3,
   AggregateColumns: AggregateColumns,
@@ -347,6 +349,7 @@ export default function Sidebar(props) {
 
   const saveElement = () => {
     console.log(element, selectedElement);
+    // calculate effects on saving an element on the rest of the graph
     setSelectedElement(element);
   };
 
@@ -509,7 +512,7 @@ export default function Sidebar(props) {
               icon: 'orange3',
             },
             {
-              task_identifier: '4',
+              task_identifier: 'ewokscore.ppftasks.PpfPortTask',
               task_type: 'method',
               icon: 'AggregateColumns',
             },
@@ -529,9 +532,14 @@ export default function Sidebar(props) {
               icon: 'CreateClass',
             },
             {
-              task_identifier: 'arrow1',
-              task_type: 'inout',
-              icon: 'arrow1',
+              task_identifier: 'graphInput',
+              task_type: 'graphInput',
+              icon: 'graphInput',
+            },
+            {
+              task_identifier: 'graphOutput',
+              task_type: 'graphOutput',
+              icon: 'graphOutput',
             },
           ].map((elem, index) => (
             <span

@@ -6,7 +6,8 @@ import orange2 from '../images/orange2.png';
 import orange3 from '../images/orange3.png';
 import AggregateColumns from '../images/AggregateColumns.svg';
 import Continuize from '../images/Continuize.svg';
-import arrow1 from '../images/arrow1.svg';
+import graphInput from '../images/graphInput.svg';
+import graphOutput from '../images/graphOutput.svg';
 import Correlations from '../images/Correlations.svg';
 import CreateClass from '../images/CreateClass.svg';
 import CSVFile from '../images/CSVFile.svg';
@@ -86,7 +87,8 @@ interface NodeProps {
 }
 
 const iconsObj = {
-  arrow1: arrow1,
+  graphInput: graphInput,
+  graphOutput: graphOutput,
   orange1: orange1,
   Continuize: Continuize,
   orange2: orange2,
@@ -201,7 +203,7 @@ const Node: React.FC<NodeProps> = ({
           src={iconsObj[image] || orange1}
           alt="orangeImage"
         />
-        {/* {type !== 'inout' && <span style={style.contentWrapper}>{type}</span>} */}
+        {/* {type !== 'graphOutput' && type !== 'graphInput' && <span style={style.contentWrapper}>{type}</span>} */}
         {!isGraph && (
           <>
             <Handle
@@ -240,7 +242,7 @@ const Node: React.FC<NodeProps> = ({
             />
           </>
         )}
-        {type !== 'inout' && (
+        {type !== 'graphOutput' && type !== 'graphInput' && (
           <span style={style.contentWrapper}>{content}</span>
         )}
       </span>
