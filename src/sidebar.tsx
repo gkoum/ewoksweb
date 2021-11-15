@@ -348,12 +348,14 @@ export default function Sidebar(props) {
   };
 
   const saveElement = () => {
+    // TODO: if in save some links dont have active source-target should be deleted?
     console.log(element, selectedElement);
     // calculate effects on saving an element on the rest of the graph
     setSelectedElement(element);
   };
 
   const deleteElement = () => {
+    // TODO: if node deleted all associated links should be deleted with warning?
     console.log(element, selectedElement, graphRF);
     let newGraph = {};
     if (element.position) {
@@ -607,13 +609,14 @@ export default function Sidebar(props) {
                 </div>
                 <div>
                   <b>Inputs </b>
-                  <IconButton
+                  {/* TODO: simple table without edit is probably needed */}
+                  {/* <IconButton
                     style={{ padding: '1px' }}
                     aria-label="delete"
                     onClick={() => addGraphInput()}
-                  >
-                    <AddCircleOutlineIcon />
-                  </IconButton>
+                  > */}
+                  <AddCircleOutlineIcon />
+                  {/* </IconButton> */}
                   {graphInputs.length > 0 && (
                     <EditableTable
                       headers={['Name', 'Node_Id']}
@@ -631,13 +634,14 @@ export default function Sidebar(props) {
                 </div>
                 <div>
                   <b>Outputs </b>
-                  <IconButton
+                  {/* TODO: simple table without edit is probably needed */}
+                  {/* <IconButton
                     style={{ padding: '1px' }}
                     aria-label="delete"
                     onClick={() => addGraphOutput()}
-                  >
-                    <AddCircleOutlineIcon />
-                  </IconButton>
+                  > */}
+                  <AddCircleOutlineIcon />
+                  {/* </IconButton> */}
                   {graphOutputs.length > 0 && (
                     <EditableTable
                       headers={['Name', 'Node_Id']}
@@ -732,6 +736,7 @@ export default function Sidebar(props) {
                 {!onError && (
                   <div>
                     <b>Conditions </b>
+                    {/* TODO: any kind of type is allowed: objects, arrays that need to be editable */}
                     <IconButton
                       style={{ padding: '1px' }}
                       aria-label="delete"
@@ -822,6 +827,7 @@ export default function Sidebar(props) {
                   </div>
                   <div>
                     <b>Default Values </b>
+                    {/* TODO: any kind of type is allowed: objects, arrays that need to be editable */}
                     <IconButton
                       style={{ padding: '1px' }}
                       aria-label="delete"

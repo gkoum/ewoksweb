@@ -68,9 +68,24 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-let id = 0;
-const getId = (text) => `${text}_${id++}`;
-const getLinkId = () => `new_link_${id++}`;
+const nodesIds = new Set();
+const linksIds = new Set();
+const getnodesIds = (text) => {
+  let id = 0;
+  while (nodesIds.has(`${text}_${id}`)) {
+    id++;
+  }
+  nodesIds.add(`${text}_${id}`);
+  return `${text}_${id}`;
+};
+const getLinksIds = () => {
+  let id = 0;
+  while (linksIds.has(id)) {
+    id++;
+  }
+  linksIds.add(id);
+  return `link_${id}`;
+};
 
 const nodeTypes = {
   special: CustomNode,
@@ -184,11 +199,11 @@ function Canvas() {
 
       const newNode = {
         id:
-          task_identifier === 'graphInput'
-            ? getId('In')
-            : task_identifier === 'graphOutput'
-            ? getId('Out')
-            : getId('new_node'),
+          task_type === 'graphInput'
+            ? getnodesIds('In')
+            : task_type === 'graphOutput'
+            ? getnodesIds('Out')
+            : getnodesIds('Node'),
         label: task_identifier,
         task_type,
         task_identifier,
@@ -253,16 +268,23 @@ function Canvas() {
           sub_target: params.targetHandle,
         },
         id: `${params.source}:${params.sourceHandle}->${params.target}:${params.targetHandle}`,
-        label: getLinkId(),
+        label: getLinksIds(),
         source: params.source,
         target: params.target,
         sourceHandle: params.sourceHandle,
         targetHandle: params.targetHandle,
         type: 'default',
         arrowHeadType: 'arrow',
+        style: { stroke: '#96a5f9', strokeWidth: '2.5' },
+        labelBgStyle: {
+          fill: '#fff',
+          color: 'rgb(50, 130, 219)',
+          fillOpacity: 0.7,
+        },
+        labelStyle: { fill: 'blue', fontWeight: 500, fontSize: 14 },
         startEnd:
-          sourceTask.task_identifier === 'graphInput' ||
-          targetTask.task_identifier === 'graphOutput',
+          sourceTask.task_type === 'graphInput' ||
+          targetTask.task_type === 'graphOutput',
       };
 
       const newGraph = {
@@ -378,6 +400,25 @@ function Canvas() {
     }
   };
 
+  const onElementsRemove = (elementsToRemove) => {
+    console.log(elementsToRemove);
+    let newGraph = {} as GraphRF;
+    // TODO: make it work for multiple delete
+    if (elementsToRemove[0].position) {
+      newGraph = {
+        ...graphRF,
+        nodes: graphRF.nodes.filter((nod) => nod.id !== elementsToRemove[0].id),
+      };
+    } else if (elementsToRemove[0].source) {
+      newGraph = {
+        ...graphRF,
+        links: graphRF.links.filter(
+          (link) => link.id !== elementsToRemove[0].id
+        ),
+      };
+    }
+    setGraphRF(newGraph);
+  };
   return (
     <div className={classes.root}>
       <ReactFlowProvider>
@@ -407,6 +448,8 @@ function Canvas() {
             // onNodeDrag={onNodeDrag}
             onNodeDragStop={onNodeDragStop}
             nodeTypes={nodeTypes}
+            onElementsRemove={onElementsRemove}
+            deleteKeyCode={'Delete'}
           >
             <Controls />
             <Background />

@@ -222,8 +222,12 @@ export default function Dashboard() {
   };
 
   const saveToDisk = (event) => {
-    console.log(graphRF, rfToEwoks(graphRF));
-    download(JSON.stringify(rfToEwoks(graphRF)), 'graph.json', 'text/plain');
+    console.log(graphRF, rfToEwoks(graphRF, recentGraphs));
+    download(
+      JSON.stringify(rfToEwoks(graphRF, recentGraphs)),
+      'graph.json',
+      'text/plain'
+    );
   };
 
   const getFromServer = async (isSubgraph) => {

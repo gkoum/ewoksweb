@@ -137,18 +137,19 @@ export async function getSubgraphs(
   return results ? results : [];
 }
 
-export function rfToEwoks(tempGraph): GraphEwoks {
+export function rfToEwoks(tempGraph, recentGraphs): GraphEwoks {
   // calculate input_nodes-output_nodes nodes from graphInput-graphOutput
   const graph = calcGraphInputsOutputs(tempGraph);
+  console.log(tempGraph, graph);
   return {
     graph: graph,
     nodes: toEwoksNodes(tempGraph.nodes),
-    links: toEwoksLinks(tempGraph.links),
+    links: toEwoksLinks(tempGraph.links, recentGraphs),
   };
 }
 
 // EwoksRFLinks --> EwoksLinks for saving
-export function toEwoksLinks(links): EwoksLink[] {
+export function toEwoksLinks(links, recentGraphs): EwoksLink[] {
   // TODO: when input-arrow fake nodes exist remove their links to get an Ewoks description
   const tempLinks: EwoksRFLink[] = [...links].filter((link) => !link.startEnd);
   return tempLinks.map(
@@ -190,7 +191,7 @@ export function toEwoksLinks(links): EwoksLink[] {
 export function toEwoksNodes(nodes: EwoksRFNode[]): EwoksNode[] {
   // TODO: when input-arrow fake nodes exist remove them to get an Ewoks description
   const tempNodes: EwoksRFNode[] = [...nodes].filter(
-    (nod) => !['graphInput', 'graphOutput'].includes(nod.task_identifier)
+    (nod) => !['graphInput', 'graphOutput'].includes(nod.task_type)
   );
   return tempNodes.map(
     ({
@@ -242,31 +243,53 @@ function inNodesLinks(graph) {
     graph.graph.input_nodes &&
     graph.graph.input_nodes.length > 0
   ) {
+    const inNodesInputed = [];
     graph.graph.input_nodes.forEach((inNod) => {
+      const nodeTarget = graph.nodes.find((no) => no.id === inNod.node);
+      console.log(inNod, nodeTarget);
       if (inNod.uiProps && inNod.uiProps.position) {
-        inputs.nodes.push({
-          id: inNod.id,
-          label: inNod.id,
-          task_type: 'graphInput',
-          task_identifier: 'Start-End',
-          uiProps: {
-            type: 'input',
+        if (!inNodesInputed.includes(inNod.id)) {
+          inputs.nodes.push({
+            id: inNod.id,
+            label: inNod.id,
+            task_type: 'graphInput',
+            task_identifier: 'Start-End',
             position: inNod.uiProps.position,
-            icon: 'graphInput',
-          },
-        });
-        inputs.links.push({
-          startEnd: true,
-          source: inNod.id,
-          target: inNod.node,
-          uiProps: {
-            type: 'default',
-            arrowHeadType: 'arrow',
-          },
-        });
+            uiProps: {
+              type: 'input',
+              position: inNod.uiProps.position,
+              icon: 'graphInput',
+            },
+          });
+          inNodesInputed.push(inNod.id);
+        }
+
+        if (nodeTarget.task_type !== 'graph') {
+          inputs.links.push({
+            startEnd: true,
+            source: inNod.id,
+            target: inNod.node,
+            uiProps: {
+              type: 'default',
+              arrowHeadType: 'arrow',
+            },
+          });
+        } else {
+          inputs.links.push({
+            startEnd: true,
+            source: inNod.id,
+            target: inNod.node,
+            sub_target: inNod.sub_node,
+            uiProps: {
+              type: 'default',
+              arrowHeadType: 'arrow',
+            },
+          });
+        }
       }
     });
   }
+  console.log('INPUTS', inputs);
   return inputs;
 }
 
@@ -277,19 +300,25 @@ function outNodesLinks(graph) {
     graph.graph.output_nodes &&
     graph.graph.output_nodes.length > 0
   ) {
+    const outNodesInputed = [];
     graph.graph.output_nodes.forEach((outNod) => {
+      console.log(outNod);
       if (outNod.uiProps && outNod.uiProps.position) {
-        outputs.nodes.push({
-          id: outNod.id,
-          label: outNod.id,
-          task_type: 'graphInput',
-          task_identifier: 'Start-End',
-          uiProps: {
-            type: 'output',
+        if (!outNodesInputed.includes(outNod.id)) {
+          outputs.nodes.push({
+            id: outNod.id,
+            label: outNod.id,
+            task_type: 'graphOutput',
+            task_identifier: 'Start-End',
             position: outNod.uiProps.position,
-            icon: 'graphInput',
-          },
-        });
+            uiProps: {
+              type: 'output',
+              position: outNod.uiProps.position,
+              icon: 'graphOutput',
+            },
+          });
+          outNodesInputed.push(outNod.id);
+        }
         outputs.links.push({
           startEnd: true,
           source: outNod.node,
@@ -475,10 +504,10 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
   // tempGraph: the graph to transform its links
   // newNodeSubgraphs: the subgraphs located in the supergraph.
   // If wrong task_identifier or non-existing graph tempGraph is not in there
-  console.log(tempGraph, newNodeSubgraphs);
 
   const inNodeLinks = inNodesLinks(tempGraph);
   const outNodeLinks = outNodesLinks(tempGraph);
+  console.log(tempGraph, newNodeSubgraphs, inNodeLinks, outNodeLinks);
 
   const inOutTempGraph = { ...tempGraph };
   if (inNodeLinks.links.length > 0) {
@@ -500,6 +529,7 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
         conditions,
         map_all_data,
         uiProps,
+        startEnd,
       }) => {
         console.log(source, target);
         // find the outputs-inputs from the connected nodes
@@ -598,12 +628,13 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
                   .join(', ')
               : data_mapping && data_mapping.length > 0
               ? data_mapping
-                  .map((el) => `${el.source_output}->${el.value}`)
+                  .map((el) => `${el.source_output}->${el.target_input}`)
                   .join(', ')
               : '',
           source: source.toString(),
           target: target.toString(),
           on_error,
+          startEnd,
           targetHandle: uiProps && uiProps.targetHandle,
           sourceHandle: uiProps && uiProps.sourceHandle,
           type: uiProps && uiProps.type ? uiProps.type : '',

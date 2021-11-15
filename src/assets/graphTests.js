@@ -2,111 +2,112 @@
 // decoupling from the Graph visualisation library used means we have a model
 // of ewoks and a map-engine to create a model for react-flow or another for vis etc.
 const PpfPortTask = 'ewokscore.ppftasks.PpfPortTask';
-export const graph = {
-  graph: {
-    id: 'graph1',
-    label: 'graph',
-    input_nodes: [
-      { id: 'in1', node: 'node1' },
-      { id: 'in2', node: 'node4' },
-    ],
-    output_nodes: [
-      { id: 'out1', node: 'node3' },
-      { id: 'out2', node: 'node7' },
-    ],
-  },
-  nodes: [
-    {
-      id: 'node1',
-      task_type: 'method',
-      task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
-      default_inputs: [{ name: 'a', value: 1 }],
-      uiProps: { position: { x: 50, y: 80 }, icon: 'orange1' },
-    },
-    {
-      id: 'node2',
-      task_type: 'graph',
-      task_identifier: 'subgraph1',
-      uiProps: { position: { x: 400, y: 80 }, icon: 'orange2' },
-    },
-    {
-      id: 'node3',
-      task_type: 'method',
-      task_identifier: 'ewokscore.scripttask.ScriptExecutorTask',
-      uiProps: {
-        position: { x: 700, y: 580 },
-        icon: 'orange3',
-      },
-    },
-    {
-      id: 'node4',
-      task_type: 'method',
-      task_identifier: 'ewokscore.ppftasks.PpfMethodExecutorTask',
-      uiProps: { position: { x: 50, y: 380 }, icon: 'Continuize' },
-    },
-    {
-      id: 'node5',
-      task_type: 'method',
-      task_identifier: 'tasks.methods.rerr15',
-      uiProps: {
-        position: { x: 700, y: 80 },
-        icon: 'AggregateColumns',
-      },
-    },
-    {
-      id: 'node6',
-      task_type: 'method',
-      task_identifier: PpfPortTask,
-      uiProps: { position: { x: 900, y: 80 }, icon: 'Correlations' },
-    },
-    {
-      id: 'node7',
-      task_type: 'method',
-      task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
-      uiProps: {
-        position: { x: 1100, y: 240 },
-        icon: 'CreateClass',
-      },
-    },
-  ],
-  links: [
-    {
-      source: 'node1',
-      target: 'node2',
-      data_mapping: [{ source_output: 'ab', target_input: 'result' }],
-      sub_target: 'in1',
-      conditions: [{ source_output: 'return_value', value: 10 }],
-    },
-    {
-      source: 'node4',
-      target: 'node2',
-      data_mapping: [{ source_output: 'ab3', target_input: 'result5' }],
-      sub_target: 'in2',
-    },
-    {
-      source: 'node2',
-      target: 'node3',
-      data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-      sub_source: 'out',
-    },
-    {
-      source: 'node2',
-      target: 'node5',
-      data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-      sub_source: 'out',
-    },
-    {
-      source: 'node5',
-      target: 'node6',
-      data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-    },
-    {
-      source: 'node6',
-      target: 'node7',
-      data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-    },
-  ],
-};
+export const graph = {};
+// export const graph = {
+//   graph: {
+//     id: 'graph1',
+//     label: 'graph',
+//     input_nodes: [
+//       { id: 'in1', node: 'node1' },
+//       { id: 'in2', node: 'node4' },
+//     ],
+//     output_nodes: [
+//       { id: 'out1', node: 'node3' },
+//       { id: 'out2', node: 'node7' },
+//     ],
+//   },
+//   nodes: [
+//     {
+//       id: 'node1',
+//       task_type: 'method',
+//       task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
+//       default_inputs: [{ name: 'a', value: 1 }],
+//       uiProps: { position: { x: 50, y: 80 }, icon: 'orange1' },
+//     },
+//     {
+//       id: 'node2',
+//       task_type: 'graph',
+//       task_identifier: 'subgraph1',
+//       uiProps: { position: { x: 400, y: 80 }, icon: 'orange2' },
+//     },
+//     {
+//       id: 'node3',
+//       task_type: 'method',
+//       task_identifier: 'ewokscore.scripttask.ScriptExecutorTask',
+//       uiProps: {
+//         position: { x: 700, y: 580 },
+//         icon: 'orange3',
+//       },
+//     },
+//     {
+//       id: 'node4',
+//       task_type: 'method',
+//       task_identifier: 'ewokscore.ppftasks.PpfMethodExecutorTask',
+//       uiProps: { position: { x: 50, y: 380 }, icon: 'Continuize' },
+//     },
+//     {
+//       id: 'node5',
+//       task_type: 'method',
+//       task_identifier: 'tasks.methods.rerr15',
+//       uiProps: {
+//         position: { x: 700, y: 80 },
+//         icon: 'AggregateColumns',
+//       },
+//     },
+//     {
+//       id: 'node6',
+//       task_type: 'method',
+//       task_identifier: PpfPortTask,
+//       uiProps: { position: { x: 900, y: 80 }, icon: 'Correlations' },
+//     },
+//     {
+//       id: 'node7',
+//       task_type: 'method',
+//       task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
+//       uiProps: {
+//         position: { x: 1100, y: 240 },
+//         icon: 'CreateClass',
+//       },
+//     },
+//   ],
+//   links: [
+//     {
+//       source: 'node1',
+//       target: 'node2',
+//       data_mapping: [{ source_output: 'ab', target_input: 'result' }],
+//       sub_target: 'in1',
+//       conditions: [{ source_output: 'return_value', value: 10 }],
+//     },
+//     {
+//       source: 'node4',
+//       target: 'node2',
+//       data_mapping: [{ source_output: 'ab3', target_input: 'result5' }],
+//       sub_target: 'in2',
+//     },
+//     {
+//       source: 'node2',
+//       target: 'node3',
+//       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
+//       sub_source: 'out',
+//     },
+//     {
+//       source: 'node2',
+//       target: 'node5',
+//       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
+//       sub_source: 'out',
+//     },
+//     {
+//       source: 'node5',
+//       target: 'node6',
+//       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
+//     },
+//     {
+//       source: 'node6',
+//       target: 'node7',
+//       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
+//     },
+//   ],
+// };
 
 export const subgraph = {
   graph: {
@@ -245,6 +246,153 @@ export const subsubsubgraph = {
 
 export const tasks = [
   {
+    task_type: 'class',
+    task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
+    required_input_names: ['method'],
+    optional_input_names: [],
+    output_names: ['return_value'],
+    category: 'ewokscore',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'ewokscore.scripttask.ScriptExecutorTask',
+    required_input_names: ['script'],
+    optional_input_names: [],
+    output_names: ['returncode'],
+    category: 'ewokscore',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'ewokscore.ppftasks.PpfMethodExecutorTask',
+    required_input_names: ['method'],
+    optional_input_names: ['ppfdict'],
+    output_names: ['ppfdict'],
+    category: 'ewokscore',
+  },
+  {
+    task_type: 'class',
+    task_identifier: PpfPortTask,
+    required_input_names: [],
+    optional_input_names: ['ppfport', 'ppfdict'],
+    output_names: ['ppfdict'],
+    category: 'ewokscore',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.DataSelection',
+    required_input_names: ['filenames'],
+    optional_input_names: [
+      'in_memory',
+      'copy_files',
+      'dark_filename',
+      'root_dir',
+    ],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.DataCopy',
+    required_input_names: ['dataset'],
+    optional_input_names: [],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.DataPassThrough',
+    required_input_names: ['dataset'],
+    optional_input_names: [],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.NoiseRemoval',
+    required_input_names: ['dataset'],
+    optional_input_names: [
+      'method',
+      'kernel_size',
+      'background_type',
+      'chunks',
+      'step',
+    ],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.RoiSelection',
+    required_input_names: ['roi_size', 'dataset', 'roi_origin'],
+    optional_input_names: [],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.DataPartition',
+    required_input_names: ['dataset'],
+    optional_input_names: ['bins', 'n_bins'],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.DimensionDefinition',
+    required_input_names: ['dataset', '_dims'],
+    optional_input_names: [],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.ShiftCorrection',
+    required_input_names: ['dataset'],
+    optional_input_names: ['shift'],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.BlindSourceSeparation',
+    required_input_names: ['dataset', 'method'],
+    optional_input_names: ['n_comp'],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.RockingCurves',
+    required_input_names: ['dataset'],
+    optional_input_names: [],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.GrainPlot',
+    required_input_names: ['dataset'],
+    optional_input_names: [],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.Transformation',
+    required_input_names: ['dataset'],
+    optional_input_names: [],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
+    task_type: 'class',
+    task_identifier: 'darfix.core.process.ZSum',
+    required_input_names: ['dataset'],
+    optional_input_names: ['plot'],
+    output_names: ['dataset'],
+    category: 'darfix',
+  },
+  {
     optional_input_names: [],
     output_names: [],
     required_input_names: [],
@@ -286,7 +434,7 @@ export const tasks = [
     optional_input_names: ['ppfport', 'ppfdict'],
     output_names: ['ppfdict'],
     required_input_names: [],
-    task_identifier: 'ewokscore.ppftasks.PpfPortTask',
+    task_identifier: PpfPortTask,
     task_type: 'class',
   },
   {
