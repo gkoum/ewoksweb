@@ -42,6 +42,8 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 // import UploadIcon from '@material-ui/icons/Upload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
+// import SettingsApplicationsIcon from '@material-ui/core/SettingsApplications';
+import SettingsIcon from '@material-ui/icons/Settings';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
@@ -50,6 +52,7 @@ import MyCard from '../layout/MyCard';
 import axios from 'axios';
 import { getWorkflows } from '../utils';
 import SimpleSnackbar from '../Components/Snackbar';
+import FullScreenDialog from '../Components/FullScreenDialog';
 
 // function Copyright() {
 //   return (
@@ -67,6 +70,11 @@ import SimpleSnackbar from '../Components/Snackbar';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  verticalRule: {
+    borderLeft: '1px solid #7685dd',
+    height: '50px',
+    color: 'wight',
+  },
   openFileButton: {
     backgroundColor: '#96a5f9',
   },
@@ -192,6 +200,7 @@ export default function Dashboard() {
   const setGraphOrSubgraph = useStore((state) => state.setGraphOrSubgraph);
   const [selectedGraph, setSelectedGraph] = React.useState('');
   const [open, setOpen] = React.useState(true);
+  const [openSettings, setOpenSettings] = React.useState(false);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const recentGraphs = useStore((state) => state.recentGraphs);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
@@ -201,6 +210,10 @@ export default function Dashboard() {
   useEffect(() => {
     console.log(subgraphsStack.length);
   }, [subgraphsStack]);
+
+  const handleOpenSettings = () => {
+    setOpenSettings(!openSettings);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -325,6 +338,17 @@ export default function Dashboard() {
             {subgraphsStack[0] &&
               subgraphsStack[subgraphsStack.length - 1].label}
           </Typography>
+          <IconButton color="inherit">
+            <Fab
+              className={classes.openFileButton}
+              color="primary"
+              size="small"
+              component="span"
+              aria-label="add"
+            >
+              <FiberNew onClick={newGraph} />
+            </Fab>
+          </IconButton>
           <FormControl variant="standard" className={classes.formControl}>
             <InputLabel
               id="demo-simple-select-filled-label"
@@ -357,21 +381,11 @@ export default function Dashboard() {
             </Fab>
           </IconButton>
           <IconButton color="inherit">
-            <Fab
-              className={classes.openFileButton}
-              color="primary"
-              size="small"
-              component="span"
-              aria-label="add"
-            >
-              <FiberNew onClick={newGraph} />
-            </Fab>
-          </IconButton>
-          <IconButton color="inherit">
             <Upload>
               <AddIcon onClick={loadFromDisk} />
             </Upload>
           </IconButton>
+          <div className={classes.verticalRule} />
           <IconButton color="inherit">
             <Fab
               className={classes.openFileButton}
@@ -420,11 +434,24 @@ export default function Dashboard() {
               <ArrowDownwardIcon onClick={() => getFromServer('subgraph')} />
             </Fab>
           </IconButton>
+          <div className={classes.verticalRule} />
           <IconButton color="inherit">
+            <Fab
+              className={classes.openFileButton}
+              color="primary"
+              size="small"
+              component="span"
+              aria-label="add"
+            >
+              <SettingsIcon onClick={handleOpenSettings} />
+            </Fab>
+          </IconButton>
+          <FullScreenDialog openClose={openSettings} />
+          {/* <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
             </Badge>
-          </IconButton>
+          </IconButton> */}
           {/* <IconButton color="inherit">
             <AccessAlarmIcon />
           </IconButton> */}

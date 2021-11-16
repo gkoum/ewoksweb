@@ -460,6 +460,7 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
         if (subgraphNode && subgraphNode.graph.id) {
           inputsSub = subgraphNode.graph.input_nodes.map((input) => {
             return {
+              id: input.id,
               label: `${input.id}: ${input.node} ${
                 input.sub_node ? `  -> ${input.sub_node}` : ''
               }`,
@@ -468,6 +469,7 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
           });
           outputsSub = subgraphNode.graph.output_nodes.map((output) => {
             return {
+              id: output.id,
               label: `${output.id}: ${output.node} ${
                 output.sub_node ? ` -> ${output.sub_node}` : ''
               }`,
@@ -513,6 +515,7 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
   // tempGraph: the graph to transform its links
   // newNodeSubgraphs: the subgraphs located in the supergraph.
   // If wrong task_identifier or non-existing graph tempGraph is not in there
+  let id = 0;
 
   const inNodeLinks = inNodesLinks(tempGraph);
   const outNodeLinks = outNodesLinks(tempGraph);
@@ -626,7 +629,7 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
           // TODO: does not accept 2 links between the same nodes?
           id: `${source}:${uiProps && uiProps.sourceHandle}->${target}:${
             uiProps && uiProps.targetHandle
-          }`,
+          }_${id++}`,
           // Label if empty use data-mapping
           label:
             uiProps && uiProps.label
@@ -644,8 +647,12 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
           target: target.toString(),
           on_error,
           startEnd,
-          targetHandle: uiProps && uiProps.targetHandle,
-          sourceHandle: uiProps && uiProps.sourceHandle,
+          targetHandle: sub_target
+            ? sub_target
+            : uiProps && uiProps.targetHandle,
+          sourceHandle: sub_source
+            ? sub_source
+            : uiProps && uiProps.sourceHandle,
           type: uiProps && uiProps.type ? uiProps.type : '',
           arrowHeadType:
             uiProps && uiProps.arrowHeadType ? uiProps.arrowHeadType : '',
