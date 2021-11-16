@@ -36,6 +36,7 @@ const DataNode = (args) => {
       color={'#ced3ee'}
       image={args.data.icon}
       comment={args.data.comment}
+      moreHandles={args.data.moreHandles}
       content={
         <div style={{ ...style.io } as React.CSSProperties}>
           {/* {args.data.type !== 'input' && ( */}

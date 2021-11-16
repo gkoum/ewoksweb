@@ -1,5 +1,5 @@
 /* eslint-disable react/function-component-definition */
-/*jshint sub:true*/
+/* jshint sub:true*/
 import React, { memo } from 'react';
 import orange1 from '../images/orange1.png';
 import orange2 from '../images/orange2.png';
@@ -76,6 +76,7 @@ const style = {
 };
 
 interface NodeProps {
+  moreHandles: boolean;
   isGraph: boolean;
   type: string;
   label: string;
@@ -87,19 +88,19 @@ interface NodeProps {
 }
 
 const iconsObj = {
-  graphInput: graphInput,
-  graphOutput: graphOutput,
-  orange1: orange1,
-  Continuize: Continuize,
-  orange2: orange2,
-  orange3: orange3,
-  AggregateColumns: AggregateColumns,
-  Correlations: Correlations,
-  CreateClass: CreateClass,
+  graphInput,
+  graphOutput,
+  orange1,
+  Continuize,
+  orange2,
+  orange3,
+  AggregateColumns,
+  Correlations,
+  CreateClass,
 };
 const randomProperty = function (obj) {
   const keys = Object.keys(obj);
-  return obj[keys[(keys.length * Math.random()) << 0]];
+  return obj[keys[Math.trunc(keys.length * Math.random())]];
 };
 
 const onDragStart = (e) => {
@@ -110,6 +111,7 @@ const isValidOutput = (connection) => {
 };
 
 const Node: React.FC<NodeProps> = ({
+  moreHandles,
   isGraph,
   type,
   label,
@@ -147,22 +149,24 @@ const Node: React.FC<NodeProps> = ({
         {
           ...style.body,
           ...(selected ? style.selected : []),
-          border: border,
+          border,
         } as React.CSSProperties
       }
     >
       <span style={{ maxWidth: '120px' }} className="icons">
         {!isGraph && (
+          <Handle
+            type="source"
+            position={Position.Right}
+            id="sr"
+            style={{ ...contentStyle.handle, ...contentStyle.handleSource }}
+            isValidConnection={(connection) => isValidOutput(connection)}
+            isConnectable
+            onConnect={(params) => console.log('handle sr onConnect', params)}
+          />
+        )}
+        {!isGraph && moreHandles && (
           <>
-            <Handle
-              type="source"
-              position={Position.Right}
-              id="sr"
-              style={{ ...contentStyle.handle, ...contentStyle.handleSource }}
-              isValidConnection={(connection) => isValidOutput(connection)}
-              isConnectable
-              onConnect={(params) => console.log('handle sr onConnect', params)}
-            />
             <Handle
               type="source"
               position={Position.Top}
@@ -205,15 +209,17 @@ const Node: React.FC<NodeProps> = ({
         />
         {/* {type !== 'graphOutput' && type !== 'graphInput' && <span style={style.contentWrapper}>{type}</span>} */}
         {!isGraph && (
+          <Handle
+            type="target"
+            position={Position.Left}
+            id="tl"
+            style={{ ...contentStyle.handle, ...contentStyle.handleTarget }}
+            isConnectable
+            onConnect={(params) => console.log('handle tl onConnect', params)}
+          />
+        )}
+        {!isGraph && moreHandles && (
           <>
-            <Handle
-              type="target"
-              position={Position.Left}
-              id="tl"
-              style={{ ...contentStyle.handle, ...contentStyle.handleTarget }}
-              isConnectable
-              onConnect={(params) => console.log('handle tl onConnect', params)}
-            />
             <Handle
               type="target"
               position={Position.Bottom}

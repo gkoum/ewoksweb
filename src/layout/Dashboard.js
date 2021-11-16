@@ -306,7 +306,7 @@ export default function Dashboard() {
             noWrap
             className={classes.title}
           >
-            <Breadcrumbs aria-label="breadcrumb" color="textPrimary">
+            <Breadcrumbs aria-label="breadcrumb" color="textWarning">
               {subgraphsStack[0] &&
                 subgraphsStack.map((gr) => (
                   <Link

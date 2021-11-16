@@ -123,6 +123,7 @@ export interface EwoksRFNode {
     outputs?: [string]; // ?
     icon?: string;
     comment?: string;
+    moreHandles?: boolean;
   };
   sourcePosition?: Position;
   targetPosition?: Position;

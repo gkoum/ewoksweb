@@ -409,6 +409,14 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
               required_input_names: [],
             };
         console.log('TASK:', tempTask);
+
+        let moreHandles = false;
+        if (uiProps && uiProps.moreHandles !== undefined) {
+          moreHandles = uiProps.moreHandles;
+        } else {
+          moreHandles = true;
+        }
+
         if (task_type != 'graph') {
           return {
             id: id.toString(),
@@ -434,6 +442,7 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
               type: nodeType,
               icon: uiProps && uiProps.icon,
               comment: uiProps && uiProps.comment,
+              moreHandles: moreHandles,
             },
             position:
               uiProps && uiProps.position

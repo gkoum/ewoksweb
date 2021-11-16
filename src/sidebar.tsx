@@ -108,6 +108,7 @@ export default function Sidebar(props) {
   const [dataMapping, setDataMapping] = React.useState<Inputs[]>([]);
   const [conditions, setConditions] = React.useState<Inputs[]>([]);
   const [inputsComplete, setInputsComplete] = React.useState<boolean>(false);
+  const [moreHandles, setMoreHandles] = React.useState<boolean>(true);
   const [mapAllData, setMapAllData] = React.useState<boolean>(false);
   const [nodeType, setNodeType] = React.useState('');
   const [linkType, setLinkType] = React.useState('');
@@ -144,6 +145,7 @@ export default function Sidebar(props) {
       setTaskType(selectedElement.task_type);
       setTaskGenerator(selectedElement.task_generator);
       setInputsComplete(!!selectedElement.inputs_complete);
+      setMoreHandles(!!selectedElement.data.moreHandles);
       console.log(selectedElement.default_inputs);
       setDefaultInputs(
         selectedElement.default_inputs ? selectedElement.default_inputs : []
@@ -310,6 +312,15 @@ export default function Sidebar(props) {
     setTaskGenerator(event.target.value);
   };
 
+  const moreHandlesChanged = (event) => {
+    console.log(moreHandles, event.target.checked);
+    setMoreHandles(event.target.checked);
+    setElement({
+      ...element,
+      data: { ...element.data, moreHandles: event.target.checked },
+    });
+  };
+
   const inputsCompleteChanged = (event) => {
     console.log(inputsComplete, event.target.checked);
     setInputsComplete(event.target.checked);
@@ -359,9 +370,15 @@ export default function Sidebar(props) {
     console.log(element, selectedElement, graphRF);
     let newGraph = {};
     if (element.position) {
+      // find associated links to delete
+      const nodesLinks = graphRF.links.filter(
+        (link) => !(link.source === element.id || link.target === element.id)
+      );
+      console.log(nodesLinks);
       newGraph = {
         ...graphRF,
         nodes: graphRF.nodes.filter((nod) => nod.id !== element.id),
+        links: nodesLinks,
       };
     } else if (element.source) {
       newGraph = {
@@ -614,9 +631,9 @@ export default function Sidebar(props) {
                     style={{ padding: '1px' }}
                     aria-label="delete"
                     onClick={() => addGraphInput()}
-                  > */}
-                  <AddCircleOutlineIcon />
-                  {/* </IconButton> */}
+                  >
+                    <AddCircleOutlineIcon />
+                  </IconButton> */}
                   {graphInputs.length > 0 && (
                     <EditableTable
                       headers={['Name', 'Node_Id']}
@@ -639,9 +656,9 @@ export default function Sidebar(props) {
                     style={{ padding: '1px' }}
                     aria-label="delete"
                     onClick={() => addGraphOutput()}
-                  > */}
-                  <AddCircleOutlineIcon />
-                  {/* </IconButton> */}
+                  >
+                    <AddCircleOutlineIcon />
+                  </IconButton> */}
                   {graphOutputs.length > 0 && (
                     <EditableTable
                       headers={['Name', 'Node_Id']}
@@ -854,6 +871,14 @@ export default function Sidebar(props) {
                   </div>
                   <hr></hr>
                   <div>
+                    <div>
+                      <b>More handles</b>
+                      <Checkbox
+                        checked={moreHandles}
+                        onChange={moreHandlesChanged}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                      />
+                    </div>
                     <FormControl variant="filled" fullWidth>
                       <InputLabel>Node type</InputLabel>
                       <Select
