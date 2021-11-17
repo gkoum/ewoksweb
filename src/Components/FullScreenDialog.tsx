@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -30,6 +30,12 @@ function FullScreenDialog(props) {
   console.log(props);
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+
+  useEffect(() => {
+    console.log(open, props.openSettings);
+    // setOpen(props.openSettings);
+  }, [open, props.openSettings]);
+
   // setOpen(props.openClose);
   function handleClickOpen() {
     setOpen(true);
@@ -37,16 +43,14 @@ function FullScreenDialog(props) {
 
   function handleClose() {
     setOpen(false);
+    props.handleOpenSettings();
   }
 
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        O
-      </Button>
       <Dialog
         fullScreen
-        open={open}
+        open={props.openSettings}
         onClose={handleClose}
         TransitionComponent={Transition}
       >

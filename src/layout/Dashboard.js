@@ -212,6 +212,7 @@ export default function Dashboard() {
   }, [subgraphsStack]);
 
   const handleOpenSettings = () => {
+    console.log(openSettings);
     setOpenSettings(!openSettings);
   };
 
@@ -446,7 +447,10 @@ export default function Dashboard() {
               <SettingsIcon onClick={handleOpenSettings} />
             </Fab>
           </IconButton>
-          <FullScreenDialog openClose={openSettings} />
+          <FullScreenDialog
+            handleOpenSettings={handleOpenSettings}
+            openSettings={openSettings}
+          />
           {/* <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
