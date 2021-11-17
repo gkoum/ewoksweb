@@ -7,6 +7,10 @@ import orange3 from '../images/orange3.png';
 import AggregateColumns from '../images/AggregateColumns.svg';
 import Continuize from '../images/Continuize.svg';
 import graphInput from '../images/graphInput.svg';
+import right from '../images/right.svg';
+import left from '../images/left.svg';
+import up from '../images/up.svg';
+import down from '../images/down.svg';
 import graphOutput from '../images/graphOutput.svg';
 import Correlations from '../images/Correlations.svg';
 import CreateClass from '../images/CreateClass.svg';
@@ -29,6 +33,7 @@ export const contentStyle = {
   right: { right: '-8px' },
   textRight: { textAlign: 'right' },
   handle: {
+    zIndex: '1000',
     widht: '20px', // Does not work
     height: '20px',
     margin: 'auto',
@@ -39,10 +44,17 @@ export const contentStyle = {
       'rgba(0, 0, 0, 0.2) 0px 1px 3px 0px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 2px 1px -1px',
   },
   handleSource: {
+    width: '10px',
     border: '2px solid rgb(118, 133, 221)',
   },
   handleTarget: {
+    width: '10px',
     border: '2px solid rgb(230, 190, 118)',
+  },
+  handleUpDown: {
+    // height: '18px',
+    // background: 'rgb(221, 221, 221)',
+    // width: '11px',
   },
 };
 
@@ -69,6 +81,7 @@ const style = {
     padding: '8px 3px',
     flexGrow: 1,
     backgroundColor: '#ee1',
+    zIndex: '-2',
   },
   contentWrapper: {
     padding: '8px 0px',
@@ -88,6 +101,10 @@ interface NodeProps {
 }
 
 const iconsObj = {
+  left,
+  right,
+  up,
+  down,
   graphInput,
   graphOutput,
   orange1,
@@ -163,7 +180,15 @@ const Node: React.FC<NodeProps> = ({
             isValidConnection={(connection) => isValidOutput(connection)}
             isConnectable
             onConnect={(params) => console.log('handle sr onConnect', params)}
-          />
+          >
+            {/* <img
+              role="presentation"
+              draggable="false"
+              onDragStart={(event) => onDragStart(event)}
+              src={iconsObj['right']}
+              alt=""
+            /> */}
+          </Handle>
         )}
         {!isGraph && moreHandles && (
           <>
@@ -174,13 +199,21 @@ const Node: React.FC<NodeProps> = ({
               style={{
                 right: 20,
                 left: 'auto',
-                background: '#555',
                 ...contentStyle.handleSource,
+                ...contentStyle.handleUpDown,
               }}
               isValidConnection={(connection) => isValidOutput(connection)}
               isConnectable
               onConnect={(params) => console.log('handle st onConnect', params)}
-            />
+            >
+              {/* <img
+                role="presentation"
+                draggable="false"
+                onDragStart={(event) => onDragStart(event)}
+                src={iconsObj['up']}
+                alt=""
+              /> */}
+            </Handle>
             <Handle
               type="source"
               position={Position.Bottom}
@@ -188,13 +221,15 @@ const Node: React.FC<NodeProps> = ({
               style={{
                 right: 20,
                 left: 'auto',
-                background: '#555',
                 ...contentStyle.handleSource,
+                ...contentStyle.handleUpDown,
               }}
               isValidConnection={(connection) => isValidOutput(connection)}
               isConnectable
               onConnect={(params) => console.log('handle sb onConnect', params)}
-            />
+            >
+              {/* <img src={iconsObj['down']} alt="" /> */}
+            </Handle>
           </>
         )}
         <div style={customTitle}>{label}</div>
@@ -213,10 +248,15 @@ const Node: React.FC<NodeProps> = ({
             type="target"
             position={Position.Left}
             id="tl"
-            style={{ ...contentStyle.handle, ...contentStyle.handleTarget }}
+            style={{
+              ...contentStyle.handle,
+              ...contentStyle.handleTarget,
+            }}
             isConnectable
             onConnect={(params) => console.log('handle tl onConnect', params)}
-          />
+          >
+            {/* <img src={iconsObj['right']} alt="" /> */}
+          </Handle>
         )}
         {!isGraph && moreHandles && (
           <>
@@ -225,27 +265,31 @@ const Node: React.FC<NodeProps> = ({
               position={Position.Bottom}
               id="tb"
               style={{
-                left: 20,
-                background: '#555',
+                left: 30,
                 ...contentStyle.handleTarget,
+                ...contentStyle.handleUpDown,
               }}
               isValidConnection={(connection) => isValidOutput(connection)}
               isConnectable
               onConnect={(params) => console.log('handle tb onConnect', params)}
-            />
+            >
+              {/* <img src={iconsObj['up']} alt="" /> */}
+            </Handle>
             <Handle
               type="target"
               position={Position.Top}
               id="tt"
               style={{
-                left: 20,
-                background: '#555',
+                left: 30,
                 ...contentStyle.handleTarget,
+                ...contentStyle.handleUpDown,
               }}
               isValidConnection={(connection) => isValidOutput(connection)}
               isConnectable
               onConnect={(params) => console.log('handle tt onConnect', params)}
-            />
+            >
+              {/* <img src={iconsObj['down']} alt="" /> */}
+            </Handle>
           </>
         )}
         {type !== 'graphOutput' && type !== 'graphInput' && (

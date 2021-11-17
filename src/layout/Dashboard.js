@@ -67,7 +67,7 @@ import FullScreenDialog from '../Components/FullScreenDialog';
 //   );
 // }
 
-const drawerWidth = 240;
+const drawerWidth = 290;
 
 const useStyles = makeStyles((theme) => ({
   verticalRule: {
@@ -320,7 +320,7 @@ export default function Dashboard() {
             noWrap
             className={classes.title}
           >
-            <Breadcrumbs aria-label="breadcrumb" color="textWarning">
+            <Breadcrumbs aria-label="breadcrumb" color="secondary">
               {subgraphsStack[0] &&
                 subgraphsStack.map((gr) => (
                   <Link

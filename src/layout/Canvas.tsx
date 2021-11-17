@@ -462,6 +462,7 @@ function Canvas() {
             /> */}
         </div>
       </ReactFlowProvider>
+      <ReactJson src={graphRF} />
     </div>
   );
 }

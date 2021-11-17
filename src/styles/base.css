@@ -65,3 +65,12 @@ abbr[title] {
     animation: none !important;
   }
 }
+
+.react-flow__handle-top {
+  top: -35px;
+  border-radius: 0;
+}
+
+.react-flow__handle {
+  width: 10px;
+}
