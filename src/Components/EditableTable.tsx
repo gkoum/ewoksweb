@@ -14,6 +14,8 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import DoneIcon from '@material-ui/icons/DoneAllTwoTone';
 import RevertIcon from '@material-ui/icons/NotInterestedOutlined';
 import { Icon, MenuItem, Select } from '@material-ui/core';
+import ReactJson from 'react-json-view';
+import useStore from '../store';
 // import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const useStyles = makeStyles((theme) => ({
@@ -25,34 +27,27 @@ const useStyles = makeStyles((theme) => ({
   },
   table: {
     padding: '1px',
-    minWidth: 100,
-    maxWidth: 220,
+    minWidth: 160,
+    maxWidth: 270,
   },
   selectTableCell: {
-    width: 40,
+    width: 28,
     padding: '1px',
   },
   tableCell: {
     // padding: '1px',
-    width: 70,
+    width: 120,
     height: 20,
     padding: '1px',
   },
   input: {
-    width: 70,
+    width: 90,
     height: 20,
     padding: '1px',
   },
 }));
 
 const createData = (pair) => {
-  // console.log(
-  //   pair,
-  //   Object.keys(pair)[1],
-  //   Object.values(pair)[1],
-  //   Object.keys(pair)[0],
-  //   Object.values(pair)[0]
-  // );
   return pair.id && pair.value
     ? { ...pair, isEditMode: false }
     : {
@@ -60,6 +55,7 @@ const createData = (pair) => {
         name: Object.values(pair)[0],
         value: Object.values(pair)[1],
         isEditMode: false,
+        exists: true,
       };
 };
 
@@ -68,10 +64,29 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
   const { isEditMode } = row;
   console.log(row, name, onChange, typeOfValues);
   // console.log('typeOfValues:', typeOfValues);
+
+  const graphRF = useStore((state) => state.graphRF);
+
   return (
     <TableCell align="left" className={classes.tableCell}>
       {isEditMode ? (
-        typeOfValues.type === 'select' ? (
+        typeOfValues.type === 'dict' ? (
+          <ReactJson
+            src={graphRF}
+            name={'graph'}
+            theme={'monokai'}
+            collapsed
+            collapseStringsAfterLength={30}
+            groupArraysAfterLength={15}
+            onEdit={(edit) => true}
+            onAdd={(add) => true}
+            defaultValue={'string'}
+            onDelete={(del) => true}
+            onSelect={(sel) => true}
+            quotesOnKeys={false}
+            style={{ 'background-color': 'rgb(59, 77, 172)' }}
+          />
+        ) : typeOfValues.type === 'list' || typeOfValues.type === 'bool' ? (
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
@@ -103,17 +118,15 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
 
 function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
+  const [typeOfValuesExists, setTypeOfValuesExists] = React.useState(false);
   // console.log('PROPS:', props);
+  const [typeOfInput, setTypeOfInput] = React.useState();
+
+  const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
 
   useEffect(() => {
-    // console.log(
-    //   props.defaultValues,
-    //   props.defaultValues
-    //     ? props.defaultValues.map((pair) => {
-    //         return createData(pair);
-    //       })
-    //     : []
-    // );
+    console.log(props);
+    setTypeOfValuesExists(props.typeOfValues[1].exists);
     setRows(
       props.defaultValues
         ? props.defaultValues.map((pair) => {
@@ -121,13 +134,13 @@ function EditableTable(props) {
           })
         : []
     );
-  }, [props.defaultValues]);
+  }, [props, props.defaultValues]);
 
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
 
-  const onToggleEditMode = (id) => {
-    // console.log(id, props.defaultValues);
+  const onToggleEditMode = (id, command) => {
+    console.log(id, rows, props.defaultValues, command);
     setRows((state) => {
       return rows.map((row) => {
         if (row.id === id) {
@@ -141,7 +154,7 @@ function EditableTable(props) {
       });
     });
     // console.log(rows);
-    props.valuesChanged(rows);
+    if (command === 'done') props.valuesChanged(rows);
   };
 
   const onChange = (e, row) => {
@@ -172,15 +185,21 @@ function EditableTable(props) {
     props.valuesChanged(newRows);
   };
 
+  const changedTypeOfInput = (e, row) => {
+    console.log(e.target.value, row, typeOfValuesExists, props);
+    setTypeOfValuesExists(!typeOfValuesExists);
+    setTypeOfInput(e.target.value);
+  };
+
   return (
     <Paper className={classes.root}>
       <Table className={classes.table} aria-label="caption table">
         <TableHead>
           <TableRow>
-            <TableCell style={{ padding: '1px' }} align="left">
+            <TableCell align="left" className={classes.tableCell}>
               {props.headers[0]}
             </TableCell>
-            <TableCell style={{ padding: '1px' }} align="left">
+            <TableCell align="left" className={classes.tableCell}>
               {props.headers[1]}
             </TableCell>
           </TableRow>
@@ -188,29 +207,58 @@ function EditableTable(props) {
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.id}>
-              <CustomTableCell
-                {...{
-                  row,
-                  name: 'name',
-                  onChange,
-                  typeOfValues: props.typeOfValues && props.typeOfValues[0],
-                }}
-              />
-              <CustomTableCell
-                {...{
-                  row,
-                  name: 'value',
-                  onChange,
-                  typeOfValues: props.typeOfValues && props.typeOfValues[1],
-                }}
-              />
+              {typeOfValuesExists ? (
+                <>
+                  <CustomTableCell
+                    {...{
+                      row,
+                      name: 'name',
+                      onChange,
+                      typeOfValues: props.typeOfValues && props.typeOfValues[0],
+                    }}
+                  />
+                  <CustomTableCell
+                    {...{
+                      row,
+                      name: 'value',
+                      onChange,
+                      typeOfValues: {
+                        type: typeOfInput,
+                        exists: typeOfInput != undefined,
+                      }, // props.typeOfValues && props.typeOfValues[1],
+                    }}
+                  />
+                </>
+              ) : (
+                <>
+                  <TableCell align="left" className={classes.tableCell}>
+                    Select value-type
+                  </TableCell>
+                  <TableCell align="left" className={classes.tableCell}>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={typeOfInput}
+                      label="Task type"
+                      onChange={(e) => changedTypeOfInput(e, row)}
+                    >
+                      {typesOfInputs.map((tex, index) => (
+                        <MenuItem key={index} value={tex}>
+                          {tex}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </TableCell>
+                </>
+              )}
+
               <TableCell className={classes.selectTableCell}>
                 {row.isEditMode ? (
                   <>
                     <IconButton
                       style={{ padding: '1px' }}
                       aria-label="done"
-                      onClick={() => onToggleEditMode(row.id)}
+                      onClick={() => onToggleEditMode(row.id, 'done')}
                     >
                       <DoneIcon />
                     </IconButton>
@@ -226,8 +274,8 @@ function EditableTable(props) {
                   <span>
                     <IconButton
                       style={{ padding: '1px' }}
-                      aria-label="delete"
-                      onClick={() => onToggleEditMode(row.id)}
+                      aria-label="edit"
+                      onClick={() => onToggleEditMode(row.id, 'edit')}
                     >
                       <EditIcon />
                     </IconButton>

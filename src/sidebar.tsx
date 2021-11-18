@@ -34,6 +34,7 @@ import EditableTable from './Components/EditableTable';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Upload from './Components/Upload';
 import AddIcon from '@material-ui/icons/Add';
+import ReactJson from 'react-json-view';
 
 import type {
   Graph,
@@ -407,7 +408,7 @@ export default function Sidebar(props) {
           ...element.data,
           conditions: [
             ...element.data.conditions,
-            { id: '-', name: '-', value: '-' },
+            { id: '', name: '', value: '' },
           ],
         },
       });
@@ -417,7 +418,7 @@ export default function Sidebar(props) {
         ...element,
         data: {
           ...element.data,
-          conditions: [{ id: '-', name: '-', value: '-' }],
+          conditions: [{ id: '', name: '', value: '' }],
         },
       });
     }
@@ -750,7 +751,7 @@ export default function Sidebar(props) {
                     inputProps={{ 'aria-label': 'controlled' }}
                   />
                 </div>
-                {!onError && (
+                {!onError && element.source && (
                   <div>
                     <b>Conditions </b>
                     {/* TODO: any kind of type is allowed: objects, arrays that need to be editable */}
@@ -763,15 +764,25 @@ export default function Sidebar(props) {
                     </IconButton>
                     {conditions && conditions.length > 0 && (
                       <EditableTable
-                        headers={['Name', 'Value']}
+                        headers={['Source_output', 'Value']}
                         defaultValues={conditions}
                         valuesChanged={conditionsValuesChanged}
                         typeOfValues={[
                           {
-                            type: 'select',
+                            type: element.source
+                              ? graphRF &&
+                                graphRF.nodes &&
+                                graphRF.nodes.find((nod) => {
+                                  console.log(nod, element);
+                                  return nod.id === element.source;
+                                }).task_type !== 'ppfmethod'
+                                ? 'select'
+                                : 'input'
+                              : 'input',
                             values: props.element.data.links_input_names || [],
+                            exists: true,
                           },
-                          { type: 'input' },
+                          { type: 'input', exists: false },
                         ]}
                       />
                     )}
@@ -828,7 +839,7 @@ export default function Sidebar(props) {
                 <Box
                   component="form"
                   sx={{
-                    '& > :not(style)': { m: 1, width: '27ch' },
+                    '& > :not(style)': { m: 1, width: '34ch' },
                   }}
                   noValidate
                   autoComplete="off"
@@ -907,7 +918,7 @@ export default function Sidebar(props) {
                   <Box
                     component="form"
                     sx={{
-                      '& > :not(style)': { m: 1, width: '27ch' },
+                      '& > :not(style)': { m: 1, width: '34ch' },
                     }}
                     noValidate
                     autoComplete="off"
@@ -933,7 +944,7 @@ export default function Sidebar(props) {
                   <Box
                     component="form"
                     sx={{
-                      '& > :not(style)': { m: 1, width: '27ch' },
+                      '& > :not(style)': { m: 1, width: '34ch' },
                     }}
                     noValidate
                     autoComplete="off"
@@ -967,6 +978,21 @@ export default function Sidebar(props) {
           </form>
         </AccordionDetails>
       </Accordion>
+      <ReactJson
+        src={graphRF}
+        name={'graph'}
+        theme={'monokai'}
+        collapsed
+        collapseStringsAfterLength={30}
+        groupArraysAfterLength={15}
+        onEdit={(edit) => true}
+        onAdd={(add) => true}
+        defaultValue={'string'}
+        onDelete={(del) => true}
+        onSelect={(sel) => true}
+        quotesOnKeys={false}
+        style={{ 'background-color': 'rgb(59, 77, 172)' }}
+      />
     </aside>
   );
 }

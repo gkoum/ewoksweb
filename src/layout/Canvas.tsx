@@ -20,7 +20,6 @@ import type {
   ReactFlowRefType,
 } from 'react-flow-renderer/dist/container/ReactFlow';
 import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
-import ReactJson from 'react-json-view';
 import { Rnd } from 'react-rnd';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import useStore from '../store';
@@ -462,7 +461,6 @@ function Canvas() {
             /> */}
         </div>
       </ReactFlowProvider>
-      <ReactJson src={graphRF} />
     </div>
   );
 }
