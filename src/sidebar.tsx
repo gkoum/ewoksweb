@@ -258,7 +258,7 @@ export default function Sidebar(props) {
   };
 
   const conditionsValuesChanged = (table) => {
-    console.log(table);
+    console.log(table, element);
     setElement({
       ...element,
       data: { ...element.data, conditions: table },
@@ -434,7 +434,7 @@ export default function Sidebar(props) {
           ...element.data,
           data_mapping: [
             ...element.data.data_mapping,
-            { id: '-', name: '-', value: '-' },
+            { id: '', name: '', value: '' },
           ],
         },
       });
@@ -444,7 +444,7 @@ export default function Sidebar(props) {
         ...element,
         data: {
           ...element.data,
-          data_mapping: [{ id: '-', name: '-', value: '-' }],
+          data_mapping: [{ id: '', name: '', value: '' }],
         },
       });
     }
@@ -458,13 +458,13 @@ export default function Sidebar(props) {
         ...element,
         default_inputs: [
           ...element.default_inputs,
-          { id: '-', name: '-', value: '-' },
+          { id: '', name: '', value: '' },
         ],
       });
     } else {
       setSelectedElement({
         ...element,
-        default_inputs: [{ id: '-', name: '-', value: '-' }],
+        default_inputs: [{ id: '', name: '', value: '' }],
       });
     }
   };
@@ -708,7 +708,7 @@ export default function Sidebar(props) {
                     inputProps={{ 'aria-label': 'controlled' }}
                   />
                 </div>
-                {!mapAllData && (
+                {!mapAllData && element.source && (
                   <div>
                     <b>Data Mapping </b>
                     <IconButton
@@ -725,11 +725,33 @@ export default function Sidebar(props) {
                         valuesChanged={dataMappingValuesChanged}
                         typeOfValues={[
                           {
-                            type: 'select',
+                            type: element.source
+                              ? ['class'].includes(
+                                  graphRF &&
+                                    graphRF.nodes[0] &&
+                                    graphRF.nodes.find((nod) => {
+                                      console.log(nod, element);
+                                      return nod.id === element.source;
+                                    }).task_type
+                                )
+                                ? 'select'
+                                : 'input'
+                              : 'input',
                             values: props.element.data.links_input_names || [],
                           },
                           {
-                            type: 'select',
+                            type: element.target
+                              ? ['class'].includes(
+                                  graphRF &&
+                                    graphRF.nodes[0] &&
+                                    graphRF.nodes.find((nod) => {
+                                      console.log(nod, element);
+                                      return nod.id === element.target;
+                                    }).task_type
+                                )
+                                ? 'select'
+                                : 'input'
+                              : 'input',
                             values:
                               [
                                 ...props.element.data
@@ -770,19 +792,25 @@ export default function Sidebar(props) {
                         typeOfValues={[
                           {
                             type: element.source
-                              ? graphRF &&
-                                graphRF.nodes &&
-                                graphRF.nodes.find((nod) => {
-                                  console.log(nod, element);
-                                  return nod.id === element.source;
-                                }).task_type !== 'ppfmethod'
+                              ? ['class'].includes(
+                                  graphRF &&
+                                    graphRF.nodes[0] &&
+                                    graphRF.nodes.find((nod) => {
+                                      console.log(nod, element);
+                                      return nod.id === element.source;
+                                    }).task_type
+                                )
                                 ? 'select'
                                 : 'input'
                               : 'input',
                             values: props.element.data.links_input_names || [],
                             exists: true,
                           },
-                          { type: 'input', exists: false },
+                          {
+                            type: 'input',
+                            exists: true,
+                            values: [true, false],
+                          },
                         ]}
                       />
                     )}

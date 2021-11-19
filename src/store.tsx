@@ -130,6 +130,7 @@ const useStore = create<State>((set, get) => ({
   setWorkingGraph: async (workingGraph: GraphEwoks): Promise<GraphRF> => {
     // 1. if it is a new graph opening initialize
     // TODO: remove initialise or id: 0. Send clear messages
+    get().setSelectedElement({} as EwoksRFNode | EwoksRFLink);
     get().setSubgraphsStack({ id: 'initialiase', label: '' });
     get().setGraphRF(initializedGraph);
     // Is the following needed as to not get existing graphs? Better an empty array?

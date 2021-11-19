@@ -265,7 +265,7 @@ const Node: React.FC<NodeProps> = ({
               position={Position.Bottom}
               id="tb"
               style={{
-                left: 30,
+                left: 20,
                 ...contentStyle.handleTarget,
                 ...contentStyle.handleUpDown,
               }}
@@ -280,7 +280,7 @@ const Node: React.FC<NodeProps> = ({
               position={Position.Top}
               id="tt"
               style={{
-                left: 30,
+                left: 20,
                 ...contentStyle.handleTarget,
                 ...contentStyle.handleUpDown,
               }}

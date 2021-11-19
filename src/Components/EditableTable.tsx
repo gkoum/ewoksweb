@@ -69,8 +69,10 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
 
   return (
     <TableCell align="left" className={classes.tableCell}>
+      {/* In edit mode the type comes from sidebar in data-mapping and
+      from the selected type here for conditions and default-values */}
       {isEditMode ? (
-        typeOfValues.type === 'dict' ? (
+        typeOfValues.type === 'dict' || typeOfValues.type === 'list' ? (
           <ReactJson
             src={graphRF}
             name={'graph'}
@@ -86,7 +88,7 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
             quotesOnKeys={false}
             style={{ 'background-color': 'rgb(59, 77, 172)' }}
           />
-        ) : typeOfValues.type === 'list' || typeOfValues.type === 'bool' ? (
+        ) : typeOfValues.type === 'select' || typeOfValues.type === 'bool' ? (
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
@@ -125,8 +127,8 @@ function EditableTable(props) {
   const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
 
   useEffect(() => {
-    console.log(props);
-    setTypeOfValuesExists(props.typeOfValues[1].exists);
+    console.log(props.defaultValues);
+    // setTypeOfValuesExists(props.typeOfValues[1].exists);
     setRows(
       props.defaultValues
         ? props.defaultValues.map((pair) => {
@@ -134,7 +136,7 @@ function EditableTable(props) {
           })
         : []
     );
-  }, [props, props.defaultValues]);
+  }, [props.defaultValues]);
 
   const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
@@ -197,40 +199,20 @@ function EditableTable(props) {
         <TableHead>
           <TableRow>
             <TableCell align="left" className={classes.tableCell}>
-              {props.headers[0]}
+              <b>{props.headers[0]}</b>
             </TableCell>
             <TableCell align="left" className={classes.tableCell}>
-              {props.headers[1]}
+              <b>{props.headers[1]}</b>
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
-            <TableRow key={row.id}>
-              {typeOfValuesExists ? (
-                <>
-                  <CustomTableCell
-                    {...{
-                      row,
-                      name: 'name',
-                      onChange,
-                      typeOfValues: props.typeOfValues && props.typeOfValues[0],
-                    }}
-                  />
-                  <CustomTableCell
-                    {...{
-                      row,
-                      name: 'value',
-                      onChange,
-                      typeOfValues: {
-                        type: typeOfInput,
-                        exists: typeOfInput != undefined,
-                      }, // props.typeOfValues && props.typeOfValues[1],
-                    }}
-                  />
-                </>
-              ) : (
-                <>
+            <>
+              {/* The following row only for conditions and default values
+              not in data-mapping */}
+              {props.headers[0] !== 'Source' && (
+                <TableRow key={`${row.id}-type`}>
                   <TableCell align="left" className={classes.tableCell}>
                     Select value-type
                   </TableCell>
@@ -249,40 +231,68 @@ function EditableTable(props) {
                       ))}
                     </Select>
                   </TableCell>
-                </>
+                </TableRow>
               )}
+              <TableRow key={row.id}>
+                <CustomTableCell
+                  {...{
+                    row,
+                    name: 'name',
+                    onChange,
+                    typeOfValues: props.typeOfValues && props.typeOfValues[0],
+                  }}
+                />
+                <CustomTableCell
+                  {...{
+                    row,
+                    name: 'value',
+                    onChange,
+                    typeOfValues: {
+                      type:
+                        props.headers[0] === 'Source'
+                          ? props.typeOfValues && props.typeOfValues[1].type
+                          : typeOfInput,
+                      exists: typeOfInput != undefined,
+                      values:
+                        props.headers[0] === 'Source'
+                          ? props.typeOfValues && props.typeOfValues[1].values
+                          : '',
+                    }, //
+                  }}
+                />
 
-              <TableCell className={classes.selectTableCell}>
-                {row.isEditMode ? (
-                  <>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="done"
-                      onClick={() => onToggleEditMode(row.id, 'done')}
-                    >
-                      <DoneIcon />
-                    </IconButton>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="revert"
-                      onClick={() => onRevert(row.id)}
-                    >
-                      <RevertIcon />
-                    </IconButton>
-                  </>
-                ) : (
-                  <span>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="edit"
-                      onClick={() => onToggleEditMode(row.id, 'edit')}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </span>
-                )}
-              </TableCell>
-            </TableRow>
+                <TableCell className={classes.selectTableCell}>
+                  {row.isEditMode ? (
+                    <>
+                      <IconButton
+                        style={{ padding: '1px' }}
+                        aria-label="done"
+                        onClick={() => onToggleEditMode(row.id, 'done')}
+                      >
+                        <DoneIcon />
+                      </IconButton>
+                      <IconButton
+                        style={{ padding: '1px' }}
+                        aria-label="revert"
+                        onClick={() => onRevert(row.id)}
+                      >
+                        <RevertIcon />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <span>
+                      <IconButton
+                        style={{ padding: '1px' }}
+                        aria-label="edit"
+                        onClick={() => onToggleEditMode(row.id, 'edit')}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </span>
+                  )}
+                </TableCell>
+              </TableRow>
+            </>
           ))}
         </TableBody>
       </Table>
