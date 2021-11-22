@@ -518,17 +518,17 @@ export default function Sidebar(props) {
           {[
             {
               task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
-              task_type: 'method',
+              task_type: 'class',
               icon: 'orange1',
             },
             {
               task_identifier: 'ewokscore.scripttask.ScriptExecutorTask',
-              task_type: 'method',
+              task_type: 'class',
               icon: 'orange2',
             },
             {
               task_identifier: 'ewokscore.ppftasks.PpfMethodExecutorTask',
-              task_type: 'method',
+              task_type: 'class',
               icon: 'orange3',
             },
             {
@@ -538,17 +538,17 @@ export default function Sidebar(props) {
             },
             {
               task_identifier: 'ewokscore.ppftasks.PpfPortTask',
-              task_type: 'method',
+              task_type: 'ppfport',
               icon: 'Continuize',
             },
             {
               task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
-              task_type: 'method',
+              task_type: 'script',
               icon: 'Correlations',
             },
             {
               task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
-              task_type: 'method',
+              task_type: 'ppfmethod',
               icon: 'CreateClass',
             },
             {
@@ -809,7 +809,6 @@ export default function Sidebar(props) {
                           {
                             type: 'input',
                             exists: true,
-                            values: [true, false],
                           },
                         ]}
                       />
@@ -1008,18 +1007,19 @@ export default function Sidebar(props) {
       </Accordion>
       <ReactJson
         src={graphRF}
-        name={'graph'}
+        name={''}
         theme={'monokai'}
         collapsed
         collapseStringsAfterLength={30}
         groupArraysAfterLength={15}
         onEdit={(edit) => true}
         onAdd={(add) => true}
-        defaultValue={'string'}
+        defaultValue={'object'}
         onDelete={(del) => true}
         onSelect={(sel) => true}
         quotesOnKeys={false}
         style={{ 'background-color': 'rgb(59, 77, 172)' }}
+        displayDataTypes
       />
     </aside>
   );

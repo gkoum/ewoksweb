@@ -256,6 +256,15 @@ export const tasks = [
   },
   {
     task_type: 'class',
+    task_identifier:
+      'tomwer.core.process.visualization.volumeviewer._VolumeViewerPlaceHolder',
+    required_input_names: ['henris'],
+    optional_input_names: [],
+    output_names: ['data', 'out-val1', 'out-val2'],
+    category: 'ewokscore',
+  },
+  {
+    task_type: 'class',
     task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
     required_input_names: ['method'],
     optional_input_names: [],

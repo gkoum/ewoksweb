@@ -51,6 +51,10 @@
 // ----------------------------------------
 // BUGS
 
+// -add subgraph from dashboard is not working if no other node exists in a new graph
+//  store 377 does not have a subgraph the first time... investigate
+
+// -data mapping breaks when a graph is one of the nodes
 
 // conditions get saved like that
 // "conditions": [

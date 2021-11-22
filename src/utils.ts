@@ -23,6 +23,7 @@ import type {
 import axios from 'axios';
 import { TurnedIn } from '@material-ui/icons';
 import { calcGraphInputsOutputs } from './utils/CalcGraphInputsOutputs';
+import { dirname } from 'node:path';
 
 const { GraphDagre } = dagre.graphlib;
 const NODE_SIZE = { width: 270, height: 36 };
@@ -169,7 +170,13 @@ export function toEwoksLinks(links, recentGraphs): EwoksLink[] {
       source,
       target,
       data_mapping,
-      conditions,
+      conditions: conditions.map((con) => {
+        if (con.source_output) return con;
+        return {
+          source_output: con.id,
+          value: con.value,
+        };
+      }),
       on_error,
       sub_target,
       sub_source,
@@ -213,7 +220,9 @@ export function toEwoksNodes(nodes: EwoksRFNode[]): EwoksNode[] {
           task_identifier,
           inputs_complete,
           task_generator,
-          default_inputs,
+          default_inputs: default_inputs.map((dIn) => {
+            return { name: dIn.name, value: dIn.value };
+          }),
           uiProps: { label, type, icon, comment, position },
         };
       }
@@ -390,14 +399,13 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
         }
 
         // locate the task and add required+optional-inputs + outputs
-        // if map all values is the link no calculation is needed? How to get the link?
         let tempTask = tasks.find(
           (tas) => tas.task_identifier === task_identifier
         );
         console.log(task_type, tempTask, nodeType, task_identifier);
         // if it is not in the tasks list like a new task or subgraph?
         // Not in the list => add a default one FAILSAFE TODO
-        console.log('found Task and go for inputs-outputs');
+
         // for subgraph calculate through input_nodes, output_nodes
         tempTask = tempTask
           ? tempTask // if you found the Task return it

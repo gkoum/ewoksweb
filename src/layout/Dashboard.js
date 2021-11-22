@@ -206,6 +206,7 @@ export default function Dashboard() {
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
   const setWorkingGraph = useStore((state) => state.setWorkingGraph);
   const setSubGraph = useStore((state) => state.setSubGraph);
+  const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
 
   useEffect(() => {
     console.log(subgraphsStack.length);
@@ -246,13 +247,21 @@ export default function Dashboard() {
 
   const getFromServer = async (isSubgraph) => {
     console.log('Get graphs from server', workflowValue, isSubgraph);
-    const response = await axios.get(
-      `http://mxbes2-1707:38280/ewoks/workflow/${workflowValue}`
-    );
-    if (isSubgraph === 'subgraph') {
-      setSubGraph(response.data);
+    if (workflowValue) {
+      const response = await axios.get(
+        `http://mxbes2-1707:38280/ewoks/workflow/${workflowValue}`
+      );
+      if (isSubgraph === 'subgraph') {
+        setSubGraph(response.data);
+      } else {
+        setWorkingGraph(response.data);
+      }
     } else {
-      setWorkingGraph(response.data);
+      setOpenSnackbar({
+        open: true,
+        text: 'Please select a graph to fetch and re-click!',
+        severity: 'warning',
+      });
     }
   };
 

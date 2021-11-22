@@ -13,7 +13,14 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DoneIcon from '@material-ui/icons/DoneAllTwoTone';
 import RevertIcon from '@material-ui/icons/NotInterestedOutlined';
-import { Icon, MenuItem, Select } from '@material-ui/core';
+import {
+  FormControlLabel,
+  Icon,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+} from '@material-ui/core';
 import ReactJson from 'react-json-view';
 import useStore from '../store';
 // import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -48,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const createData = (pair) => {
+  console.log(pair, typeof pair.value);
   return pair.id && pair.value
     ? { ...pair, isEditMode: false }
     : {
@@ -56,6 +64,7 @@ const createData = (pair) => {
         value: Object.values(pair)[1],
         isEditMode: false,
         exists: true,
+        type: typeof pair.value,
       };
 };
 
@@ -64,8 +73,11 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
   const { isEditMode } = row;
   console.log(row, name, onChange, typeOfValues);
   // console.log('typeOfValues:', typeOfValues);
-
-  const graphRF = useStore((state) => state.graphRF);
+  // TODO: fix for boolean to have drop-down with false-true
+  // let selectValues = [];
+  // if (typeOfValues.type === 'bool') selectValues = [true, false];
+  const emptyObject = {};
+  const emptyArray = [];
 
   return (
     <TableCell align="left" className={classes.tableCell}>
@@ -74,27 +86,27 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
       {isEditMode ? (
         typeOfValues.type === 'dict' || typeOfValues.type === 'list' ? (
           <ReactJson
-            src={graphRF}
-            name={'graph'}
+            src={typeOfValues.type === 'dict' ? emptyObject : emptyArray}
+            name={'value'}
             theme={'monokai'}
             collapsed
             collapseStringsAfterLength={30}
             groupArraysAfterLength={15}
             onEdit={(edit) => true}
             onAdd={(add) => true}
-            defaultValue={'string'}
+            defaultValue={'object'}
             onDelete={(del) => true}
             onSelect={(sel) => true}
             quotesOnKeys={false}
             style={{ 'background-color': 'rgb(59, 77, 172)' }}
+            displayDataTypes
+            // defaultValue={object}
           />
-        ) : typeOfValues.type === 'select' || typeOfValues.type === 'bool' ? (
+        ) : typeOfValues.type === 'select' ? (
           <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={row[name]}
             name={name}
-            label="Task type"
+            value={row[name]}
+            label="type"
             onChange={(e) => onChange(e, row)}
           >
             {typeOfValues.values.map((tex, index) => (
@@ -103,6 +115,16 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
               </MenuItem>
             ))}
           </Select>
+        ) : typeOfValues.type === 'bool' ? (
+          <RadioGroup
+            aria-label="gender"
+            name="controlled-radio-buttons-group"
+            value={row[name]}
+            onChange={(e) => onChange(e, row)}
+          >
+            <FormControlLabel value="true" control={<Radio />} label="true" />
+            <FormControlLabel value="false" control={<Radio />} label="false" />
+          </RadioGroup>
         ) : (
           <Input
             value={row[name]}
@@ -129,6 +151,9 @@ function EditableTable(props) {
   useEffect(() => {
     console.log(props.defaultValues);
     // setTypeOfValuesExists(props.typeOfValues[1].exists);
+    // TODO: set type of input through the createData
+    // TODO: number is saved as string
+    // setTypeOfInput(e.target.value);
     setRows(
       props.defaultValues
         ? props.defaultValues.map((pair) => {
@@ -155,12 +180,18 @@ function EditableTable(props) {
         return row;
       });
     });
-    // console.log(rows);
     if (command === 'done') props.valuesChanged(rows);
   };
 
   const onChange = (e, row) => {
-    // console.log(e.target.value, e.target.name, row, rows);
+    console.log(
+      e.target,
+      e.target.value,
+      e.target.name,
+      e.target.id,
+      row,
+      rows
+    );
 
     const { value } = e.target;
     const { name } = e.target;
@@ -171,7 +202,7 @@ function EditableTable(props) {
       }
       return row;
     });
-    // console.log(newRows);
+    console.log(newRows);
     setRows(newRows);
   };
 
@@ -214,7 +245,7 @@ function EditableTable(props) {
               {props.headers[0] !== 'Source' && (
                 <TableRow key={`${row.id}-type`}>
                   <TableCell align="left" className={classes.tableCell}>
-                    Select value-type
+                    Change type
                   </TableCell>
                   <TableCell align="left" className={classes.tableCell}>
                     <Select

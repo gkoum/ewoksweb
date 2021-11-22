@@ -46,6 +46,7 @@ import {
   getSubgraphs,
   // RFtoRFEwoksNode,
 } from '../utils';
+import { tasks } from '../assets/graphTests';
 import useNodeInputsOutputs from '../hooks/useNodeInputsOutputs';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -185,6 +186,7 @@ function Canvas() {
     }
 
     if (workingGraph.graph.id === graphRF.graph.id) {
+      // TODO: calculate optional_input_names, required_input_names, output_names
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const task_identifier = event.dataTransfer.getData('task_identifier');
       const task_type = event.dataTransfer.getData('task_type');
@@ -195,6 +197,19 @@ function Canvas() {
         y: event.clientY - reactFlowBounds.top,
       });
       console.log(position);
+
+      let tempTask = tasks.find(
+        (tas) => tas.task_identifier === task_identifier
+      );
+      tempTask = tempTask
+        ? tempTask // if you found the Task return it
+        : task_type === 'graph' // if not found check if it is a graph ???
+        ? tempTask // if a graph return it and if not add some default inputs-outputs
+        : {
+            optional_input_names: [],
+            output_names: [],
+            required_input_names: [],
+          };
 
       const newNode = {
         id:
@@ -211,9 +226,9 @@ function Canvas() {
         position,
         default_inputs: [],
         inputs_complete: false,
-        required_input_names: [],
-        optional_input_names: [],
-        output_names: [],
+        optional_input_names: tempTask.optional_input_names,
+        output_names: tempTask.output_names,
+        required_input_names: tempTask.required_input_names,
         data: {
           label: task_identifier,
           type: 'internal',
@@ -260,11 +275,14 @@ function Canvas() {
           links_required_output_names: targetTask.required_input_names,
           // node output_names are link's input_names
           links_input_names: sourceTask.output_names,
-          conditions: '',
+          conditions: [],
           data_mapping: [],
           map_all_data: false,
-          sub_source: params.sourceHandle,
-          sub_target: params.targetHandle,
+          // TODO: calculate if it is a graph
+          sub_source:
+            sourceTask.task_type === 'graph' ? params.sourceHandle : '',
+          sub_target:
+            targetTask.task_type === 'graph' ? params.targetHandle : '',
         },
         id: `${params.source}:${params.sourceHandle}->${params.target}:${params.targetHandle}`,
         label: getLinksIds(),
