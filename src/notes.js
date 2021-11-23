@@ -37,26 +37,37 @@
 // ---------------------------------------------
 // FEATURES
 
-// input-outputs for graph dont change in the graph when edited in the left pane
-// also when a new input is declared and colored inputs-outputs of the graph are not updated
+// -have a flask that saves on disk for now with rest for workflows and tasks
 
-// Spinner for each load...
+// -REST for tasks in dialog...
 
-// conditions
+// -REST for workflows on dialog to manage them
 
-// styling options in a new accordion inside nodes-edges accordion with more choices
+// -input-outputs only show in left pane no editing
+// - no delete on graph selected in left pane only save label and comment
 
-// Validator for graphs and not break in any conditions
+//
+
+// -Spinner for each load...
+
+// -conditions
+
+// -styling options in a new accordion inside nodes-edges accordion with more choices
+
+// -Validator for graphs and not break in any conditions
 
 // ----------------------------------------
 // BUGS
+
+// -initial get graph the left pane should show details of it
+// and not wait for click a node
 
 // -add subgraph from dashboard is not working if no other node exists in a new graph
 //  store 377 does not have a subgraph the first time... investigate
 
 // -data mapping breaks when a graph is one of the nodes
 
-// conditions get saved like that
+// -conditions get saved like that
 // "conditions": [
 // { "id": "ppfdict", "name": "ppfdict", "value": "4", "isEditMode": true }
 //  ],
@@ -350,83 +361,6 @@ const subsubgraph = {
   "links": []
 }
 
-
-{/* {'source' in elementClickedStore && ( */}
-        //   <React.Fragment>
-        //     <div>
-        //       <TextField
-        //         id="outlined-basic"
-        //         label="Task identifier"
-        //         variant="outlined"
-        //         value={source || ''}
-        //         onChange={sourceChanged}
-        //       />
-        //     </div>
-        //     <div>
-        //       <TextField
-        //         id="outlined-basic"
-        //         label="Task type"
-        //         variant="outlined"
-        //         value={target || ''}
-        //         onChange={targetChanged}
-        //       />
-        //     </div>
-        //     <div>
-        //       <TextField
-        //         id="outlined-basic"
-        //         label="Task identifier"
-        //         variant="outlined"
-        //         value={args || ''}
-        //         onChange={argsChanged}
-        //       />
-        //     </div>
-        //     <div>
-        //       <TextField
-        //         id="outlined-basic"
-        //         label="Task type"
-        //         variant="outlined"
-        //         value={allArgs || ''}
-        //         onChange={allArgsChanged}
-        //       />
-        //     </div>
-        //     <div>
-        //       <TextField
-        //         id="outlined-basic"
-        //         label="Task identifier"
-        //         variant="outlined"
-        //         value={conditions || ''}
-        //         onChange={conditionsChanged}
-        //       />
-        //     </div>
-        //     <div>
-        //       <TextField
-        //         id="outlined-basic"
-        //         label="Task type"
-        //         variant="outlined"
-        //         value={onError || ''}
-        //         onChange={onErrorChanged}
-        //       />
-        //     </div>
-        //     <div>
-        //       <TextField
-        //         id="outlined-basic"
-        //         label="Task identifier"
-        //         variant="outlined"
-        //         value={args || ''}
-        //         onChange={argsChanged}
-        //       />
-        //     </div>
-        //     <div>
-        //       <TextField
-        //         id="outlined-basic"
-        //         label="Task type"
-        //         variant="outlined"
-        //         value={allArgs || ''}
-        //         onChange={allArgsChanged}
-        //       />
-        //     </div>
-        //   </React.Fragment>
-        // )}
 
 let graph = {
   "nodes": [
