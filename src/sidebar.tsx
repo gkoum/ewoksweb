@@ -1016,7 +1016,7 @@ export default function Sidebar(props) {
         groupArraysAfterLength={15}
         onEdit={(edit) => true}
         onAdd={(add) => true}
-        defaultValue={'object'}
+        defaultValue={'value'}
         onDelete={(del) => true}
         onSelect={(sel) => true}
         quotesOnKeys={false}

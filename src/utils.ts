@@ -160,8 +160,15 @@ export function toEwoksLinks(links, recentGraphs): EwoksLink[] {
       sourceHandle,
       target,
       targetHandle,
-      data: { data_mapping, sub_target, sub_source, map_all_data, conditions },
-      on_error,
+      data: {
+        comment,
+        data_mapping,
+        sub_target,
+        sub_source,
+        map_all_data,
+        conditions,
+        on_error,
+      },
       type,
       arrowHeadType,
       labelStyle,
@@ -183,6 +190,7 @@ export function toEwoksLinks(links, recentGraphs): EwoksLink[] {
       map_all_data,
       uiProps: {
         label,
+        comment,
         type,
         arrowHeadType,
         labelStyle,
@@ -655,7 +663,6 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
               : '',
           source: source.toString(),
           target: target.toString(),
-          on_error,
           startEnd,
           targetHandle: sub_target
             ? sub_target
@@ -687,6 +694,8 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
             sub_source,
             conditions: conditions ? conditions : [],
             map_all_data: !!map_all_data,
+            on_error,
+            comment: uiProps && uiProps.comment,
           },
         };
       }

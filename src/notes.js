@@ -60,6 +60,8 @@
 // ----------------------------------------
 // BUGS
 
+// - comment on links not saved
+
 // - map all data is not saved on save link from sidebar
 
 // - same with on error it wont red and save  ---- inputs_complete seems to work
