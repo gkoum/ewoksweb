@@ -160,10 +160,10 @@ export default function Sidebar(props) {
       setComment(selectedElement.data && selectedElement.data.comment);
       if (selectedElement.data && selectedElement.data.data_mapping)
         setDataMapping(selectedElement.data.data_mapping);
-      if (selectedElement.data && selectedElement.data.map_all_data)
-        setMapAllData(!!selectedElement.data.map_all_data);
-      if (selectedElement.data && selectedElement.data.on_error)
-        setOnError(selectedElement.data.on_error);
+      // if (selectedElement.data && selectedElement.data.map_all_data)
+      setMapAllData(!!selectedElement.data.map_all_data || false);
+      // if (selectedElement.data && selectedElement.data.on_error)
+      setOnError(!!selectedElement.data.on_error || false);
       if (selectedElement.data && selectedElement.data.conditions)
         setConditions(selectedElement.data.conditions);
       console.log(selectedElement);
@@ -334,10 +334,10 @@ export default function Sidebar(props) {
   const onErrorChanged = (event) => {
     console.log(event.target.checked);
     setOnError(event.target.checked);
-    // setElement({
-    //   ...element,
-    //   inputs_complete: event.target.checked,
-    // });
+    setElement({
+      ...element,
+      data: { ...element.data, on_error: event.target.checked },
+    });
   };
 
   const animatedChanged = (event) => {
@@ -995,13 +995,15 @@ export default function Sidebar(props) {
             >
               Save
             </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={deleteElement}
-            >
-              Delete
-            </Button>
+            {!('input_nodes' in selectedElement) && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={deleteElement}
+              >
+                Delete
+              </Button>
+            )}
           </form>
         </AccordionDetails>
       </Accordion>

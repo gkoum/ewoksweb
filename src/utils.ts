@@ -220,9 +220,11 @@ export function toEwoksNodes(nodes: EwoksRFNode[]): EwoksNode[] {
           task_identifier,
           inputs_complete,
           task_generator,
-          default_inputs: default_inputs.map((dIn) => {
-            return { name: dIn.name, value: dIn.value };
-          }),
+          default_inputs:
+            default_inputs &&
+            default_inputs.map((dIn) => {
+              return { name: dIn.name, value: dIn.value };
+            }),
           uiProps: { label, type, icon, comment, position },
         };
       }

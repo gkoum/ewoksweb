@@ -43,10 +43,11 @@
 
 // -REST for workflows on dialog to manage them
 
-// -input-outputs only show in left pane no editing
-// - no delete on graph selected in left pane only save label and comment
+// -input-outputs can be changed but not saving in the left pane. create inputs-outputs but not draw them?
 
-//
+// -ids in nodes and links need to be unique -> defined in the front when created to be unique onConnect, onDrop
+
+// -id of graph given by the user? needs to be unique! If not the server should propose
 
 // -Spinner for each load...
 
@@ -58,6 +59,10 @@
 
 // ----------------------------------------
 // BUGS
+
+// - map all data is not saved on save link from sidebar
+
+// - same with on error it wont red and save  ---- inputs_complete seems to work
 
 // -initial get graph the left pane should show details of it
 // and not wait for click a node

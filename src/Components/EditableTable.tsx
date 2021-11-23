@@ -196,11 +196,11 @@ function EditableTable(props) {
     const { value } = e.target;
     const { name } = e.target;
     const { id } = row;
-    const newRows = rows.map((row) => {
-      if (row.id === id) {
-        return { ...row, id: row.name.replace(' ', '_'), [name]: value };
+    const newRows = rows.map((rowe) => {
+      if (rowe.id === id) {
+        return { ...rowe, id: rowe.name.replace(' ', '_'), [name]: value };
       }
-      return row;
+      return rowe;
     });
     console.log(newRows);
     setRows(newRows);
@@ -242,7 +242,7 @@ function EditableTable(props) {
             <>
               {/* The following row only for conditions and default values
               not in data-mapping */}
-              {props.headers[0] !== 'Source' && (
+              {props.headers[0] !== 'Source' && props.headers[1] !== 'Node_Id' && (
                 <TableRow key={`${row.id}-type`}>
                   <TableCell align="left" className={classes.tableCell}>
                     Change type
@@ -280,12 +280,14 @@ function EditableTable(props) {
                     onChange,
                     typeOfValues: {
                       type:
-                        props.headers[0] === 'Source'
+                        props.headers[0] === 'Source' ||
+                        props.headers[1] === 'Node_Id'
                           ? props.typeOfValues && props.typeOfValues[1].type
                           : typeOfInput,
                       exists: typeOfInput != undefined,
                       values:
-                        props.headers[0] === 'Source'
+                        props.headers[0] === 'Source' ||
+                        props.headers[1] === 'Node_Id'
                           ? props.typeOfValues && props.typeOfValues[1].values
                           : '',
                     }, //

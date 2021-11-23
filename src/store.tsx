@@ -168,6 +168,7 @@ const useStore = create<State>((set, get) => ({
 
     // set the new graph as the working graph
     get().setGraphRF(graph as GraphRF);
+    get().setSelectedElement(graph.graph);
     // add the new graph to the recent graphs if not already there
     console.log('ADD the new supergraph to recent');
     get().setRecentGraphs({
