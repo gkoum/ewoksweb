@@ -441,9 +441,9 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
             task_type,
             task_identifier,
             type: task_type, // need it for visualizing dataNodes
-            inputs_complete,
-            task_generator,
-            default_inputs,
+            inputs_complete: inputs_complete ? inputs_complete : false,
+            task_generator: task_generator ? task_generator : '',
+            default_inputs: default_inputs ? default_inputs : [],
             optional_input_names: tempTask.optional_input_names,
             output_names: tempTask.output_names,
             required_input_names: tempTask.required_input_names,
@@ -458,8 +458,8 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
             data: {
               label: label ? label : task_identifier,
               type: nodeType,
-              icon: uiProps && uiProps.icon,
-              comment: uiProps && uiProps.comment,
+              icon: uiProps && uiProps.icon ? uiProps.icon : '',
+              comment: uiProps && uiProps.comment ? uiProps.comment : '',
               moreHandles: moreHandles,
             },
             position:
@@ -505,9 +505,9 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
           task_type,
           task_identifier,
           type: task_type,
-          inputs_complete,
-          task_generator,
-          default_inputs,
+          inputs_complete: inputs_complete ? inputs_complete : false,
+          task_generator: task_generator ? task_generator : '',
+          default_inputs: default_inputs ? default_inputs : [],
           label,
           data: {
             label: label ? label : task_identifier,
@@ -516,8 +516,8 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
             inputs: inputsSub,
             outputs: outputsSub,
             // inputsFlow,
-            icon: uiProps.icon,
-            comment: uiProps.comment,
+            icon: uiProps && uiProps.icon ? uiProps.icon : '',
+            comment: uiProps && uiProps.comment ? uiProps.comment : '',
           },
           // inputs: inputsFlow, // for connecting graphically to different input
           position: uiProps.position,
@@ -577,7 +577,7 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
               (tas) => tas.task_identifier === sourceTmp.task_identifier
             );
           } else {
-            // TODO following line examine
+            // TODO following line exuiProps.commentamine
             // if node=subgraph calculate inputs-outputs from subgraph.graph
             const subgraphNodeSource = newNodeSubgraphs.find(
               (subGr) => subGr.graph.id === sourceTmp.task_identifier
@@ -663,13 +663,17 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
               : '',
           source: source.toString(),
           target: target.toString(),
-          startEnd,
+          startEnd: startEnd ? startEnd : '',
           targetHandle: sub_target
             ? sub_target
-            : uiProps && uiProps.targetHandle,
+            : uiProps && uiProps.targetHandle
+            ? uiProps.targetHandle
+            : '', // TODO remove this? when stable
           sourceHandle: sub_source
             ? sub_source
-            : uiProps && uiProps.sourceHandle,
+            : uiProps && uiProps.sourceHandle
+            ? uiProps.sourceHandle
+            : '',
           type: uiProps && uiProps.type ? uiProps.type : '',
           arrowHeadType:
             uiProps && uiProps.arrowHeadType ? uiProps.arrowHeadType : '',
@@ -690,12 +694,12 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
             // node output_names are link's input_names
             links_input_names: sourceTask.output_names,
             data_mapping,
-            sub_target,
-            sub_source,
+            sub_target: sub_target ? sub_target : '',
+            sub_source: sub_source ? sub_source : '',
             conditions: conditions ? conditions : [],
             map_all_data: !!map_all_data,
-            on_error,
-            comment: uiProps && uiProps.comment,
+            on_error: on_error ? on_error : false,
+            comment: uiProps && uiProps.comment ? uiProps.comment : '',
           },
         };
       }

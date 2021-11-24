@@ -35,6 +35,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Upload from './Components/Upload';
 import AddIcon from '@material-ui/icons/Add';
 import ReactJson from 'react-json-view';
+import DraggableDialog from './Components/DraggableDialog';
 
 import type {
   Graph,
@@ -1007,6 +1008,7 @@ export default function Sidebar(props) {
           </form>
         </AccordionDetails>
       </Accordion>
+      <DraggableDialog />
       <ReactJson
         src={graphRF}
         name={''}
