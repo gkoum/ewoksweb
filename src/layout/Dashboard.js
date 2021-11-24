@@ -148,9 +148,9 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    width: theme.spacing(11),
+    width: theme.spacing(13),
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(11),
+      width: theme.spacing(13),
     },
   },
   appBarSpacer: theme.mixins.toolbar,
@@ -200,6 +200,7 @@ export default function Dashboard() {
   const setGraphOrSubgraph = useStore((state) => state.setGraphOrSubgraph);
   const [selectedGraph, setSelectedGraph] = React.useState('');
   const [open, setOpen] = React.useState(true);
+  const [editing, setEditing] = React.useState(false);
   const [openSettings, setOpenSettings] = React.useState(false);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const recentGraphs = useStore((state) => state.recentGraphs);
@@ -219,6 +220,7 @@ export default function Dashboard() {
 
   const handleDrawerOpen = () => {
     setOpen(true);
+    // setEditing(!editing);
   };
   const handleDrawerClose = () => {
     setOpen(false);
@@ -239,7 +241,7 @@ export default function Dashboard() {
   const saveToDisk = (event) => {
     console.log(graphRF, rfToEwoks(graphRF, recentGraphs));
     download(
-      JSON.stringify(rfToEwoks(graphRF, recentGraphs)),
+      JSON.stringify(rfToEwoks(graphRF, recentGraphs), null, 2),
       'graph.json',
       'text/plain'
     );
@@ -472,6 +474,7 @@ export default function Dashboard() {
       </AppBar>
       <Drawer
         variant="permanent"
+        // style={{ width: editing ? 450 : 290 }}
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}
@@ -492,12 +495,6 @@ export default function Dashboard() {
         <div className={classes.toolbar} />
         <Paper className={fixedHeightPaper}>
           <Canvas />
-          {/* <span className={classes.canvasView}>
-            <CanvasView />
-          </span>
-          <span className={classes.canvasView}>
-            <CanvasView />
-          </span> */}
         </Paper>
       </main>
       {/* <MyCard /> */}

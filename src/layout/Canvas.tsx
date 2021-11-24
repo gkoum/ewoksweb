@@ -233,6 +233,7 @@ function Canvas() {
           label: task_identifier,
           type: 'internal',
           icon,
+          moreHandles: true,
         },
         // data: { label: CustomNewNode(id, name, image) },
       };
@@ -269,6 +270,8 @@ function Canvas() {
       console.log(sourceTask, targetTask);
       const link = {
         data: {
+          on_error: false,
+          comment: '',
           // node optional_input_names are link's optional_output_names
           links_optional_output_names: targetTask.optional_input_names,
           // node required_input_names are link's required_output_names
@@ -291,7 +294,8 @@ function Canvas() {
         sourceHandle: params.sourceHandle,
         targetHandle: params.targetHandle,
         type: 'default',
-        arrowHeadType: 'arrow',
+        animated: false,
+        arrowHeadType: 'arrowclosed',
         style: { stroke: '#96a5f9', strokeWidth: '2.5' },
         labelBgStyle: {
           fill: '#fff',

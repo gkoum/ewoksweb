@@ -40,8 +40,13 @@ export default function DraggableDialog() {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open draggable dialog
+      <Button
+        style={{ margin: '10px' }}
+        variant="contained"
+        color="primary"
+        onClick={handleClickOpen}
+      >
+        Ewoks graph
       </Button>
       <Dialog
         open={open}
@@ -56,16 +61,17 @@ export default function DraggableDialog() {
           <DialogContentText>
             <ReactJson
               src={graph}
-              name={''}
+              name={'Ewoks graph'}
               theme={'monokai'}
               collapsed
               collapseStringsAfterLength={30}
               groupArraysAfterLength={15}
-              onEdit={(edit) => true}
-              onAdd={(add) => true}
-              defaultValue={'value'}
-              onDelete={(del) => true}
-              onSelect={(sel) => true}
+              enableClipboard={false}
+              // onEdit={(edit) => true}
+              // onAdd={(add) => true}
+              // defaultValue={'value'}
+              // onDelete={(del) => true}
+              // onSelect={(sel) => true}
               quotesOnKeys={false}
               style={{ 'background-color': 'rgb(59, 77, 172)' }}
               displayDataTypes
@@ -74,7 +80,7 @@ export default function DraggableDialog() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <Button onClick={handleClose}>Save</Button>
         </DialogActions>
       </Dialog>
     </div>

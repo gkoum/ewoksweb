@@ -71,7 +71,7 @@ const createData = (pair) => {
 function CustomTableCell({ row, name, onChange, typeOfValues }) {
   const classes = useStyles();
   const { isEditMode } = row;
-  console.log(row, name, onChange, typeOfValues);
+  console.log(row); // , name, onChange, typeOfValues);
   // console.log('typeOfValues:', typeOfValues);
   // TODO: fix for boolean to have drop-down with false-true
   // let selectValues = [];
@@ -87,14 +87,14 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
         typeOfValues.type === 'dict' || typeOfValues.type === 'list' ? (
           <ReactJson
             src={typeOfValues.type === 'dict' ? emptyObject : emptyArray}
-            name={'value'}
-            theme={'monokai'}
+            name="value"
+            theme="monokai"
             collapsed
             collapseStringsAfterLength={30}
             groupArraysAfterLength={15}
             onEdit={(edit) => true}
             onAdd={(add) => true}
-            defaultValue={'object'}
+            defaultValue="object"
             onDelete={(del) => true}
             onSelect={(sel) => true}
             quotesOnKeys={false}
@@ -144,7 +144,7 @@ function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
   const [typeOfValuesExists, setTypeOfValuesExists] = React.useState(false);
   // console.log('PROPS:', props);
-  const [typeOfInput, setTypeOfInput] = React.useState();
+  const [typeOfInput, setTypeOfInput] = React.useState('string');
 
   const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
 
@@ -163,7 +163,6 @@ function EditableTable(props) {
     );
   }, [props.defaultValues]);
 
-  const [previous, setPrevious] = React.useState({});
   const classes = useStyles();
 
   const onToggleEditMode = (id, command) => {
@@ -180,25 +179,20 @@ function EditableTable(props) {
         return row;
       });
     });
-    if (command === 'done') props.valuesChanged(rows);
+    if (command === 'done') {
+      props.valuesChanged(rows);
+    }
   };
 
   const onChange = (e, row) => {
-    console.log(
-      e.target,
-      e.target.value,
-      e.target.name,
-      e.target.id,
-      row,
-      rows
-    );
+    console.log(e.target.value, e.target.name, row.id, row, rows);
 
     const { value } = e.target;
     const { name } = e.target;
     const { id } = row;
     const newRows = rows.map((rowe) => {
       if (rowe.id === id) {
-        return { ...rowe, id: rowe.name.replace(' ', '_'), [name]: value };
+        return { ...rowe, [name]: value };
       }
       return rowe;
     });
@@ -240,8 +234,6 @@ function EditableTable(props) {
         <TableBody>
           {rows.map((row) => (
             <>
-              {/* The following row only for conditions and default values
-              not in data-mapping */}
               {props.headers[0] !== 'Source' && props.headers[1] !== 'Node_Id' && (
                 <TableRow key={`${row.id}-type`}>
                   <TableCell align="left" className={classes.tableCell}>

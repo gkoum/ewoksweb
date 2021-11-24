@@ -290,7 +290,7 @@ function inNodesLinks(graph) {
             target: inNod.node,
             uiProps: {
               type: 'default',
-              arrowHeadType: 'arrow',
+              arrowHeadType: 'arrowclosed',
             },
           });
         } else {
@@ -301,7 +301,7 @@ function inNodesLinks(graph) {
             sub_target: inNod.sub_node,
             uiProps: {
               type: 'default',
-              arrowHeadType: 'arrow',
+              arrowHeadType: 'arrowclosed',
             },
           });
         }
@@ -344,7 +344,7 @@ function outNodesLinks(graph) {
           target: outNod.id,
           uiProps: {
             type: 'default',
-            arrowHeadType: 'arrow',
+            arrowHeadType: 'arrowclosed',
           },
         });
       }
@@ -428,13 +428,6 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
             };
         console.log('TASK:', tempTask);
 
-        let moreHandles = false;
-        if (uiProps && uiProps.moreHandles !== undefined) {
-          moreHandles = uiProps.moreHandles;
-        } else {
-          moreHandles = true;
-        }
-
         if (task_type != 'graph') {
           return {
             id: id.toString(),
@@ -460,7 +453,8 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
               type: nodeType,
               icon: uiProps && uiProps.icon ? uiProps.icon : '',
               comment: uiProps && uiProps.comment ? uiProps.comment : '',
-              moreHandles: moreHandles,
+              moreHandles:
+                uiProps && uiProps.moreHandles ? uiProps.moreHandles : true,
             },
             position:
               uiProps && uiProps.position
@@ -676,7 +670,9 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
             : '',
           type: uiProps && uiProps.type ? uiProps.type : '',
           arrowHeadType:
-            uiProps && uiProps.arrowHeadType ? uiProps.arrowHeadType : '',
+            uiProps && uiProps.arrowHeadType
+              ? uiProps.arrowHeadType
+              : 'arrowclosed',
           // labelStyle: uiProps && uiProps.labelStyle ? uiProps.labelStyle : {},
           animated: uiProps && uiProps.animated ? uiProps.animated : '',
           style: { stroke: '#96a5f9', strokeWidth: '2.5' },

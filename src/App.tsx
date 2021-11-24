@@ -1,5 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
-/* eslint-disable unicorn/consistent-function-scoping */
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Dashboard from './layout/Dashboard';
 

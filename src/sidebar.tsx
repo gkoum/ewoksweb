@@ -36,6 +36,7 @@ import Upload from './Components/Upload';
 import AddIcon from '@material-ui/icons/Add';
 import ReactJson from 'react-json-view';
 import DraggableDialog from './Components/DraggableDialog';
+import DenseTable from './Components/DenseTable';
 
 import type {
   Graph,
@@ -479,7 +480,7 @@ export default function Sidebar(props) {
         ...graphRF.graph,
         input_nodes: [
           ...(graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []),
-          { id: '-', name: '-', value: '-' },
+          { id: 'id', name: '', value: '' },
         ],
       },
     });
@@ -637,18 +638,21 @@ export default function Sidebar(props) {
                     <AddCircleOutlineIcon />
                   </IconButton> */}
                   {graphInputs.length > 0 && (
-                    <EditableTable
-                      headers={['Name', 'Node_Id']}
-                      defaultValues={graphInputs}
-                      valuesChanged={graphInputsChanged}
-                      typeOfValues={[
-                        { type: 'input' },
-                        {
-                          type: 'select',
-                          values: graphRF.nodes.map((nod) => nod.id),
-                        },
-                      ]}
-                    />
+                    <>
+                      <DenseTable data={graphInputs} />
+                      <EditableTable
+                        headers={['Name', 'Node_Id']}
+                        defaultValues={graphInputs}
+                        valuesChanged={graphInputsChanged}
+                        typeOfValues={[
+                          { type: 'input' },
+                          {
+                            type: 'select',
+                            values: graphRF.nodes.map((nod) => nod.id),
+                          },
+                        ]}
+                      />
+                    </>
                   )}
                 </div>
                 <div>
@@ -1016,11 +1020,12 @@ export default function Sidebar(props) {
         collapsed
         collapseStringsAfterLength={30}
         groupArraysAfterLength={15}
-        onEdit={(edit) => true}
-        onAdd={(add) => true}
-        defaultValue={'value'}
-        onDelete={(del) => true}
-        onSelect={(sel) => true}
+        enableClipboard={false}
+        // onEdit={(edit) => true}
+        // onAdd={(add) => true}
+        // defaultValue={'value'}
+        // onDelete={(del) => true}
+        // onSelect={(sel) => true}
         quotesOnKeys={false}
         style={{ 'background-color': 'rgb(59, 77, 172)' }}
         displayDataTypes
