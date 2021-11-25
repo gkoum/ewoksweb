@@ -180,15 +180,35 @@ function EditableTable(props) {
       });
     });
     if (command === 'done') {
+      console.log(rows);
       props.valuesChanged(rows);
     }
   };
 
+  // const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
   const onChange = (e, row) => {
-    console.log(e.target.value, e.target.name, row.id, row, rows);
+    console.log(
+      typeOfInput,
+      e.target.value,
+      typeof e.target.value,
+      e.target.name,
+      row.id,
+      row,
+      rows
+    );
 
-    const { value } = e.target;
+    let { value } = e.target;
     const { name } = e.target;
+    if (name === 'value') {
+      value =
+        typeOfInput === 'number'
+          ? Number(value)
+          : typeOfInput === 'null'
+          ? null
+          : value;
+    }
+    console.log(typeof value);
+
     const { id } = row;
     const newRows = rows.map((rowe) => {
       if (rowe.id === id) {

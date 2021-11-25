@@ -6,6 +6,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
+import { PinDropSharp } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,14 +37,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function createData(name: string, calories: number, fat: number) {
-  return { name, calories, fat };
-}
-
-const rows = [createData(159, 6), createData(237, 9), createData(262, 16)];
-
-export default function DenseTable() {
+export default function DenseTable(props) {
+  console.log(props);
   const classes = useStyles();
+
+  let hasSubnode = false;
+  props.data.forEach((dat) => {
+    if (dat.sub_node) hasSubnode = true;
+  });
 
   return (
     <Paper className={classes.root}>
@@ -56,24 +57,22 @@ export default function DenseTable() {
             <TableCell align="left" className={classes.tableCell}>
               <b>Node</b>
             </TableCell>
-            <TableCell align="left" className={classes.tableCell}>
-              <b>Subnode</b>
-            </TableCell>
+            {hasSubnode && (
+              <TableCell align="left" className={classes.tableCell}>
+                <b>Subnode</b>
+              </TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="left">{row.calories}</TableCell>
-              <TableCell align="left">{row.fat}</TableCell>
-            </TableRow>
-          ))}
+          {props.data.length > 0 &&
+            props.data.map((row) => (
+              <TableRow key={`${row.id}${row.node}${row.sub_node}`}>
+                <TableCell>{row.id}</TableCell>
+                <TableCell align="left">{row.node}</TableCell>
+                <TableCell align="left">{row.sub_node}</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Paper>

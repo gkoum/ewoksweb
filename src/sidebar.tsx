@@ -255,7 +255,13 @@ export default function Sidebar(props) {
     console.log(table);
     setElement({
       ...element,
-      default_inputs: table,
+      default_inputs: table.map((dval) => {
+        return {
+          id: dval.name,
+          name: dval.name,
+          value: dval.value,
+        };
+      }),
     });
   };
 
@@ -263,7 +269,15 @@ export default function Sidebar(props) {
     console.log(table, element);
     setElement({
       ...element,
-      data: { ...element.data, conditions: table },
+      data: {
+        ...element.data,
+        conditions: table.map((con) => {
+          return {
+            source_output: con.name,
+            value: con.value,
+          };
+        }),
+      },
     });
   };
 
@@ -640,7 +654,7 @@ export default function Sidebar(props) {
                   {graphInputs.length > 0 && (
                     <>
                       <DenseTable data={graphInputs} />
-                      <EditableTable
+                      {/* <EditableTable
                         headers={['Name', 'Node_Id']}
                         defaultValues={graphInputs}
                         valuesChanged={graphInputsChanged}
@@ -651,7 +665,7 @@ export default function Sidebar(props) {
                             values: graphRF.nodes.map((nod) => nod.id),
                           },
                         ]}
-                      />
+                      /> */}
                     </>
                   )}
                 </div>
@@ -666,7 +680,9 @@ export default function Sidebar(props) {
                     <AddCircleOutlineIcon />
                   </IconButton> */}
                   {graphOutputs.length > 0 && (
-                    <EditableTable
+                    <>
+                      <DenseTable data={graphOutputs} />
+                      {/* <EditableTable
                       headers={['Name', 'Node_Id']}
                       defaultValues={graphOutputs}
                       valuesChanged={graphOutputsChanged}
@@ -677,7 +693,8 @@ export default function Sidebar(props) {
                           values: graphRF.nodes.map((nod) => nod.id),
                         },
                       ]}
-                    />
+                    /> */}
+                    </>
                   )}
                 </div>
               </React.Fragment>
@@ -1012,7 +1029,23 @@ export default function Sidebar(props) {
           </form>
         </AccordionDetails>
       </Accordion>
-      <DraggableDialog />
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<OpenInBrowser />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>
+            Styling{' '}
+            {'position' in selectedElement
+              ? 'Node'
+              : 'source' in selectedElement
+              ? 'Link'
+              : 'Graph'}
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails></AccordionDetails>
+      </Accordion>
       <ReactJson
         src={graphRF}
         name={''}
@@ -1030,6 +1063,7 @@ export default function Sidebar(props) {
         style={{ 'background-color': 'rgb(59, 77, 172)' }}
         displayDataTypes
       />
+      <DraggableDialog />
     </aside>
   );
 }

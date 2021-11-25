@@ -342,6 +342,7 @@ function outNodesLinks(graph) {
           startEnd: true,
           source: outNod.node,
           target: outNod.id,
+          sub_source: outNod.sub_node,
           uiProps: {
             type: 'default',
             arrowHeadType: 'arrowclosed',

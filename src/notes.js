@@ -60,6 +60,9 @@
 // ----------------------------------------
 // BUGS
 
+// - did find a comma in uploaded json file and crashed,
+// need to validate json strucrure and inform but not crash
+
 // - comment on links not saved
 
 // - map all data is not saved on save link from sidebar

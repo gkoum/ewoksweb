@@ -26,6 +26,16 @@ const showFile = async (e) => {
   return reader;
 };
 
+function isJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+  return true;
+}
+
 function Upload(props) {
   // console.log(props);
   const classes = useStyles();
@@ -43,20 +53,30 @@ function Upload(props) {
 
   const fileNameChanged = async (event) => {
     console.log(event.target.files[0], recentGraphs, graphRF, subgraphsStack);
+
     if (workingGraph.graph.id === graphRF.graph.id) {
       const reader = showFile(event);
       const file = await reader.then((val) => val);
       file.onloadend = async function () {
-        const newGraph = JSON.parse(file.result);
-        let working = {};
-        if (graphOrSubgraph) {
-          const { result } = validateEwoksGraph(newGraph);
-          if (result) {
-            working = await setWorkingGraph(newGraph);
+        if (isJsonString(file.result)) {
+          const newGraph = JSON.parse(file.result);
+          let working = {};
+          if (graphOrSubgraph) {
+            const { result } = validateEwoksGraph(newGraph);
+            if (result) {
+              working = await setWorkingGraph(newGraph);
+            }
+          } else {
+            console.log('ADDING SUBGRAPH:', newGraph);
+            working = await setSubGraph(newGraph);
           }
         } else {
-          console.log('ADDING SUBGRAPH:', newGraph);
-          working = await setSubGraph(newGraph);
+          setOpenSnackbar({
+            open: true,
+            text:
+              'Error in JSON structure. Please correct input file and retry!',
+            severity: 'error',
+          });
         }
       };
     } else {

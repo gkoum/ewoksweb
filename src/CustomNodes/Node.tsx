@@ -171,7 +171,7 @@ const Node: React.FC<NodeProps> = ({
       }
     >
       <span style={{ maxWidth: '120px' }} className="icons">
-        {!isGraph && (
+        {!isGraph && type !== 'graphOutput' && (
           <Handle
             type="source"
             position={Position.Right}
@@ -190,48 +190,55 @@ const Node: React.FC<NodeProps> = ({
             /> */}
           </Handle>
         )}
-        {!isGraph && moreHandles && (
-          <>
-            <Handle
-              type="source"
-              position={Position.Top}
-              id="st"
-              style={{
-                right: 20,
-                left: 'auto',
-                ...contentStyle.handleSource,
-                ...contentStyle.handleUpDown,
-              }}
-              isValidConnection={(connection) => isValidOutput(connection)}
-              isConnectable
-              onConnect={(params) => console.log('handle st onConnect', params)}
-            >
-              {/* <img
+        {!isGraph &&
+          type !== 'graphOutput' &&
+          type !== 'graphInput' &&
+          moreHandles && (
+            <>
+              <Handle
+                type="source"
+                position={Position.Top}
+                id="st"
+                style={{
+                  right: 20,
+                  left: 'auto',
+                  ...contentStyle.handleSource,
+                  ...contentStyle.handleUpDown,
+                }}
+                isValidConnection={(connection) => isValidOutput(connection)}
+                isConnectable
+                onConnect={(params) =>
+                  console.log('handle st onConnect', params)
+                }
+              >
+                {/* <img
                 role="presentation"
                 draggable="false"
                 onDragStart={(event) => onDragStart(event)}
                 src={iconsObj['up']}
                 alt=""
               /> */}
-            </Handle>
-            <Handle
-              type="source"
-              position={Position.Bottom}
-              id="sb"
-              style={{
-                right: 20,
-                left: 'auto',
-                ...contentStyle.handleSource,
-                ...contentStyle.handleUpDown,
-              }}
-              isValidConnection={(connection) => isValidOutput(connection)}
-              isConnectable
-              onConnect={(params) => console.log('handle sb onConnect', params)}
-            >
-              {/* <img src={iconsObj['down']} alt="" /> */}
-            </Handle>
-          </>
-        )}
+              </Handle>
+              <Handle
+                type="source"
+                position={Position.Bottom}
+                id="sb"
+                style={{
+                  right: 20,
+                  left: 'auto',
+                  ...contentStyle.handleSource,
+                  ...contentStyle.handleUpDown,
+                }}
+                isValidConnection={(connection) => isValidOutput(connection)}
+                isConnectable
+                onConnect={(params) =>
+                  console.log('handle sb onConnect', params)
+                }
+              >
+                {/* <img src={iconsObj['down']} alt="" /> */}
+              </Handle>
+            </>
+          )}
         <div style={customTitle}>{label}</div>
         <div style={{ wordWrap: 'break-word' }}>{comment}</div>
         {/* eslint-disable-next-line dot-notation */}
@@ -243,7 +250,7 @@ const Node: React.FC<NodeProps> = ({
           alt="orangeImage"
         />
         {/* {type !== 'graphOutput' && type !== 'graphInput' && <span style={style.contentWrapper}>{type}</span>} */}
-        {!isGraph && (
+        {!isGraph && type !== 'graphInput' && (
           <Handle
             type="target"
             position={Position.Left}
@@ -258,40 +265,47 @@ const Node: React.FC<NodeProps> = ({
             {/* <img src={iconsObj['right']} alt="" /> */}
           </Handle>
         )}
-        {!isGraph && moreHandles && (
-          <>
-            <Handle
-              type="target"
-              position={Position.Bottom}
-              id="tb"
-              style={{
-                left: 20,
-                ...contentStyle.handleTarget,
-                ...contentStyle.handleUpDown,
-              }}
-              isValidConnection={(connection) => isValidOutput(connection)}
-              isConnectable
-              onConnect={(params) => console.log('handle tb onConnect', params)}
-            >
-              {/* <img src={iconsObj['up']} alt="" /> */}
-            </Handle>
-            <Handle
-              type="target"
-              position={Position.Top}
-              id="tt"
-              style={{
-                left: 20,
-                ...contentStyle.handleTarget,
-                ...contentStyle.handleUpDown,
-              }}
-              isValidConnection={(connection) => isValidOutput(connection)}
-              isConnectable
-              onConnect={(params) => console.log('handle tt onConnect', params)}
-            >
-              {/* <img src={iconsObj['down']} alt="" /> */}
-            </Handle>
-          </>
-        )}
+        {!isGraph &&
+          type !== 'graphOutput' &&
+          type !== 'graphInput' &&
+          moreHandles && (
+            <>
+              <Handle
+                type="target"
+                position={Position.Bottom}
+                id="tb"
+                style={{
+                  left: 20,
+                  ...contentStyle.handleTarget,
+                  ...contentStyle.handleUpDown,
+                }}
+                isValidConnection={(connection) => isValidOutput(connection)}
+                isConnectable
+                onConnect={(params) =>
+                  console.log('handle tb onConnect', params)
+                }
+              >
+                {/* <img src={iconsObj['up']} alt="" /> */}
+              </Handle>
+              <Handle
+                type="target"
+                position={Position.Top}
+                id="tt"
+                style={{
+                  left: 20,
+                  ...contentStyle.handleTarget,
+                  ...contentStyle.handleUpDown,
+                }}
+                isValidConnection={(connection) => isValidOutput(connection)}
+                isConnectable
+                onConnect={(params) =>
+                  console.log('handle tt onConnect', params)
+                }
+              >
+                {/* <img src={iconsObj['down']} alt="" /> */}
+              </Handle>
+            </>
+          )}
         {type !== 'graphOutput' && type !== 'graphInput' && (
           <span style={style.contentWrapper}>{content}</span>
         )}

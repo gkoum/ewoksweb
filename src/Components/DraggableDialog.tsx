@@ -55,7 +55,7 @@ export default function DraggableDialog() {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-          Subscribe
+          Ewoks Graph
         </DialogTitle>
         <DialogContent>
           <DialogContentText>

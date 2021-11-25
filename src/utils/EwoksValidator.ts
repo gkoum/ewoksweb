@@ -22,6 +22,16 @@ function assertLog(statement, severity = 'info') {
   }
 }
 
+function isJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+  return true;
+}
+
 function includes(entity: {}, label: string, properties: string[]) {
   console.info(entity, properties);
   let result = true;
@@ -38,6 +48,8 @@ function includes(entity: {}, label: string, properties: string[]) {
 
 export function validateEwoksGraph(graph) {
   const result = [];
+  console.log(graph);
+  result.push(isJsonString(JSON.stringify(graph)));
   // graph structure
   result.push(
     includes(graph, `graph: ${graph.graph && graph.graph.id}`, [
@@ -73,7 +85,7 @@ export function validateEwoksGraph(graph) {
     )
   );
 
-  //type of some properties
+  // type of some properties
 
   // relationships between properties
   const nodeIds = new Set(graph.nodes.map((nod) => nod.id));
