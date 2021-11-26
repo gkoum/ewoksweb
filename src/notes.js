@@ -37,6 +37,8 @@
 // ---------------------------------------------
 // FEATURES
 
+// - task management...
+
 // -have a flask that saves on disk for now with rest for workflows and tasks
 
 // -REST for tasks in dialog...
@@ -59,6 +61,11 @@
 
 // ----------------------------------------
 // BUGS
+
+// - I have MXPressE and try to import MXPressA_aparture_10um as a subgraph
+// and when I go into that subgraph CommonPrepare experiment is in red even
+// if I have it in the recent and already part of the workingGraph
+// when save and reopen all reds are gone...
 
 // - did find a comma in uploaded json file and crashed,
 // need to validate json strucrure and inform but not crash

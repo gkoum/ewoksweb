@@ -68,10 +68,10 @@ const createData = (pair) => {
       };
 };
 
-function CustomTableCell({ row, name, onChange, typeOfValues }) {
+function CustomTableCell({ index, row, name, onChange, type, typeOfValues }) {
   const classes = useStyles();
   const { isEditMode } = row;
-  console.log(row); // , name, onChange, typeOfValues);
+  console.log(index, row, name, onChange, type, typeOfValues);
   // console.log('typeOfValues:', typeOfValues);
   // TODO: fix for boolean to have drop-down with false-true
   // let selectValues = [];
@@ -84,9 +84,9 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
       {/* In edit mode the type comes from sidebar in data-mapping and
       from the selected type here for conditions and default-values */}
       {isEditMode ? (
-        typeOfValues.type === 'dict' || typeOfValues.type === 'list' ? (
+        type === 'dict' || type === 'list' ? (
           <ReactJson
-            src={typeOfValues.type === 'dict' ? emptyObject : emptyArray}
+            src={type === 'dict' ? emptyObject : emptyArray}
             name="value"
             theme="monokai"
             collapsed
@@ -102,12 +102,12 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
             displayDataTypes
             // defaultValue={object}
           />
-        ) : typeOfValues.type === 'select' ? (
+        ) : type === 'select' ? (
           <Select
             name={name}
             value={row[name]}
             label="type"
-            onChange={(e) => onChange(e, row)}
+            onChange={(e) => onChange(e, row, index)}
           >
             {typeOfValues.values.map((tex, index) => (
               <MenuItem key={index} value={tex}>
@@ -115,12 +115,12 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
               </MenuItem>
             ))}
           </Select>
-        ) : typeOfValues.type === 'bool' ? (
+        ) : type === 'bool' ? (
           <RadioGroup
             aria-label="gender"
-            name="controlled-radio-buttons-group"
+            name="value"
             value={row[name]}
-            onChange={(e) => onChange(e, row)}
+            onChange={(e) => onChange(e, row, index)}
           >
             <FormControlLabel value="true" control={<Radio />} label="true" />
             <FormControlLabel value="false" control={<Radio />} label="false" />
@@ -129,7 +129,7 @@ function CustomTableCell({ row, name, onChange, typeOfValues }) {
           <Input
             value={row[name]}
             name={name}
-            onChange={(e) => onChange(e, row)}
+            onChange={(e) => onChange(e, row, index)}
             className={classes.input}
           />
         )
@@ -144,16 +144,18 @@ function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
   const [typeOfValuesExists, setTypeOfValuesExists] = React.useState(false);
   // console.log('PROPS:', props);
-  const [typeOfInput, setTypeOfInput] = React.useState('string');
+  const [typeOfInputs, setTypeOfInputs] = React.useState([]);
 
   const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
+  console.log(props, typeOfInputs);
 
   useEffect(() => {
     console.log(props.defaultValues);
     // setTypeOfValuesExists(props.typeOfValues[1].exists);
     // TODO: set type of input through the createData
     // TODO: number is saved as string
-    // setTypeOfInput(e.target.value);
+    const tOfIn = props.defaultValues.map((val) => typeof val.value);
+    setTypeOfInputs(tOfIn);
     setRows(
       props.defaultValues
         ? props.defaultValues.map((pair) => {
@@ -186,28 +188,34 @@ function EditableTable(props) {
   };
 
   // const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
-  const onChange = (e, row) => {
+  const onChange = (e, row, index) => {
+    let { value } = e.target;
+    const { name } = e.target;
+    const inType = typeOfInputs[index];
+    const type =
+      inType === 'number' ? Number(value) : inType === 'bool' ? !!value : value;
     console.log(
-      typeOfInput,
+      type,
+      typeOfInputs,
       e.target.value,
       typeof e.target.value,
       e.target.name,
       row.id,
       row,
-      rows
+      rows,
+      index
     );
 
-    let { value } = e.target;
-    const { name } = e.target;
     if (name === 'value') {
       value =
-        typeOfInput === 'number'
+        typeOfInputs[index] === 'number'
           ? Number(value)
-          : typeOfInput === 'null'
-          ? null
+          : typeOfInputs[index] === 'bool'
+          ? !!value
           : value;
+      console.log(typeof value, value);
     }
-    console.log(typeof value);
+    console.log(typeof value, value);
 
     const { id } = row;
     const newRows = rows.map((rowe) => {
@@ -232,10 +240,12 @@ function EditableTable(props) {
     props.valuesChanged(newRows);
   };
 
-  const changedTypeOfInput = (e, row) => {
-    console.log(e.target.value, row, typeOfValuesExists, props);
+  const changedTypeOfInputs = (e, row, index) => {
+    console.log(e.target.value, row, typeOfValuesExists, props, index);
     setTypeOfValuesExists(!typeOfValuesExists);
-    setTypeOfInput(e.target.value);
+    const tOfI = [...typeOfInputs];
+    tOfI[index] = e.target.value;
+    setTypeOfInputs(tOfI);
   };
 
   return (
@@ -252,8 +262,8 @@ function EditableTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <>
+          {rows.map((row, index) => (
+            <React.Fragment key={`${row.id}-type`}>
               {props.headers[0] !== 'Source' && props.headers[1] !== 'Node_Id' && (
                 <TableRow key={`${row.id}-type`}>
                   <TableCell align="left" className={classes.tableCell}>
@@ -263,9 +273,9 @@ function EditableTable(props) {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={typeOfInput}
+                      value={typeOfInputs[index]}
                       label="Task type"
-                      onChange={(e) => changedTypeOfInput(e, row)}
+                      onChange={(e) => changedTypeOfInputs(e, row, index)}
                     >
                       {typesOfInputs.map((tex, index) => (
                         <MenuItem key={index} value={tex}>
@@ -279,6 +289,7 @@ function EditableTable(props) {
               <TableRow key={row.id}>
                 <CustomTableCell
                   {...{
+                    index,
                     row,
                     name: 'name',
                     onChange,
@@ -287,16 +298,18 @@ function EditableTable(props) {
                 />
                 <CustomTableCell
                   {...{
+                    index,
                     row,
                     name: 'value',
                     onChange,
+                    type: typeOfInputs[index],
                     typeOfValues: {
                       type:
                         props.headers[0] === 'Source' ||
                         props.headers[1] === 'Node_Id'
                           ? props.typeOfValues && props.typeOfValues[1].type
-                          : typeOfInput,
-                      exists: typeOfInput != undefined,
+                          : typeOfInputs,
+                      exists: typeOfInputs != undefined,
                       values:
                         props.headers[0] === 'Source' ||
                         props.headers[1] === 'Node_Id'
@@ -337,7 +350,7 @@ function EditableTable(props) {
                   )}
                 </TableCell>
               </TableRow>
-            </>
+            </React.Fragment>
           ))}
         </TableBody>
       </Table>
