@@ -37,6 +37,7 @@ import AddIcon from '@material-ui/icons/Add';
 import ReactJson from 'react-json-view';
 import DraggableDialog from './Components/DraggableDialog';
 import DenseTable from './Components/DenseTable';
+import EditIcon from '@material-ui/icons/EditOutlined';
 
 import type {
   Graph,
@@ -129,6 +130,9 @@ export default function Sidebar(props) {
   const setGraphRF = useStore((state) => state.setGraphRF);
   const workingGraph = useStore((state) => state.workingGraph);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
+  const [editIdentifier, setEditIdentifier] = React.useState(false);
+  const [editType, setEditType] = React.useState(false);
+  const [editGenerator, setEditGenerator] = React.useState(false);
 
   useEffect(() => {
     console.log(selectedElement);
@@ -190,9 +194,35 @@ export default function Sidebar(props) {
     graphRF.graph.uiProps,
   ]);
 
+  const taskIdentifierChanged = (event) => {
+    setTaskIdentifier(event.target.value);
+
+    setElement({
+      ...element,
+      task_identifier: event.target.value,
+    });
+  };
+
+  const taskTypeChanged = (event) => {
+    setTaskType(event.target.value);
+
+    setElement({
+      ...element,
+      task_type: event.target.value,
+    });
+  };
+
+  const taskGeneratorChanged = (event) => {
+    setTaskGenerator(event.target.value);
+
+    setElement({
+      ...element,
+      task_generator: event.target.value,
+    });
+  };
+
   const labelChanged = (event) => {
     setLabel(event.target.value);
-    // const tmpElement = { ...element, data: { ...element.data } };
     if ('position' in element) {
       setElement({
         ...element,
@@ -323,10 +353,6 @@ export default function Sidebar(props) {
         }),
       ],
     });
-  };
-
-  const taskGeneratorChanged = (event) => {
-    setTaskGenerator(event.target.value);
   };
 
   const moreHandlesChanged = (event) => {
@@ -485,39 +511,54 @@ export default function Sidebar(props) {
     }
   };
 
-  const addGraphInput = () => {
-    console.log(graphInputs);
-    setGraphRF({
-      nodes: graphRF.nodes,
-      links: graphRF.links,
-      graph: {
-        ...graphRF.graph,
-        input_nodes: [
-          ...(graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []),
-          { id: 'id', name: '', value: '' },
-        ],
-      },
-    });
-  };
+  // const addGraphInput = () => {
+  //   console.log(graphInputs);
+  //   setGraphRF({
+  //     nodes: graphRF.nodes,
+  //     links: graphRF.links,
+  //     graph: {
+  //       ...graphRF.graph,
+  //       input_nodes: [
+  //         ...(graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []),
+  //         { id: 'id', name: '', value: '' },
+  //       ],
+  //     },
+  //   });
+  // };
 
-  const addGraphOutput = () => {
-    console.log(selectedElement);
-    setGraphRF({
-      nodes: graphRF.nodes,
-      links: graphRF.links,
-      graph: {
-        ...graphRF.graph,
-        output_nodes: [
-          ...(graphRF.graph.output_nodes ? graphRF.graph.output_nodes : []),
-          { id: '-', name: '-', value: '-' },
-        ],
-      },
-    });
-  };
+  // const addGraphOutput = () => {
+  //   console.log(selectedElement);
+  //   setGraphRF({
+  //     nodes: graphRF.nodes,
+  //     links: graphRF.links,
+  //     graph: {
+  //       ...graphRF.graph,
+  //       output_nodes: [
+  //         ...(graphRF.graph.output_nodes ? graphRF.graph.output_nodes : []),
+  //         { id: '-', name: '-', value: '-' },
+  //       ],
+  //     },
+  //   });
+  // };
 
   const insertGraph = (val) => {
     console.log(val, selectedElement);
     setGraphOrSubgraph(false);
+  };
+
+  const onEditIdentifier = () => {
+    console.log(selectedElement);
+    setEditIdentifier(!editIdentifier);
+  };
+
+  const onEditType = () => {
+    console.log(selectedElement);
+    setEditType(!editType);
+  };
+
+  const onEditGenerator = () => {
+    console.log(selectedElement);
+    setEditGenerator(!editGenerator);
   };
 
   return (
@@ -532,6 +573,11 @@ export default function Sidebar(props) {
         </AccordionSummary>
         <AccordionDetails style={{ flexWrap: 'wrap' }}>
           {[
+            {
+              task_identifier: 'taskSkeleton',
+              task_type: 'ppfmethod',
+              icon: 'orange1',
+            },
             {
               task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
               task_type: 'class',
@@ -554,12 +600,9 @@ export default function Sidebar(props) {
             },
             {
               task_identifier: 'ewokscore.ppftasks.PpfPortTask',
-              task_type: 'ppfport',
+              task_type: 'ppfmethod',
               icon: 'Continuize',
-            },
-            {
-              task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
-              task_type: 'script',
+              task_type: 'ppfmethod',
               icon: 'Correlations',
             },
             {
@@ -643,7 +686,8 @@ export default function Sidebar(props) {
                 </div>
                 <div>
                   <b>Inputs </b>
-                  {/* TODO: simple table without edit is probably needed */}
+                  {/* TODO: simple table without edit is probably needed
+                  TODO: when input exists without position we cannot erase it from sidebar*/}
                   {/* <IconButton
                     style={{ padding: '1px' }}
                     aria-label="delete"
@@ -826,11 +870,9 @@ export default function Sidebar(props) {
                                 : 'input'
                               : 'input',
                             values: props.element.data.links_input_names || [],
-                            exists: true,
                           },
                           {
                             type: 'input',
-                            exists: true,
                           },
                         ]}
                       />
@@ -886,22 +928,70 @@ export default function Sidebar(props) {
             {'position' in selectedElement && (
               <React.Fragment>
                 <Box
-                  component="form"
-                  sx={{
-                    '& > :not(style)': { m: 1, width: '34ch' },
-                  }}
-                  noValidate
-                  autoComplete="off"
+                // component="form"
+                // sx={{
+                //   '& > :not(style)': { m: 1, width: '34ch' },
+                // }}
+                // noValidate
+                // autoComplete="off"
                 >
                   <div className={classes.root}>
                     <b>Task Identifier:</b> {props.element.task_identifier}
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="edit"
+                      onClick={() => onEditIdentifier()}
+                    >
+                      <EditIcon />
+                    </IconButton>
                   </div>
+                  {editIdentifier && (
+                    <TextField
+                      id="outlined-basic"
+                      label="Task Identifier"
+                      variant="outlined"
+                      value={taskIdentifier || ''}
+                      onChange={taskIdentifierChanged}
+                    />
+                  )}
                   <div className={classes.root}>
                     <b>Task type:</b> {props.element.task_type}
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="edit"
+                      onClick={() => onEditType()}
+                    >
+                      <EditIcon />
+                    </IconButton>
                   </div>
+                  {editType && (
+                    <TextField
+                      id="outlined-basic"
+                      label="Task Type"
+                      variant="outlined"
+                      value={taskType || ''}
+                      onChange={taskTypeChanged}
+                    />
+                  )}
                   <div>
                     <b>Task generator:</b> {props.element.task_generator}
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="edit"
+                      onClick={() => onEditGenerator()}
+                    >
+                      <EditIcon />
+                    </IconButton>
                   </div>
+                  {editGenerator && (
+                    <TextField
+                      id="outlined-basic"
+                      label="Task Generator"
+                      variant="outlined"
+                      value={taskGenerator || ''}
+                      onChange={taskGeneratorChanged}
+                    />
+                  )}
                   <div>
                     <b>Default Values </b>
                     {/* TODO: any kind of type is allowed: objects, arrays that need to be editable */}
@@ -965,12 +1055,12 @@ export default function Sidebar(props) {
               <React.Fragment>
                 <div>
                   <Box
-                    component="form"
-                    sx={{
-                      '& > :not(style)': { m: 1, width: '34ch' },
-                    }}
-                    noValidate
-                    autoComplete="off"
+                  // component="form"
+                  // sx={{
+                  //   '& > :not(style)': { m: 1, width: '34ch' },
+                  // }}
+                  // noValidate
+                  // autoComplete="off"
                   >
                     {/* if text size big use a text area
                     <TextareaAutosize
@@ -1060,7 +1150,7 @@ export default function Sidebar(props) {
         // onDelete={(del) => true}
         // onSelect={(sel) => true}
         quotesOnKeys={false}
-        style={{ 'background-color': 'rgb(59, 77, 172)' }}
+        style={{ backgroundColor: 'rgb(59, 77, 172)' }}
         displayDataTypes
       />
       <DraggableDialog />

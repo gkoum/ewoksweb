@@ -51,8 +51,19 @@ export interface State {
   setWorkingGraph: (graph: GraphEwoks) => Promise<GraphRF>;
 }
 
+export interface Task {
+  task_type?: string;
+  task_identifier?: string;
+  default_inputs?: Inputs[];
+  inputs_complete?: boolean;
+  task_generator?: string;
+  optional_input_names?: Array<string>;
+  output_names?: Array<string>;
+  required_input_names?: Array<string>;
+}
+
 export interface Inputs {
-  key?: string;
+  name?: string;
   value?: string;
 }
 
@@ -72,7 +83,12 @@ export interface UiProps {
   type?: string;
   icon?: string;
   comment?: string;
-  position?: string;
+  position?: CanvasPosition;
+}
+
+export interface CanvasPosition {
+  x: number;
+  y: number;
 }
 
 export interface DataMapping {
@@ -127,7 +143,7 @@ export interface EwoksRFNode {
   };
   sourcePosition?: Position;
   targetPosition?: Position;
-  position?: { x: number; y: number };
+  position?: CanvasPosition;
   optional_input_names?: Array<string>;
   output_names?: Array<string>;
   required_input_names?: Array<string>;
@@ -139,7 +155,7 @@ export interface EwoksRFLink {
   target: string;
   label?: string;
   data?: {
-    data_mapping?: DataMapping;
+    data_mapping?: DataMapping[];
     type?: string;
     comment?: string;
     conditions?: Conditions[];
@@ -151,6 +167,7 @@ export interface EwoksRFLink {
   type?: string;
   arrowHeadType?: string;
   animated?: string;
+  sourceHandle?: string;
 }
 
 export interface RFLink {
@@ -170,21 +187,6 @@ export interface RFLink {
   uiProps?: UiProps;
 }
 
-// coming out of react-flow when selected
-// data:
-//   comment: "Prepare troubleshouting"
-//   icon: "orange1"
-//   label: "barmboutsalaMethod"
-//   type: "input"
-//   only when subgraph we have the following calculated
-//   inputs:
-//     0: Object { label: "in1: task1 ", type: "data " }
-//   outputs:
-//     0: Object { label: "out1: subsubgraph  -> out1", type: "data " }
-//     1: Object { label: "out2: subsubgraph  -> out2", type: "data " }
-// id: "node1"
-// position: Object { x: 155, y: 65 }
-// type: "method"
 export interface RFNode {
   id: string;
   label?: string;
@@ -203,7 +205,7 @@ export interface RFNode {
   };
   sourcePosition?: Position;
   targetPosition?: Position;
-  position?: { x: number; y: number };
+  position?: CanvasPosition;
 }
 
 export interface GraphRF {

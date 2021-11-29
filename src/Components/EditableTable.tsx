@@ -63,7 +63,6 @@ const createData = (pair) => {
         name: Object.values(pair)[0],
         value: Object.values(pair)[1],
         isEditMode: false,
-        exists: true,
         type: typeof pair.value,
       };
 };
@@ -72,12 +71,30 @@ function CustomTableCell({ index, row, name, onChange, type, typeOfValues }) {
   const classes = useStyles();
   const { isEditMode } = row;
   console.log(index, row, name, onChange, type, typeOfValues);
-  // console.log('typeOfValues:', typeOfValues);
-  // TODO: fix for boolean to have drop-down with false-true
-  // let selectValues = [];
-  // if (typeOfValues.type === 'bool') selectValues = [true, false];
+  // TODO: handle objects arrays in dialog window
   const emptyObject = {};
   const emptyArray = [];
+
+  const [boolVal, setBoolVal] = React.useState(true);
+
+  useEffect(() => {
+    console.log(row.value);
+    setBoolVal(row.value.toString());
+  }, [row.value]);
+
+  const onChangeBool = (e, row, index) => {
+    console.log(e.target.value, e.target.name, row, index);
+    const event = {
+      ...e,
+      target: {
+        ...e.target,
+        name: e.target.name,
+        value: e.target.value === 'true',
+      },
+    };
+    console.log(event.target.value);
+    onChange(event, row, index);
+  };
 
   return (
     <TableCell align="left" className={classes.tableCell}>
@@ -119,12 +136,20 @@ function CustomTableCell({ index, row, name, onChange, type, typeOfValues }) {
           <RadioGroup
             aria-label="gender"
             name="value"
-            value={row[name]}
-            onChange={(e) => onChange(e, row, index)}
+            value={boolVal} // {row[name]}
+            onChange={(e) => onChangeBool(e, row, index)}
           >
             <FormControlLabel value="true" control={<Radio />} label="true" />
             <FormControlLabel value="false" control={<Radio />} label="false" />
           </RadioGroup>
+        ) : type === 'number' ? (
+          <Input
+            value={row[name]}
+            type="number"
+            name={name}
+            onChange={(e) => onChange(e, row, index)}
+            className={classes.input}
+          />
         ) : (
           <Input
             value={row[name]}
@@ -142,28 +167,27 @@ function CustomTableCell({ index, row, name, onChange, type, typeOfValues }) {
 
 function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
-  const [typeOfValuesExists, setTypeOfValuesExists] = React.useState(false);
   // console.log('PROPS:', props);
   const [typeOfInputs, setTypeOfInputs] = React.useState([]);
 
+  const { defaultValues } = props;
+
   const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
-  console.log(props, typeOfInputs);
+  console.log(rows, props, typeOfInputs);
 
   useEffect(() => {
-    console.log(props.defaultValues);
-    // setTypeOfValuesExists(props.typeOfValues[1].exists);
-    // TODO: set type of input through the createData
-    // TODO: number is saved as string
-    const tOfIn = props.defaultValues.map((val) => typeof val.value);
+    console.log(defaultValues);
+    const tOfIn = defaultValues.map((val) => typeof val.value);
     setTypeOfInputs(tOfIn);
     setRows(
-      props.defaultValues
-        ? props.defaultValues.map((pair) => {
+      defaultValues
+        ? defaultValues.map((pair) => {
+            console.log(pair);
             return createData(pair);
           })
         : []
     );
-  }, [props.defaultValues]);
+  }, [defaultValues]);
 
   const classes = useStyles();
 
@@ -187,24 +211,13 @@ function EditableTable(props) {
     }
   };
 
-  // const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
   const onChange = (e, row, index) => {
     let { value } = e.target;
     const { name } = e.target;
     const inType = typeOfInputs[index];
     const type =
       inType === 'number' ? Number(value) : inType === 'bool' ? !!value : value;
-    console.log(
-      type,
-      typeOfInputs,
-      e.target.value,
-      typeof e.target.value,
-      e.target.name,
-      row.id,
-      row,
-      rows,
-      index
-    );
+    console.log(type, typeOfInputs, e.target.value, e.target.name, row, index);
 
     if (name === 'value') {
       value =
@@ -215,7 +228,6 @@ function EditableTable(props) {
           : value;
       console.log(typeof value, value);
     }
-    console.log(typeof value, value);
 
     const { id } = row;
     const newRows = rows.map((rowe) => {
@@ -235,14 +247,13 @@ function EditableTable(props) {
     const newRows = rows.filter((row) => {
       return row.id !== id; // row;
     });
-    // console.log(newRows);
+    console.log(newRows);
     setRows(newRows);
     props.valuesChanged(newRows);
   };
 
   const changedTypeOfInputs = (e, row, index) => {
-    console.log(e.target.value, row, typeOfValuesExists, props, index);
-    setTypeOfValuesExists(!typeOfValuesExists);
+    console.log(e.target.value, row, props, index);
     const tOfI = [...typeOfInputs];
     tOfI[index] = e.target.value;
     setTypeOfInputs(tOfI);
@@ -273,7 +284,11 @@ function EditableTable(props) {
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={typeOfInputs[index]}
+                      value={
+                        typeOfInputs[index] !== 'boolean'
+                          ? typeOfInputs[index]
+                          : 'bool'
+                      }
                       label="Task type"
                       onChange={(e) => changedTypeOfInputs(e, row, index)}
                     >
@@ -293,6 +308,7 @@ function EditableTable(props) {
                     row,
                     name: 'name',
                     onChange,
+                    type: '',
                     typeOfValues: props.typeOfValues && props.typeOfValues[0],
                   }}
                 />
@@ -309,7 +325,6 @@ function EditableTable(props) {
                         props.headers[1] === 'Node_Id'
                           ? props.typeOfValues && props.typeOfValues[1].type
                           : typeOfInputs,
-                      exists: typeOfInputs != undefined,
                       values:
                         props.headers[0] === 'Source' ||
                         props.headers[1] === 'Node_Id'

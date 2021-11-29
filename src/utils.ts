@@ -19,6 +19,9 @@ import type {
   nodeInputsOutputs,
   GraphRF,
   RFLink,
+  Task,
+  DataMapping,
+  GraphDetails,
 } from './types';
 import axios from 'axios';
 import { TurnedIn } from '@material-ui/icons';
@@ -43,11 +46,11 @@ export async function getWorkflows() {
 export async function getGraph(
   byTaskIdentifier: string,
   fromWeb: boolean
-): Graph {
-  let subgraphL = {
-    graph: { id: '', input_nodes: [], output_nodes: [] },
-    nodes: [],
-    links: [],
+): Promise<Graph> {
+  let subgraphL: GraphEwoks = {
+    graph: { id: '', input_nodes: [], output_nodes: [] } as GraphDetails,
+    nodes: [] as EwoksNode[],
+    links: [] as EwoksLink[],
   };
   if (fromWeb) {
     await axios
@@ -266,46 +269,52 @@ function inNodesLinks(graph) {
     graph.graph.input_nodes.forEach((inNod) => {
       const nodeTarget = graph.nodes.find((no) => no.id === inNod.node);
       console.log(inNod, nodeTarget);
-      if (inNod.uiProps && inNod.uiProps.position) {
-        if (!inNodesInputed.includes(inNod.id)) {
-          inputs.nodes.push({
-            id: inNod.id,
-            label: inNod.id,
-            task_type: 'graphInput',
-            task_identifier: 'Start-End',
-            position: inNod.uiProps.position,
-            uiProps: {
-              type: 'input',
-              position: inNod.uiProps.position,
-              icon: 'graphInput',
+      // if (inNod.uiProps && inNod.uiProps.position) {
+      if (!inNodesInputed.includes(inNod.id)) {
+        inputs.nodes.push({
+          id: inNod.id,
+          label: inNod.id,
+          task_type: 'graphInput',
+          task_identifier: 'Start-End',
+          position: (inNod.uiProps && inNod.uiProps.position) || {
+            x: 50,
+            y: 50,
+          },
+          uiProps: {
+            type: 'input',
+            position: (inNod.uiProps && inNod.uiProps.position) || {
+              x: 50,
+              y: 50,
             },
-          });
-          inNodesInputed.push(inNod.id);
-        }
-
-        if (nodeTarget.task_type !== 'graph') {
-          inputs.links.push({
-            startEnd: true,
-            source: inNod.id,
-            target: inNod.node,
-            uiProps: {
-              type: 'default',
-              arrowHeadType: 'arrowclosed',
-            },
-          });
-        } else {
-          inputs.links.push({
-            startEnd: true,
-            source: inNod.id,
-            target: inNod.node,
-            sub_target: inNod.sub_node,
-            uiProps: {
-              type: 'default',
-              arrowHeadType: 'arrowclosed',
-            },
-          });
-        }
+            icon: 'graphInput',
+          },
+        });
+        inNodesInputed.push(inNod.id);
       }
+
+      if (nodeTarget.task_type !== 'graph') {
+        inputs.links.push({
+          startEnd: true,
+          source: inNod.id,
+          target: inNod.node,
+          uiProps: {
+            type: 'default',
+            arrowHeadType: 'arrowclosed',
+          },
+        });
+      } else {
+        inputs.links.push({
+          startEnd: true,
+          source: inNod.id,
+          target: inNod.node,
+          sub_target: inNod.sub_node,
+          uiProps: {
+            type: 'default',
+            arrowHeadType: 'arrowclosed',
+          },
+        });
+      }
+      // }
     });
   }
   console.log('INPUTS', inputs);
@@ -322,33 +331,40 @@ function outNodesLinks(graph) {
     const outNodesInputed = [];
     graph.graph.output_nodes.forEach((outNod) => {
       console.log(outNod);
-      if (outNod.uiProps && outNod.uiProps.position) {
-        if (!outNodesInputed.includes(outNod.id)) {
-          outputs.nodes.push({
-            id: outNod.id,
-            label: outNod.id,
-            task_type: 'graphOutput',
-            task_identifier: 'Start-End',
-            position: outNod.uiProps.position,
-            uiProps: {
-              type: 'output',
-              position: outNod.uiProps.position,
-              icon: 'graphOutput',
-            },
-          });
-          outNodesInputed.push(outNod.id);
-        }
-        outputs.links.push({
-          startEnd: true,
-          source: outNod.node,
-          target: outNod.id,
-          sub_source: outNod.sub_node,
+      // if we need position to control showing in-out as nodes in th graph
+      // if (outNod.uiProps && outNod.uiProps.position) {
+      if (!outNodesInputed.includes(outNod.id)) {
+        outputs.nodes.push({
+          id: outNod.id,
+          label: outNod.id,
+          task_type: 'graphOutput',
+          task_identifier: 'Start-End',
+          position: (outNod.uiProps && outNod.uiProps.position) || {
+            x: 1250,
+            y: 450,
+          },
           uiProps: {
-            type: 'default',
-            arrowHeadType: 'arrowclosed',
+            type: 'output',
+            position: (outNod.uiProps && outNod.uiProps.position) || {
+              x: 1250,
+              y: 450,
+            },
+            icon: 'graphOutput',
           },
         });
+        outNodesInputed.push(outNod.id);
       }
+      outputs.links.push({
+        startEnd: true,
+        source: outNod.node,
+        target: outNod.id,
+        sub_source: outNod.sub_node,
+        uiProps: {
+          type: 'default',
+          arrowHeadType: 'arrowclosed',
+        },
+      });
+      // }
     });
   }
   return outputs;
@@ -547,7 +563,7 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
       ({
         source,
         target,
-        data_mapping = [],
+        data_mapping = [{} as DataMapping],
         sub_target,
         sub_source,
         on_error,
@@ -563,8 +579,8 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
         // if undefined source or/and target node does not exist
 
         console.log('TASKSTMP:', sourceTmp, targetTmp);
-        let sourceTask = {};
-        let targetTask = {};
+        let sourceTask = {} as Task;
+        let targetTask = {} as Task;
         if (sourceTmp) {
           if (sourceTmp.task_type !== 'graph') {
             // TODO: if a task find it in tasks. IF NOT THERE?

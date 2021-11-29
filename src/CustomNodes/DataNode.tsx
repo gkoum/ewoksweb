@@ -12,25 +12,11 @@ const isValidOutput = (connection) => {
 
 const DataNode = (args) => {
   // args = some RF-related and a data that has args Ewoks-related
-  // data:
-  //  comment: "Prepare troubleshouting"
-  //  icon: "orange1"
-  //  label: "barmboutsalaMethod"
-  //  type: "input"
-  // id: "node1"
-  // isConnectable: true
-  // isDragging: false
-  // selected: false
-  // sourcePosition: "right"
-  // targetPosition: "left"
-  // type: "method"
-  // xPos: 50
-  // yPos: 80
-  // { data, selected }
   console.log(args);
   return (
     <Node
-      type={args.data.type}
+      isGraph={false}
+      type={args.type}
       label={args.data.label}
       selected={args.selected}
       color={'#ced3ee'}

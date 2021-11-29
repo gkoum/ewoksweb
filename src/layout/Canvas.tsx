@@ -7,47 +7,18 @@ import ReactFlow, {
   useZoomPanHelper,
   Node,
   Edge,
-  ReactFlowState,
   Background,
-  MiniMap,
-  removeElements,
-  addEdge,
   isEdge,
   isNode,
 } from 'react-flow-renderer';
-import type {
-  ReactFlowProps,
-  ReactFlowRefType,
-} from 'react-flow-renderer/dist/container/ReactFlow';
-import type { ReactFlowAction } from 'react-flow-renderer/dist/store/actions';
-import { Rnd } from 'react-rnd';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import useStore from '../store';
 import CustomNode from '../CustomNodes/CustomNode';
 import FunctionNode from '../CustomNodes/FunctionNode';
 import DataNode from '../CustomNodes/DataNode';
-import type {
-  Graph,
-  EwoksLink,
-  EwoksNode,
-  GraphRF,
-  EwoksRFNode,
-  GraphDetails,
-  EwoksRFLink,
-  RFNode,
-  RFLink,
-} from '../types';
-import {
-  toRFEwoksLinks,
-  toRFEwoksNodes,
-  positionNodes,
-  ewoksNetwork,
-  getGraph,
-  getSubgraphs,
-  // RFtoRFEwoksNode,
-} from '../utils';
+import type { GraphRF, EwoksRFNode, RFNode, RFLink } from '../types';
+import { toRFEwoksNodes } from '../utils';
 import { tasks } from '../assets/graphTests';
-import useNodeInputsOutputs from '../hooks/useNodeInputsOutputs';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -149,33 +120,6 @@ function Canvas() {
     event.dataTransfer.dropEffect = 'move';
   };
 
-  function CustomNewNode(id: number, name: string, image: string) {
-    return (
-      <CustomNode
-        id={id}
-        name={name}
-        image={image}
-        onElementClick={onElementClick}
-        // removeNode={removeNode}
-        // openContactDetails={openContactDetails}
-      />
-    );
-  }
-
-  function dataNewNode({ type, label, image }) {
-    console.log(type, label, image);
-    return (
-      <DataNode
-        type
-        label
-        image
-        onElementClick={onElementClick}
-        // removeNode={removeNode}
-        // openContactDetails={openContactDetails}
-      />
-    );
-  }
-
   const onDrop = (event) => {
     event.preventDefault();
     if (graphRF.graph.id === '0') {
@@ -245,9 +189,9 @@ function Canvas() {
         links: graphRF.links,
       };
       // setElements((els) => addEdge(params, els));
-      setGraphRF(newGraph as GraphRF);
+      setGraphRF(newGraph);
       // need to also save it in recentGraphs if we leave and come back to the graph?
-      setRecentGraphs(newGraph as GraphRF);
+      setRecentGraphs(newGraph);
     } else {
       setOpenSnackbar({
         open: true,

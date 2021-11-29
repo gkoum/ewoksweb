@@ -1,21 +1,9 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { getWorkflows } from '../utils';
 import useStore from '../store';
-
-interface Film {
-  title: string;
-  year: number;
-}
-
-// function sleep(delay = 0) {
-//   return new Promise((resolve) => {
-//     setTimeout(resolve, delay);
-//   });
-// }
 
 function AutocompleteDrop(props) {
   const [options, setOptions] = useState<readonly WorkflowList[]>([]);
