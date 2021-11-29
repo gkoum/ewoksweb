@@ -152,7 +152,7 @@ function CustomTableCell({ index, row, name, onChange, type, typeOfValues }) {
           />
         ) : (
           <Input
-            value={row[name]}
+            value={row[name] || ''}
             name={name}
             onChange={(e) => onChange(e, row, index)}
             className={classes.input}

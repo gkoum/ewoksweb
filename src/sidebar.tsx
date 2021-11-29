@@ -38,6 +38,7 @@ import ReactJson from 'react-json-view';
 import DraggableDialog from './Components/DraggableDialog';
 import DenseTable from './Components/DenseTable';
 import EditIcon from '@material-ui/icons/EditOutlined';
+import SaveIcon from '@material-ui/icons/Save';
 
 import type {
   Graph,
@@ -442,25 +443,16 @@ export default function Sidebar(props) {
 
   const addConditions = () => {
     console.log(selectedElement);
-    if (element.data.conditions && element.data.conditions.length > 0) {
+    const elCon = element.data.conditions;
+    if (elCon && elCon[elCon.length - 1] && elCon[elCon.length - 1].id === '') {
+      console.log('should not ADD condition');
+    } else {
       console.log(element);
       setSelectedElement({
         ...element,
         data: {
           ...element.data,
-          conditions: [
-            ...element.data.conditions,
-            { id: '', name: '', value: '' },
-          ],
-        },
-      });
-    } else {
-      console.log(element.data);
-      setSelectedElement({
-        ...element,
-        data: {
-          ...element.data,
-          conditions: [{ id: '', name: '', value: '' }],
+          conditions: [...elCon, { id: '', name: '', value: '' }],
         },
       });
     }
@@ -468,25 +460,16 @@ export default function Sidebar(props) {
 
   const addDataMapping = () => {
     console.log(selectedElement);
-    if (element.data.data_mapping) {
+    const elMap = element.data.data_mapping;
+    if (elMap && elMap[elMap.length - 1] && elMap[elMap.length - 1].id === '') {
+      console.log('should not ADD mapping');
+    } else {
       console.log(element);
       setSelectedElement({
         ...element,
         data: {
           ...element.data,
-          data_mapping: [
-            ...element.data.data_mapping,
-            { id: '', name: '', value: '' },
-          ],
-        },
-      });
-    } else {
-      console.log(element.data);
-      setSelectedElement({
-        ...element,
-        data: {
-          ...element.data,
-          data_mapping: [{ id: '', name: '', value: '' }],
+          data_mapping: [...elMap, { id: '', name: '', value: '' }],
         },
       });
     }
@@ -494,19 +477,14 @@ export default function Sidebar(props) {
 
   const addDefaultInputs = () => {
     console.log(selectedElement);
-    if (element.default_inputs) {
+    const elIn = element.default_inputs;
+    if (elIn && elIn[elIn.length - 1] && elIn[elIn.length - 1].id === '') {
+      console.log('should not ADD default');
+    } else {
       console.log(element.default_inputs);
       setSelectedElement({
         ...element,
-        default_inputs: [
-          ...element.default_inputs,
-          { id: '', name: '', value: '' },
-        ],
-      });
-    } else {
-      setSelectedElement({
-        ...element,
-        default_inputs: [{ id: '', name: '', value: '' }],
+        default_inputs: [...elIn, { id: '', name: '', value: '' }],
       });
     }
   };
@@ -1081,12 +1059,12 @@ export default function Sidebar(props) {
                 </div>
                 <div>
                   <Box
-                    component="form"
-                    sx={{
-                      '& > :not(style)': { m: 1, width: '34ch' },
-                    }}
-                    noValidate
-                    autoComplete="off"
+                  // component="form"
+                  // sx={{
+                  //   '& > :not(style)': { m: 1, width: '34ch' },
+                  // }}
+                  // noValidate
+                  // autoComplete="off"
                   >
                     <TextField
                       id="outlined-basic"
@@ -1100,18 +1078,32 @@ export default function Sidebar(props) {
               </React.Fragment>
             )}
             <Button
-              style={{ margin: '10px' }}
+              style={{ margin: '2px' }}
               variant="contained"
               color="primary"
               onClick={saveElement}
+              size="small"
             >
-              Save
+              <SaveIcon />
             </Button>
+            {!('source' in selectedElement) && (
+              <Button
+                style={{ margin: '2px' }}
+                variant="outlined"
+                color="primary"
+                onClick={deleteElement}
+                size="small"
+              >
+                Clone
+              </Button>
+            )}
             {!('input_nodes' in selectedElement) && (
               <Button
-                variant="contained"
+                style={{ margin: '2px' }}
+                variant="outlined"
                 color="secondary"
                 onClick={deleteElement}
+                size="small"
               >
                 Delete
               </Button>
