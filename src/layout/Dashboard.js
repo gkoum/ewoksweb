@@ -53,6 +53,7 @@ import axios from 'axios';
 import { getWorkflows } from '../utils';
 import SimpleSnackbar from '../Components/Snackbar';
 import FullScreenDialog from '../Components/FullScreenDialog';
+import Tooltip from '@material-ui/core/Tooltip';
 
 // function Copyright() {
 //   return (
@@ -381,22 +382,26 @@ export default function Dashboard() {
               ))}
             </Select>
           </FormControl>
-          <IconButton color="inherit">
-            <Fab
-              className={classes.openFileButton}
-              color="primary"
-              size="small"
-              component="span"
-              aria-label="add"
-            >
-              <SaveIcon onClick={saveToDisk} />
-            </Fab>
-          </IconButton>
-          <IconButton color="inherit">
-            <Upload>
-              <AddIcon onClick={loadFromDisk} />
-            </Upload>
-          </IconButton>
+          <Tooltip title="Save to Disk">
+            <IconButton color="inherit">
+              <Fab
+                className={classes.openFileButton}
+                color="primary"
+                size="small"
+                component="span"
+                aria-label="add"
+              >
+                <SaveIcon onClick={saveToDisk} />
+              </Fab>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Load from Disk">
+            <IconButton color="inherit">
+              <Upload>
+                <AddIcon onClick={loadFromDisk} />
+              </Upload>
+            </IconButton>
+          </Tooltip>
           <div className={classes.verticalRule} />
           <IconButton color="inherit">
             <Fab
@@ -423,41 +428,47 @@ export default function Dashboard() {
           <FormControl variant="standard" className={classes.formControl}>
             <AutocompleteDrop setInputValue={setInputValue} />
           </FormControl>
-          <IconButton color="inherit">
-            <Fab
-              className={classes.openFileButton}
-              color="primary"
-              size="small"
-              component="span"
-              aria-label="add"
-            >
-              {/* <b>Open</b> */}
-              <DoubleArrowIcon onClick={getFromServer} />
-            </Fab>
-          </IconButton>
-          <IconButton color="inherit">
-            <Fab
-              className={classes.openFileButton}
-              color="primary"
-              size="small"
-              component="span"
-              aria-label="add"
-            >
-              <ArrowDownwardIcon onClick={() => getFromServer('subgraph')} />
-            </Fab>
-          </IconButton>
+          <Tooltip title="Open and edit Workflow">
+            <IconButton color="inherit">
+              <Fab
+                className={classes.openFileButton}
+                color="primary"
+                size="small"
+                component="span"
+                aria-label="add"
+              >
+                {/* <b>Open</b> */}
+                <DoubleArrowIcon onClick={getFromServer} />
+              </Fab>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Add workflow as subgraph">
+            <IconButton color="inherit">
+              <Fab
+                className={classes.openFileButton}
+                color="primary"
+                size="small"
+                component="span"
+                aria-label="add"
+              >
+                <ArrowDownwardIcon onClick={() => getFromServer('subgraph')} />
+              </Fab>
+            </IconButton>
+          </Tooltip>
           <div className={classes.verticalRule} />
-          <IconButton color="inherit">
-            <Fab
-              className={classes.openFileButton}
-              color="primary"
-              size="small"
-              component="span"
-              aria-label="add"
-            >
-              <SettingsIcon onClick={handleOpenSettings} />
-            </Fab>
-          </IconButton>
+          <Tooltip title="Manage tasks and workflows">
+            <IconButton color="inherit">
+              <Fab
+                className={classes.openFileButton}
+                color="primary"
+                size="small"
+                component="span"
+                aria-label="add"
+              >
+                <SettingsIcon onClick={handleOpenSettings} />
+              </Fab>
+            </IconButton>
+          </Tooltip>
           <FullScreenDialog
             handleOpenSettings={handleOpenSettings}
             openSettings={openSettings}

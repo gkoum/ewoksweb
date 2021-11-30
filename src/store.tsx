@@ -202,13 +202,13 @@ const useStore = create<State>((set, get) => ({
   },
 
   selectedElement: {
-    id: '',
-    label: '',
-    type: '',
-    data: { label: '' },
-    position: { x: 0, y: 0 },
-    default_inputs: [],
-  } as EwoksRFNode,
+    // id: '',
+    // label: '',
+    // type: '',
+    // data: { label: '' },
+    // position: { x: 0, y: 0 },
+    // default_inputs: [],
+  } as EwoksRFNode | EwoksRFLink | GraphDetails,
 
   // sets graphRF as well? should it?
   setSelectedElement: (element: EwoksRFNode | EwoksRFLink | GraphDetails) => {

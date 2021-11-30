@@ -39,6 +39,7 @@ import DraggableDialog from './Components/DraggableDialog';
 import DenseTable from './Components/DenseTable';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import SaveIcon from '@material-ui/icons/Save';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import type {
   Graph,
@@ -857,49 +858,7 @@ export default function Sidebar(props) {
                     )}
                   </div>
                 )}
-                <hr />
-                <div>
-                  <FormControl variant="filled" fullWidth>
-                    <InputLabel id="linkTypeLabel">Link type</InputLabel>
-                    <Select
-                      labelId="linkTypeLabel"
-                      value={linkType ? linkType : 'internal'}
-                      label="Link type"
-                      onChange={linkTypeChanged}
-                    >
-                      {['straight', 'smoothstep', 'step', 'default'].map(
-                        (tex, index) => (
-                          <MenuItem key={index} value={tex}>
-                            {tex}
-                          </MenuItem>
-                        )
-                      )}
-                    </Select>
-                  </FormControl>
-                </div>
-                <div>
-                  <FormControl variant="filled" fullWidth>
-                    <InputLabel id="ArrowHeadType">Arrow Head Type</InputLabel>
-                    <Select
-                      value={arrowType ? arrowType : 'internal'}
-                      label="Arrow head"
-                      onChange={arrowTypeChanged}
-                    >
-                      {['arrow', 'arrowclosed', 'none'].map((tex) => (
-                        <MenuItem value={tex}>{tex}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
-                <div>
-                  <b>animated</b>
-                  <Checkbox
-                    checked={animated ? animated : false}
-                    onChange={animatedChanged}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                  />
-                </div>
-                labelStyle
+
                 <hr />
               </React.Fragment>
             )}
@@ -1007,23 +966,6 @@ export default function Sidebar(props) {
                         inputProps={{ 'aria-label': 'controlled' }}
                       />
                     </div>
-                    <FormControl variant="filled" fullWidth>
-                      <InputLabel>Node type</InputLabel>
-                      <Select
-                        id="demo-simple-select"
-                        value={nodeType ? nodeType : 'internal'}
-                        label="Node type"
-                        onChange={nodeTypeChanged}
-                      >
-                        {['input', 'output', 'internal', 'input_output'].map(
-                          (tex, index) => (
-                            <MenuItem key={index} value={tex}>
-                              {tex}
-                            </MenuItem>
-                          )
-                        )}
-                      </Select>
-                    </FormControl>
                   </div>
                 </Box>
               </React.Fragment>
@@ -1077,37 +1019,6 @@ export default function Sidebar(props) {
                 </div>
               </React.Fragment>
             )}
-            <Button
-              style={{ margin: '2px' }}
-              variant="contained"
-              color="primary"
-              onClick={saveElement}
-              size="small"
-            >
-              <SaveIcon />
-            </Button>
-            {!('source' in selectedElement) && (
-              <Button
-                style={{ margin: '2px' }}
-                variant="outlined"
-                color="primary"
-                onClick={deleteElement}
-                size="small"
-              >
-                Clone
-              </Button>
-            )}
-            {!('input_nodes' in selectedElement) && (
-              <Button
-                style={{ margin: '2px' }}
-                variant="outlined"
-                color="secondary"
-                onClick={deleteElement}
-                size="small"
-              >
-                Delete
-              </Button>
-            )}
           </form>
         </AccordionDetails>
       </Accordion>
@@ -1126,8 +1037,100 @@ export default function Sidebar(props) {
               : 'Graph'}
           </Typography>
         </AccordionSummary>
-        <AccordionDetails></AccordionDetails>
+        <AccordionDetails>
+          <form className={classes.root} noValidate autoComplete="off">
+            <FormControl variant="filled" fullWidth>
+              <InputLabel>Node type</InputLabel>
+              <Select
+                id="demo-simple-select"
+                value={nodeType ? nodeType : 'internal'}
+                label="Node type"
+                onChange={nodeTypeChanged}
+              >
+                {['input', 'output', 'internal', 'input_output'].map(
+                  (tex, index) => (
+                    <MenuItem key={index} value={tex}>
+                      {tex}
+                    </MenuItem>
+                  )
+                )}
+              </Select>
+            </FormControl>
+            <FormControl variant="filled" fullWidth>
+              <InputLabel id="linkTypeLabel">Link type</InputLabel>
+              <Select
+                labelId="linkTypeLabel"
+                value={linkType ? linkType : 'internal'}
+                label="Link type"
+                onChange={linkTypeChanged}
+              >
+                {['straight', 'smoothstep', 'step', 'default'].map(
+                  (text, index) => (
+                    <MenuItem key={index} value={text}>
+                      {text}
+                    </MenuItem>
+                  )
+                )}
+              </Select>
+            </FormControl>
+            <FormControl variant="filled" fullWidth>
+              <InputLabel id="ArrowHeadType">Arrow Head Type</InputLabel>
+              <Select
+                value={arrowType ? arrowType : 'internal'}
+                label="Arrow head"
+                onChange={arrowTypeChanged}
+              >
+                {['arrow', 'arrowclosed', 'none'].map((tex) => (
+                  <MenuItem value={tex}>{tex}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <div>
+              <b>animated</b>
+              <Checkbox
+                checked={animated ? animated : false}
+                onChange={animatedChanged}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            </div>
+            labelStyle
+          </form>
+        </AccordionDetails>
       </Accordion>
+      <Button
+        style={{ margin: '2px' }}
+        variant="contained"
+        color="primary"
+        onClick={saveElement}
+        size="small"
+      >
+        <SaveIcon />
+      </Button>
+      {!('source' in selectedElement) && (
+        <Tooltip title="Clone in the canvas or as a new task">
+          <Button
+            style={{ margin: '2px' }}
+            variant="outlined"
+            color="primary"
+            onClick={deleteElement}
+            size="small"
+          >
+            Clone
+          </Button>
+        </Tooltip>
+      )}
+      {!('input_nodes' in selectedElement) && (
+        <Button
+          style={{ margin: '2px' }}
+          variant="outlined"
+          color="secondary"
+          onClick={deleteElement}
+          size="small"
+        >
+          Delete
+        </Button>
+      )}
+      <DraggableDialog />
       <ReactJson
         src={graphRF}
         name={''}
@@ -1145,7 +1148,6 @@ export default function Sidebar(props) {
         style={{ backgroundColor: 'rgb(59, 77, 172)' }}
         displayDataTypes
       />
-      <DraggableDialog />
     </aside>
   );
 }

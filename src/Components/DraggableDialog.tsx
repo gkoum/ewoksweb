@@ -41,9 +41,10 @@ export default function DraggableDialog() {
   return (
     <div>
       <Button
-        style={{ margin: '10px' }}
-        variant="contained"
+        style={{ margin: '2px' }}
+        variant="outlined"
         color="primary"
+        size="small"
         onClick={handleClickOpen}
       >
         Ewoks graph

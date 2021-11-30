@@ -116,6 +116,7 @@ export interface EwoksLink {
   id?: string;
   source: string;
   target: string;
+  map_all_data: boolean;
   data_mapping?: DataMapping[];
   conditions?: Conditions[];
   on_error?: Inputs;
@@ -160,13 +161,14 @@ export interface EwoksRFLink {
     comment?: string;
     conditions?: Conditions[];
     on_error?: Inputs;
+    map_all_data: boolean;
   };
   subtarget?: string;
   subsource?: string;
   uiProps?: UiProps;
   type?: string;
   arrowHeadType?: string;
-  animated?: string;
+  animated?: boolean;
   sourceHandle?: string;
 }
 

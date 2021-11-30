@@ -269,52 +269,53 @@ function inNodesLinks(graph) {
     graph.graph.input_nodes.forEach((inNod) => {
       const nodeTarget = graph.nodes.find((no) => no.id === inNod.node);
       console.log(inNod, nodeTarget);
-      // if (inNod.uiProps && inNod.uiProps.position) {
-      if (!inNodesInputed.includes(inNod.id)) {
-        inputs.nodes.push({
-          id: inNod.id,
-          label: inNod.id,
-          task_type: 'graphInput',
-          task_identifier: 'Start-End',
-          position: (inNod.uiProps && inNod.uiProps.position) || {
-            x: 50,
-            y: 50,
-          },
-          uiProps: {
-            type: 'input',
+      if (nodeTarget) {
+        // inNod.uiProps && inNod.uiProps.position
+        if (!inNodesInputed.includes(inNod.id)) {
+          inputs.nodes.push({
+            id: inNod.id,
+            label: inNod.id,
+            task_type: 'graphInput',
+            task_identifier: 'Start-End',
             position: (inNod.uiProps && inNod.uiProps.position) || {
               x: 50,
               y: 50,
             },
-            icon: 'graphInput',
-          },
-        });
-        inNodesInputed.push(inNod.id);
-      }
+            uiProps: {
+              type: 'input',
+              position: (inNod.uiProps && inNod.uiProps.position) || {
+                x: 50,
+                y: 50,
+              },
+              icon: 'graphInput',
+            },
+          });
+          inNodesInputed.push(inNod.id);
+        }
 
-      if (nodeTarget.task_type !== 'graph') {
-        inputs.links.push({
-          startEnd: true,
-          source: inNod.id,
-          target: inNod.node,
-          uiProps: {
-            type: 'default',
-            arrowHeadType: 'arrowclosed',
-          },
-        });
-      } else {
-        inputs.links.push({
-          startEnd: true,
-          source: inNod.id,
-          target: inNod.node,
-          sub_target: inNod.sub_node,
-          uiProps: {
-            type: 'default',
-            arrowHeadType: 'arrowclosed',
-          },
-        });
+        if (nodeTarget.task_type !== 'graph') {
+          inputs.links.push({
+            startEnd: true,
+            source: inNod.id,
+            target: inNod.node,
+            uiProps: {
+              type: 'default',
+              arrowHeadType: 'arrowclosed',
+            },
+          });
+        } else {
+          inputs.links.push({
+            startEnd: true,
+            source: inNod.id,
+            target: inNod.node,
+            sub_target: inNod.sub_node,
+            uiProps: {
+              type: 'default',
+              arrowHeadType: 'arrowclosed',
+            },
+          });
+        }
       }
-      // }
     });
   }
   console.log('INPUTS', inputs);

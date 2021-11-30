@@ -21,7 +21,7 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
       console.log(nodesNamesConnectedTo, nodeObjConnectedTo);
       // iterate the nodes to create the new input_nodes
       nodeObjConnectedTo.forEach((nodConnected) => {
-        console.log(nodConnected);
+        console.log(nodConnected, input_nodes);
         if (nodConnected.task_type === 'graph') {
           // find the link and get the sub_node it is connected to in the graph
           const link_index = graph_links.findIndex(
@@ -49,6 +49,7 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             uiProps: { position: nod.position },
           });
         }
+        console.log(input_nodes);
       });
     } else if (nod.task_type === 'graphOutput') {
       // find those nodes ItIsConnectedTo
@@ -91,24 +92,22 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             uiProps: { position: nod.position },
           });
         }
+        console.log(output_nodes);
       });
     }
-    // TODO: the following does not exist anymore
-    // else if (nod.data.type === 'input_output') {
-    // }
   });
   console.log(graph, input_nodes, output_nodes);
   // if no position then no graphInput-Output exists so just push them back in
-  graph.graph.input_nodes.forEach((nod) => {
-    if (!(nod.uiProps && nod.uiProps.position)) {
-      input_nodes.push(nod);
-    }
-  });
-  graph.graph.output_nodes.forEach((nod) => {
-    if (!(nod.uiProps && nod.uiProps.position)) {
-      output_nodes.push(nod);
-    }
-  });
+  // graph.graph.input_nodes.forEach((nod) => {
+  //   if (!(nod.uiProps && nod.uiProps.position)) {
+  //     input_nodes.push(nod);
+  //   }
+  // });
+  // graph.graph.output_nodes.forEach((nod) => {
+  //   if (!(nod.uiProps && nod.uiProps.position)) {
+  //     output_nodes.push(nod);
+  //   }
+  // });
   return {
     id: graph.graph.id,
     label: graph.graph.label,

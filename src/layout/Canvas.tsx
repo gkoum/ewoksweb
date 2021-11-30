@@ -201,6 +201,27 @@ function Canvas() {
     }
   };
 
+  const onEdgeUpdate = (oldEdge, newConnection) => {
+    console.log(oldEdge, newConnection);
+    const link = {
+      ...oldEdge,
+      ...newConnection,
+    };
+    const newGraph = {
+      graph: graphRF.graph,
+      nodes: graphRF.nodes,
+      links: [...graphRF.links.filter((lin) => lin.id !== oldEdge.id), link], // addEdge(params, graphRF.links),
+    };
+
+    console.log(link, newGraph);
+    // setElements((els) => addEdge(params, els));
+    setGraphRF(newGraph as GraphRF);
+    // need to also save it in recentGraphs if we leave and come back to the graph?
+
+    setRecentGraphs(newGraph as GraphRF);
+  };
+  // setElements((els) => updateEdge(oldEdge, newConnection, els));
+
   const onConnect = (params) => {
     console.log(params);
     // IF is a link between pre-existing nodes:
@@ -403,13 +424,14 @@ function Canvas() {
             onLoad={onLoad}
             onDrop={onDrop}
             onConnect={onConnect}
+            onEdgeUpdate={onEdgeUpdate}
             onDragOver={onDragOver}
             onPaneContextMenu={onRightClick}
             onNodeDoubleClick={onNodeDoubleClick}
             onSelectionChange={onSelectionChange}
             // onNodeMouseMove={onNodeMouseMove}
             onSelectionDragStop={onSelectionDragStop}
-            // onSelectionDrag={onSelectionDrag}
+            onSelectionDrag={onSelectionDrag}
             // onNodeDrag={onNodeDrag}
             onNodeDragStop={onNodeDragStop}
             nodeTypes={nodeTypes}

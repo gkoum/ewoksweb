@@ -62,6 +62,8 @@
 // ----------------------------------------
 // BUGS
 
+// - moreHnadles is not saved
+
 // - I have MXPressE and try to import MXPressA_aparture_10um as a subgraph
 // and when I go into that subgraph CommonPrepare experiment is in red even
 // if I have it in the recent and already part of the workingGraph
