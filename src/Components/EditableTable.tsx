@@ -241,12 +241,12 @@ function EditableTable(props) {
   };
 
   const onRevert = (id) => {
-    if (id === '') {
-      return;
-    }
+    // let newRows = [];
+
     const newRows = rows.filter((row) => {
-      return row.id !== id; // row;
+      return row.id !== id;
     });
+
     console.log(newRows);
     setRows(newRows);
     props.valuesChanged(newRows);
