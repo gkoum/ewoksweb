@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import useStore from './store';
-import type { Edge, Node } from 'react-flow-renderer';
 import {
   Box,
   Button,
@@ -22,7 +21,6 @@ import graphInput from './images/graphInput.svg';
 import graphOutput from './images/graphOutput.svg';
 import Correlations from './images/Correlations.svg';
 import CreateClass from './images/CreateClass.svg';
-// import expandMore from './images/expandMore.svg';
 import CSVFile from './images/CSVFile.svg';
 import Checkbox from '@material-ui/core/Checkbox';
 import Accordion from '@material-ui/core/Accordion';
@@ -41,16 +39,7 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import SaveIcon from '@material-ui/icons/Save';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import type {
-  Graph,
-  EwoksLink,
-  EwoksNode,
-  EwoksRFNode,
-  EwoksRFLink,
-  Inputs,
-  DataMapping,
-  GraphDetails,
-} from './types';
+import type { EwoksRFNode, EwoksRFLink, Inputs, GraphDetails } from './types';
 
 const onDragStart = (event, { task_identifier, task_type, icon }) => {
   console.log(event, icon);
@@ -864,14 +853,7 @@ export default function Sidebar(props) {
             )}
             {'position' in selectedElement && (
               <React.Fragment>
-                <Box
-                // component="form"
-                // sx={{
-                //   '& > :not(style)': { m: 1, width: '34ch' },
-                // }}
-                // noValidate
-                // autoComplete="off"
-                >
+                <Box>
                   <div className={classes.root}>
                     <b>Task Identifier:</b> {props.element.task_identifier}
                     <IconButton
@@ -974,14 +956,7 @@ export default function Sidebar(props) {
               Object.keys(selectedElement).includes('source')) && (
               <React.Fragment>
                 <div>
-                  <Box
-                  // component="form"
-                  // sx={{
-                  //   '& > :not(style)': { m: 1, width: '34ch' },
-                  // }}
-                  // noValidate
-                  // autoComplete="off"
-                  >
+                  <Box>
                     {/* if text size big use a text area
                     <TextareaAutosize
                       aria-label="empty textarea"
@@ -1000,14 +975,7 @@ export default function Sidebar(props) {
                   </Box>
                 </div>
                 <div>
-                  <Box
-                  // component="form"
-                  // sx={{
-                  //   '& > :not(style)': { m: 1, width: '34ch' },
-                  // }}
-                  // noValidate
-                  // autoComplete="off"
-                  >
+                  <Box>
                     <TextField
                       id="outlined-basic"
                       label="Comment"
@@ -1039,52 +1007,58 @@ export default function Sidebar(props) {
         </AccordionSummary>
         <AccordionDetails>
           <form className={classes.root} noValidate autoComplete="off">
-            <FormControl variant="filled" fullWidth>
-              <InputLabel>Node type</InputLabel>
-              <Select
-                id="demo-simple-select"
-                value={nodeType ? nodeType : 'internal'}
-                label="Node type"
-                onChange={nodeTypeChanged}
-              >
-                {['input', 'output', 'internal', 'input_output'].map(
-                  (tex, index) => (
-                    <MenuItem key={index} value={tex}>
-                      {tex}
-                    </MenuItem>
-                  )
-                )}
-              </Select>
-            </FormControl>
-            <FormControl variant="filled" fullWidth>
-              <InputLabel id="linkTypeLabel">Link type</InputLabel>
-              <Select
-                labelId="linkTypeLabel"
-                value={linkType ? linkType : 'internal'}
-                label="Link type"
-                onChange={linkTypeChanged}
-              >
-                {['straight', 'smoothstep', 'step', 'default'].map(
-                  (text, index) => (
-                    <MenuItem key={index} value={text}>
-                      {text}
-                    </MenuItem>
-                  )
-                )}
-              </Select>
-            </FormControl>
-            <FormControl variant="filled" fullWidth>
-              <InputLabel id="ArrowHeadType">Arrow Head Type</InputLabel>
-              <Select
-                value={arrowType ? arrowType : 'internal'}
-                label="Arrow head"
-                onChange={arrowTypeChanged}
-              >
-                {['arrow', 'arrowclosed', 'none'].map((tex) => (
-                  <MenuItem value={tex}>{tex}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {'position' in selectedElement && (
+              <FormControl variant="filled" fullWidth>
+                <InputLabel>Node type</InputLabel>
+                <Select
+                  id="demo-simple-select"
+                  value={nodeType ? nodeType : 'internal'}
+                  label="Node type"
+                  onChange={nodeTypeChanged}
+                >
+                  {['input', 'output', 'internal', 'input_output'].map(
+                    (tex, index) => (
+                      <MenuItem key={index} value={tex}>
+                        {tex}
+                      </MenuItem>
+                    )
+                  )}
+                </Select>
+              </FormControl>
+            )}
+            {'source' in selectedElement && (
+              <>
+                <FormControl variant="filled" fullWidth>
+                  <InputLabel id="linkTypeLabel">Link type</InputLabel>
+                  <Select
+                    labelId="linkTypeLabel"
+                    value={linkType ? linkType : 'internal'}
+                    label="Link type"
+                    onChange={linkTypeChanged}
+                  >
+                    {['straight', 'smoothstep', 'step', 'default'].map(
+                      (text, index) => (
+                        <MenuItem key={index} value={text}>
+                          {text}
+                        </MenuItem>
+                      )
+                    )}
+                  </Select>
+                </FormControl>
+                <FormControl variant="filled" fullWidth>
+                  <InputLabel id="ArrowHeadType">Arrow Head Type</InputLabel>
+                  <Select
+                    value={arrowType ? arrowType : 'internal'}
+                    label="Arrow head"
+                    onChange={arrowTypeChanged}
+                  >
+                    {['arrow', 'arrowclosed', 'none'].map((tex) => (
+                      <MenuItem value={tex}>{tex}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </>
+            )}
             <div>
               <b>animated</b>
               <Checkbox

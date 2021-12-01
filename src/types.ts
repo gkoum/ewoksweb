@@ -36,7 +36,7 @@ export interface State {
   allWorkflows: Array<String>;
   setAllWorkflows: (workflows: Array<String>) => void;
   recentGraphs?: Array<GraphRF>;
-  setRecentGraphs?: (graphRF: GraphRF) => void;
+  setRecentGraphs?: (graphRF: GraphRF, reset?: boolean) => void;
   graphOrSubgraph?: Boolean;
   setGraphOrSubgraph: (isItGraph: Boolean) => void;
   subgraphsStack?: Array<stackGraph>;
@@ -64,7 +64,7 @@ export interface Task {
 
 export interface Inputs {
   name?: string;
-  value?: string;
+  value?: string | boolean;
 }
 
 export interface nodeInputsOutputs {
@@ -98,7 +98,7 @@ export interface DataMapping {
 
 export interface Conditions {
   source_output: string;
-  value: string;
+  value: string | boolean;
 }
 
 export interface EwoksNode {
@@ -142,8 +142,8 @@ export interface EwoksRFNode {
     comment?: string;
     moreHandles?: boolean;
   };
-  sourcePosition?: Position;
-  targetPosition?: Position;
+  sourcePosition?: string;
+  targetPosition?: string;
   position?: CanvasPosition;
   optional_input_names?: Array<string>;
   output_names?: Array<string>;
@@ -162,6 +162,8 @@ export interface EwoksRFLink {
     conditions?: Conditions[];
     on_error?: Inputs;
     map_all_data: boolean;
+    sub_target?: string;
+    sub_source?: string;
   };
   subtarget?: string;
   subsource?: string;
@@ -170,6 +172,7 @@ export interface EwoksRFLink {
   arrowHeadType?: string;
   animated?: boolean;
   sourceHandle?: string;
+  targetHandle?: string;
 }
 
 export interface RFLink {

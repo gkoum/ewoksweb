@@ -1,6 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable unicorn/consistent-function-scoping */
-import { useEffect, useState, MouseEvent, useRef } from 'react';
+import React, { useEffect, useState, MouseEvent, useRef } from 'react';
 import ReactFlow, {
   ReactFlowProvider,
   Controls,
@@ -16,7 +16,13 @@ import useStore from '../store';
 import CustomNode from '../CustomNodes/CustomNode';
 import FunctionNode from '../CustomNodes/FunctionNode';
 import DataNode from '../CustomNodes/DataNode';
-import type { GraphRF, EwoksRFNode, RFNode, RFLink } from '../types';
+import type {
+  GraphRF,
+  EwoksRFNode,
+  EwoksRFLink,
+  RFNode,
+  RFLink,
+} from '../types';
 import { toRFEwoksNodes } from '../utils';
 import { tasks } from '../assets/graphTests';
 
@@ -84,6 +90,8 @@ function Canvas() {
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
 
+  const [selectedElements, setSelectedElements] = React.useState([]);
+
   const updateNeeded = useStore((state) => state.updateNeeded);
 
   const setSubGraph = useStore((state) => state.setSubGraph);
@@ -120,8 +128,11 @@ function Canvas() {
     event.dataTransfer.dropEffect = 'move';
   };
 
-  const onDrop = (event) => {
+  const onDrop = (event, element) => {
+    console.log(event, element, selectedElements);
     event.preventDefault();
+    // TODO: examine how to prevent bug on dragging selection of multiple elements
+    if (selectedElements.length > 1) return;
     if (graphRF.graph.id === '0') {
       setSubgraphsStack({
         id: graphRF.graph.id,
@@ -301,8 +312,14 @@ function Canvas() {
 
   const onSelectionChange = (elements) => {
     console.log(elements, graphRF.graph);
+
     if (!elements) {
       setSelectedElement(graphRF.graph);
+      setSelectedElements([]);
+    } else if (elements.length > 1) {
+      setSelectedElements(elements);
+    } else {
+      setSelectedElements([]);
     }
   };
 
@@ -340,14 +357,43 @@ function Canvas() {
   //   console.log(event, node);
   // };
 
-  const onSelectionDragStop = (event, node) => {
+  const onSelectionDragStop = (event, selectedElements) => {
     event.preventDefault();
-    console.log(event, node);
+    console.log(event, selectedElements);
+    if (workingGraph.graph.id === graphRF.graph.id) {
+      // find selectedElements and update its position and save grapRF
+      const newElements = [];
+      const newElementsIds = [];
+      selectedElements.forEach((el) => {
+        const rfNode = { ...graphRF.nodes.find((nod) => nod.id === el.id) };
+        rfNode.position = el.position;
+        newElements.push(rfNode);
+        newElementsIds.push(rfNode.id);
+      });
+
+      const newGraph = {
+        graph: graphRF.graph,
+        nodes: [
+          ...graphRF.nodes.filter((nod) => !newElementsIds.includes(nod.id)),
+          ...newElements,
+        ],
+        links: graphRF.links,
+      };
+
+      setGraphRF(newGraph as GraphRF);
+      setRecentGraphs(newGraph);
+    } else {
+      setOpenSnackbar({
+        open: true,
+        text: 'Any positional change in any subgraph wont be saved!',
+        severity: 'success',
+      });
+    }
   };
 
-  const onSelectionDrag = (event, node) => {
+  const onSelectionDrag = (event, selectedElements) => {
     event.preventDefault();
-    console.log(event, node);
+    console.log(event, selectedElements);
   };
 
   // const onNodeDrag = (event, node) => {

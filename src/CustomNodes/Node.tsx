@@ -138,7 +138,7 @@ const Node: React.FC<NodeProps> = ({
   image,
   comment,
 }: NodeProps) => {
-  console.log(type, isGraph);
+  // console.log(type, isGraph);
   // calculate the border if input/output/graph
   let border = '';
   if (type === 'input') {

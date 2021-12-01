@@ -4,10 +4,8 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,166 +14,33 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import SaveIcon from '@material-ui/icons/Save';
 import FiberNew from '@material-ui/icons/FiberNew';
 import Sidebar from '../sidebar';
 import useStore from '../store';
 import Canvas from './Canvas';
-import Card from '@material-ui/core/Card';
 import Upload from '../Components/Upload';
 import AutocompleteDrop from '../Components/AutocompleteDrop';
 import AddIcon from '@material-ui/icons/Add';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-// import UploadFileIcon from '@material-ui/icons/UploadFile';
-// import FileUploadIcon from '@material-ui/icons/FileUpload';
-// import DriveFolderUploadIcon from '@material-ui/icons/DriveFolderUpload';
-// import UploadIcon from '@material-ui/icons/Upload';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
-// import SettingsApplicationsIcon from '@material-ui/core/SettingsApplications';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
-import { getGraph, rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
-import MyCard from '../layout/MyCard';
+import { rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
 import axios from 'axios';
-import { getWorkflows } from '../utils';
 import SimpleSnackbar from '../Components/Snackbar';
 import FullScreenDialog from '../Components/FullScreenDialog';
 import Tooltip from '@material-ui/core/Tooltip';
+import DashboardStyle from './DashboardStyle';
 
-// function Copyright() {
-//   return (
-//     <Typography variant="body2" color="textSecondary" align="center">
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://material-ui.com/">
-//         Your Website
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   );
-// }
-
-const drawerWidth = 290;
-
-const useStyles = makeStyles((theme) => ({
-  verticalRule: {
-    borderLeft: '1px solid #7685dd',
-    height: '50px',
-    color: 'wight',
-  },
-  openFileButton: {
-    backgroundColor: '#96a5f9',
-  },
-  formControl: {
-    minWidth: '220px',
-    backgroundColor: '#7685dd',
-  },
-
-  canvasView: {
-    'z-index': 2000,
-  },
-
-  root: {
-    display: 'flex',
-    // width: '100%',
-  },
-  toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-  },
-  toolbarIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    ...theme.mixins.toolbar,
-    backgroundColor: '#3f51b5',
-  },
-  appBar: {
-    // height: 55,
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: 36,
-  },
-  menuButtonHidden: {
-    display: 'none',
-  },
-  title: {
-    flexGrow: 1,
-  },
-  drawerPaper: {
-    position: 'relative',
-    // whiteSpace: 'nowrap',
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerPaperClose: {
-    overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    width: theme.spacing(13),
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(13),
-    },
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    // width: '100%',
-    flexGrow: 1,
-    // height: '100vh',
-    overflow: 'auto',
-  },
-  container: {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-  },
-  paper: {
-    padding: theme.spacing(0),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-  },
-  fixedHeight: {
-    height: 920,
-    padding_top: 45,
-  },
-}));
+const useStyles = DashboardStyle;
 
 function download(content, fileName, contentType) {
   const a = document.createElement('a');
@@ -186,6 +51,7 @@ function download(content, fileName, contentType) {
 }
 
 export default function Dashboard() {
+  // const useStyles = DashboardStyle;
   const classes = useStyles();
 
   const inputFile = React.useRef(null);
@@ -473,19 +339,10 @@ export default function Dashboard() {
             handleOpenSettings={handleOpenSettings}
             openSettings={openSettings}
           />
-          {/* <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton> */}
-          {/* <IconButton color="inherit">
-            <AccessAlarmIcon />
-          </IconButton> */}
         </Toolbar>
       </AppBar>
       <Drawer
         variant="permanent"
-        // style={{ width: editing ? 450 : 290 }}
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}
@@ -497,9 +354,7 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        {/* <List>{mainListItems}</List> */}
         <Divider />
-        {/* <List>{secondaryListItems}</List> */}
         <Sidebar element={selectedElement} />
       </Drawer>
       <main className={classes.content}>
@@ -508,29 +363,6 @@ export default function Dashboard() {
           <Canvas />
         </Paper>
       </main>
-      {/* <MyCard /> */}
-      {/* <Canvas /> */}
-      {/* <main> */}
-      {/* <div className={classes.appBarSpacer} /> */}
-      {/* <Container className={classes.container}> */}
-      {/* <Grid container>
-        <Grid item xs={12}>
-          <Paper className={fixedHeightPaper}>
-            <Canvas />
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={4} lg={3}>
-          <Paper className={fixedHeightPaper} />
-        </Grid>
-        <Grid item xs={12}>
-          <Paper className={classes.paper} />
-        </Grid>
-      </Grid> */}
-      {/* <Box pt={4}>
-        <Copyright />
-      </Box> */}
-      {/* </Container> */}
-      {/* </main> */}
     </div>
   );
 }

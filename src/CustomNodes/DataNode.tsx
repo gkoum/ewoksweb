@@ -12,7 +12,7 @@ const isValidOutput = (connection) => {
 
 const DataNode = (args) => {
   // args = some RF-related and a data that has args Ewoks-related
-  console.log(args);
+  // console.log(args);
   return (
     <Node
       isGraph={false}

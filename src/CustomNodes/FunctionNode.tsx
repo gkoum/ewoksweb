@@ -16,8 +16,13 @@ function FunctionNode(all) {
   return (
     <Node
       isGraph
+      moreHandles={false}
       type={all.data.type}
-      label={all.label ? all.label : all.data.label}
+      label={
+        all.label ? all.label : all.data.label
+        // ? all.label.slice(0, all.label.indexOf(':'))
+        // : all.data.label.slice(0, all.data.label.indexOf(':'))
+      }
       selected={all.selected}
       color={all.data.exists ? '#ced3ee' : 'red'}
       image={all.data.icon}
@@ -30,7 +35,8 @@ function FunctionNode(all) {
               key={`i-${input.label}`}
               style={{ ...style.io, ...style.textLeft } as React.CSSProperties}
             >
-              {input.label}
+              {/* remove the rest of the input {input.label} for now */}
+              {input.label.slice(0, input.label.indexOf(':'))}
               <Handle
                 key={input.label.slice(0, input.label.indexOf(':'))}
                 type="target"
@@ -70,7 +76,8 @@ function FunctionNode(all) {
                   { ...style.io, ...style.textRight } as React.CSSProperties
                 }
               >
-                {output.label}
+                {/* remove the rest of the output {output.label} for now */}
+                {output.label.slice(0, output.label.indexOf(':'))}
                 <Handle
                   key={output.label.slice(0, output.label.indexOf(':'))}
                   type="source"

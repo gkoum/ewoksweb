@@ -36,7 +36,6 @@ export const ewoksNetwork = graph;
 export async function getWorkflows() {
   const workflows = await axios.get('http://mxbes2-1707:38280/ewoks/workflows');
   // 'http://localhost:5000/workflows/'); // 'http://mxbes2-1707:38280/ewoks/workflows');
-  console.log(workflows.data.workflows);
   return workflows.data.workflows.map((work) => {
     return { title: work };
   });
@@ -47,11 +46,11 @@ export async function getGraph(
   byTaskIdentifier: string,
   fromWeb: boolean
 ): Promise<Graph> {
-  let subgraphL: GraphEwoks = {
+  let subgraphL = {
     graph: { id: '', input_nodes: [], output_nodes: [] } as GraphDetails,
     nodes: [] as EwoksNode[],
     links: [] as EwoksLink[],
-  };
+  } as GraphEwoks;
   if (fromWeb) {
     await axios
       .get(
@@ -181,10 +180,24 @@ export function toEwoksLinks(links, recentGraphs): EwoksLink[] {
       target,
       data_mapping,
       conditions: conditions.map((con) => {
-        if (con.source_output) return con;
+        if (con.source_output)
+          return {
+            ...con,
+            value:
+              con.value === 'true'
+                ? true
+                : con.value === 'false'
+                ? false
+                : con.value,
+          };
         return {
           source_output: con.id,
-          value: con.value,
+          value:
+            con.value === 'true'
+              ? true
+              : con.value === 'false'
+              ? false
+              : con.value,
         };
       }),
       on_error,
@@ -234,7 +247,15 @@ export function toEwoksNodes(nodes: EwoksRFNode[]): EwoksNode[] {
           default_inputs:
             default_inputs &&
             default_inputs.map((dIn) => {
-              return { name: dIn.name, value: dIn.value };
+              return {
+                name: dIn.name,
+                value:
+                  dIn.value === 'false'
+                    ? false
+                    : dIn.value === 'true'
+                    ? true
+                    : dIn.value,
+              };
             }),
           uiProps: { label, type, icon, comment, position },
         };
