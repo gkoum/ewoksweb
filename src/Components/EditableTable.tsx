@@ -12,6 +12,7 @@ import DoneIcon from '@material-ui/icons/DoneAllTwoTone';
 import RevertIcon from '@material-ui/icons/NotInterestedOutlined';
 import { MenuItem, Select } from '@material-ui/core';
 import CustomTableCell from './CustomTableCell';
+import useStore from '../store';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,10 +58,14 @@ function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
   // console.log('PROPS:', props);
   const [typeOfInputs, setTypeOfInputs] = React.useState([]);
+  const setOpenDraggableDialog = useStore(
+    (state) => state.setOpenDraggableDialog
+  );
 
   const { defaultValues } = props;
   const { headers } = props;
 
+  // TODO: only the first one???
   const val = defaultValues[0].value;
 
   const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
@@ -71,8 +76,15 @@ function EditableTable(props) {
     const tOfIn = defaultValues.map((val) =>
       val.value === 'true' || val.value === 'false'
         ? 'boolean'
+        : Array.isArray(val.value)
+        ? 'list'
+        : val.value === null
+        ? null
+        : typeof val.value === 'object'
+        ? 'dict'
         : typeof val.value
     );
+    console.log(tOfIn);
     setTypeOfInputs(tOfIn);
     setRows(
       defaultValues
@@ -86,15 +98,24 @@ function EditableTable(props) {
 
   const classes = useStyles();
 
-  const onToggleEditMode = (id, command) => {
-    console.log(id, rows, props.defaultValues, command);
+  const onToggleEditMode = (id, index, command) => {
+    console.log(id, rows, props.defaultValues, command, typeOfInputs);
+    if (command === 'edit' && ['list', 'dict'].includes(typeOfInputs[index])) {
+      setOpenDraggableDialog({
+        open: true,
+        content: {
+          title: 'Ewoks Graph',
+          graph: rows[index].value,
+        },
+      });
+    }
     setRows((state) => {
       return rows.map((row) => {
         if (row.id === id) {
           return {
             ...row,
             id: row.name.replace(' ', '_'),
-            // value: props.defaultValues.find((val) => val.name === row.id).value,
+            // value: row.value,
             isEditMode: !row.isEditMode,
           };
         }
@@ -108,32 +129,54 @@ function EditableTable(props) {
   };
 
   const onChange = (e, row, index) => {
-    let { value } = e.target;
-    const { name } = e.target;
-    const inType = typeOfInputs[index];
-    // const type =
-    //   inType === 'number' ? Number(value) : inType === 'bool' ? !!value : value;
-    console.log(typeOfInputs, e.target.value, e.target.name, row, index);
+    console.log(typeOfInputs, e, row, index);
+    if (['string', 'bool', 'number'].includes(typeOfInputs[0])) {
+      let { value } = e.target;
+      const { name } = e.target;
+      const inType = typeOfInputs[index];
+      console.log(value, name, inType);
 
-    if (name === 'value') {
-      value =
-        typeOfInputs[index] === 'number'
-          ? Number(value)
-          : // : typeOfInputs[index] === 'bool'
-            // ? !!value
-            value;
-      console.log(typeof value, value);
-    }
-
-    const { id } = row;
-    const newRows = rows.map((rowe) => {
-      if (rowe.id === id) {
-        return { ...rowe, [name]: value };
+      if (name === 'value') {
+        value =
+          typeOfInputs[index] === 'number'
+            ? Number(value)
+            : // : typeOfInputs[index] === 'bool'
+              // ? !!value
+              value;
+        console.log(typeof value, value);
       }
-      return rowe;
-    });
-    console.log(newRows);
-    setRows(newRows);
+
+      const { id } = row;
+      const newRows = rows.map((rowe) => {
+        if (rowe.id === id) {
+          return { ...rowe, [name]: value };
+        }
+        return rowe;
+      });
+      console.log(newRows);
+      setRows(newRows);
+    } else {
+      const { updated_src } = e;
+      const { id } = row;
+      const name =
+        e.target && e.target.name === 'name' ? e.target.name : 'value';
+      console.log(updated_src, id, name);
+
+      const newRows = rows.map((row) => {
+        if (row.id === id) {
+          return {
+            ...row,
+            [name]:
+              e.target && e.target.name === 'name'
+                ? e.target.value
+                : updated_src,
+          };
+        }
+        return row;
+      });
+      console.log(newRows);
+      setRows(newRows);
+    }
   };
 
   const onRevert = (id) => {
@@ -234,7 +277,7 @@ function EditableTable(props) {
                       <IconButton
                         style={{ padding: '1px' }}
                         aria-label="done"
-                        onClick={() => onToggleEditMode(row.id, 'done')}
+                        onClick={() => onToggleEditMode(row.id, index, 'done')}
                       >
                         <DoneIcon />
                       </IconButton>
@@ -251,7 +294,7 @@ function EditableTable(props) {
                       <IconButton
                         style={{ padding: '1px' }}
                         aria-label="edit"
-                        onClick={() => onToggleEditMode(row.id, 'edit')}
+                        onClick={() => onToggleEditMode(row.id, index, 'edit')}
                       >
                         <EditIcon />
                       </IconButton>

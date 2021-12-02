@@ -27,12 +27,17 @@ export interface SnackbarParams {
   severity: Color;
 }
 
+export interface DialogParams {
+  open: boolean;
+  content: any; // {title: string; graph: }
+}
+
 export interface State {
+  openDraggableDialog: DialogParams;
+  setOpenDraggableDialog: (params: DialogParams) => void;
   openSnackbar: SnackbarParams;
   setOpenSnackbar: (params: SnackbarParams) => void;
-  updateNeeded: any;
-  // updateNeeded: number;
-  // setUpdateNeeded: (num: number) => void;
+  // updateNeeded: any;
   allWorkflows: Array<String>;
   setAllWorkflows: (workflows: Array<String>) => void;
   recentGraphs?: Array<GraphRF>;

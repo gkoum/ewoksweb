@@ -12,6 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
+import TabPanel from './TabPanel';
 
 const useStyles = makeStyles({
   appBar: {
@@ -64,14 +65,14 @@ function FullScreenDialog(props) {
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" className={classes.flex}>
-              Settings
+              Resources Management
             </Typography>
             <Button color="inherit" onClick={handleClose}>
               save
             </Button>
           </Toolbar>
         </AppBar>
-        <List>
+        {/* <List>
           <ListItem button>
             <ListItemText
               primary="Manage my Workflows"
@@ -90,7 +91,8 @@ function FullScreenDialog(props) {
             <ListItemText primary="Profile" secondary="manage" />
           </ListItem>
           <Divider />
-        </List>
+        </List> */}
+        <TabPanel />
       </Dialog>
     </div>
   );

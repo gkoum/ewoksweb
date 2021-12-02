@@ -38,6 +38,7 @@ import DenseTable from './Components/DenseTable';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import SaveIcon from '@material-ui/icons/Save';
 import Tooltip from '@material-ui/core/Tooltip';
+import IconMenu from './Components/IconMenu';
 
 import type { EwoksRFNode, EwoksRFLink, Inputs, GraphDetails } from './types';
 
@@ -124,6 +125,10 @@ export default function Sidebar(props) {
   const [editIdentifier, setEditIdentifier] = React.useState(false);
   const [editType, setEditType] = React.useState(false);
   const [editGenerator, setEditGenerator] = React.useState(false);
+  const openDraggableDialog = useStore((state) => state.openDraggableDialog);
+  const setOpenDraggableDialog = useStore(
+    (state) => state.setOpenDraggableDialog
+  );
 
   useEffect(() => {
     console.log(selectedElement);
@@ -527,6 +532,14 @@ export default function Sidebar(props) {
   const onEditGenerator = () => {
     console.log(selectedElement);
     setEditGenerator(!editGenerator);
+  };
+
+  const toggleDraggableDialog = () => {
+    console.log(graphRF);
+    setOpenDraggableDialog({
+      open: true,
+      content: { title: 'GraphRF', graph: graphRF },
+    });
   };
 
   return (
@@ -1072,7 +1085,7 @@ export default function Sidebar(props) {
         </AccordionDetails>
       </Accordion>
       <Button
-        style={{ margin: '2px' }}
+        style={{ margin: '8px' }}
         variant="contained"
         color="primary"
         onClick={saveElement}
@@ -1080,22 +1093,9 @@ export default function Sidebar(props) {
       >
         <SaveIcon />
       </Button>
-      {!('source' in selectedElement) && (
-        <Tooltip title="Clone in the canvas or as a new task">
-          <Button
-            style={{ margin: '2px' }}
-            variant="outlined"
-            color="primary"
-            onClick={deleteElement}
-            size="small"
-          >
-            Clone
-          </Button>
-        </Tooltip>
-      )}
       {!('input_nodes' in selectedElement) && (
         <Button
-          style={{ margin: '2px' }}
+          style={{ margin: '8px' }}
           variant="outlined"
           color="secondary"
           onClick={deleteElement}
@@ -1104,24 +1104,8 @@ export default function Sidebar(props) {
           Delete
         </Button>
       )}
+      {!('source' in selectedElement) && <IconMenu />}
       <DraggableDialog />
-      <ReactJson
-        src={graphRF}
-        name={''}
-        theme={'monokai'}
-        collapsed
-        collapseStringsAfterLength={30}
-        groupArraysAfterLength={15}
-        enableClipboard={false}
-        // onEdit={(edit) => true}
-        // onAdd={(add) => true}
-        // defaultValue={'value'}
-        // onDelete={(del) => true}
-        // onSelect={(sel) => true}
-        quotesOnKeys={false}
-        style={{ backgroundColor: 'rgb(59, 77, 172)' }}
-        displayDataTypes
-      />
     </aside>
   );
 }

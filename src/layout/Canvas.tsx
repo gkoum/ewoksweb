@@ -92,7 +92,7 @@ function Canvas() {
 
   const [selectedElements, setSelectedElements] = React.useState([]);
 
-  const updateNeeded = useStore((state) => state.updateNeeded);
+  // const updateNeeded = useStore((state) => state.updateNeeded);
 
   const setSubGraph = useStore((state) => state.setSubGraph);
   const recentGraphs = useStore((state) => state.recentGraphs);
@@ -100,9 +100,9 @@ function Canvas() {
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
 
   useEffect(() => {
-    console.log('rerender Canvas', graphRF, recentGraphs.length, updateNeeded);
+    console.log('rerender Canvas', graphRF, recentGraphs.length);
     setElements([...graphRF.nodes, ...graphRF.links]);
-  }, [graphRF, graphRF.graph.id, recentGraphs.length, updateNeeded]);
+  }, [graphRF, graphRF.graph.id, recentGraphs.length]);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     console.log(isEdge(element), isNode(element), elements, graphRF.nodes);

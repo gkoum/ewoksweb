@@ -36,6 +36,15 @@ const initializedGraph = {
 } as GraphRF;
 
 const useStore = create<State>((set, get) => ({
+  openDraggableDialog: { open: false, content: {} },
+
+  setOpenDraggableDialog: ({ open, content }) => {
+    set((state) => ({
+      ...state,
+      openDraggableDialog: { open, content },
+    }));
+  },
+
   openSnackbar: { open: false, text: '', severity: 'success' },
 
   setOpenSnackbar: (setOpen) => {
@@ -45,14 +54,14 @@ const useStore = create<State>((set, get) => ({
     }));
   },
 
-  updateNeeded: 0,
+  // updateNeeded: 0,
 
-  setUpdateNeeded: (num: number) => {
-    set((state) => ({
-      ...state,
-      updateNeeded: get().updateNeeded + num,
-    }));
-  },
+  // setUpdateNeeded: (num: number) => {
+  //   set((state) => ({
+  //     ...state,
+  //     updateNeeded: get().updateNeeded + num,
+  //   }));
+  // },
   allWorkflows: [],
 
   setAllWorkflows: (workflows: String[]) => {

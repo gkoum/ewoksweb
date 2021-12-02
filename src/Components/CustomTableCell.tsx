@@ -58,15 +58,21 @@ function CustomTableCell({ index, row, name, onChange, type, typeOfValues }) {
       {/* In edit mode the type comes from sidebar in data-mapping and
       from the selected type here for conditions and default-values */}
       {isEditMode ? (
-        type === 'dict' || type === 'list' ? (
+        type === 'dict' || type === 'list' || type === 'object' ? (
           <ReactJson
-            src={type === 'dict' ? emptyObject : emptyArray}
-            name="value"
+            src={
+              type === 'dict' && row[name] === ''
+                ? {}
+                : type === 'list' && row[name] === ''
+                ? []
+                : row[name]
+            }
+            name={name}
             theme="monokai"
             collapsed
             collapseStringsAfterLength={30}
             groupArraysAfterLength={15}
-            onEdit={(edit) => true}
+            onEdit={(edit) => onChange(edit, row, index)}
             onAdd={(add) => true}
             defaultValue="object"
             onDelete={(del) => true}
@@ -115,6 +121,8 @@ function CustomTableCell({ index, row, name, onChange, type, typeOfValues }) {
             className={classes.input}
           />
         )
+      ) : typeof row[name] === 'object' ? (
+        JSON.stringify(row[name])
       ) : (
         row[name].toString()
       )}
