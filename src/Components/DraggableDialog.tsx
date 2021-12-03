@@ -24,22 +24,43 @@ function PaperComponent(props: PaperProps) {
   );
 }
 
-export default function DraggableDialog() {
+export default function DraggableDialog(props) {
+  // { open, content }
   const [graph, setGraph] = React.useState({});
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [title, setTitle] = React.useState('');
+  const [callbackProps, setCallbackProps] = React.useState({});
   const graphRF = useStore((state) => state.graphRF);
   const recentGraphs = useStore((state) => state.recentGraphs);
-  const openDraggableDialog = useStore((state) => state.openDraggableDialog);
-  const setOpenDraggableDialog = useStore(
-    (state) => state.setOpenDraggableDialog
-  );
+
+  // const openDraggableDialog = useStore((state) => state.openDraggableDialog);
+  // const setOpenDraggableDialog = useStore(
+  //   (state) => state.setOpenDraggableDialog
+  // );
   const [selection, setSelection] = React.useState('ewoks');
+
+  const { open, content } = props;
+
+  useEffect(() => {
+    console.log(open, content);
+    setGraph((content && content.object) || {});
+    setIsOpen(open || false);
+    setTitle((content && content.title) || '');
+    setCallbackProps(content.callbackProps);
+  }, [open, content]);
 
   const handleClickOpen = () => {
     setGraph(rfToEwoks(graphRF, recentGraphs));
   };
 
   const handleClose = () => {
-    setOpenDraggableDialog({ open: false, content: {} });
+    setIsOpen(false);
+  };
+
+  const handleSave = () => {
+    console.log(graph, props);
+    setIsOpen(false);
+    props.setValue(graph, callbackProps);
   };
 
   const handleChange = (
@@ -48,51 +69,55 @@ export default function DraggableDialog() {
   ) => {
     console.log(newSelection);
     setSelection(newSelection);
-    setOpenDraggableDialog({
-      open: true,
-      content: {
-        title: newSelection === 'ewoks' ? 'Ewoks Graph' : 'RF Graph',
-        graph:
-          newSelection === 'ewoks' ? rfToEwoks(graphRF, recentGraphs) : graphRF,
-      },
-    });
+    setTitle(newSelection === 'ewoks' ? 'Ewoks Graph' : 'RF Graph');
+    setGraph(
+      newSelection === 'ewoks' ? rfToEwoks(graphRF, recentGraphs) : graphRF
+    );
+    setIsOpen(true);
+  };
+
+  const graphChanged = (edit) => {
+    console.log(edit, graph);
+    setGraph(edit.updated_src);
   };
 
   return (
     <Dialog
-      open={openDraggableDialog.open}
+      open={isOpen}
       onClose={handleClose}
       PaperComponent={PaperComponent}
       aria-labelledby="draggable-dialog-title"
     >
       <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
-        {openDraggableDialog.content.title}
+        {title || ''}
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          <ToggleButtonGroup
-            color="primary"
-            value={selection}
-            exclusive
-            onChange={handleChange}
-          >
-            <ToggleButton value="ewoks">Ewoks Graph</ToggleButton>
-            <ToggleButton value="rf">RF Graph</ToggleButton>
-          </ToggleButtonGroup>
+          {['Ewoks Graph', 'RF Graph'].includes(title) && (
+            <ToggleButtonGroup
+              color="primary"
+              value={selection}
+              exclusive
+              onChange={handleChange}
+            >
+              <ToggleButton value="ewoks">Ewoks Graph</ToggleButton>
+              <ToggleButton value="rf">RF Graph</ToggleButton>
+            </ToggleButtonGroup>
+          )}
           <hr />
           <ReactJson
-            src={openDraggableDialog.content.graph}
-            name={'Ewoks graph'}
-            theme={'monokai'}
+            src={graph}
+            name="Ewoks graph"
+            theme="monokai"
             collapsed
             collapseStringsAfterLength={30}
             groupArraysAfterLength={15}
             enableClipboard={false}
-            // onEdit={(edit) => true}
-            // onAdd={(add) => true}
-            // defaultValue={'value'}
-            // onDelete={(del) => true}
-            // onSelect={(sel) => true}
+            onEdit={(edit) => graphChanged(edit)}
+            onAdd={(add) => graphChanged(add)}
+            defaultValue="value"
+            onDelete={(del) => graphChanged(del)}
+            onSelect={(sel) => true}
             quotesOnKeys={false}
             style={{ backgroundColor: 'rgb(59, 77, 172)' }}
             displayDataTypes
@@ -101,7 +126,7 @@ export default function DraggableDialog() {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleClose}>Save</Button>
+        <Button onClick={handleSave}>Save</Button>
       </DialogActions>
     </Dialog>
   );

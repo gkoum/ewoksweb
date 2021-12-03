@@ -72,26 +72,6 @@ function FullScreenDialog(props) {
             </Button>
           </Toolbar>
         </AppBar>
-        {/* <List>
-          <ListItem button>
-            <ListItemText
-              primary="Manage my Workflows"
-              secondary="Upload-Download-Discover"
-            />
-          </ListItem>
-          <Divider />
-          <ListItem button>
-            <ListItemText
-              primary="Manage my Tasks"
-              secondary="Upload-Download-Discover"
-            />
-          </ListItem>
-          <Divider />
-          <ListItem button>
-            <ListItemText primary="Profile" secondary="manage" />
-          </ListItem>
-          <Divider />
-        </List> */}
         <TabPanel />
       </Dialog>
     </div>

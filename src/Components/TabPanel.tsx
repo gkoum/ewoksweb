@@ -75,16 +75,22 @@ export default function BasicTabs() {
       </Box>
       <TabPanel value={value} index={0}>
         <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
+            <Grid item xs={6} md={2}>
+              <Item style={{ backgroundColor: 'rgb(248, 248, 249)' }}>
+                Folders
+              </Item>
+            </Grid>
             <Grid item xs={6} md={4}>
-              <Item style={{ backgroundColor: '#b0b8e1' }}>
-                {/* className={classes.formControl} */}
+              <Item>
                 <FormControl variant="standard">
                   <AutocompleteDrop setInputValue={setInputValue} />
                 </FormControl>
               </Item>
+              <hr />
+              <Item>Files</Item>
             </Grid>
-            <Grid item xs={6} md={8}>
+            <Grid item xs={6} md={6}>
               <Item>
                 <ReactJson
                   src={graphRF}

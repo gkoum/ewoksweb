@@ -363,6 +363,7 @@ export default function Dashboard() {
           <Canvas />
         </Paper>
       </main>
+      <Drawer />
     </div>
   );
 }

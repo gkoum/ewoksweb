@@ -38,8 +38,8 @@ export interface State {
   openSnackbar: SnackbarParams;
   setOpenSnackbar: (params: SnackbarParams) => void;
   // updateNeeded: any;
-  allWorkflows: Array<String>;
-  setAllWorkflows: (workflows: Array<String>) => void;
+  allWorkflows: Array<GraphEwoks>;
+  setAllWorkflows: (workflows: Array<GraphEwoks>) => void;
   recentGraphs?: Array<GraphRF>;
   setRecentGraphs?: (graphRF: GraphRF, reset?: boolean) => void;
   graphOrSubgraph?: Boolean;

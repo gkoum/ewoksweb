@@ -12,7 +12,7 @@ import { Button, Menu, Tooltip } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { rfToEwoks } from '../utils';
 
-export default function IconMenu() {
+export default function IconMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const setOpenDraggableDialog = useStore(
@@ -21,23 +21,14 @@ export default function IconMenu() {
   const graphRF = useStore((state) => state.graphRF);
   const recentGraphs = useStore((state) => state.recentGraphs);
 
+  const { handleShowEwoksGraph } = props;
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const openDraggableDialog = () => {
-    console.log(graphRF);
-    setOpenDraggableDialog({
-      open: true,
-      content: {
-        title: 'Ewoks Graph',
-        graph: rfToEwoks(graphRF, recentGraphs),
-      },
-    });
   };
 
   return (
@@ -69,7 +60,7 @@ export default function IconMenu() {
                 <Cloud fontSize="small" />
               </ListItemIcon>
               <ListItemText>Clone to canvas</ListItemText>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="secondary">
                 ⌘X
               </Typography>
             </MenuItem>
@@ -78,16 +69,16 @@ export default function IconMenu() {
                 <Cloud fontSize="small" />
               </ListItemIcon>
               <ListItemText>Clone and save</ListItemText>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="primary">
                 ⌘C
               </Typography>
             </MenuItem>
-            <MenuItem onClick={openDraggableDialog}>
+            <MenuItem onClick={handleShowEwoksGraph}>
               <ListItemIcon>
                 <Cloud fontSize="small" />
               </ListItemIcon>
               <ListItemText>View graphs</ListItemText>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="secondary">
                 ⌘V
               </Typography>
             </MenuItem>

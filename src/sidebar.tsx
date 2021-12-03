@@ -39,8 +39,16 @@ import EditIcon from '@material-ui/icons/EditOutlined';
 import SaveIcon from '@material-ui/icons/Save';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconMenu from './Components/IconMenu';
+import Drawer from './Components/Drawer';
 
-import type { EwoksRFNode, EwoksRFLink, Inputs, GraphDetails } from './types';
+import type {
+  EwoksRFNode,
+  EwoksRFLink,
+  Inputs,
+  GraphDetails,
+  GraphEwoks,
+} from './types';
+import { rfToEwoks } from './utils';
 
 const onDragStart = (event, { task_identifier, task_type, icon }) => {
   console.log(event, icon);
@@ -125,10 +133,9 @@ export default function Sidebar(props) {
   const [editIdentifier, setEditIdentifier] = React.useState(false);
   const [editType, setEditType] = React.useState(false);
   const [editGenerator, setEditGenerator] = React.useState(false);
-  const openDraggableDialog = useStore((state) => state.openDraggableDialog);
-  const setOpenDraggableDialog = useStore(
-    (state) => state.setOpenDraggableDialog
-  );
+  const [openDialog, setOpenDialog] = React.useState<boolean>(false);
+  const [dialogContent, setDialogContent] = React.useState<GraphEwoks>({});
+  const recentGraphs = useStore((state) => state.recentGraphs);
 
   useEffect(() => {
     console.log(selectedElement);
@@ -536,9 +543,18 @@ export default function Sidebar(props) {
 
   const toggleDraggableDialog = () => {
     console.log(graphRF);
-    setOpenDraggableDialog({
-      open: true,
-      content: { title: 'GraphRF', graph: graphRF },
+    // setOpenDraggableDialog({
+    //   open: true,
+    //   content: { title: 'GraphRF', graph: graphRF },
+    // });
+  };
+
+  const showEwoksGraph = () => {
+    setOpenDialog(true);
+    setDialogContent({
+      title: 'Ewoks Graph',
+      object: rfToEwoks(graphRF, recentGraphs),
+      openFrom: 'sidebar',
     });
   };
 
@@ -925,6 +941,7 @@ export default function Sidebar(props) {
                     />
                   )}
                   <div>
+                    <hr></hr>
                     <b>Default Values </b>
                     {/* TODO: any kind of type is allowed: objects, arrays that need to be editable */}
                     <IconButton
@@ -943,6 +960,7 @@ export default function Sidebar(props) {
                       />
                     )}
                   </div>
+                  <hr></hr>
                   <div>
                     <b>Inputs-complete</b>
                     <Checkbox
@@ -951,7 +969,6 @@ export default function Sidebar(props) {
                       inputProps={{ 'aria-label': 'controlled' }}
                     />
                   </div>
-                  <hr></hr>
                   <div>
                     <div>
                       <b>More handles</b>
@@ -1104,8 +1121,15 @@ export default function Sidebar(props) {
           Delete
         </Button>
       )}
-      {!('source' in selectedElement) && <IconMenu />}
-      <DraggableDialog />
+      {!('source' in selectedElement) && (
+        <IconMenu handleShowEwoksGraph={showEwoksGraph} />
+      )}
+      <DraggableDialog
+        open={openDialog}
+        content={dialogContent}
+        setValue={defaultInputsChanged}
+      />
+      <Drawer />
     </aside>
   );
 }

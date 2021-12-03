@@ -13,6 +13,7 @@ import RevertIcon from '@material-ui/icons/NotInterestedOutlined';
 import { MenuItem, Select } from '@material-ui/core';
 import CustomTableCell from './CustomTableCell';
 import useStore from '../store';
+import DraggableDialog from './DraggableDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,9 +59,8 @@ function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
   // console.log('PROPS:', props);
   const [typeOfInputs, setTypeOfInputs] = React.useState([]);
-  const setOpenDraggableDialog = useStore(
-    (state) => state.setOpenDraggableDialog
-  );
+  const [openDialog, setOpenDialog] = React.useState<boolean>(false);
+  const [dialogContent, setDialogContent] = React.useState<GraphEwoks>({});
 
   const { defaultValues } = props;
   const { headers } = props;
@@ -98,15 +98,43 @@ function EditableTable(props) {
 
   const classes = useStyles();
 
+  const showEditableDialog = ({ title, graph, callbackProps }) => {
+    console.log(title, graph, callbackProps);
+    setOpenDialog(true);
+    setDialogContent({
+      title,
+      object: graph,
+      callbackProps,
+    });
+  };
+
   const onToggleEditMode = (id, index, command) => {
-    console.log(id, rows, props.defaultValues, command, typeOfInputs);
+    console.log(props, id, rows, props.defaultValues, command, typeOfInputs);
     if (command === 'edit' && ['list', 'dict'].includes(typeOfInputs[index])) {
-      setOpenDraggableDialog({
-        open: true,
-        content: {
-          title: 'Ewoks Graph',
-          graph: rows[index].value,
-        },
+      let initialValue = '';
+
+      if (typeOfInputs[index] === 'list') {
+        if (Array.isArray(rows[index].value)) {
+          initialValue = rows[index].value;
+        } else {
+          initialValue = [];
+        }
+      } else if (typeOfInputs[index] === 'dict') {
+        if (
+          typeof rows[index].value === 'object' &&
+          !Array.isArray(rows[index].value)
+        ) {
+          initialValue = rows[index].value;
+        } else {
+          initialValue = {};
+        }
+      }
+      console.log(initialValue);
+
+      showEditableDialog({
+        title: typeOfInputs[index] === 'list' ? 'Edit list' : 'Edit dict',
+        graph: initialValue,
+        callbackProps: { rows, id },
       });
     }
     setRows((state) => {
@@ -130,7 +158,7 @@ function EditableTable(props) {
 
   const onChange = (e, row, index) => {
     console.log(typeOfInputs, e, row, index);
-    if (['string', 'bool', 'number'].includes(typeOfInputs[0])) {
+    if (['string', 'bool', 'number', 'boolean'].includes(typeOfInputs[0])) {
       let { value } = e.target;
       const { name } = e.target;
       const inType = typeOfInputs[index];
@@ -198,8 +226,26 @@ function EditableTable(props) {
     setTypeOfInputs(tOfI);
   };
 
+  const setRowValue = (val, callbackProps) => {
+    console.log(val, callbackProps);
+
+    setRows(
+      callbackProps.rows.map((row) => {
+        if (row.id === callbackProps.id) {
+          return { ...row, value: val };
+        }
+        return row;
+      })
+    );
+  };
+
   return (
     <Paper className={classes.root}>
+      <DraggableDialog
+        open={openDialog}
+        content={dialogContent}
+        setValue={setRowValue}
+      />
       <Table className={classes.table} aria-label="caption table">
         <TableHead>
           <TableRow>
