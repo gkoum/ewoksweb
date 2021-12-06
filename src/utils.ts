@@ -34,9 +34,11 @@ const NODE_SIZE = { width: 270, height: 36 };
 export const ewoksNetwork = graph;
 
 export async function getWorkflows() {
-  const workflows = await axios.get('http://mxbes2-1707:38280/ewoks/workflows');
-  // 'http://localhost:5000/workflows/'); // 'http://mxbes2-1707:38280/ewoks/workflows');
-  return workflows.data.workflows.map((work) => {
+  // const workflows = await axios.get('http://mxbes2-1707:38280/ewoks/workflows');
+  // return workflows.data.workflows.map((work) => {
+  const workflows = await axios.get('http://localhost:5000/workflows');
+  return workflows.data.map((work) => {
+    console.log(work);
     return { title: work };
   });
 }

@@ -519,3 +519,98 @@ export const tasks = [
     task_type: 'class',
   },
 ];
+
+// from flask import Flask, jsonify, request, send_from_directory
+// from flask_restful import reqparse, abort, Api, Resource
+// from flask_cors import CORS, cross_origin
+// import os
+// import json
+// # import pickle
+
+// app = Flask(__name__)
+// cors = CORS(app)
+// app.config['CORS_HEADERS'] = 'Content-Type'
+// api = Api(app)
+
+// workflows = [
+//     {"name": "AnalyseKappa.json", "comment": "ok"}
+// ]
+
+// # class WorkflowSkeleton():
+// #     def __init__(self, param):
+// #         self.param = {"name": param}
+// #     def save_object(obj):
+// #         try:
+// #             with open("data.pickle", "wb") as f:
+// #                 pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
+// #         except Exception as ex:
+// #             print("Error during pickling object (Possibly unsupported):", ex)
+
+// class Workflows(Resource):
+//     def get(self):
+//         allWorkflows = []
+//         with os.scandir(path='./workflows') as it:
+//             for entry in it:
+//                 if not entry.name.startswith('.') and entry.is_file():
+//                     print(entry.name)
+//                     allWorkflows.append(entry.name)
+//         return allWorkflows
+
+//     def post(self):
+//         # workflows.append(request.get_json())
+//         # obj = WorkflowSkeleton(10)
+//         # print(obj)
+//         # WorkflowSkeleton.save_object(obj)
+//         f = open("myfile.json", "w")
+//         f.write("Woops! I have deleted the content!")
+//         f.close()
+//         return '', 204
+
+// class Workflow(Resource):
+//     def get(self, workflow_id):
+//         print(workflow_id)
+//         with os.scandir(path='./workflows') as it:
+//             for entry in it:
+//                 if not entry.name.startswith('.') and entry.is_file() and entry.name == workflow_id:
+//                     print(entry.name)
+//                     try:
+//                         fp = open(entry)
+//                     except PermissionError:
+//                         return "some default data"
+//                     else:
+//                         with fp:
+//                             return json.loads(fp.read())
+
+//     def put(self, workflow_id):
+//         workflows.append(request.get_json())
+//         return workflow_id, 204
+
+//     def delete(self, workflow_id):
+//         print(workflow_id, workflows[int(workflow_id)])
+//         del workflows[int(workflow_id)]
+//         return workflow_id, 204
+
+// ##
+// ## Actually setup the Api resource routing here
+// ##
+// api.add_resource(Workflows, '/workflows')
+// api.add_resource(Workflow, '/workflow/<workflow_id>')
+
+// @app.route("/static/<path:path>")
+// def static_dir(path):
+//     return send_from_directory("static", path)
+
+// # remove(path, *, dir_fd=None)
+// #     Remove (delete) the file path.
+
+// # mkdir(path, mode=511, *, dir_fd=None)
+// #     Create a directory named path with numeric mode mode.
+
+// # @app.route('/workflows')
+// # def get_workflows():
+// #   return jsonify(workflows)
+
+// # @app.route('/workflows', methods=['POST'])
+// # def add_workflows():
+// #   workflows.append(request.get_json())
+// #   return '', 204

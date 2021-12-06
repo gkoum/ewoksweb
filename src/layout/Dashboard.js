@@ -118,7 +118,8 @@ export default function Dashboard() {
     console.log('Get graphs from server', workflowValue, isSubgraph);
     if (workflowValue) {
       const response = await axios.get(
-        `http://mxbes2-1707:38280/ewoks/workflow/${workflowValue}`
+        // `http://mxbes2-1707:38280/ewoks/workflow/${workflowValue}`
+        `http://localhost:5000/workflow/${workflowValue}`
       );
       if (isSubgraph === 'subgraph') {
         setSubGraph(response.data);
