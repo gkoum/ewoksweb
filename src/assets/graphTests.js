@@ -536,16 +536,6 @@ export const tasks = [
 //     {"name": "AnalyseKappa.json", "comment": "ok"}
 // ]
 
-// # class WorkflowSkeleton():
-// #     def __init__(self, param):
-// #         self.param = {"name": param}
-// #     def save_object(obj):
-// #         try:
-// #             with open("data.pickle", "wb") as f:
-// #                 pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
-// #         except Exception as ex:
-// #             print("Error during pickling object (Possibly unsupported):", ex)
-
 // class Workflows(Resource):
 //     def get(self):
 //         allWorkflows = []
@@ -557,21 +547,34 @@ export const tasks = [
 //         return allWorkflows
 
 //     def post(self):
-//         # workflows.append(request.get_json())
-//         # obj = WorkflowSkeleton(10)
-//         # print(obj)
-//         # WorkflowSkeleton.save_object(obj)
-//         f = open("myfile.json", "w")
-//         f.write("Woops! I have deleted the content!")
+//         print(request.json['graph'])
+//         # serch for file name=id and IF NOT EXITS create using the request.json
+//         # if name=id exists return error "workflow exists! Please change name and retry."
+//         with os.scandir(path='./workflows') as it:
+//             for entry in it:
+//                 print(entry.name)
+//                 if entry.name == request.json['graph']['id']:
+//                     return 'Workflow exists! Please change name and retry.', 400
+//         # fdopen(fd, *args, **kwargs)
+//         f = open(f"./workflows/{request.json['graph']['id']}", "w")
+//         f.write(json.dumps(request.json, indent=2))
 //         f.close()
-//         return '', 204
+//         return request.json, 200
 
 // class Workflow(Resource):
+
+//     def __init__(self):
+//         self.reqparse = reqparse.RequestParser()
+//         super(Workflow, self).__init__()
+
 //     def get(self, workflow_id):
 //         print(workflow_id)
 //         with os.scandir(path='./workflows') as it:
 //             for entry in it:
-//                 if not entry.name.startswith('.') and entry.is_file() and entry.name == workflow_id:
+//                 if (not entry.name.startswith('.')
+//                     and entry.is_file()
+//                     and entry.name == workflow_id
+//                     ):
 //                     print(entry.name)
 //                     try:
 //                         fp = open(entry)
@@ -582,13 +585,25 @@ export const tasks = [
 //                             return json.loads(fp.read())
 
 //     def put(self, workflow_id):
-//         workflows.append(request.get_json())
-//         return workflow_id, 204
+//         print(workflow_id, self.reqparse.parse_args(), request.json)
+//         # search for file name=id and update with the incoming json
+//         # if no file exists then save like a post with id=label and warn
+//         # that a new file was created.
+//         with os.scandir(path='./workflows') as it:
+//             for entry in it:
+//                 print(entry.name)
+//                 if entry.name == workflow_id:
+//                     f = open(f"./workflows/{entry.name}", "w")
+//                     print("found it", entry.name)
+//                     f.write(json.dumps(request.json, indent=2))
+//                     f.close()
+//                     break
+//         return workflow_id, 200
 
 //     def delete(self, workflow_id):
 //         print(workflow_id, workflows[int(workflow_id)])
 //         del workflows[int(workflow_id)]
-//         return workflow_id, 204
+//         return workflow_id, 200
 
 // ##
 // ## Actually setup the Api resource routing here
@@ -596,9 +611,24 @@ export const tasks = [
 // api.add_resource(Workflows, '/workflows')
 // api.add_resource(Workflow, '/workflow/<workflow_id>')
 
-// @app.route("/static/<path:path>")
-// def static_dir(path):
-//     return send_from_directory("static", path)
+// # workflows.append(request.get_json())
+// # obj = WorkflowSkeleton(10)
+// # print(obj)
+// # WorkflowSkeleton.save_object(obj)
+
+// # class WorkflowSkeleton():
+// #     def __init__(self, param):
+// #         self.param = {"name": param}
+// #     def save_object(obj):
+// #         try:
+// #             with open("data.pickle", "wb") as f:
+// #                 pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
+// #         except Exception as ex:
+// #             print("Error during pickling object (Possibly unsupported):", ex)
+
+// # @app.route("/static/<path:path>")
+// # def static_dir(path):
+// #     return send_from_directory("static", path)
 
 // # remove(path, *, dir_fd=None)
 // #     Remove (delete) the file path.

@@ -25,8 +25,8 @@ console.log(nodes, edges);
 
 const initializedGraph = {
   graph: {
-    id: '0',
-    label: 'New-Graph',
+    id: 'new_graph000',
+    label: '',
     input_nodes: [],
     output_nodes: [],
     uiProps: {},

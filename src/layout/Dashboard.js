@@ -39,6 +39,7 @@ import SimpleSnackbar from '../Components/Snackbar';
 import FullScreenDialog from '../Components/FullScreenDialog';
 import Tooltip from '@material-ui/core/Tooltip';
 import DashboardStyle from './DashboardStyle';
+// import initializedGraph from '../store';
 
 const useStyles = DashboardStyle;
 
@@ -49,6 +50,19 @@ function download(content, fileName, contentType) {
   a.download = fileName;
   a.click();
 }
+
+const initializedGraph = {
+  // TODO: dublicated
+  graph: {
+    id: 'new_graph000',
+    label: '',
+    input_nodes: [],
+    output_nodes: [],
+    uiProps: {},
+  },
+  nodes: [],
+  links: [],
+};
 
 export default function Dashboard() {
   // const useStyles = DashboardStyle;
@@ -109,9 +123,42 @@ export default function Dashboard() {
     console.log(graphRF, rfToEwoks(graphRF, recentGraphs));
     download(
       JSON.stringify(rfToEwoks(graphRF, recentGraphs), null, 2),
-      'graph.json',
+      `${graphRF.graph.label}.json`,
       'text/plain'
     );
+  };
+
+  const saveToServer = async () => {
+    console.log('Save graph to server', graphRF, recentGraphs);
+    // if id: new_graph000 POST and id=label
+    // else PUT and replace existing on server
+    if (graphRF.graph.id === 'new_graph000') {
+      const newIdGraph = {
+        graph: { ...graphRF.graph, id: graphRF.graph.label },
+        nodes: graphRF.nodes,
+        links: graphRF.links,
+      };
+      const response = await axios
+        .post(
+          `http://localhost:5000/workflows`,
+          rfToEwoks(newIdGraph, recentGraphs)
+        )
+        .then((res) => {
+          // setGraphRF(newIdGraph); ????
+          setWorkingGraph(res.data);
+        });
+    } else if (graphRF.graph.id) {
+      const response = await axios.put(
+        `http://localhost:5000/workflow/${graphRF.graph.id}`, // ${graphRF.graph.id}
+        rfToEwoks(graphRF, recentGraphs)
+      );
+    } else {
+      setOpenSnackbar({
+        open: true,
+        text: 'No graph exists to save!',
+        severity: 'warning',
+      });
+    }
   };
 
   const getFromServer = async (isSubgraph) => {
@@ -137,12 +184,8 @@ export default function Dashboard() {
 
   const newGraph = (event) => {
     // Name of graph unique and used in recentGraphs, graphRF, subgraphsStack
-    setGraphRF({ graph: { id: 'new_graph' }, nodes: [], links: [] });
-    setWorkingGraph({
-      graph: { id: 'new_graph', input_nodes: [], output_nodes: [] },
-      nodes: [],
-      links: [],
-    });
+    setGraphRF(initializedGraph);
+    setWorkingGraph(initializedGraph);
     console.log('Start drawing please!');
   };
 
@@ -270,7 +313,7 @@ export default function Dashboard() {
             </IconButton>
           </Tooltip>
           <div className={classes.verticalRule} />
-          <IconButton color="inherit">
+          {/* <IconButton color="inherit">
             <Fab
               className={classes.openFileButton}
               color="primary"
@@ -280,7 +323,7 @@ export default function Dashboard() {
             >
               <CloudDownloadIcon onClick={getFromServer} />
             </Fab>
-          </IconButton>
+          </IconButton> */}
           <IconButton color="inherit">
             <Fab
               className={classes.openFileButton}
@@ -289,7 +332,7 @@ export default function Dashboard() {
               component="span"
               aria-label="add"
             >
-              <CloudUploadIcon />
+              <CloudUploadIcon onClick={saveToServer} />
             </Fab>
           </IconButton>
           <FormControl variant="standard" className={classes.formControl}>
@@ -304,8 +347,9 @@ export default function Dashboard() {
                 component="span"
                 aria-label="add"
               >
+                <CloudDownloadIcon onClick={getFromServer} />
                 {/* <b>Open</b> */}
-                <DoubleArrowIcon onClick={getFromServer} />
+                {/* <DoubleArrowIcon onClick={getFromServer} /> */}
               </Fab>
             </IconButton>
           </Tooltip>
