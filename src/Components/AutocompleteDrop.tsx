@@ -20,19 +20,19 @@ function AutocompleteDrop(props) {
     if (!loading) {
       return undefined;
     }
-    if (allWorkflows.length === 0) {
-      (async () => {
-        const workF: GraphEwoks[] = await getWorkflows().catch((error) => {
-          console.log(error);
-        });
-        if (workF && workF.length > 0) {
-          setAllWorkflows(workF);
-          if (active) setOptions([...workF]);
-        }
-      })();
-    } else {
-      setOptions(allWorkflows);
-    }
+    // if (allWorkflows.length === 0) {
+    (async () => {
+      const workF: GraphEwoks[] = await getWorkflows().catch((error) => {
+        console.log(error);
+      });
+      if (workF && workF.length > 0) {
+        setAllWorkflows(workF);
+        if (active) setOptions([...workF]);
+      }
+    })();
+    // } else {
+    //   setOptions(allWorkflows);
+    // }
 
     return () => {
       active = false;
@@ -72,7 +72,7 @@ function AutocompleteDrop(props) {
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Get Workflows"
+          label="Workflows"
           InputProps={{
             ...params.InputProps,
             endAdornment: (

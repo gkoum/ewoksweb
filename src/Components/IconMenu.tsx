@@ -23,6 +23,14 @@ export default function IconMenu(props) {
 
   const { handleShowEwoksGraph } = props;
 
+  const cloneToCanvas = () => {
+    console.log('clone the graphRF initializing the id and the label', graphRF);
+  };
+
+  const saveAs = () => {
+    console.log('save the graphRF initializing the id and the label', graphRF);
+  };
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -33,7 +41,7 @@ export default function IconMenu(props) {
 
   return (
     <>
-      <Tooltip title="Clone in the canvas or as a new task">
+      <Tooltip title="Clone in the canvas or create a new task/graph">
         <Button
           style={{ margin: '8px' }}
           variant="contained"
@@ -55,20 +63,20 @@ export default function IconMenu(props) {
       >
         <Paper>
           <MenuList>
-            <MenuItem>
+            <MenuItem onClick={cloneToCanvas}>
               <ListItemIcon>
                 <Cloud fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Clone to canvas</ListItemText>
+              <ListItemText>Clone</ListItemText>
               <Typography variant="body2" color="secondary">
                 ⌘X
               </Typography>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={saveAs}>
               <ListItemIcon>
                 <Cloud fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Clone and save</ListItemText>
+              <ListItemText>Save as..?</ListItemText>
               <Typography variant="body2" color="primary">
                 ⌘C
               </Typography>
@@ -77,17 +85,14 @@ export default function IconMenu(props) {
               <ListItemIcon>
                 <Cloud fontSize="small" />
               </ListItemIcon>
-              <ListItemText>View graphs</ListItemText>
-              <Typography variant="body2" color="secondary">
-                ⌘V
-              </Typography>
+              <ListItemText>Graph in json</ListItemText>
             </MenuItem>
             <Divider />
             <MenuItem>
               <ListItemIcon>
                 <Cloud fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Web Clipboard</ListItemText>
+              <ListItemText>Web Clipboard?</ListItemText>
             </MenuItem>
           </MenuList>
         </Paper>

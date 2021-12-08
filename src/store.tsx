@@ -36,6 +36,8 @@ const initializedGraph = {
 } as GraphRF;
 
 const useStore = create<State>((set, get) => ({
+  initializedGraph: initializedGraph,
+
   openDraggableDialog: { open: false, content: {} },
 
   setOpenDraggableDialog: ({ open, content }) => {
@@ -103,7 +105,12 @@ const useStore = create<State>((set, get) => ({
   },
 
   // stack has to hold label and id of graph
-  subgraphsStack: [] as stackGraph[],
+  subgraphsStack: [
+    {
+      id: 'new_graph000',
+      label: 'new_graph000',
+    },
+  ] as stackGraph[],
 
   setSubgraphsStack: (stackGraph: stackGraph) => {
     let stack = [];

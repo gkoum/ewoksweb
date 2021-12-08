@@ -33,6 +33,7 @@ export interface DialogParams {
 }
 
 export interface State {
+  initializedGraph: GraphRF;
   openDraggableDialog: DialogParams;
   setOpenDraggableDialog: (params: DialogParams) => void;
   openSnackbar: SnackbarParams;

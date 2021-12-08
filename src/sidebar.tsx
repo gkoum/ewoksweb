@@ -40,6 +40,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconMenu from './Components/IconMenu';
 import Drawer from './Components/Drawer';
+import axios from 'axios';
 
 import type {
   EwoksRFNode,
@@ -136,6 +137,9 @@ export default function Sidebar(props) {
   const [openDialog, setOpenDialog] = React.useState<boolean>(false);
   const [dialogContent, setDialogContent] = React.useState<GraphEwoks>({});
   const recentGraphs = useStore((state) => state.recentGraphs);
+  const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
+  const setRecentGraphs = useStore((state) => state.setRecentGraphs);
+  const initializedGraph = useStore((state) => state.initializedGraph);
 
   useEffect(() => {
     console.log(selectedElement);
@@ -411,7 +415,7 @@ export default function Sidebar(props) {
     setSelectedElement(element);
   };
 
-  const deleteElement = () => {
+  const deleteElement = async () => {
     // TODO: if node deleted all associated links should be deleted with warning?
     console.log(element, selectedElement, graphRF);
     let newGraph = {};
@@ -432,14 +436,26 @@ export default function Sidebar(props) {
         links: graphRF.links.filter((link) => link.id !== element.id),
       };
     }
-    if (workingGraph.graph.id === graphRF.graph.id) {
-      setGraphRF(newGraph);
+
+    if (element.input_nodes) {
+      console.log('DELETEING', element.id);
+      const response = await axios.delete(
+        `http://localhost:5000/workflow/${element.id}`
+      );
+      setGraphRF(initializedGraph);
+      setSelectedElement({});
+      setSubgraphsStack({ id: 'initialiase', label: '' });
+      setRecentGraphs({ graph: { id: '' } }, true);
     } else {
-      setOpenSnackbar({
-        open: true,
-        text: 'Not allowed to delete any element in a sub-graph!',
-        severity: 'success',
-      });
+      if (workingGraph.graph.id === graphRF.graph.id) {
+        setGraphRF(newGraph);
+      } else {
+        setOpenSnackbar({
+          open: true,
+          text: 'Not allowed to delete any element in a sub-graph!',
+          severity: 'success',
+        });
+      }
     }
   };
 
@@ -660,6 +676,9 @@ export default function Sidebar(props) {
             {/* {'id' in selectedElement ? ( */}
             {'input_nodes' in selectedElement ? (
               <React.Fragment>
+                <div>
+                  <b>Id:</b> {graphRF.graph.id}
+                </div>
                 <div>
                   <b>Label:</b> {graphRF.graph.label}
                 </div>
@@ -1110,17 +1129,17 @@ export default function Sidebar(props) {
       >
         <SaveIcon />
       </Button>
-      {!('input_nodes' in selectedElement) && (
-        <Button
-          style={{ margin: '8px' }}
-          variant="outlined"
-          color="secondary"
-          onClick={deleteElement}
-          size="small"
-        >
-          Delete
-        </Button>
-      )}
+      {/* {!('input_nodes' in selectedElement) && ( */}
+      <Button
+        style={{ margin: '8px' }}
+        variant="outlined"
+        color="secondary"
+        onClick={deleteElement}
+        size="small"
+      >
+        Delete
+      </Button>
+      {/* )} */}
       {!('source' in selectedElement) && (
         <IconMenu handleShowEwoksGraph={showEwoksGraph} />
       )}

@@ -124,7 +124,7 @@ export async function getSubgraphs(
     results = await axios
       .all(
         notInRecent.map((id) =>
-          axios.get(`http://mxbes2-1707:38280/ewoks/workflow/${id}`)
+          axios.get(`http://localhost:5000/workflow/${id}`)
         )
       )
       .then(

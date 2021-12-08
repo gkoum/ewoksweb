@@ -39,7 +39,6 @@ import SimpleSnackbar from '../Components/Snackbar';
 import FullScreenDialog from '../Components/FullScreenDialog';
 import Tooltip from '@material-ui/core/Tooltip';
 import DashboardStyle from './DashboardStyle';
-// import initializedGraph from '../store';
 
 const useStyles = DashboardStyle;
 
@@ -50,19 +49,6 @@ function download(content, fileName, contentType) {
   a.download = fileName;
   a.click();
 }
-
-const initializedGraph = {
-  // TODO: dublicated
-  graph: {
-    id: 'new_graph000',
-    label: '',
-    input_nodes: [],
-    output_nodes: [],
-    uiProps: {},
-  },
-  nodes: [],
-  links: [],
-};
 
 export default function Dashboard() {
   // const useStyles = DashboardStyle;
@@ -89,6 +75,7 @@ export default function Dashboard() {
   const setWorkingGraph = useStore((state) => state.setWorkingGraph);
   const setSubGraph = useStore((state) => state.setSubGraph);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
+  const initializedGraph = useStore((state) => state.initializedGraph);
 
   useEffect(() => {
     console.log(subgraphsStack.length);
@@ -144,7 +131,6 @@ export default function Dashboard() {
           rfToEwoks(newIdGraph, recentGraphs)
         )
         .then((res) => {
-          // setGraphRF(newIdGraph); ????
           setWorkingGraph(res.data);
         });
     } else if (graphRF.graph.id) {
@@ -168,10 +154,19 @@ export default function Dashboard() {
         // `http://mxbes2-1707:38280/ewoks/workflow/${workflowValue}`
         `http://localhost:5000/workflow/${workflowValue}`
       );
-      if (isSubgraph === 'subgraph') {
-        setSubGraph(response.data);
+      console.log(response);
+      if (response.data) {
+        if (isSubgraph === 'subgraph') {
+          setSubGraph(response.data);
+        } else {
+          setWorkingGraph(response.data);
+        }
       } else {
-        setWorkingGraph(response.data);
+        setOpenSnackbar({
+          open: true,
+          text: 'Could not locate the requested workflow! Maybe it is deleted!',
+          severity: 'warning',
+        });
       }
     } else {
       setOpenSnackbar({
