@@ -26,7 +26,7 @@ console.log(nodes, edges);
 const initializedGraph = {
   graph: {
     id: 'new_graph000',
-    label: '',
+    label: 'new_graph000',
     input_nodes: [],
     output_nodes: [],
     uiProps: {},
@@ -88,11 +88,17 @@ const useStore = create<State>((set, get) => ({
           : [];
     }
     console.log('REC:', rec);
-    set((state) => ({
-      ...state,
-      recentGraphs: [...rec, newGraph],
-    }));
-    console.log('RECENT GRAPHS:', get().recentGraphs);
+    if (newGraph.graph) {
+      set((state) => ({
+        ...state,
+        recentGraphs: [...rec, newGraph],
+      }));
+    } else {
+      set((state) => ({
+        ...state,
+        recentGraphs: [...rec],
+      }));
+    }
   },
 
   graphOrSubgraph: true as Boolean,
@@ -150,7 +156,7 @@ const useStore = create<State>((set, get) => ({
     get().setSubgraphsStack({ id: 'initialiase', label: '' });
     get().setGraphRF(initializedGraph);
     // Is the following needed as to not get existing graphs? Better an empty array?
-    get().setRecentGraphs({ graph: { id: '' } } as GraphRF, true);
+    get().setRecentGraphs({} as GraphRF, true);
 
     console.log(workingGraph);
     const newNodeSubgraphs = await findAllSubgraphs(

@@ -45,22 +45,24 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const nodesIds = new Set();
-const linksIds = new Set();
-const getnodesIds = (text) => {
+// // const nodesIds = new Set();
+// const linksIds = new Set();
+
+const getnodesIds = (text, nodes) => {
   let id = 0;
-  while (nodesIds.has(`${text}_${id}`)) {
+  console.log(nodes, id);
+  while (nodes.map((nod) => nod.id).includes(`${text}_${id}`)) {
     id++;
   }
-  nodesIds.add(`${text}_${id}`);
+  // nodesIds.add(`${text}_${id}`);
   return `${text}_${id}`;
 };
-const getLinksIds = () => {
+const getLinksIds = (links) => {
   let id = 0;
-  while (linksIds.has(id)) {
+  while (links.map((link) => link.id).includes(id)) {
     id++;
   }
-  linksIds.add(id);
+  // linksIds.add(id);
   return `link_${id}`;
 };
 
@@ -169,10 +171,10 @@ function Canvas() {
       const newNode = {
         id:
           task_type === 'graphInput'
-            ? getnodesIds('In')
+            ? getnodesIds('In', workingGraph.nodes)
             : task_type === 'graphOutput'
-            ? getnodesIds('Out')
-            : getnodesIds('Node'),
+            ? getnodesIds('Out', workingGraph.nodes)
+            : getnodesIds('Node', workingGraph.nodes),
         label: task_identifier,
         task_type,
         task_identifier,
@@ -264,7 +266,7 @@ function Canvas() {
             targetTask.task_type === 'graph' ? params.targetHandle : '',
         },
         id: `${params.source}:${params.sourceHandle}->${params.target}:${params.targetHandle}`,
-        label: getLinksIds(),
+        label: getLinksIds(workingGraph.links),
         source: params.source,
         target: params.target,
         sourceHandle: params.sourceHandle,

@@ -445,7 +445,7 @@ export default function Sidebar(props) {
       setGraphRF(initializedGraph);
       setSelectedElement({});
       setSubgraphsStack({ id: 'initialiase', label: '' });
-      setRecentGraphs({ graph: { id: '' } }, true);
+      setRecentGraphs({}, true);
     } else {
       if (workingGraph.graph.id === graphRF.graph.id) {
         setGraphRF(newGraph);

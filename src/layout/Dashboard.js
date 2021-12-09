@@ -39,6 +39,7 @@ import SimpleSnackbar from '../Components/Snackbar';
 import FullScreenDialog from '../Components/FullScreenDialog';
 import Tooltip from '@material-ui/core/Tooltip';
 import DashboardStyle from './DashboardStyle';
+import SendIcon from '@material-ui/icons/Send';
 
 const useStyles = DashboardStyle;
 
@@ -131,7 +132,9 @@ export default function Dashboard() {
           rfToEwoks(newIdGraph, recentGraphs)
         )
         .then((res) => {
+          console.log(res.data);
           setWorkingGraph(res.data);
+          setRecentGraphs({}, true);
         });
     } else if (graphRF.graph.id) {
       const response = await axios.put(
@@ -142,6 +145,23 @@ export default function Dashboard() {
       setOpenSnackbar({
         open: true,
         text: 'No graph exists to save!',
+        severity: 'warning',
+      });
+    }
+  };
+
+  const executeWorkflow = async () => {
+    console.log('execute workflow', recentGraphs, graphRF);
+    if (recentGraphs.length > 0) {
+      console.log('EXECUTE');
+      const response = await axios.post(
+        `http://localhost:5000/workflow/execute`,
+        rfToEwoks(graphRF, recentGraphs)
+      );
+    } else {
+      setOpenSnackbar({
+        open: true,
+        text: 'Please open a workflow in the canvas to execute',
         severity: 'warning',
       });
     }
@@ -179,7 +199,7 @@ export default function Dashboard() {
 
   const newGraph = (event) => {
     // Name of graph unique and used in recentGraphs, graphRF, subgraphsStack
-    setGraphRF(initializedGraph);
+    // setGraphRF(initializedGraph);
     setWorkingGraph(initializedGraph);
     console.log('Start drawing please!');
   };
@@ -358,6 +378,20 @@ export default function Dashboard() {
                 aria-label="add"
               >
                 <ArrowDownwardIcon onClick={() => getFromServer('subgraph')} />
+              </Fab>
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Execute Workflow">
+            <IconButton color="inherit">
+              <Fab
+                className={classes.openFileButton}
+                color="primary"
+                size="small"
+                component="span"
+                aria-label="add"
+              >
+                <SendIcon onClick={() => executeWorkflow('subgraph')} />
               </Fab>
             </IconButton>
           </Tooltip>
