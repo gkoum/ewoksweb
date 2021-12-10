@@ -27,7 +27,7 @@ function TabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Typography component={'span'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -100,11 +100,6 @@ export default function BasicTabs() {
                   collapseStringsAfterLength={30}
                   groupArraysAfterLength={15}
                   enableClipboard={false}
-                  // onEdit={(edit) => true}
-                  // onAdd={(add) => true}
-                  // defaultValue={'value'}
-                  // onDelete={(del) => true}
-                  // onSelect={(sel) => true}
                   quotesOnKeys={false}
                   style={{ backgroundColor: 'rgb(59, 77, 172)' }}
                   displayDataTypes

@@ -37,6 +37,7 @@ import { rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
 import axios from 'axios';
 import SimpleSnackbar from '../Components/Snackbar';
 import FullScreenDialog from '../Components/FullScreenDialog';
+import TemporaryDrawer from '../Components/Drawer';
 import Tooltip from '@material-ui/core/Tooltip';
 import DashboardStyle from './DashboardStyle';
 import SendIcon from '@material-ui/icons/Send';
@@ -409,10 +410,14 @@ export default function Dashboard() {
               </Fab>
             </IconButton>
           </Tooltip>
-          <FullScreenDialog
+          <TemporaryDrawer
             handleOpenSettings={handleOpenSettings}
             openSettings={openSettings}
           />
+          {/* <FullScreenDialog
+            handleOpenSettings={handleOpenSettings}
+            openSettings={openSettings}
+          /> */}
         </Toolbar>
       </AppBar>
       <Drawer

@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import ReactJson from 'react-json-view';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   tableCell: {
     width: 120,
     height: 20,
@@ -28,28 +28,22 @@ function CustomTableCell({ index, row, name, onChange, type, typeOfValues }) {
   const classes = useStyles();
   const { isEditMode } = row;
   console.log(index, row, name, onChange, type, typeOfValues);
-  // TODO: handle objects arrays in dialog window
-  const emptyObject = {};
-  const emptyArray = [];
 
   const [boolVal, setBoolVal] = React.useState(true);
 
   useEffect(() => {
-    console.log(row.value);
     setBoolVal(row.value.toString());
   }, [row.value]);
 
   const onChangeBool = (e, row, index) => {
-    console.log(e.target.value, e.target.name, row, index);
     const event = {
       ...e,
       target: {
         ...e.target,
         name: e.target.name,
-        value: e.target.value, // === 'true',
+        value: e.target.value,
       },
     };
-    console.log(event.target.value);
     onChange(event, row, index);
   };
 
@@ -73,10 +67,10 @@ function CustomTableCell({ index, row, name, onChange, type, typeOfValues }) {
             collapseStringsAfterLength={30}
             groupArraysAfterLength={15}
             onEdit={(edit) => onChange(edit, row, index)}
-            onAdd={(add) => true}
+            onAdd={(add) => onChange(add, row, index)}
             defaultValue="object"
-            onDelete={(del) => true}
-            onSelect={(sel) => true}
+            onDelete={(del) => onChange(del, row, index)}
+            onSelect={(sel) => onChange(sel, row, index)}
             quotesOnKeys={false}
             style={{ backgroundColor: 'rgb(59, 77, 172)' }}
             displayDataTypes

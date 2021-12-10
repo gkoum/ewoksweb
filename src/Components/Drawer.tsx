@@ -1,23 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import TabPanel from './TabPanel';
 
 type Anchor = 'top' | 'left' | 'bottom' | 'right';
-
-export default function TemporaryDrawer() {
+// TODO: to decide if only top is needed and local state of the drawer
+export default function TemporaryDrawer(props) {
   const [state, setState] = React.useState({
     top: false,
     left: false,
     bottom: false,
     right: false,
   });
+
+  useEffect(() => {
+    console.log(props.openSettings);
+    setState({ top: props.openSettings });
+  }, [props.openSettings]);
 
   const toggleDrawer = (anchor: Anchor, open: boolean) => (
     event: React.KeyboardEvent | React.MouseEvent
@@ -29,13 +30,13 @@ export default function TemporaryDrawer() {
     ) {
       return;
     }
-
-    setState({ ...state, [anchor]: open });
+    props.handleOpenSettings();
+    setState({ ...state, [anchor]: open }); // left: open , for opening both-active 1
   };
 
   const list = (anchor: Anchor) => (
     <Box
-      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 350 }}
       role="presentation"
       // onClick={toggleDrawer(anchor, false)}
       // onKeyDown={toggleDrawer(anchor, false)}
@@ -47,9 +48,9 @@ export default function TemporaryDrawer() {
 
   return (
     <div>
-      {(['left', 'right', 'top', 'bottom'] as const).map((anchor) => (
+      {(['left', 'top', 'right'] as const).map((anchor) => (
         <React.Fragment key={anchor}>
-          <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
+          {/* <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button> */}
           <Drawer
             anchor={anchor}
             open={state[anchor]}

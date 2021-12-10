@@ -23,9 +23,13 @@ const useStyles = makeStyles({
   },
 });
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
+// function Transition(props) {
+//   return <Slide direction="up" {...props} />;
+// }
+
+const Transition = React.forwardRef((props, ref) => (
+  <Slide direction="up" {...props} ref={ref} />
+))
 
 function FullScreenDialog(props) {
   console.log(props);

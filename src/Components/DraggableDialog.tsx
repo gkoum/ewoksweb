@@ -1,5 +1,4 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -33,16 +32,11 @@ export default function DraggableDialog(props) {
   const graphRF = useStore((state) => state.graphRF);
   const recentGraphs = useStore((state) => state.recentGraphs);
 
-  // const openDraggableDialog = useStore((state) => state.openDraggableDialog);
-  // const setOpenDraggableDialog = useStore(
-  //   (state) => state.setOpenDraggableDialog
-  // );
   const [selection, setSelection] = React.useState('ewoks');
 
   const { open, content } = props;
 
   useEffect(() => {
-    console.log(open, content);
     setGraph((content && content.object) || {});
     setIsOpen(open || false);
     setTitle((content && content.title) || '');
@@ -58,7 +52,6 @@ export default function DraggableDialog(props) {
   };
 
   const handleSave = () => {
-    console.log(graph, props);
     setIsOpen(false);
     props.setValue(graph, callbackProps);
   };
@@ -67,7 +60,6 @@ export default function DraggableDialog(props) {
     event: React.MouseEvent<HTMLElement>,
     newSelection: string
   ) => {
-    console.log(newSelection);
     setSelection(newSelection);
     setTitle(newSelection === 'ewoks' ? 'Ewoks Graph' : 'RF Graph');
     setGraph(
@@ -77,7 +69,6 @@ export default function DraggableDialog(props) {
   };
 
   const graphChanged = (edit) => {
-    console.log(edit, graph);
     setGraph(edit.updated_src);
   };
 

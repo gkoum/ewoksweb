@@ -8,7 +8,7 @@ import type { GraphEwoks } from '../types';
 
 function AutocompleteDrop(props) {
   const [options, setOptions] = useState<readonly GraphEwoks[]>([]);
-  const [value, setValue] = React.useState<string | null>(options[0]);
+  const [value] = React.useState<string | null>(options[0]);
   const [open, setOpen] = useState(false);
   const allWorkflows = useStore((state) => state.allWorkflows);
   const setAllWorkflows = useStore((state) => state.setAllWorkflows);
@@ -20,14 +20,15 @@ function AutocompleteDrop(props) {
     if (!loading) {
       return undefined;
     }
-    // if (allWorkflows.length === 0) {
+    // if (allWorkflows.length === 0) { // TODO: not get all the time...
     (async () => {
-      const workF: GraphEwoks[] = await getWorkflows().catch((error) => {
-        console.log(error);
-      });
+      const workF: GraphEwoks[] = await getWorkflows()
+      // .catch((error) => {
+      //   console.log(error);
+      // });
       if (workF && workF.length > 0) {
         setAllWorkflows(workF);
-        if (active) setOptions([...workF]);
+        if (active) { setOptions([...workF]) };
       }
     })();
     // } else {
@@ -46,14 +47,12 @@ function AutocompleteDrop(props) {
   }, [open]);
 
   const setInputValue = (newInputValue) => {
-    console.log(props, newInputValue);
     props.setInputValue(newInputValue);
   };
 
   return (
     <Autocomplete
       id="async-autocomplete-drop"
-      // sx={{ width: 300 }}
       open={open}
       onOpen={() => {
         setOpen(true);
@@ -76,12 +75,12 @@ function AutocompleteDrop(props) {
           InputProps={{
             ...params.InputProps,
             endAdornment: (
-              <React.Fragment>
+              <>
                 {loading ? (
                   <CircularProgress color="inherit" size={20} />
                 ) : null}
                 {params.InputProps.endAdornment}
-              </React.Fragment>
+              </>
             ),
           }}
         />

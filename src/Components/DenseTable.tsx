@@ -1,14 +1,12 @@
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
-import { PinDropSharp } from '@material-ui/icons';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: '100%',
     padding: '1px',
@@ -38,12 +36,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function DenseTable(props) {
-  console.log(props);
   const classes = useStyles();
 
   let hasSubnode = false;
   props.data.forEach((dat) => {
-    if (dat.sub_node) hasSubnode = true;
+    if (dat.sub_node) { hasSubnode = true }
   });
 
   return (
