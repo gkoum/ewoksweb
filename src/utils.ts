@@ -153,10 +153,20 @@ export function rfToEwoks(tempGraph, recentGraphs): GraphEwoks {
   };
 }
 
+// function rfToEwoksGraph(rfLinks) {
+
+// }
+
 // EwoksRFLinks --> EwoksLinks for saving
 export function toEwoksLinks(links, recentGraphs): EwoksLink[] {
   // TODO: when input-arrow fake nodes exist remove their links to get an Ewoks description
   const tempLinks: EwoksRFLink[] = [...links].filter((link) => !link.startEnd);
+  // if there are some startEnd links with conditions or any other link_attributes
+  // then graph.input_nodes or graph.output_nodes needs update
+  const startEndLinks: EwoksRFLink[] = [...links].filter(
+    (link) => link.startEnd
+  );
+
   return tempLinks.map(
     ({
       label,
@@ -190,6 +200,8 @@ export function toEwoksLinks(links, recentGraphs): EwoksLink[] {
                 ? true
                 : con.value === 'false'
                 ? false
+                : con.value === 'null'
+                ? null
                 : con.value,
           };
         return {
@@ -199,6 +211,8 @@ export function toEwoksLinks(links, recentGraphs): EwoksLink[] {
               ? true
               : con.value === 'false'
               ? false
+              : con.value === 'null'
+              ? null
               : con.value,
         };
       }),
@@ -256,6 +270,8 @@ export function toEwoksNodes(nodes: EwoksRFNode[]): EwoksNode[] {
                     ? false
                     : dIn.value === 'true'
                     ? true
+                    : dIn.value === 'null'
+                    ? null
                     : dIn.value,
               };
             }),
@@ -281,6 +297,7 @@ export function toEwoksNodes(nodes: EwoksRFNode[]): EwoksNode[] {
   );
 }
 
+// calc the input nodes and links that need to be added to the graph from the input_nodes
 function inNodesLinks(graph) {
   const inputs = { nodes: [], links: [] };
   if (
@@ -293,58 +310,47 @@ function inNodesLinks(graph) {
       const nodeTarget = graph.nodes.find((no) => no.id === inNod.node);
       console.log(inNod, nodeTarget);
       if (nodeTarget) {
-        // inNod.uiProps && inNod.uiProps.position
+        const temPosition = (inNod.uiProps && inNod.uiProps.position) || {
+          x: 50,
+          y: 50,
+        };
         if (!inNodesInputed.includes(inNod.id)) {
           inputs.nodes.push({
             id: inNod.id,
             label: inNod.id,
             task_type: 'graphInput',
             task_identifier: 'Start-End',
-            position: (inNod.uiProps && inNod.uiProps.position) || {
-              x: 50,
-              y: 50,
-            },
+            position: temPosition,
             uiProps: {
               type: 'input',
-              position: (inNod.uiProps && inNod.uiProps.position) || {
-                x: 50,
-                y: 50,
-              },
+              position: temPosition,
               icon: 'graphInput',
             },
           });
           inNodesInputed.push(inNod.id);
         }
 
-        if (nodeTarget.task_type !== 'graph') {
-          inputs.links.push({
-            startEnd: true,
-            source: inNod.id,
-            target: inNod.node,
-            uiProps: {
-              type: 'default',
-              arrowHeadType: 'arrowclosed',
-            },
-          });
-        } else {
-          inputs.links.push({
-            startEnd: true,
-            source: inNod.id,
-            target: inNod.node,
-            sub_target: inNod.sub_node,
-            uiProps: {
-              type: 'default',
-              arrowHeadType: 'arrowclosed',
-            },
-          });
-        }
+        inputs.links.push({
+          startEnd: true,
+          source: inNod.id,
+          target: inNod.node,
+          sub_target: nodeTarget.task_type !== 'graph' ? '' : inNod.sub_node,
+          conditions:
+            inNod.link_attributes && inNod.link_attributes.conditions
+              ? inNod.link_attributes.conditions
+              : [],
+          uiProps: {
+            type: 'default',
+            arrowHeadType: 'arrowclosed',
+          },
+        });
       }
     });
   }
   console.log('INPUTS', inputs);
   return inputs;
 }
-
+// calc the output nodes and links that need to be added to the graph from the output_nodes
 function outNodesLinks(graph) {
   const outputs = { nodes: [], links: [] };
   if (
@@ -358,21 +364,19 @@ function outNodesLinks(graph) {
       // if we need position to control showing in-out as nodes in th graph
       // if (outNod.uiProps && outNod.uiProps.position) {
       if (!outNodesInputed.includes(outNod.id)) {
+        const temPosition = (outNod.uiProps && outNod.uiProps.position) || {
+          x: 1250,
+          y: 450,
+        };
         outputs.nodes.push({
           id: outNod.id,
           label: outNod.id,
           task_type: 'graphOutput',
           task_identifier: 'Start-End',
-          position: (outNod.uiProps && outNod.uiProps.position) || {
-            x: 1250,
-            y: 450,
-          },
+          position: temPosition,
           uiProps: {
             type: 'output',
-            position: (outNod.uiProps && outNod.uiProps.position) || {
-              x: 1250,
-              y: 450,
-            },
+            position: temPosition,
             icon: 'graphOutput',
           },
         });
@@ -383,6 +387,10 @@ function outNodesLinks(graph) {
         source: outNod.node,
         target: outNod.id,
         sub_source: outNod.sub_node,
+        conditions:
+          outNod.link_attributes && outNod.link_attributes.conditions
+            ? outNod.link_attributes.conditions
+            : [],
         uiProps: {
           type: 'default',
           arrowHeadType: 'arrowclosed',

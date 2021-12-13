@@ -21,12 +21,11 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
       console.log(nodesNamesConnectedTo, nodeObjConnectedTo);
       // iterate the nodes to create the new input_nodes
       nodeObjConnectedTo.forEach((nodConnected) => {
-        console.log(nodConnected, input_nodes);
+        const link_index = graph_links.findIndex(
+          (lin) => lin.source === nod.id && lin.target === nodConnected.id
+        );
         if (nodConnected.task_type === 'graph') {
           // find the link and get the sub_node it is connected to in the graph
-          const link_index = graph_links.findIndex(
-            (lin) => lin.source === nod.id && lin.target === nodConnected.id
-          );
           // TODO: find the correct input if a graph has two links to the same input
           console.log(link_index, graph_links, nodConnected, nod);
           input_nodes.push({
@@ -36,6 +35,12 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
               (graph_links[link_index] &&
                 graph_links[link_index].data.sub_target) ||
               '',
+            link_attributes: {
+              conditions:
+                (graph_links[link_index] &&
+                  graph_links[link_index].data.conditions) ||
+                [],
+            },
             uiProps: { position: nod.position },
           });
           // remove link so that it gets the next
@@ -46,13 +51,19 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             id: nod.id,
             node: nodConnected.id,
             sub_node: '',
+            link_attributes: {
+              conditions:
+                (graph_links[link_index] &&
+                  graph_links[link_index].data.conditions) ||
+                [],
+            },
             uiProps: { position: nod.position },
           });
         }
         console.log(input_nodes);
       });
     } else if (nod.task_type === 'graphOutput') {
-      // find those nodes ItIsConnectedTo
+      // find those nodes this OUTPUT node is connected to
       const nodesNamesConnectedToEnd = graph.links
         .filter((link) => link.target === nod.id)
         .map((link) => link.source);
@@ -66,11 +77,11 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
       console.log(nodesNamesConnectedToEnd, nodeObjConnectedToEnd);
       // iterate the nodes to create the new input_nodes
       nodeObjConnectedToEnd.forEach((nodConnected) => {
+        const link_index = graph_links.findIndex(
+          (lin) => lin.target === nod.id && lin.source === nodConnected.id
+        );
         if (nodConnected.task_type === 'graph') {
           // find the link and get the sub_node it is connected to in the graph
-          const link_index = graph_links.findIndex(
-            (lin) => lin.target === nod.id && lin.source === nodConnected.id
-          );
           // TODO: find the correct output if a graph has two links to the same output
           console.log(link_index, graph_links, nodConnected, nod);
           output_nodes.push({
@@ -80,34 +91,32 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
               (graph_links[link_index] &&
                 graph_links[link_index].data.sub_source) ||
               '',
+            link_attributes: {
+              conditions:
+                (graph_links[link_index] &&
+                  graph_links[link_index].data.conditions) ||
+                [],
+            },
             uiProps: { position: nod.position },
           });
           graph_links.splice(link_index, 1);
-          console.log(link_index, graph_links);
         } else {
           output_nodes.push({
             id: nod.id,
             node: nodConnected.id,
             sub_node: '',
+            link_attributes: {
+              conditions:
+                (graph_links[link_index] &&
+                  graph_links[link_index].data.conditions) ||
+                [],
+            },
             uiProps: { position: nod.position },
           });
         }
-        console.log(output_nodes);
       });
     }
   });
-  console.log(graph, input_nodes, output_nodes);
-  // if no position then no graphInput-Output exists so just push them back in
-  // graph.graph.input_nodes.forEach((nod) => {
-  //   if (!(nod.uiProps && nod.uiProps.position)) {
-  //     input_nodes.push(nod);
-  //   }
-  // });
-  // graph.graph.output_nodes.forEach((nod) => {
-  //   if (!(nod.uiProps && nod.uiProps.position)) {
-  //     output_nodes.push(nod);
-  //   }
-  // });
   return {
     id: graph.graph.id,
     label: graph.graph.label,

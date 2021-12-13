@@ -78,8 +78,8 @@ function EditableTable(props) {
         ? 'boolean'
         : Array.isArray(val.value)
         ? 'list'
-        : val.value === null
-        ? null
+        : val.value === 'null' || val.value === null
+        ? 'null'
         : typeof val.value === 'object'
         ? 'dict'
         : typeof val.value
@@ -158,7 +158,9 @@ function EditableTable(props) {
 
   const onChange = (e, row, index) => {
     console.log(typeOfInputs, e, row, index);
-    if (['string', 'bool', 'number', 'boolean'].includes(typeOfInputs[0])) {
+    if (
+      ['string', 'bool', 'number', 'boolean', 'null'].includes(typeOfInputs[0])
+    ) {
       let { value } = e.target;
       const { name } = e.target;
       const inType = typeOfInputs[index];
@@ -221,6 +223,17 @@ function EditableTable(props) {
 
   const changedTypeOfInputs = (e, row, index) => {
     console.log(e.target.value, row, props, index);
+    if (e.target.value === 'null') {
+      const newRows = rows.map((rowe) => {
+        if (rowe.id === row.id) {
+          return { ...rowe, value: e.target.value };
+        }
+        return rowe;
+      });
+      console.log(newRows);
+      setRows(newRows);
+      props.valuesChanged(newRows);
+    }
     const tOfI = [...typeOfInputs];
     tOfI[index] = e.target.value;
     setTypeOfInputs(tOfI);
@@ -228,15 +241,14 @@ function EditableTable(props) {
 
   const setRowValue = (val, callbackProps) => {
     console.log(val, callbackProps);
-
-    setRows(
-      callbackProps.rows.map((row) => {
-        if (row.id === callbackProps.id) {
-          return { ...row, value: val };
-        }
-        return row;
-      })
-    );
+    const newRows = callbackProps.rows.map((row) => {
+      if (row.id === callbackProps.id) {
+        return { ...row, value: val };
+      }
+      return row;
+    });
+    props.valuesChanged(newRows);
+    setRows(newRows);
   };
 
   return (

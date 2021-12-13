@@ -48,10 +48,12 @@ export default function DraggableDialog(props) {
   };
 
   const handleClose = () => {
+    console.log(graph);
     setIsOpen(false);
   };
 
   const handleSave = () => {
+    console.log(graph);
     setIsOpen(false);
     props.setValue(graph, callbackProps);
   };
