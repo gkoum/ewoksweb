@@ -11,24 +11,25 @@ import Cloud from '@material-ui/icons/Cloud';
 import { Button, Menu, Tooltip } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { rfToEwoks } from '../utils';
+import type { EwoksRFLink, EwoksRFNode } from '../types';
+import FormDialog from './FormDialog';
 
 export default function IconMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [openSaveDialog, setOpenSaveDialog] = React.useState<boolean>(false);
   const setOpenDraggableDialog = useStore(
     (state) => state.setOpenDraggableDialog
   );
   const graphRF = useStore((state) => state.graphRF);
   const recentGraphs = useStore((state) => state.recentGraphs);
-
+  const selectedElement = useStore<EwoksRFNode | EwoksRFLink>(
+    (state) => state.selectedElement
+  );
   const { handleShowEwoksGraph } = props;
 
   const cloneToCanvas = () => {
     console.log('clone the graphRF initializing the id and the label', graphRF);
-  };
-
-  const saveAs = () => {
-    console.log('save the graphRF initializing the id and the label', graphRF);
   };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -41,6 +42,11 @@ export default function IconMenu(props) {
 
   return (
     <>
+      <FormDialog
+        open={openSaveDialog}
+        setOpenSaveDialog={setOpenSaveDialog}
+        content={graphRF}
+      />
       <Tooltip title="Clone in the canvas or create a new task/graph">
         <Button
           style={{ margin: '8px' }}
@@ -72,11 +78,11 @@ export default function IconMenu(props) {
                 ⌘X
               </Typography>
             </MenuItem>
-            <MenuItem onClick={saveAs}>
+            <MenuItem onClick={() => setOpenSaveDialog(true)}>
               <ListItemIcon>
                 <Cloud fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Save as..?</ListItemText>
+              <ListItemText>Save as..</ListItemText>
               <Typography variant="body2" color="primary">
                 ⌘C
               </Typography>

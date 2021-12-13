@@ -37,6 +37,7 @@ export default function DraggableDialog(props) {
   const { open, content } = props;
 
   useEffect(() => {
+    console.log(open, content);
     setGraph((content && content.object) || {});
     setIsOpen(open || false);
     setTitle((content && content.title) || '');
