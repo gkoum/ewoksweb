@@ -438,10 +438,23 @@ export default function Sidebar(props) {
     }
 
     if (element.input_nodes) {
-      console.log('DELETEING', element.id);
-      const response = await axios.delete(
-        `http://localhost:5000/workflow/${element.id}`
-      );
+      await axios
+        .delete(`http://localhost:5000/workflow/${element.id}`)
+        .then((res) => {
+          setOpenSnackbar({
+            open: true,
+            text: `Workflow ${element.id} succesfully deleted!`,
+            severity: 'success',
+          });
+        })
+        .catch((error) => {
+          setOpenSnackbar({
+            open: true,
+            text: error.message,
+            severity: 'error',
+          });
+          console.log(error);
+        });
       setGraphRF(initializedGraph);
       setSelectedElement({});
       setSubgraphsStack({ id: 'initialiase', label: '' });
@@ -574,9 +587,20 @@ export default function Sidebar(props) {
     });
   };
 
+  const getTasks = async (event) => {
+    console.log(event, selectedElement);
+    const workflows = await axios.get('http://localhost:5000/tasks');
+  };
+
   return (
     <aside className="dndflow">
-      <Accordion>
+      <Accordion
+        onChange={(e, expanded) => {
+          if (expanded) {
+            getTasks(e);
+          }
+        }}
+      >
         <AccordionSummary
           expandIcon={<OpenInBrowser />}
           aria-controls="panel1a-content"

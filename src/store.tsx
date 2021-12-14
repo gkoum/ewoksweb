@@ -277,11 +277,11 @@ const useStore = create<State>((set, get) => ({
         }));
       }
     } else {
-      get().setOpenSnackbar({
-        open: true,
-        text: 'Not allowed to modify sub-graphs!',
-        severity: 'success',
-      });
+      // get().setOpenSnackbar({
+      //   open: true,
+      //   text: 'Not allowed to modify sub-graphs!',
+      //   severity: 'success',
+      // });
       set((state) => ({
         ...state,
         selectedElement: element,

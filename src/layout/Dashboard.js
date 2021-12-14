@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect } from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -9,7 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
+// import Badge from '@material-ui/core/Badge';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -27,7 +27,7 @@ import Canvas from './Canvas';
 import Upload from '../Components/Upload';
 import AutocompleteDrop from '../Components/AutocompleteDrop';
 import AddIcon from '@material-ui/icons/Add';
-import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+// import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
@@ -36,11 +36,12 @@ import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import { rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
 import axios from 'axios';
 import SimpleSnackbar from '../Components/Snackbar';
-import FullScreenDialog from '../Components/FullScreenDialog';
+// import FullScreenDialog from '../Components/FullScreenDialog';
 import TemporaryDrawer from '../Components/Drawer';
 import Tooltip from '@material-ui/core/Tooltip';
 import DashboardStyle from './DashboardStyle';
 import SendIcon from '@material-ui/icons/Send';
+import IntegratedSpinner from '../Components/IntegratedSpinner';
 
 const useStyles = DashboardStyle;
 
@@ -78,6 +79,7 @@ export default function Dashboard() {
   const setSubGraph = useStore((state) => state.setSubGraph);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
   const initializedGraph = useStore((state) => state.initializedGraph);
+  const [gettingFromServer, setGettingFromServer] = React.useState(false);
 
   useEffect(() => {
     console.log(subgraphsStack.length);
@@ -154,11 +156,13 @@ export default function Dashboard() {
   const executeWorkflow = async () => {
     console.log('execute workflow', recentGraphs, graphRF);
     if (recentGraphs.length > 0) {
-      console.log('EXECUTE');
-      const response = await axios.post(
-        `http://localhost:5000/workflow/execute`,
-        rfToEwoks(graphRF, recentGraphs)
-      );
+      await axios
+        .post(
+          `http://localhost:5000/workflow/execute`,
+          rfToEwoks(graphRF, recentGraphs)
+        )
+        .then((res) => console.log(res))
+        .catch((error) => console.log(error));
     } else {
       setOpenSnackbar({
         open: true,
@@ -169,20 +173,21 @@ export default function Dashboard() {
   };
 
   const getFromServer = async (isSubgraph) => {
-    console.log('Get graphs from server', workflowValue, isSubgraph);
     if (workflowValue) {
+      setGettingFromServer(true);
       const response = await axios.get(
         // `http://mxbes2-1707:38280/ewoks/workflow/${workflowValue}`
         `http://localhost:5000/workflow/${workflowValue}`
       );
-      console.log(response);
       if (response.data) {
+        setGettingFromServer(false);
         if (isSubgraph === 'subgraph') {
           setSubGraph(response.data);
         } else {
           setWorkingGraph(response.data);
         }
       } else {
+        setGettingFromServer(false);
         setOpenSnackbar({
           open: true,
           text: 'Could not locate the requested workflow! Maybe it is deleted!',
@@ -329,72 +334,28 @@ export default function Dashboard() {
             </IconButton>
           </Tooltip>
           <div className={classes.verticalRule} />
-          {/* <IconButton color="inherit">
-            <Fab
-              className={classes.openFileButton}
-              color="primary"
-              size="small"
-              component="span"
-              aria-label="add"
-            >
-              <CloudDownloadIcon onClick={getFromServer} />
-            </Fab>
-          </IconButton> */}
-          <IconButton color="inherit">
-            <Fab
-              className={classes.openFileButton}
-              color="primary"
-              size="small"
-              component="span"
-              aria-label="add"
-            >
+          <Tooltip title="Open and edit Workflow">
+            <IntegratedSpinner>
               <CloudUploadIcon onClick={saveToServer} />
-            </Fab>
-          </IconButton>
+            </IntegratedSpinner>
+          </Tooltip>
           <FormControl variant="standard" className={classes.formControl}>
             <AutocompleteDrop setInputValue={setInputValue} />
           </FormControl>
           <Tooltip title="Open and edit Workflow">
-            <IconButton color="inherit">
-              <Fab
-                className={classes.openFileButton}
-                color="primary"
-                size="small"
-                component="span"
-                aria-label="add"
-              >
-                <CloudDownloadIcon onClick={getFromServer} />
-                {/* <b>Open</b> */}
-                {/* <DoubleArrowIcon onClick={getFromServer} /> */}
-              </Fab>
-            </IconButton>
+            <IntegratedSpinner getting={gettingFromServer}>
+              <CloudDownloadIcon onClick={getFromServer} />
+            </IntegratedSpinner>
           </Tooltip>
           <Tooltip title="Add workflow as subgraph">
-            <IconButton color="inherit">
-              <Fab
-                className={classes.openFileButton}
-                color="primary"
-                size="small"
-                component="span"
-                aria-label="add"
-              >
-                <ArrowDownwardIcon onClick={() => getFromServer('subgraph')} />
-              </Fab>
-            </IconButton>
+            <IntegratedSpinner>
+              <ArrowDownwardIcon onClick={() => getFromServer('subgraph')} />
+            </IntegratedSpinner>
           </Tooltip>
-
           <Tooltip title="Execute Workflow">
-            <IconButton color="inherit">
-              <Fab
-                className={classes.openFileButton}
-                color="primary"
-                size="small"
-                component="span"
-                aria-label="add"
-              >
-                <SendIcon onClick={() => executeWorkflow('subgraph')} />
-              </Fab>
-            </IconButton>
+            <IntegratedSpinner>
+              <SendIcon onClick={() => executeWorkflow('subgraph')} />
+            </IntegratedSpinner>
           </Tooltip>
           <div className={classes.verticalRule} />
           <Tooltip title="Manage tasks and workflows">

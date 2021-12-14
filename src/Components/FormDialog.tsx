@@ -22,13 +22,14 @@ export default function FormDialog(props) {
   const setWorkingGraph = useStore((state) => state.setWorkingGraph);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
+  const [isGraph, setIsGraph] = React.useState('Workflow');
 
   const handleSave = () => {
     // get the selected element (graph or Node) give a new name before saving
     // fire a POST
     console.log(open);
     props.setOpenSaveDialog(false);
-    if (selectedElement.input_nodes) {
+    if (isGraph) {
       // save the graphRF
       const response = axios
         .post(
@@ -76,15 +77,15 @@ export default function FormDialog(props) {
   useEffect(() => {
     console.log(open);
     setIsOpen(open);
-  }, [open]);
+    setIsGraph(selectedElement.input_nodes ? 'Workflow' : 'Task');
+  }, [open, selectedElement.input_nodes]);
 
   return (
     <Dialog open={isOpen} onClose={handleClose}>
-      <DialogTitle>Give the new name</DialogTitle>
+      <DialogTitle>Give the new {isGraph} name</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          The graph-node will be saved with the name you will provide and can be
-          opened as a new graph to be edited.
+          The {isGraph} will be saved with the name you will provide.
         </DialogContentText>
         <TextField
           margin="dense"
@@ -99,7 +100,7 @@ export default function FormDialog(props) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleSave}>Save</Button>
+        <Button onClick={handleSave}>Save {isGraph}</Button>
       </DialogActions>
     </Dialog>
   );

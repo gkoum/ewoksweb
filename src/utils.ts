@@ -1,13 +1,7 @@
 import { Node, Edge, Position } from 'react-flow-renderer';
 // @ts-ignore
 import dagre from 'dagre';
-import {
-  graph,
-  subgraph,
-  subsubgraph,
-  subsubsubgraph,
-  tasks,
-} from './assets/graphTests';
+import { tasks } from './assets/graphTests';
 import type {
   Graph,
   EwoksNode,
@@ -31,7 +25,7 @@ import { dirname } from 'node:path';
 const { GraphDagre } = dagre.graphlib;
 const NODE_SIZE = { width: 270, height: 36 };
 
-export const ewoksNetwork = graph;
+export const ewoksNetwork = {};
 
 export async function getWorkflows() {
   // const workflows = await axios.get('http://mxbes2-1707:38280/ewoks/workflows');

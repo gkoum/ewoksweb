@@ -3,247 +3,8 @@
 // of ewoks and a map-engine to create a model for react-flow or another for vis etc.
 const PpfPortTask = 'ewokscore.ppftasks.PpfPortTask';
 export const graph = {};
-// export const graph = {
-//   graph: {
-//     id: 'graph1',
-//     label: 'graph',
-//     input_nodes: [
-//       { id: 'in1', node: 'node1' },
-//       { id: 'in2', node: 'node4' },
-//     ],
-//     output_nodes: [
-//       { id: 'out1', node: 'node3' },
-//       { id: 'out2', node: 'node7' },
-//     ],
-//   },
-//   nodes: [
-//     {
-//       id: 'node1',
-//       task_type: 'method',
-//       task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
-//       default_inputs: [{ name: 'a', value: 1 }],
-//       uiProps: { position: { x: 50, y: 80 }, icon: 'orange1' },
-//     },
-//     {
-//       id: 'node2',
-//       task_type: 'graph',
-//       task_identifier: 'subgraph1',
-//       uiProps: { position: { x: 400, y: 80 }, icon: 'orange2' },
-//     },
-//     {
-//       id: 'node3',
-//       task_type: 'method',
-//       task_identifier: 'ewokscore.scripttask.ScriptExecutorTask',
-//       uiProps: {
-//         position: { x: 700, y: 580 },
-//         icon: 'orange3',
-//       },
-//     },
-//     {
-//       id: 'node4',
-//       task_type: 'method',
-//       task_identifier: 'ewokscore.ppftasks.PpfMethodExecutorTask',
-//       uiProps: { position: { x: 50, y: 380 }, icon: 'Continuize' },
-//     },
-//     {
-//       id: 'node5',
-//       task_type: 'method',
-//       task_identifier: 'tasks.methods.rerr15',
-//       uiProps: {
-//         position: { x: 700, y: 80 },
-//         icon: 'AggregateColumns',
-//       },
-//     },
-//     {
-//       id: 'node6',
-//       task_type: 'method',
-//       task_identifier: PpfPortTask,
-//       uiProps: { position: { x: 900, y: 80 }, icon: 'Correlations' },
-//     },
-//     {
-//       id: 'node7',
-//       task_type: 'method',
-//       task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
-//       uiProps: {
-//         position: { x: 1100, y: 240 },
-//         icon: 'CreateClass',
-//       },
-//     },
-//   ],
-//   links: [
-//     {
-//       source: 'node1',
-//       target: 'node2',
-//       data_mapping: [{ source_output: 'ab', target_input: 'result' }],
-//       sub_target: 'in1',
-//       conditions: [{ source_output: 'return_value', value: 10 }],
-//     },
-//     {
-//       source: 'node4',
-//       target: 'node2',
-//       data_mapping: [{ source_output: 'ab3', target_input: 'result5' }],
-//       sub_target: 'in2',
-//     },
-//     {
-//       source: 'node2',
-//       target: 'node3',
-//       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-//       sub_source: 'out',
-//     },
-//     {
-//       source: 'node2',
-//       target: 'node5',
-//       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-//       sub_source: 'out',
-//     },
-//     {
-//       source: 'node5',
-//       target: 'node6',
-//       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-//     },
-//     {
-//       source: 'node6',
-//       target: 'node7',
-//       data_mapping: [{ source_output: 'aretb', target_input: 'result78' }],
-//     },
-//   ],
-// };
 
-export const subgraph = {
-  graph: {
-    id: 'subgraph1',
-    label: 'subgraph',
-    input_nodes: [
-      { id: 'in1', node: 'task1' },
-      { id: 'in2', node: 'task3' },
-    ],
-    output_nodes: [
-      { id: 'out1', node: 'subsubgraph', sub_node: 'out1' },
-      { id: 'out2', node: 'subsubgraph', sub_node: 'out2' },
-    ],
-    uiProps: { icon: 'orange2' },
-  },
-  nodes: [
-    {
-      id: 'task1',
-      task_type: 'method',
-      task_identifier: 'PpfPortTask',
-      uiProps: { position: { x: 50, y: 80 }, icon: 'Correlations' },
-    },
-    {
-      id: 'task2',
-      task_type: 'method',
-      task_identifier: 'tasks.methods.rerr15',
-      uiProps: {
-        position: { x: 500, y: 180 },
-        icon: 'AggregateColumns',
-      },
-    },
-    {
-      id: 'task3',
-      task_type: 'method',
-      task_identifier: 'tasks.methods.add4',
-      uiProps: { position: { x: 50, y: 500 } },
-    },
-    {
-      id: 'subsubgraph',
-      task_type: 'graph',
-      task_identifier: 'subsubgraph1',
-      uiProps: { position: { x: 700, y: 480 } },
-    },
-  ],
-  links: [
-    {
-      source: 'task1',
-      target: 'task2',
-      data_mapping: [{ source_output: 'ab6', target_input: 'result6' }],
-    },
-    {
-      source: 'task2',
-      target: 'subsubgraph',
-      data_mapping: [{ source_output: 'ab56', target_input: 'result56' }],
-      sub_target: 'in',
-    },
-  ],
-};
-
-export const subsubgraph = {
-  graph: {
-    id: 'subsubgraph1',
-    label: 'subsubgraph',
-    input_nodes: [{ id: 'in1', node: 'task1' }],
-    output_nodes: [
-      { id: 'out1', node: 'subsubsubgraph', sub_node: 'out' },
-      { id: 'out2', node: 'subsubsubgraph', sub_node: 'out' },
-    ],
-    uiProps: { icon: 'orange2' },
-  },
-  nodes: [
-    {
-      id: 'task1',
-      task_type: 'method',
-      task_identifier: 'tasks.methods.add4',
-      uiProps: { position: { x: 50, y: 80 } },
-    },
-    {
-      id: 'task2',
-      task_type: 'method',
-      task_identifier: 'tasks.methods.add5',
-      uiProps: { position: { x: 350, y: 280 } },
-    },
-    {
-      id: 'subsubsubgraph',
-      task_type: 'graph',
-      task_identifier: 'subsubsubgraph1',
-      uiProps: { position: { x: 700, y: 480 } },
-    },
-  ],
-  links: [
-    {
-      source: 'task1',
-      target: 'task2',
-      data_mapping: [{ source_output: 'ab45', target_input: 'result45' }],
-    },
-    {
-      source: 'task2',
-      target: 'subsubsubgraph',
-      data_mapping: [{ source_output: 'ab78', target_input: 'result7' }],
-      sub_target: 'in',
-    },
-  ],
-};
-
-export const subsubsubgraph = {
-  graph: {
-    id: 'subsubsubgraph1',
-    label: 'subsubsubgraph',
-    input_nodes: [{ id: 'in1', node: 'task1' }],
-    output_nodes: [{ id: 'in2', node: 'task2' }],
-    uiProps: { icon: 'orange2' },
-  },
-  nodes: [
-    {
-      id: 'task1',
-      task_type: 'method',
-      task_identifier: 'tasks.methods.add6',
-      uiProps: { position: { x: 50, y: 80 } },
-    },
-    {
-      id: 'task2',
-      task_type: 'method',
-      task_identifier: 'tasks.methods.add7',
-      uiProps: { position: { x: 300, y: 80 } },
-    },
-  ],
-  links: [
-    {
-      source: 'task1',
-      target: 'task2',
-      data_mapping: [{ source_output: 'ab', target_input: 'result' }],
-    },
-  ],
-};
-
+// TODO: put tasks on the server: get, put, post, delete
 export const tasks = [
   {
     task_type: 'class',
@@ -256,8 +17,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier:
-      'tomwer.core.process.visualization.volumeviewer._VolumeViewerPlaceHolder',
+    task_identifier: '_VolumeViewerPlaceHolder',
     required_input_names: ['henris'],
     optional_input_names: [],
     output_names: ['data', 'out-val1', 'out-val2'],
@@ -265,7 +25,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
+    task_identifier: 'MethodExecutorTask',
     required_input_names: ['method'],
     optional_input_names: [],
     output_names: ['return_value'],
@@ -273,7 +33,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'ewokscore.scripttask.ScriptExecutorTask',
+    task_identifier: 'ScriptExecutorTask',
     required_input_names: ['script'],
     optional_input_names: [],
     output_names: ['returncode'],
@@ -281,7 +41,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'ewokscore.ppftasks.PpfMethodExecutorTask',
+    task_identifier: 'PpfMethodExecutorTask',
     required_input_names: ['method'],
     optional_input_names: ['ppfdict'],
     output_names: ['ppfdict'],
@@ -289,7 +49,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: PpfPortTask,
+    task_identifier: 'PpfPortTask',
     required_input_names: [],
     optional_input_names: ['ppfport', 'ppfdict'],
     output_names: ['ppfdict'],
@@ -310,7 +70,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.DataCopy',
+    task_identifier: 'DataCopy',
     required_input_names: ['dataset'],
     optional_input_names: [],
     output_names: ['dataset'],
@@ -318,7 +78,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.DataPassThrough',
+    task_identifier: 'DataPassThrough',
     required_input_names: ['dataset'],
     optional_input_names: [],
     output_names: ['dataset'],
@@ -326,7 +86,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.NoiseRemoval',
+    task_identifier: 'NoiseRemoval',
     required_input_names: ['dataset'],
     optional_input_names: [
       'method',
@@ -340,7 +100,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.RoiSelection',
+    task_identifier: 'RoiSelection',
     required_input_names: ['roi_size', 'dataset', 'roi_origin'],
     optional_input_names: [],
     output_names: ['dataset'],
@@ -348,7 +108,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.DataPartition',
+    task_identifier: 'DataPartition',
     required_input_names: ['dataset'],
     optional_input_names: ['bins', 'n_bins'],
     output_names: ['dataset'],
@@ -356,7 +116,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.DimensionDefinition',
+    task_identifier: 'DimensionDefinition',
     required_input_names: ['dataset', '_dims'],
     optional_input_names: [],
     output_names: ['dataset'],
@@ -364,7 +124,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.ShiftCorrection',
+    task_identifier: 'ShiftCorrection',
     required_input_names: ['dataset'],
     optional_input_names: ['shift'],
     output_names: ['dataset'],
@@ -372,7 +132,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.BlindSourceSeparation',
+    task_identifier: 'BlindSourceSeparation',
     required_input_names: ['dataset', 'method'],
     optional_input_names: ['n_comp'],
     output_names: ['dataset'],
@@ -380,7 +140,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.RockingCurves',
+    task_identifier: 'RockingCurves',
     required_input_names: ['dataset'],
     optional_input_names: [],
     output_names: ['dataset'],
@@ -388,7 +148,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.GrainPlot',
+    task_identifier: 'GrainPlot',
     required_input_names: ['dataset'],
     optional_input_names: [],
     output_names: ['dataset'],
@@ -396,7 +156,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.Transformation',
+    task_identifier: 'Transformation',
     required_input_names: ['dataset'],
     optional_input_names: [],
     output_names: ['dataset'],
@@ -404,7 +164,7 @@ export const tasks = [
   },
   {
     task_type: 'class',
-    task_identifier: 'darfix.core.process.ZSum',
+    task_identifier: 'ZSum',
     required_input_names: ['dataset'],
     optional_input_names: ['plot'],
     output_names: ['dataset'],
@@ -519,128 +279,3 @@ export const tasks = [
     task_type: 'class',
   },
 ];
-
-// from flask import Flask, jsonify, request, send_from_directory
-// from flask_restful import reqparse, abort, Api, Resource
-// from flask_cors import CORS, cross_origin
-// import os
-// import json
-// # import pickle
-
-// app = Flask(__name__)
-// cors = CORS(app)
-// app.config['CORS_HEADERS'] = 'Content-Type'
-// api = Api(app)
-
-// workflows = [
-//     {"name": "AnalyseKappa.json", "comment": "ok"}
-// ]
-
-// class Workflows(Resource):
-//     def get(self):
-//         allWorkflows = []
-//         with os.scandir(path='./workflows') as it:
-//             for entry in it:
-//                 if not entry.name.startswith('.') and entry.is_file():
-//                     print(entry.name)
-//                     allWorkflows.append(entry.name)
-//         return allWorkflows
-
-//     def post(self):
-//         print(request.json['graph'])
-//         # serch for file name=id and IF NOT EXITS create using the request.json
-//         # if name=id exists return error "workflow exists! Please change name and retry."
-//         with os.scandir(path='./workflows') as it:
-//             for entry in it:
-//                 print(entry.name)
-//                 if entry.name == request.json['graph']['id']:
-//                     return 'Workflow exists! Please change name and retry.', 400
-//         # fdopen(fd, *args, **kwargs)
-//         f = open(f"./workflows/{request.json['graph']['id']}", "w")
-//         f.write(json.dumps(request.json, indent=2))
-//         f.close()
-//         return request.json, 200
-
-// class Workflow(Resource):
-
-//     def __init__(self):
-//         self.reqparse = reqparse.RequestParser()
-//         super(Workflow, self).__init__()
-
-//     def get(self, workflow_id):
-//         print(workflow_id)
-//         with os.scandir(path='./workflows') as it:
-//             for entry in it:
-//                 if (not entry.name.startswith('.')
-//                     and entry.is_file()
-//                     and entry.name == workflow_id
-//                     ):
-//                     print(entry.name)
-//                     try:
-//                         fp = open(entry)
-//                     except PermissionError:
-//                         return "some default data"
-//                     else:
-//                         with fp:
-//                             return json.loads(fp.read())
-
-//     def put(self, workflow_id):
-//         print(workflow_id, self.reqparse.parse_args(), request.json)
-//         # search for file name=id and update with the incoming json
-//         # if no file exists then save like a post with id=label and warn
-//         # that a new file was created.
-//         with os.scandir(path='./workflows') as it:
-//             for entry in it:
-//                 print(entry.name)
-//                 if entry.name == workflow_id:
-//                     f = open(f"./workflows/{entry.name}", "w")
-//                     print("found it", entry.name)
-//                     f.write(json.dumps(request.json, indent=2))
-//                     f.close()
-//                     break
-//         return workflow_id, 200
-
-//     def delete(self, workflow_id):
-//         print(workflow_id, workflows[int(workflow_id)])
-//         del workflows[int(workflow_id)]
-//         return workflow_id, 200
-
-// ##
-// ## Actually setup the Api resource routing here
-// ##
-// api.add_resource(Workflows, '/workflows')
-// api.add_resource(Workflow, '/workflow/<workflow_id>')
-
-// # workflows.append(request.get_json())
-// # obj = WorkflowSkeleton(10)
-// # print(obj)
-// # WorkflowSkeleton.save_object(obj)
-
-// # class WorkflowSkeleton():
-// #     def __init__(self, param):
-// #         self.param = {"name": param}
-// #     def save_object(obj):
-// #         try:
-// #             with open("data.pickle", "wb") as f:
-// #                 pickle.dump(obj, f, protocol=pickle.HIGHEST_PROTOCOL)
-// #         except Exception as ex:
-// #             print("Error during pickling object (Possibly unsupported):", ex)
-
-// # @app.route("/static/<path:path>")
-// # def static_dir(path):
-// #     return send_from_directory("static", path)
-
-// # remove(path, *, dir_fd=None)
-// #     Remove (delete) the file path.
-
-// # mkdir(path, mode=511, *, dir_fd=None)
-// #     Create a directory named path with numeric mode mode.
-
-// # @app.route('/workflows')
-// # def get_workflows():
-// #   return jsonify(workflows)
-
-// # @app.route('/workflows', methods=['POST'])
-// # def add_workflows():
-// #   workflows.append(request.get_json())
-// #   return '', 204
