@@ -171,10 +171,10 @@ function Canvas() {
       const newNode = {
         id:
           task_type === 'graphInput'
-            ? getnodesIds('In', workingGraph.nodes)
+            ? getnodesIds('In', graphRF.nodes)
             : task_type === 'graphOutput'
-            ? getnodesIds('Out', workingGraph.nodes)
-            : getnodesIds('Node', workingGraph.nodes),
+            ? getnodesIds('Out', graphRF.nodes)
+            : getnodesIds('Node', graphRF.nodes),
         label: task_identifier,
         task_type,
         task_identifier,
