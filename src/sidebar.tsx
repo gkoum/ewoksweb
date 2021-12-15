@@ -912,7 +912,7 @@ export default function Sidebar(props) {
                   </div>
                   {editIdentifier && (
                     <TextField
-                      id="outlined-basic"
+                      id="Task Identifier"
                       label="Task Identifier"
                       variant="outlined"
                       value={taskIdentifier || ''}
@@ -931,7 +931,7 @@ export default function Sidebar(props) {
                   </div>
                   {editType && (
                     <TextField
-                      id="outlined-basic"
+                      id="Task Type"
                       label="Task Type"
                       variant="outlined"
                       value={taskType || ''}
@@ -950,7 +950,7 @@ export default function Sidebar(props) {
                   </div>
                   {editGenerator && (
                     <TextField
-                      id="outlined-basic"
+                      id="Task Generator"
                       label="Task Generator"
                       variant="outlined"
                       value={taskGenerator || ''}
@@ -969,8 +969,8 @@ export default function Sidebar(props) {
                   </div>
                   {editIcon && (
                     <TextField
-                      id="outlined-basic"
-                      label="Task Generator"
+                      id="Task Icon"
+                      label="Task Icon"
                       variant="outlined"
                       value={taskIcon || ''}
                       onChange={taskIconChanged}

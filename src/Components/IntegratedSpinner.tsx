@@ -8,6 +8,8 @@ import SaveIcon from '@material-ui/icons/Save';
 import { makeStyles } from '@material-ui/core/styles';
 import SendIcon from '@material-ui/icons/Send';
 import { TramRounded } from '@material-ui/icons';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles((theme) => ({
   top: {
@@ -16,9 +18,17 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     left: 0,
   },
+  openFileButton: {
+    backgroundColor: '#96a5f9',
+  },
 }));
 
-export default function IntegratedSpinner({ children, getting }) {
+export default function IntegratedSpinner({
+  children,
+  tooltip,
+  action,
+  getting,
+}) {
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const timer = React.useRef<number>();
@@ -36,6 +46,7 @@ export default function IntegratedSpinner({ children, getting }) {
 
   const handleButtonClick = () => {
     if (!loading) {
+      const runAction = action ? action() : null;
       setSuccess(false);
       setLoading(true);
       timer.current = window.setTimeout(() => {
@@ -50,38 +61,37 @@ export default function IntegratedSpinner({ children, getting }) {
   };
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Box sx={{ m: 1, position: 'relative' }}>
-        <Fab
-          color="primary"
-          size="small"
-          onClick={handleButtonClick}
-          component="span"
-          aria-label="add"
-          style={{
-            backgroundColor: '#96a5f9',
-          }}
-        >
-          {success ? <CheckIcon /> : loading ? '...' : children}
-        </Fab>
-        {loading && (
-          <CircularProgress
-            size={46}
-            className={classes.top}
-            thickness={4}
-            // {...props}
-            value={100}
-            style={{
-              color: 'white',
-              position: 'absolute',
-              top: -4,
-              left: -4,
-              zIndex: 1,
-            }}
-          />
-        )}
-      </Box>
-      {/* <Box sx={{ m: 1, position: 'relative' }}>
+    <Tooltip title={tooltip || ''}>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ m: 1, position: 'relative' }}>
+          <Fab
+            className={classes.openFileButton}
+            color="primary"
+            size="small"
+            onClick={handleButtonClick}
+            component="span"
+            aria-label="add"
+          >
+            {success ? <CheckIcon /> : loading ? '...' : children}
+          </Fab>
+          {loading && (
+            <CircularProgress
+              size={46}
+              className={classes.top}
+              thickness={4}
+              // {...props}
+              value={100}
+              style={{
+                color: 'white',
+                position: 'absolute',
+                top: -4,
+                left: -4,
+                zIndex: 1,
+              }}
+            />
+          )}
+        </Box>
+        {/* <Box sx={{ m: 1, position: 'relative' }}>
         <Button
           variant="contained"
           disabled={loading}
@@ -104,6 +114,7 @@ export default function IntegratedSpinner({ children, getting }) {
           />
         )}
       </Box> */}
-    </Box>
+      </Box>
+    </Tooltip>
   );
 }

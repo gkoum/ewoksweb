@@ -172,6 +172,10 @@ export default function Dashboard() {
     }
   };
 
+  const getSubgraphFromServer = () => {
+    getFromServer('subgraph');
+  };
+
   const getFromServer = async (isSubgraph) => {
     if (workflowValue) {
       setGettingFromServer(true);
@@ -334,29 +338,31 @@ export default function Dashboard() {
             </IconButton>
           </Tooltip>
           <div className={classes.verticalRule} />
-          <Tooltip title="Open and edit Workflow">
-            <IntegratedSpinner>
-              <CloudUploadIcon onClick={saveToServer} />
-            </IntegratedSpinner>
-          </Tooltip>
+          <IntegratedSpinner tooltip="Save Workflow">
+            <CloudUploadIcon onClick={saveToServer} />
+          </IntegratedSpinner>
           <FormControl variant="standard" className={classes.formControl}>
             <AutocompleteDrop setInputValue={setInputValue} />
           </FormControl>
-          <Tooltip title="Open and edit Workflow">
-            <IntegratedSpinner getting={gettingFromServer}>
-              <CloudDownloadIcon onClick={getFromServer} />
-            </IntegratedSpinner>
-          </Tooltip>
-          <Tooltip title="Add workflow as subgraph">
-            <IntegratedSpinner>
-              <ArrowDownwardIcon onClick={() => getFromServer('subgraph')} />
-            </IntegratedSpinner>
-          </Tooltip>
-          <Tooltip title="Execute Workflow">
-            <IntegratedSpinner>
-              <SendIcon onClick={() => executeWorkflow('subgraph')} />
-            </IntegratedSpinner>
-          </Tooltip>
+          <IntegratedSpinner
+            getting={gettingFromServer}
+            tooltip="Open and edit Workflow"
+            action={getFromServer}
+          >
+            <CloudDownloadIcon />
+          </IntegratedSpinner>
+          <IntegratedSpinner
+            tooltip="Add workflow as subgraph"
+            action={getSubgraphFromServer}
+          >
+            <ArrowDownwardIcon />
+          </IntegratedSpinner>
+          <IntegratedSpinner
+            tooltip="Execute Workflow"
+            action={executeWorkflow}
+          >
+            <SendIcon />
+          </IntegratedSpinner>
           <div className={classes.verticalRule} />
           <Tooltip title="Manage tasks and workflows">
             <IconButton color="inherit">
