@@ -48,6 +48,7 @@ import type {
   Inputs,
   GraphDetails,
   GraphEwoks,
+  Task,
 } from './types';
 import { rfToEwoks } from './utils';
 
@@ -109,6 +110,7 @@ export default function Sidebar(props) {
   const [taskIdentifier, setTaskIdentifier] = React.useState('');
   const [taskType, setTaskType] = React.useState('');
   const [taskGenerator, setTaskGenerator] = React.useState('');
+  const [taskIcon, setTaskIcon] = React.useState('');
   const [defaultInputs, setDefaultInputs] = React.useState<Inputs[]>([]);
   const [dataMapping, setDataMapping] = React.useState<Inputs[]>([]);
   const [conditions, setConditions] = React.useState<Inputs[]>([]);
@@ -131,9 +133,12 @@ export default function Sidebar(props) {
   const setGraphRF = useStore((state) => state.setGraphRF);
   const workingGraph = useStore((state) => state.workingGraph);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
+  const tasks = useStore((state) => state.tasks);
+  const setTasks = useStore((state) => state.setTasks);
   const [editIdentifier, setEditIdentifier] = React.useState(false);
   const [editType, setEditType] = React.useState(false);
   const [editGenerator, setEditGenerator] = React.useState(false);
+  const [editIcon, setEditIcon] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState<boolean>(false);
   const [dialogContent, setDialogContent] = React.useState<GraphEwoks>({});
   const recentGraphs = useStore((state) => state.recentGraphs);
@@ -158,6 +163,7 @@ export default function Sidebar(props) {
       setTaskIdentifier(selectedElement.task_identifier);
       setTaskType(selectedElement.task_type);
       setTaskGenerator(selectedElement.task_generator);
+      setTaskIcon(selectedElement.data.icon);
       setInputsComplete(!!selectedElement.inputs_complete);
       setMoreHandles(!!selectedElement.data.moreHandles);
       console.log(selectedElement.default_inputs);
@@ -221,6 +227,15 @@ export default function Sidebar(props) {
 
   const taskGeneratorChanged = (event) => {
     setTaskGenerator(event.target.value);
+
+    setElement({
+      ...element,
+      task_generator: event.target.value,
+    });
+  };
+
+  const taskIconChanged = (event) => {
+    setTaskIcon(event.target.value);
 
     setElement({
       ...element,
@@ -570,6 +585,11 @@ export default function Sidebar(props) {
     setEditGenerator(!editGenerator);
   };
 
+  const onEditIcon = () => {
+    console.log(selectedElement);
+    setEditIcon(!editIcon);
+  };
+
   const toggleDraggableDialog = () => {
     console.log(graphRF);
     // setOpenDraggableDialog({
@@ -589,7 +609,9 @@ export default function Sidebar(props) {
 
   const getTasks = async (event) => {
     console.log(event, selectedElement);
-    const workflows = await axios.get('http://localhost:5000/tasks');
+    const tasks: Task[] = await axios.get('http://localhost:5000/tasks');
+    console.log(tasks);
+    setTasks(tasks.data);
   };
 
   return (
@@ -609,55 +631,7 @@ export default function Sidebar(props) {
           <Typography>Add Nodes</Typography>
         </AccordionSummary>
         <AccordionDetails style={{ flexWrap: 'wrap' }}>
-          {[
-            {
-              task_identifier: 'taskSkeleton',
-              task_type: 'ppfmethod',
-              icon: 'orange1',
-            },
-            {
-              task_identifier: 'ewokscore.methodtask.MethodExecutorTask',
-              task_type: 'class',
-              icon: 'orange1',
-            },
-            {
-              task_identifier: 'ewokscore.scripttask.ScriptExecutorTask',
-              task_type: 'class',
-              icon: 'orange2',
-            },
-            {
-              task_identifier: 'ewokscore.ppftasks.PpfMethodExecutorTask',
-              task_type: 'class',
-              icon: 'orange3',
-            },
-            {
-              task_identifier: 'ewokscore.ppftasks.PpfPortTask',
-              task_type: 'method',
-              icon: 'AggregateColumns',
-            },
-            {
-              task_identifier: 'ewokscore.ppftasks.PpfPortTask',
-              task_type: 'ppfmethod',
-              icon: 'Continuize',
-              task_type: 'ppfmethod',
-              icon: 'Correlations',
-            },
-            {
-              task_identifier: 'ewokscore.tests.examples.tasks.sumtask.SumTask',
-              task_type: 'ppfmethod',
-              icon: 'CreateClass',
-            },
-            {
-              task_identifier: 'graphInput',
-              task_type: 'graphInput',
-              icon: 'graphInput',
-            },
-            {
-              task_identifier: 'graphOutput',
-              task_type: 'graphOutput',
-              icon: 'graphOutput',
-            },
-          ].map((elem, index) => (
+          {tasks.map((elem, index) => (
             <span
               key={index}
               className="dndnode"
@@ -927,7 +901,6 @@ export default function Sidebar(props) {
               <React.Fragment>
                 <Box>
                   <div className={classes.root}>
-                    <b>Task Identifier:</b> {props.element.task_identifier}
                     <IconButton
                       style={{ padding: '1px' }}
                       aria-label="edit"
@@ -935,6 +908,7 @@ export default function Sidebar(props) {
                     >
                       <EditIcon />
                     </IconButton>
+                    <b>Identifier:</b> {props.element.task_identifier}
                   </div>
                   {editIdentifier && (
                     <TextField
@@ -946,7 +920,6 @@ export default function Sidebar(props) {
                     />
                   )}
                   <div className={classes.root}>
-                    <b>Task type:</b> {props.element.task_type}
                     <IconButton
                       style={{ padding: '1px' }}
                       aria-label="edit"
@@ -954,6 +927,7 @@ export default function Sidebar(props) {
                     >
                       <EditIcon />
                     </IconButton>
+                    <b>Type:</b> {props.element.task_type}
                   </div>
                   {editType && (
                     <TextField
@@ -965,7 +939,6 @@ export default function Sidebar(props) {
                     />
                   )}
                   <div>
-                    <b>Task generator:</b> {props.element.task_generator}
                     <IconButton
                       style={{ padding: '1px' }}
                       aria-label="edit"
@@ -973,6 +946,7 @@ export default function Sidebar(props) {
                     >
                       <EditIcon />
                     </IconButton>
+                    <b>Generator:</b> {props.element.task_generator}
                   </div>
                   {editGenerator && (
                     <TextField
@@ -981,6 +955,101 @@ export default function Sidebar(props) {
                       variant="outlined"
                       value={taskGenerator || ''}
                       onChange={taskGeneratorChanged}
+                    />
+                  )}
+                  <div>
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="edit"
+                      onClick={() => onEditIcon()}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <b>Icon:</b> {props.element.icon}
+                  </div>
+                  {editIcon && (
+                    <TextField
+                      id="outlined-basic"
+                      label="Task Generator"
+                      variant="outlined"
+                      value={taskIcon || ''}
+                      onChange={taskIconChanged}
+                    />
+                  )}
+                  <div>
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="edit"
+                      onClick={() => onEditIcon()}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <b>Category:</b> {props.element.icon}
+                  </div>
+                  {editIcon && (
+                    <TextField
+                      id="outlined-basic"
+                      label="Task Generator"
+                      variant="outlined"
+                      value={taskIcon || ''}
+                      onChange={taskIconChanged}
+                    />
+                  )}
+                  <div>
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="edit"
+                      onClick={() => onEditIcon()}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <b>Optional Input Names:</b> {props.element.icon}
+                  </div>
+                  {editIcon && (
+                    <TextField
+                      id="outlined-basic"
+                      label="Task Generator"
+                      variant="outlined"
+                      value={taskIcon || ''}
+                      onChange={taskIconChanged}
+                    />
+                  )}
+                  <div>
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="edit"
+                      onClick={() => onEditIcon()}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <b>Required Input Names:</b> {props.element.icon}
+                  </div>
+                  {editIcon && (
+                    <TextField
+                      id="outlined-basic"
+                      label="Task Generator"
+                      variant="outlined"
+                      value={taskIcon || ''}
+                      onChange={taskIconChanged}
+                    />
+                  )}
+                  <div>
+                    <IconButton
+                      style={{ padding: '1px' }}
+                      aria-label="edit"
+                      onClick={() => onEditIcon()}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <b>Output Names:</b> {props.element.icon}
+                  </div>
+                  {editIcon && (
+                    <TextField
+                      id="outlined-basic"
+                      label="Task Generator"
+                      variant="outlined"
+                      value={taskIcon || ''}
+                      onChange={taskIconChanged}
                     />
                   )}
                   <div>

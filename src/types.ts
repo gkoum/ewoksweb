@@ -34,6 +34,8 @@ export interface DialogParams {
 
 export interface State {
   initializedGraph: GraphRF;
+  tasks: Array<Task>;
+  setTasks: (tasks: Array<Task>) => void;
   openDraggableDialog: DialogParams;
   setOpenDraggableDialog: (params: DialogParams) => void;
   openSnackbar: SnackbarParams;
@@ -66,6 +68,7 @@ export interface Task {
   optional_input_names?: Array<string>;
   output_names?: Array<string>;
   required_input_names?: Array<string>;
+  icon?: string;
 }
 
 export interface Inputs {

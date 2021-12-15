@@ -38,6 +38,14 @@ const initializedGraph = {
 const useStore = create<State>((set, get) => ({
   initializedGraph: initializedGraph,
 
+  tasks: [],
+  setTasks: (tasks) => {
+    set((state) => ({
+      ...state,
+      tasks,
+    }));
+  },
+
   openDraggableDialog: { open: false, content: {} },
 
   setOpenDraggableDialog: ({ open, content }) => {

@@ -29,7 +29,7 @@ function FunctionNode(all) {
       comment={all.data.comment}
       content={
         <>
-          <div style={style.contentHeader}>Inputs</div>
+          {/* <div style={style.contentHeader}>Inputs</div> */}
           {all.data.inputs.map((input) => (
             <div
               key={`i-${input.label}`}
@@ -67,7 +67,7 @@ function FunctionNode(all) {
               />
             </div>
           ))}
-          <div style={style.contentHeader}>Outputs</div>
+          {/* <div style={style.contentHeader}>Outputs</div> */}
           {all.data.outputs.map((output) => (
             <>
               <div
