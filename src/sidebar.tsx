@@ -51,6 +51,7 @@ import type {
   Task,
 } from './types';
 import { rfToEwoks } from './utils';
+import EditTaskProp from './Components/EditTaskProp';
 
 const onDragStart = (event, { task_identifier, task_type, icon }) => {
   console.log(event, icon);
@@ -102,15 +103,8 @@ export default function Sidebar(props) {
   );
   const setSelectedElement = useStore((state) => state.setSelectedElement);
 
-  const graphOrSubgraph = useStore<Boolean>((state) => state.graphOrSubgraph);
   const setGraphOrSubgraph = useStore((state) => state.setGraphOrSubgraph);
 
-  // default_inputs: [{ name: 'a', value: 1 }],
-  const [id, setId] = React.useState('');
-  const [taskIdentifier, setTaskIdentifier] = React.useState('');
-  const [taskType, setTaskType] = React.useState('');
-  const [taskGenerator, setTaskGenerator] = React.useState('');
-  const [taskIcon, setTaskIcon] = React.useState('');
   const [defaultInputs, setDefaultInputs] = React.useState<Inputs[]>([]);
   const [dataMapping, setDataMapping] = React.useState<Inputs[]>([]);
   const [conditions, setConditions] = React.useState<Inputs[]>([]);
@@ -135,21 +129,17 @@ export default function Sidebar(props) {
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
   const tasks = useStore((state) => state.tasks);
   const setTasks = useStore((state) => state.setTasks);
-  const [editIdentifier, setEditIdentifier] = React.useState(false);
-  const [editType, setEditType] = React.useState(false);
-  const [editGenerator, setEditGenerator] = React.useState(false);
-  const [editIcon, setEditIcon] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState<boolean>(false);
   const [dialogContent, setDialogContent] = React.useState<GraphEwoks>({});
   const recentGraphs = useStore((state) => state.recentGraphs);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
+  const [editProps, setEditProps] = React.useState<boolean>(false);
   const initializedGraph = useStore((state) => state.initializedGraph);
 
   useEffect(() => {
     console.log(selectedElement);
     setElement(selectedElement);
-    setId(selectedElement.id);
 
     if ('position' in selectedElement) {
       console.log('SHOW NODE DETAILS');
@@ -160,10 +150,6 @@ export default function Sidebar(props) {
           : selectedElement.data.label // Remove when graphs ok
       );
       setComment(selectedElement.data.comment);
-      setTaskIdentifier(selectedElement.task_identifier);
-      setTaskType(selectedElement.task_type);
-      setTaskGenerator(selectedElement.task_generator);
-      setTaskIcon(selectedElement.data.icon);
       setInputsComplete(!!selectedElement.inputs_complete);
       setMoreHandles(!!selectedElement.data.moreHandles);
       console.log(selectedElement.default_inputs);
@@ -207,39 +193,43 @@ export default function Sidebar(props) {
     graphRF.graph.uiProps,
   ]);
 
-  const taskIdentifierChanged = (event) => {
-    setTaskIdentifier(event.target.value);
+  const taskProperties = [
+    {
+      id: 'task_identifier',
+      label: 'Identifier',
+      value: props.element.task_identifier,
+    },
+    { id: 'task_type', label: 'Type', value: props.element.task_type },
+    {
+      id: 'task_generator',
+      label: 'Generator',
+      value: props.element.task_generator,
+    },
+    { id: 'task_icon', label: 'Icon', value: props.element.icon },
+    { id: 'task_category', label: 'Category', value: props.element.categoty },
+    {
+      id: 'optional_input_names',
+      label: 'Optional Inputs',
+      value: props.element.optional_input_names,
+    },
+    {
+      id: 'required_input_names',
+      label: 'Required Inputs',
+      value: props.element.required_input_names,
+    },
+    {
+      id: 'output_names',
+      label: 'Outputs',
+      value: props.element.output_names,
+    },
+  ];
 
+  const propChanged = (propKeyValue) => {
+    // setTaskIdentifier(event.target.value);
+    console.log(propKeyValue);
     setElement({
       ...element,
-      task_identifier: event.target.value,
-    });
-  };
-
-  const taskTypeChanged = (event) => {
-    setTaskType(event.target.value);
-
-    setElement({
-      ...element,
-      task_type: event.target.value,
-    });
-  };
-
-  const taskGeneratorChanged = (event) => {
-    setTaskGenerator(event.target.value);
-
-    setElement({
-      ...element,
-      task_generator: event.target.value,
-    });
-  };
-
-  const taskIconChanged = (event) => {
-    setTaskIcon(event.target.value);
-
-    setElement({
-      ...element,
-      task_generator: event.target.value,
+      ...propKeyValue,
     });
   };
 
@@ -352,29 +342,6 @@ export default function Sidebar(props) {
       },
     });
     console.log(element);
-  };
-
-  const graphInputsChanged = (table) => {
-    console.log(table, element);
-    setElement({
-      ...element,
-      input_nodes: [
-        ...table.map((input) => {
-          return { ...input, id: input.name };
-        }),
-      ],
-    });
-  };
-
-  const graphOutputsChanged = (table) => {
-    setElement({
-      ...element,
-      output_nodes: [
-        ...table.map((output) => {
-          return { ...output, id: output.name };
-        }),
-      ],
-    });
   };
 
   const moreHandlesChanged = (event) => {
@@ -535,67 +502,9 @@ export default function Sidebar(props) {
     }
   };
 
-  // const addGraphInput = () => {
-  //   console.log(graphInputs);
-  //   setGraphRF({
-  //     nodes: graphRF.nodes,
-  //     links: graphRF.links,
-  //     graph: {
-  //       ...graphRF.graph,
-  //       input_nodes: [
-  //         ...(graphRF.graph.input_nodes ? graphRF.graph.input_nodes : []),
-  //         { id: 'id', name: '', value: '' },
-  //       ],
-  //     },
-  //   });
-  // };
-
-  // const addGraphOutput = () => {
-  //   console.log(selectedElement);
-  //   setGraphRF({
-  //     nodes: graphRF.nodes,
-  //     links: graphRF.links,
-  //     graph: {
-  //       ...graphRF.graph,
-  //       output_nodes: [
-  //         ...(graphRF.graph.output_nodes ? graphRF.graph.output_nodes : []),
-  //         { id: '-', name: '-', value: '-' },
-  //       ],
-  //     },
-  //   });
-  // };
-
   const insertGraph = (val) => {
     console.log(val, selectedElement);
     setGraphOrSubgraph(false);
-  };
-
-  const onEditIdentifier = () => {
-    console.log(selectedElement);
-    setEditIdentifier(!editIdentifier);
-  };
-
-  const onEditType = () => {
-    console.log(selectedElement);
-    setEditType(!editType);
-  };
-
-  const onEditGenerator = () => {
-    console.log(selectedElement);
-    setEditGenerator(!editGenerator);
-  };
-
-  const onEditIcon = () => {
-    console.log(selectedElement);
-    setEditIcon(!editIcon);
-  };
-
-  const toggleDraggableDialog = () => {
-    console.log(graphRF);
-    // setOpenDraggableDialog({
-    //   open: true,
-    //   content: { title: 'GraphRF', graph: graphRF },
-    // });
   };
 
   const showEwoksGraph = () => {
@@ -700,59 +609,12 @@ export default function Sidebar(props) {
                 </div>
                 <div>
                   <b>Inputs </b>
-                  {/* TODO: simple table without edit is probably needed
-                  TODO: when input exists without position we cannot erase it from sidebar*/}
-                  {/* <IconButton
-                    style={{ padding: '1px' }}
-                    aria-label="delete"
-                    onClick={() => addGraphInput()}
-                  >
-                    <AddCircleOutlineIcon />
-                  </IconButton> */}
-                  {graphInputs.length > 0 && (
-                    <>
-                      <DenseTable data={graphInputs} />
-                      {/* <EditableTable
-                        headers={['Name', 'Node_Id']}
-                        defaultValues={graphInputs}
-                        valuesChanged={graphInputsChanged}
-                        typeOfValues={[
-                          { type: 'input' },
-                          {
-                            type: 'select',
-                            values: graphRF.nodes.map((nod) => nod.id),
-                          },
-                        ]}
-                      /> */}
-                    </>
-                  )}
+                  {graphInputs.length > 0 && <DenseTable data={graphInputs} />}
                 </div>
                 <div>
                   <b>Outputs </b>
-                  {/* TODO: simple table without edit is probably needed */}
-                  {/* <IconButton
-                    style={{ padding: '1px' }}
-                    aria-label="delete"
-                    onClick={() => addGraphOutput()}
-                  >
-                    <AddCircleOutlineIcon />
-                  </IconButton> */}
                   {graphOutputs.length > 0 && (
-                    <>
-                      <DenseTable data={graphOutputs} />
-                      {/* <EditableTable
-                      headers={['Name', 'Node_Id']}
-                      defaultValues={graphOutputs}
-                      valuesChanged={graphOutputsChanged}
-                      typeOfValues={[
-                        { type: 'input' },
-                        {
-                          type: 'select',
-                          values: graphRF.nodes.map((nod) => nod.id),
-                        },
-                      ]}
-                    /> */}
-                    </>
+                    <DenseTable data={graphOutputs} />
                   )}
                 </div>
               </React.Fragment>
@@ -899,159 +761,26 @@ export default function Sidebar(props) {
             )}
             {'position' in selectedElement && (
               <React.Fragment>
+                <IconButton
+                  style={{ padding: '1px' }}
+                  aria-label="edit"
+                  onClick={() => {
+                    console.log(editProps);
+                    setEditProps(!editProps);
+                  }}
+                >
+                  <EditIcon />
+                </IconButton>
                 <Box>
-                  <div className={classes.root}>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="edit"
-                      onClick={() => onEditIdentifier()}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <b>Identifier:</b> {props.element.task_identifier}
-                  </div>
-                  {editIdentifier && (
-                    <TextField
-                      id="Task Identifier"
-                      label="Task Identifier"
-                      variant="outlined"
-                      value={taskIdentifier || ''}
-                      onChange={taskIdentifierChanged}
+                  {taskProperties.map(({ id, label, value }) => (
+                    <EditTaskProp
+                      id={id}
+                      label={label}
+                      value={value}
+                      propChanged={propChanged}
+                      editProps={editProps}
                     />
-                  )}
-                  <div className={classes.root}>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="edit"
-                      onClick={() => onEditType()}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <b>Type:</b> {props.element.task_type}
-                  </div>
-                  {editType && (
-                    <TextField
-                      id="Task Type"
-                      label="Task Type"
-                      variant="outlined"
-                      value={taskType || ''}
-                      onChange={taskTypeChanged}
-                    />
-                  )}
-                  <div>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="edit"
-                      onClick={() => onEditGenerator()}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <b>Generator:</b> {props.element.task_generator}
-                  </div>
-                  {editGenerator && (
-                    <TextField
-                      id="Task Generator"
-                      label="Task Generator"
-                      variant="outlined"
-                      value={taskGenerator || ''}
-                      onChange={taskGeneratorChanged}
-                    />
-                  )}
-                  <div>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="edit"
-                      onClick={() => onEditIcon()}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <b>Icon:</b> {props.element.icon}
-                  </div>
-                  {editIcon && (
-                    <TextField
-                      id="Task Icon"
-                      label="Task Icon"
-                      variant="outlined"
-                      value={taskIcon || ''}
-                      onChange={taskIconChanged}
-                    />
-                  )}
-                  <div>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="edit"
-                      onClick={() => onEditIcon()}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <b>Category:</b> {props.element.icon}
-                  </div>
-                  {editIcon && (
-                    <TextField
-                      id="outlined-basic"
-                      label="Task Generator"
-                      variant="outlined"
-                      value={taskIcon || ''}
-                      onChange={taskIconChanged}
-                    />
-                  )}
-                  <div>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="edit"
-                      onClick={() => onEditIcon()}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <b>Optional Input Names:</b> {props.element.icon}
-                  </div>
-                  {editIcon && (
-                    <TextField
-                      id="outlined-basic"
-                      label="Task Generator"
-                      variant="outlined"
-                      value={taskIcon || ''}
-                      onChange={taskIconChanged}
-                    />
-                  )}
-                  <div>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="edit"
-                      onClick={() => onEditIcon()}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <b>Required Input Names:</b> {props.element.icon}
-                  </div>
-                  {editIcon && (
-                    <TextField
-                      id="outlined-basic"
-                      label="Task Generator"
-                      variant="outlined"
-                      value={taskIcon || ''}
-                      onChange={taskIconChanged}
-                    />
-                  )}
-                  <div>
-                    <IconButton
-                      style={{ padding: '1px' }}
-                      aria-label="edit"
-                      onClick={() => onEditIcon()}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <b>Output Names:</b> {props.element.icon}
-                  </div>
-                  {editIcon && (
-                    <TextField
-                      id="outlined-basic"
-                      label="Task Generator"
-                      variant="outlined"
-                      value={taskIcon || ''}
-                      onChange={taskIconChanged}
-                    />
-                  )}
+                  ))}
                   <div>
                     <hr></hr>
                     <b>Default Values </b>

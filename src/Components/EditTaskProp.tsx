@@ -10,8 +10,8 @@ import {
   RadioGroup,
   Select,
   TextField,
+  Theme,
 } from '@material-ui/core';
-import ReactJson from 'react-json-view';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,44 +35,53 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function EditTaskProp({ index, row, name, onChange, type, task_identifier }) {
+function EditTaskProp({ id, label, value, propChanged, editProps }) {
   const classes = useStyles();
 
-  const [editIdentifier, setEditIdentifier] = React.useState(false);
-  const [taskIdentifier, setTaskIdentifier] = React.useState('');
+  const [editProp, setEditProp] = React.useState(false);
+  const [taskProp, setTaskProp] = React.useState('');
 
-  const onEditIdentifier = () => {
+  useEffect(() => {
+    console.log(id, label, value, editProps);
+    setTaskProp(value);
+  }, [id, label, value, editProps]);
+
+  const onEditProp = () => {
     // console.log(selectedElement);
-    // setEditIdentifier(!editIdentifier);
+    setEditProp(!editProp);
   };
 
-  const taskIdentifierChanged = (event) => {
-    // setTaskIdentifier(event.target.value);
-    // setElement({
-    //   ...element,
-    //   task_identifier: event.target.value,
-    // });
+  const taskPropChanged = (event) => {
+    setTaskProp(event.target.value);
+    propChanged({ [id]: event.target.value });
   };
 
   return (
     <>
       <div className={classes.root}>
-        <IconButton
-          style={{ padding: '1px' }}
-          aria-label="edit"
-          onClick={() => onEditIdentifier()}
-        >
-          <EditIcon />
-        </IconButton>
-        <b>Identifier:</b> {task_identifier}
+        {!editProps && (
+          <IconButton
+            style={{ padding: '1px' }}
+            aria-label="edit"
+            onClick={onEditProp}
+          >
+            <EditIcon />
+          </IconButton>
+        )}
+        {!editProp && (
+          <>
+            <b>{label}: </b>
+            <span>{value}</span>
+          </>
+        )}
       </div>
-      {editIdentifier && (
+      {editProp && (
         <TextField
-          id="Task Identifier"
-          label="Task Identifier"
+          id={id}
+          label={label}
           variant="outlined"
-          value={taskIdentifier || ''}
-          onChange={taskIdentifierChanged}
+          value={taskProp || ''}
+          onChange={taskPropChanged}
         />
       )}
     </>

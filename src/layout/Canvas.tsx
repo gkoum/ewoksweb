@@ -215,14 +215,14 @@ function Canvas() {
   };
 
   const onEdgeUpdate = (oldEdge, newConnection) => {
-    console.log(oldEdge, newConnection);
+    console.log(oldEdge, newConnection, graphRF);
     const link = {
       ...oldEdge,
       ...newConnection,
     };
     const newGraph = {
-      graph: graphRF.graph,
-      nodes: graphRF.nodes,
+      graph: { ...graphRF.graph },
+      nodes: [...graphRF.nodes],
       links: [...graphRF.links.filter((lin) => lin.id !== oldEdge.id), link], // addEdge(params, graphRF.links),
     };
 
@@ -236,7 +236,7 @@ function Canvas() {
   // setElements((els) => updateEdge(oldEdge, newConnection, els));
 
   const onConnect = (params) => {
-    console.log(params);
+    console.log(params, graphRF);
     // IF is a link between pre-existing nodes:
     // add links_required_output_names and links_optional_output_names from target
     // links_input_names from source node
