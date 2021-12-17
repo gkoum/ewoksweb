@@ -10,6 +10,7 @@ import ReactFlow, {
   Background,
   isEdge,
   isNode,
+  updateEdge,
 } from 'react-flow-renderer';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import useStore from '../store';
@@ -216,18 +217,26 @@ function Canvas() {
 
   const onEdgeUpdate = (oldEdge, newConnection) => {
     console.log(oldEdge, newConnection, graphRF);
+    let elements = [];
+    // TODO: shouldnt meed the following debug why graphRF is not
+    // updated inside this function
+    setElements((els) => {
+      console.log(els);
+      elements = els;
+      // updateEdge(oldEdge, newConnection, els);
+    });
     const link = {
       ...oldEdge,
       ...newConnection,
     };
+    console.log(elements.filter((el) => el.position));
     const newGraph = {
       graph: { ...graphRF.graph },
-      nodes: [...graphRF.nodes],
+      nodes: elements.filter((el) => el.position), // [...graphRF.nodes],
       links: [...graphRF.links.filter((lin) => lin.id !== oldEdge.id), link], // addEdge(params, graphRF.links),
     };
 
     console.log(link, newGraph);
-    // setElements((els) => addEdge(params, els));
     setGraphRF(newGraph as GraphRF);
     // need to also save it in recentGraphs if we leave and come back to the graph?
 
