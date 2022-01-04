@@ -98,7 +98,7 @@ export default function DraggableDialog(props) {
               <ToggleButton value="rf">RF Graph</ToggleButton>
             </ToggleButtonGroup>
           )}
-          <hr />
+
           <ReactJson
             src={graph}
             name="Ewoks graph"

@@ -765,7 +765,6 @@ export default function Sidebar(props) {
                   style={{ padding: '1px' }}
                   aria-label="edit"
                   onClick={() => {
-                    console.log(editProps);
                     setEditProps(!editProps);
                   }}
                 >
@@ -938,7 +937,6 @@ export default function Sidebar(props) {
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             </div>
-            labelStyle
           </form>
         </AccordionDetails>
       </Accordion>

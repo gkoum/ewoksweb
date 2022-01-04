@@ -42,9 +42,8 @@ function EditTaskProp({ id, label, value, propChanged, editProps }) {
   const [taskProp, setTaskProp] = React.useState('');
 
   useEffect(() => {
-    console.log(id, label, value, editProps);
     setTaskProp(value);
-  }, [id, label, value, editProps]);
+  }, [value]);
 
   const onEditProp = () => {
     // console.log(selectedElement);
@@ -59,7 +58,7 @@ function EditTaskProp({ id, label, value, propChanged, editProps }) {
   return (
     <>
       <div className={classes.root}>
-        {!editProps && (
+        {editProps && (
           <IconButton
             style={{ padding: '1px' }}
             aria-label="edit"
