@@ -334,7 +334,7 @@ function inNodesLinks(graph) {
               ? inNod.link_attributes.conditions
               : [],
           uiProps: {
-            type: 'default',
+            type: (inNod.uiProps && inNod.uiProps.linkStyle) || 'default',
             arrowHeadType: 'arrowclosed',
           },
         });
@@ -386,7 +386,7 @@ function outNodesLinks(graph) {
             ? outNod.link_attributes.conditions
             : [],
         uiProps: {
-          type: 'default',
+          type: (outNod.uiProps && outNod.uiProps.linkStyle) || 'default',
           arrowHeadType: 'arrowclosed',
         },
       });

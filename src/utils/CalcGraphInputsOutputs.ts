@@ -41,7 +41,12 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
                   graph_links[link_index].data.conditions) ||
                 [],
             },
-            uiProps: { position: nod.position },
+            uiProps: {
+              position: nod.position,
+              linkStyle:
+                (graph_links[link_index] && graph_links[link_index].type) ||
+                'default',
+            },
           });
           // remove link so that it gets the next
           const removed = graph_links.splice(link_index, 1);
@@ -57,7 +62,12 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
                   graph_links[link_index].data.conditions) ||
                 [],
             },
-            uiProps: { position: nod.position },
+            uiProps: {
+              position: nod.position,
+              linkStyle:
+                (graph_links[link_index] && graph_links[link_index].type) ||
+                'default',
+            },
           });
         }
         console.log(input_nodes);
@@ -97,7 +107,12 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
                   graph_links[link_index].data.conditions) ||
                 [],
             },
-            uiProps: { position: nod.position },
+            uiProps: {
+              position: nod.position,
+              linkStyle:
+                (graph_links[link_index] && graph_links[link_index].type) ||
+                'default',
+            },
           });
           graph_links.splice(link_index, 1);
         } else {
@@ -111,7 +126,12 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
                   graph_links[link_index].data.conditions) ||
                 [],
             },
-            uiProps: { position: nod.position },
+            uiProps: {
+              position: nod.position,
+              linkStyle:
+                (graph_links[link_index] && graph_links[link_index].type) ||
+                'default',
+            },
           });
         }
       });
