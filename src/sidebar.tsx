@@ -135,6 +135,7 @@ export default function Sidebar(props) {
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
   const [editProps, setEditProps] = React.useState<boolean>(false);
+  const setWorkingGraph = useStore((state) => state.setWorkingGraph);
   const initializedGraph = useStore((state) => state.initializedGraph);
 
   useEffect(() => {
@@ -152,7 +153,7 @@ export default function Sidebar(props) {
       setComment(selectedElement.data.comment);
       setInputsComplete(!!selectedElement.inputs_complete);
       setMoreHandles(!!selectedElement.data.moreHandles);
-      console.log(selectedElement.default_inputs);
+      console.log(selectedElement);
       setDefaultInputs(
         selectedElement.default_inputs ? selectedElement.default_inputs : []
       );
@@ -927,16 +928,16 @@ export default function Sidebar(props) {
                     ))}
                   </Select>
                 </FormControl>
+                <div>
+                  <b>animated</b>
+                  <Checkbox
+                    checked={animated ? animated : false}
+                    onChange={animatedChanged}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                  />
+                </div>
               </>
             )}
-            <div>
-              <b>animated</b>
-              <Checkbox
-                checked={animated ? animated : false}
-                onChange={animatedChanged}
-                inputProps={{ 'aria-label': 'controlled' }}
-              />
-            </div>
           </form>
         </AccordionDetails>
       </Accordion>

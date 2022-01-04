@@ -358,17 +358,17 @@ const useStore = create<State>((set, get) => ({
     if (subToAdd) {
       const inputsSub = subToAdd.graph.input_nodes.map((input) => {
         return {
-          label: `${input.id}: ${input.node} ${
-            input.sub_node ? `  -> ${input.sub_node}` : ''
-          }`,
+          label: `${input.uiProps.label ? input.uiProps.label : input.id}: ${
+            input.node
+          } ${input.sub_node ? `  -> ${input.sub_node}` : ''}`,
           type: 'data ',
         };
       });
-      const outputsSub = subToAdd.graph.output_nodes.map((input) => {
+      const outputsSub = subToAdd.graph.output_nodes.map((output) => {
         return {
-          label: `${input.id}: ${input.node} ${
-            input.sub_node ? ` -> ${input.sub_node}` : ''
-          }`,
+          label: `${output.uiProps.label ? output.uiProps.label : output.id}: ${
+            output.node
+          } ${output.sub_node ? ` -> ${output.sub_node}` : ''}`,
           type: 'data ',
         };
       });

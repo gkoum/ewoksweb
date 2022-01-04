@@ -135,7 +135,9 @@ function Canvas() {
     console.log(event, element, selectedElements);
     event.preventDefault();
     // TODO: examine how to prevent bug on dragging selection of multiple elements
-    if (selectedElements.length > 1) return;
+    if (selectedElements.length > 1) {
+      return;
+    }
     if (graphRF.graph.id === '0') {
       setSubgraphsStack({
         id: graphRF.graph.id,
@@ -287,8 +289,10 @@ function Canvas() {
         labelBgStyle: {
           fill: '#fff',
           color: 'rgb(50, 130, 219)',
-          fillOpacity: 0.7,
+          fillOpacity: 1,
         },
+        labelBgPadding: [8, 4],
+        labelBgBorderRadius: 4,
         labelStyle: { fill: 'blue', fontWeight: 500, fontSize: 14 },
         startEnd:
           sourceTask.task_type === 'graphInput' ||
@@ -493,7 +497,7 @@ function Canvas() {
             onNodeDragStop={onNodeDragStop}
             nodeTypes={nodeTypes}
             onElementsRemove={onElementsRemove}
-            deleteKeyCode={'Delete'}
+            deleteKeyCode="Delete"
           >
             <Controls />
             <Background />

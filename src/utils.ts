@@ -243,7 +243,7 @@ export function toEwoksNodes(nodes: EwoksRFNode[]): EwoksNode[] {
       inputs_complete,
       task_generator,
       default_inputs,
-      data: { label, type, icon, comment },
+      data: { label, type, icon, comment, moreHandles },
       position,
     }) => {
       if (task_type != 'graph') {
@@ -269,7 +269,7 @@ export function toEwoksNodes(nodes: EwoksRFNode[]): EwoksNode[] {
                     : dIn.value,
               };
             }),
-          uiProps: { label, type, icon, comment, position },
+          uiProps: { label, type, icon, comment, position, moreHandles },
         };
       }
       // graphs separately only if a transformation is needed???
@@ -311,7 +311,10 @@ function inNodesLinks(graph) {
         if (!inNodesInputed.includes(inNod.id)) {
           inputs.nodes.push({
             id: inNod.id,
-            label: inNod.id,
+            label:
+              inNod.uiProps && inNod.uiProps.label
+                ? inNod.uiProps.label
+                : inNod.id,
             task_type: 'graphInput',
             task_identifier: 'Start-End',
             position: temPosition,
@@ -364,7 +367,10 @@ function outNodesLinks(graph) {
         };
         outputs.nodes.push({
           id: outNod.id,
-          label: outNod.id,
+          label:
+            outNod.uiProps && outNod.uiProps.label
+              ? outNod.uiProps.label
+              : outNod.id,
           task_type: 'graphOutput',
           task_identifier: 'Start-End',
           position: temPosition,
@@ -497,7 +503,9 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
               icon: uiProps && uiProps.icon ? uiProps.icon : '',
               comment: uiProps && uiProps.comment ? uiProps.comment : '',
               moreHandles:
-                uiProps && uiProps.moreHandles ? uiProps.moreHandles : true,
+                uiProps && 'moreHandles' in uiProps
+                  ? uiProps.moreHandles
+                  : false,
             },
             position:
               uiProps && uiProps.position
@@ -516,7 +524,9 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
           inputsSub = subgraphNode.graph.input_nodes.map((input) => {
             return {
               id: input.id,
-              label: `${input.id}: ${input.node} ${
+              label: `${
+                input.uiProps.label ? input.uiProps.label : input.id
+              }: ${input.node} ${
                 input.sub_node ? `  -> ${input.sub_node}` : ''
               }`,
               type: 'data ',
@@ -525,7 +535,9 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
           outputsSub = subgraphNode.graph.output_nodes.map((output) => {
             return {
               id: output.id,
-              label: `${output.id}: ${output.node} ${
+              label: `${
+                output.uiProps.label ? output.uiProps.label : output.id
+              }: ${output.node} ${
                 output.sub_node ? ` -> ${output.sub_node}` : ''
               }`,
               type: 'data ',
@@ -555,6 +567,8 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
             // inputsFlow,
             icon: uiProps && uiProps.icon ? uiProps.icon : '',
             comment: uiProps && uiProps.comment ? uiProps.comment : '',
+            moreHandles:
+              uiProps && 'moreHandles' in uiProps ? uiProps.moreHandles : false,
           },
           // inputs: inputsFlow, // for connecting graphically to different input
           position: uiProps.position,
@@ -722,8 +736,10 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
           labelBgStyle: {
             fill: '#fff',
             color: 'rgb(50, 130, 219)',
-            fillOpacity: 0.7,
+            fillOpacity: 1,
           },
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
           labelStyle: { fill: 'blue', fontWeight: 500, fontSize: 14 },
           data: {
             // node optional_input_names are link's optional_output_names

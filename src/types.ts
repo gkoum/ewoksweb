@@ -5,6 +5,7 @@ export interface GraphNodes {
   id: string;
   node: string;
   sub_node?: string;
+  uiProps?: UiProps;
 }
 
 export interface GraphDetails {
