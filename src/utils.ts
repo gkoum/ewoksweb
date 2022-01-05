@@ -302,7 +302,7 @@ function inNodesLinks(graph) {
     const inNodesInputed = [];
     graph.graph.input_nodes.forEach((inNod) => {
       const nodeTarget = graph.nodes.find((no) => no.id === inNod.node);
-      console.log(inNod, nodeTarget);
+      console.log('inNod', inNod, nodeTarget);
       if (nodeTarget) {
         const temPosition = (inNod.uiProps && inNod.uiProps.position) || {
           x: 50,
@@ -337,6 +337,10 @@ function inNodesLinks(graph) {
               ? inNod.link_attributes.conditions
               : [],
           uiProps: {
+            label:
+              inNod.link_attributes && inNod.link_attributes.label
+                ? inNod.link_attributes.label
+                : '',
             type: (inNod.uiProps && inNod.uiProps.linkStyle) || 'default',
             arrowHeadType: 'arrowclosed',
           },
@@ -344,7 +348,7 @@ function inNodesLinks(graph) {
       }
     });
   }
-  console.log('INPUTS', inputs);
+  console.log('inNod', inputs);
   return inputs;
 }
 // calc the output nodes and links that need to be added to the graph from the output_nodes
@@ -392,6 +396,10 @@ function outNodesLinks(graph) {
             ? outNod.link_attributes.conditions
             : [],
         uiProps: {
+          label:
+            'link_attributes' in outNod && outNod.link_attributes.label
+              ? outNod.link_attributes.label
+              : '',
           type: (outNod.uiProps && outNod.uiProps.linkStyle) || 'default',
           arrowHeadType: 'arrowclosed',
         },
@@ -719,16 +727,18 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
           source: source.toString(),
           target: target.toString(),
           startEnd: startEnd ? startEnd : '',
-          targetHandle: sub_target
-            ? sub_target
-            : uiProps && uiProps.targetHandle
-            ? uiProps.targetHandle
-            : '', // TODO remove this? when stable
-          sourceHandle: sub_source
-            ? sub_source
-            : uiProps && uiProps.sourceHandle
-            ? uiProps.sourceHandle
-            : '',
+          targetHandle:
+            uiProps && uiProps.targetHandle
+              ? uiProps.targetHandle
+              : sub_target
+              ? sub_target
+              : '', // TODO remove this? when stable
+          sourceHandle:
+            uiProps && uiProps.sourceHandle
+              ? uiProps.sourceHandle
+              : sub_source
+              ? sub_source
+              : '',
           type: uiProps && uiProps.type ? uiProps.type : '',
           arrowHeadType:
             uiProps && uiProps.arrowHeadType

@@ -36,6 +36,9 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
                 graph_links[link_index].data.sub_target) ||
               '',
             link_attributes: {
+              label:
+                (graph_links[link_index] && graph_links[link_index].label) ||
+                [],
               conditions:
                 (graph_links[link_index] &&
                   graph_links[link_index].data.conditions) ||
@@ -58,6 +61,9 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             node: nodConnected.id,
             sub_node: '',
             link_attributes: {
+              label:
+                (graph_links[link_index] && graph_links[link_index].label) ||
+                '',
               conditions:
                 (graph_links[link_index] &&
                   graph_links[link_index].data.conditions) ||
@@ -104,6 +110,9 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
                 graph_links[link_index].data.sub_source) ||
               '',
             link_attributes: {
+              label:
+                (graph_links[link_index] && graph_links[link_index].label) ||
+                '',
               conditions:
                 (graph_links[link_index] &&
                   graph_links[link_index].data.conditions) ||
@@ -124,6 +133,9 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             node: nodConnected.id,
             sub_node: '',
             link_attributes: {
+              label:
+                (graph_links[link_index] && graph_links[link_index].label) ||
+                [],
               conditions:
                 (graph_links[link_index] &&
                   graph_links[link_index].data.conditions) ||
