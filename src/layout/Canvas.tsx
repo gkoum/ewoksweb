@@ -11,6 +11,7 @@ import ReactFlow, {
   isEdge,
   isNode,
   updateEdge,
+  useUpdateNodeInternals,
 } from 'react-flow-renderer';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import useStore from '../store';
@@ -101,11 +102,18 @@ function Canvas() {
   const recentGraphs = useStore((state) => state.recentGraphs);
   const workingGraph = useStore((state) => state.workingGraph);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
+  const updateNodeInternals = useUpdateNodeInternals();
 
   useEffect(() => {
     console.log('rerender Canvas', graphRF, recentGraphs.length);
     setElements([...graphRF.nodes, ...graphRF.links]);
   }, [graphRF, graphRF.graph.id, recentGraphs.length]);
+
+  // Used to update custom node after adding Handles NOT WORKING
+  useEffect(() => {
+    console.log(selectedElement);
+    if ('position' in selectedElement) updateNodeInternals(selectedElement.id);
+  }, [selectedElement, selectedElement.id, updateNodeInternals]);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     console.log(isEdge(element), isNode(element), elements, graphRF.nodes);

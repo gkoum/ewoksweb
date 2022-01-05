@@ -16,6 +16,7 @@ import Correlations from '../images/Correlations.svg';
 import CreateClass from '../images/CreateClass.svg';
 import CSVFile from '../images/CSVFile.svg';
 import { Handle, Position } from 'react-flow-renderer';
+import { IconButton, Tooltip } from '@material-ui/core';
 
 export const contentStyle = {
   contentHeader: {
@@ -195,48 +196,56 @@ const Node: React.FC<NodeProps> = ({
           type !== 'graphInput' &&
           moreHandles && (
             <>
-              <Handle
-                type="source"
-                position={Position.Top}
-                id="st"
-                style={{
-                  right: 20,
-                  left: 'auto',
-                  ...contentStyle.handleSource,
-                  ...contentStyle.handleUpDown,
-                }}
-                isValidConnection={(connection) => isValidOutput(connection)}
-                isConnectable
-                onConnect={(params) =>
-                  console.log('handle st onConnect', params)
-                }
+              <div
+                id="choice"
+                onMouseOver={() => console.log(label)}
+                onFocus={() => console.log(label)}
+                role="button"
+                tabIndex={0}
               >
-                {/* <img
+                <Handle
+                  type="source"
+                  position={Position.Top}
+                  id="st"
+                  style={{
+                    right: 20,
+                    left: 'auto',
+                    ...contentStyle.handleSource,
+                    ...contentStyle.handleUpDown,
+                  }}
+                  isValidConnection={(connection) => isValidOutput(connection)}
+                  isConnectable
+                  onConnect={(params) =>
+                    console.log('handle st onConnect', params)
+                  }
+                >
+                  {/* <img
                 role="presentation"
                 draggable="false"
                 onDragStart={(event) => onDragStart(event)}
                 src={iconsObj['up']}
                 alt=""
               /> */}
-              </Handle>
-              <Handle
-                type="source"
-                position={Position.Bottom}
-                id="sb"
-                style={{
-                  right: 20,
-                  left: 'auto',
-                  ...contentStyle.handleSource,
-                  ...contentStyle.handleUpDown,
-                }}
-                isValidConnection={(connection) => isValidOutput(connection)}
-                isConnectable
-                onConnect={(params) =>
-                  console.log('handle sb onConnect', params)
-                }
-              >
-                {/* <img src={iconsObj['down']} alt="" /> */}
-              </Handle>
+                </Handle>
+                <Handle
+                  type="source"
+                  position={Position.Bottom}
+                  id="sb"
+                  style={{
+                    right: 20,
+                    left: 'auto',
+                    ...contentStyle.handleSource,
+                    ...contentStyle.handleUpDown,
+                  }}
+                  isValidConnection={(connection) => isValidOutput(connection)}
+                  isConnectable
+                  onConnect={(params) =>
+                    console.log('handle sb onConnect', params)
+                  }
+                >
+                  {/* <img src={iconsObj['down']} alt="" /> */}
+                </Handle>
+              </div>
             </>
           )}
         <div style={customTitle}>{label}</div>
@@ -285,6 +294,9 @@ const Node: React.FC<NodeProps> = ({
                   console.log('handle tb onConnect', params)
                 }
               >
+                {/* <Tooltip title="Delete">
+                  <IconButton>in</IconButton>
+                </Tooltip> */}
                 {/* <img src={iconsObj['up']} alt="" /> */}
               </Handle>
               <Handle
