@@ -43,6 +43,7 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             },
             uiProps: {
               position: nod.position,
+              label: nod.data.label,
               linkStyle:
                 (graph_links[link_index] && graph_links[link_index].type) ||
                 'default',
@@ -64,6 +65,7 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             },
             uiProps: {
               position: nod.position,
+              label: nod.data.label,
               linkStyle:
                 (graph_links[link_index] && graph_links[link_index].type) ||
                 'default',
@@ -109,6 +111,7 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             },
             uiProps: {
               position: nod.position,
+              label: nod.data.label,
               linkStyle:
                 (graph_links[link_index] && graph_links[link_index].type) ||
                 'default',
@@ -128,6 +131,7 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             },
             uiProps: {
               position: nod.position,
+              label: nod.data.label,
               linkStyle:
                 (graph_links[link_index] && graph_links[link_index].type) ||
                 'default',

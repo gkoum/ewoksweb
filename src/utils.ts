@@ -538,7 +538,7 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
             return {
               id: output.id,
               label: `${
-                output.uiProps && output.uiProps.label
+                uiProps in output && output.uiProps.label
                   ? output.uiProps.label
                   : output.id
               }: ${output.node} ${
