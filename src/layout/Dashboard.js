@@ -33,7 +33,9 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import { rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
+import { rfToEwoks } from '../utils';
+import { toRFEwoksLinks } from '../utils/toRFEwoksLinks';
+import { toRFEwoksNodes } from '../utils/toRFEwoksNodes';
 import axios from 'axios';
 import SimpleSnackbar from '../Components/Snackbar';
 // import FullScreenDialog from '../Components/FullScreenDialog';
@@ -86,7 +88,6 @@ export default function Dashboard() {
   }, [subgraphsStack]);
 
   const handleOpenSettings = () => {
-    console.log(openSettings);
     setOpenSettings(!openSettings);
   };
 
@@ -100,18 +101,15 @@ export default function Dashboard() {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   const selectedGraphChange = (event) => {
-    console.log(event.target.value, selectedGraph);
     setSelectedGraph(event.target.value);
   };
 
   const loadFromDisk = (val) => {
-    console.log(val, inputFile);
     // TODO: possible race situation with setting pgraphOrSubgraph
     setGraphOrSubgraph(true);
   };
 
   const saveToDisk = (event) => {
-    console.log(graphRF, rfToEwoks(graphRF, recentGraphs));
     download(
       JSON.stringify(rfToEwoks(graphRF, recentGraphs), null, 2),
       `${graphRF.graph.label}.json`,
@@ -120,7 +118,7 @@ export default function Dashboard() {
   };
 
   const saveToServer = async () => {
-    console.log('Save graph to server', graphRF, recentGraphs);
+    // console.log('Save graph to server', graphRF, recentGraphs);
     // if id: new_graph000 POST and id=label
     // else PUT and replace existing on server
     if (graphRF.graph.id === 'new_graph000') {
@@ -179,12 +177,14 @@ export default function Dashboard() {
   const getFromServer = async (isSubgraph) => {
     if (workflowValue) {
       setGettingFromServer(true);
+      console.log('setGettingFromServer started');
       const response = await axios.get(
         // `http://mxbes2-1707:38280/ewoks/workflow/${workflowValue}`
         `http://localhost:5000/workflow/${workflowValue}`
       );
       if (response.data) {
         setGettingFromServer(false);
+        console.log('setGettingFromServer');
         if (isSubgraph === 'subgraph') {
           setSubGraph(response.data);
         } else {
@@ -211,19 +211,15 @@ export default function Dashboard() {
     // Name of graph unique and used in recentGraphs, graphRF, subgraphsStack
     // setGraphRF(initializedGraph);
     setWorkingGraph(initializedGraph);
-    console.log('Start drawing please!');
   };
 
   const goToGraph = (e) => {
     e.preventDefault();
-    console.log(e.target.text, e.target.id, recentGraphs);
+    // console.log(e.target.text, e.target.id, recentGraphs);
     setSubgraphsStack({ id: e.target.id, label: e.target.text });
     const subgraph = recentGraphs.find((gr) => gr.graph.id === e.target.id);
-    console.log(subgraph);
-    // subgraph = subgraph ? subgraph : getGraph(e.target.text);
+
     if (!subgraph) {
-      // subgraph = getGraph(e.target.text);
-      // console.log(subgraph);
       setGraphRF({
         graph: subgraph.graph,
         nodes: toRFEwoksNodes(subgraph),
@@ -235,7 +231,6 @@ export default function Dashboard() {
   };
 
   const setInputValue = (val) => {
-    console.log(val, recentGraphs);
     setWorkflowValue(val);
   };
 

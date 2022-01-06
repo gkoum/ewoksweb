@@ -1,7 +1,7 @@
 import type { GraphDetails } from '../types';
 
 export function calcGraphInputsOutputs(graph): GraphDetails {
-  console.log(graph);
+  // console.log(graph);
   const graph_links = [...graph.links];
   const input_nodes = [];
   const output_nodes = [];
@@ -18,7 +18,6 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
           graph.nodes.find((node) => nodesNamesConnectedTo[i] === node.id)
         );
       }
-      console.log(nodesNamesConnectedTo, nodeObjConnectedTo);
       // iterate the nodes to create the new input_nodes
       nodeObjConnectedTo.forEach((nodConnected) => {
         const link_index = graph_links.findIndex(
@@ -27,7 +26,6 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
         if (nodConnected.task_type === 'graph') {
           // find the link and get the sub_node it is connected to in the graph
           // TODO: find the correct input if a graph has two links to the same input
-          console.log(link_index, graph_links, nodConnected, nod);
           input_nodes.push({
             id: nod.id,
             node: nodConnected.id,
@@ -38,7 +36,7 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             link_attributes: {
               label:
                 (graph_links[link_index] && graph_links[link_index].label) ||
-                [],
+                '',
               conditions:
                 (graph_links[link_index] &&
                   graph_links[link_index].data.conditions) ||
@@ -54,7 +52,6 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
           });
           // remove link so that it gets the next
           const removed = graph_links.splice(link_index, 1);
-          console.log(removed, link_index, graph_links);
         } else {
           input_nodes.push({
             id: nod.id,
@@ -78,7 +75,6 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             },
           });
         }
-        console.log(input_nodes);
       });
     } else if (nod.task_type === 'graphOutput') {
       // find those nodes this OUTPUT node is connected to
@@ -92,7 +88,6 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
           graph.nodes.find((node) => nodesNamesConnectedToEnd[i] === node.id)
         );
       }
-      console.log(nodesNamesConnectedToEnd, nodeObjConnectedToEnd);
       // iterate the nodes to create the new input_nodes
       nodeObjConnectedToEnd.forEach((nodConnected) => {
         const link_index = graph_links.findIndex(
@@ -101,7 +96,6 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
         if (nodConnected.task_type === 'graph') {
           // find the link and get the sub_node it is connected to in the graph
           // TODO: find the correct output if a graph has two links to the same output
-          console.log(link_index, graph_links, nodConnected, nod);
           output_nodes.push({
             id: nod.id,
             node: nodConnected.id,
@@ -135,7 +129,7 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
             link_attributes: {
               label:
                 (graph_links[link_index] && graph_links[link_index].label) ||
-                [],
+                '',
               conditions:
                 (graph_links[link_index] &&
                   graph_links[link_index].data.conditions) ||

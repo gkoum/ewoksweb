@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const createData = (pair) => {
-  console.log(pair, typeof pair.value);
+  // console.log(pair, typeof pair.value);
   return pair.id && pair.value
     ? { ...pair, isEditMode: false }
     : {
@@ -57,7 +57,6 @@ const createData = (pair) => {
 
 function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
-  // console.log('PROPS:', props);
   const [typeOfInputs, setTypeOfInputs] = React.useState([]);
   const [openDialog, setOpenDialog] = React.useState<boolean>(false);
   const [dialogContent, setDialogContent] = React.useState<GraphEwoks>({});
@@ -69,10 +68,10 @@ function EditableTable(props) {
   const val = defaultValues[0].value;
 
   const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
-  console.log(defaultValues, val, rows, props, typeOfInputs);
+  // console.log(defaultValues, val, rows, props, typeOfInputs);
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
-    console.log(defaultValues);
     const tOfIn = defaultValues.map((val) =>
       val.value === 'true' || val.value === 'false'
         ? 'boolean'
@@ -84,12 +83,10 @@ function EditableTable(props) {
         ? 'dict'
         : typeof val.value
     );
-    console.log(tOfIn);
     setTypeOfInputs(tOfIn);
     setRows(
       defaultValues
         ? defaultValues.map((pair) => {
-            console.log(pair);
             return createData(pair);
           })
         : []
@@ -99,7 +96,6 @@ function EditableTable(props) {
   const classes = useStyles();
 
   const showEditableDialog = ({ title, graph, callbackProps }) => {
-    console.log(title, graph, callbackProps);
     setOpenDialog(true);
     setDialogContent({
       title,
@@ -109,7 +105,7 @@ function EditableTable(props) {
   };
 
   const onToggleEditMode = (id, index, command) => {
-    console.log(props, id, rows, props.defaultValues, command, typeOfInputs);
+    // console.log(props, id, rows, props.defaultValues, command, typeOfInputs);
     if (command === 'edit' && ['list', 'dict'].includes(typeOfInputs[index])) {
       let initialValue = '';
 
@@ -129,7 +125,6 @@ function EditableTable(props) {
           initialValue = {};
         }
       }
-      console.log(initialValue);
 
       showEditableDialog({
         title: typeOfInputs[index] === 'list' ? 'Edit list' : 'Edit dict',
@@ -151,20 +146,18 @@ function EditableTable(props) {
       });
     });
     if (command === 'done') {
-      console.log(rows);
       props.valuesChanged(rows);
     }
   };
 
   const onChange = (e, row, index) => {
-    console.log(typeOfInputs, e, row, index);
+    // console.log(typeOfInputs, e, row, index);
     if (
       ['string', 'bool', 'number', 'boolean', 'null'].includes(typeOfInputs[0])
     ) {
       let { value } = e.target;
       const { name } = e.target;
       const inType = typeOfInputs[index];
-      console.log(value, name, inType);
 
       if (name === 'value') {
         value =
@@ -173,7 +166,6 @@ function EditableTable(props) {
             : // : typeOfInputs[index] === 'bool'
               // ? !!value
               value;
-        console.log(typeof value, value);
       }
 
       const { id } = row;
@@ -183,14 +175,12 @@ function EditableTable(props) {
         }
         return rowe;
       });
-      console.log(newRows);
       setRows(newRows);
     } else {
       const { updated_src } = e;
       const { id } = row;
       const name =
         e.target && e.target.name === 'name' ? e.target.name : 'value';
-      console.log(updated_src, id, name);
 
       const newRows = rows.map((row) => {
         if (row.id === id) {
@@ -204,7 +194,6 @@ function EditableTable(props) {
         }
         return row;
       });
-      console.log(newRows);
       setRows(newRows);
     }
   };
@@ -216,13 +205,12 @@ function EditableTable(props) {
       return row.id !== id;
     });
 
-    console.log(newRows);
     setRows(newRows);
     props.valuesChanged(newRows);
   };
 
   const changedTypeOfInputs = (e, row, index) => {
-    console.log(e.target.value, row, props, index);
+    // console.log(e.target.value, row, props, index);
     if (e.target.value === 'null') {
       const newRows = rows.map((rowe) => {
         if (rowe.id === row.id) {
@@ -230,7 +218,6 @@ function EditableTable(props) {
         }
         return rowe;
       });
-      console.log(newRows);
       setRows(newRows);
       props.valuesChanged(newRows);
     }
@@ -240,7 +227,7 @@ function EditableTable(props) {
   };
 
   const setRowValue = (val, callbackProps) => {
-    console.log(val, callbackProps);
+    // console.log(val, callbackProps);
     const newRows = callbackProps.rows.map((row) => {
       if (row.id === callbackProps.id) {
         return { ...row, value: val };

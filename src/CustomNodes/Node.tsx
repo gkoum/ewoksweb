@@ -82,7 +82,7 @@ const style = {
     padding: '8px 3px',
     flexGrow: 1,
     backgroundColor: '#ee1',
-    zIndex: '-2',
+    // zIndex: '-2',
   },
   contentWrapper: {
     padding: '8px 0px',
@@ -195,58 +195,56 @@ const Node: React.FC<NodeProps> = ({
           type !== 'graphOutput' &&
           type !== 'graphInput' &&
           moreHandles && (
-            <>
-              <div
-                id="choice"
-                onMouseOver={() => console.log(label)}
-                onFocus={() => console.log(label)}
-                role="button"
-                tabIndex={0}
+            <div
+              id="choice"
+              onMouseOver={() => console.log(label)}
+              onFocus={() => console.log(label)}
+              role="button"
+              tabIndex={0}
+            >
+              <Handle
+                type="source"
+                position={Position.Top}
+                id="st"
+                style={{
+                  right: 20,
+                  left: 'auto',
+                  ...contentStyle.handleSource,
+                  ...contentStyle.handleUpDown,
+                }}
+                isValidConnection={(connection) => isValidOutput(connection)}
+                isConnectable
+                onConnect={(params) =>
+                  console.log('handle st onConnect', params)
+                }
               >
-                <Handle
-                  type="source"
-                  position={Position.Top}
-                  id="st"
-                  style={{
-                    right: 20,
-                    left: 'auto',
-                    ...contentStyle.handleSource,
-                    ...contentStyle.handleUpDown,
-                  }}
-                  isValidConnection={(connection) => isValidOutput(connection)}
-                  isConnectable
-                  onConnect={(params) =>
-                    console.log('handle st onConnect', params)
-                  }
-                >
-                  {/* <img
+                {/* <img
                 role="presentation"
                 draggable="false"
                 onDragStart={(event) => onDragStart(event)}
                 src={iconsObj['up']}
                 alt=""
               /> */}
-                </Handle>
-                <Handle
-                  type="source"
-                  position={Position.Bottom}
-                  id="sb"
-                  style={{
-                    right: 20,
-                    left: 'auto',
-                    ...contentStyle.handleSource,
-                    ...contentStyle.handleUpDown,
-                  }}
-                  isValidConnection={(connection) => isValidOutput(connection)}
-                  isConnectable
-                  onConnect={(params) =>
-                    console.log('handle sb onConnect', params)
-                  }
-                >
-                  {/* <img src={iconsObj['down']} alt="" /> */}
-                </Handle>
-              </div>
-            </>
+              </Handle>
+              <Handle
+                type="source"
+                position={Position.Bottom}
+                id="sb"
+                style={{
+                  right: 20,
+                  left: 'auto',
+                  ...contentStyle.handleSource,
+                  ...contentStyle.handleUpDown,
+                }}
+                isValidConnection={(connection) => isValidOutput(connection)}
+                isConnectable
+                onConnect={(params) =>
+                  console.log('handle sb onConnect', params)
+                }
+              >
+                {/* <img src={iconsObj['down']} alt="" /> */}
+              </Handle>
+            </div>
           )}
         <div style={customTitle}>{label}</div>
         <div style={{ wordWrap: 'break-word' }}>{comment}</div>

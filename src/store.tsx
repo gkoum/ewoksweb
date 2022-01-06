@@ -7,15 +7,10 @@ import type {
   GraphDetails,
   stackGraph,
   GraphEwoks,
-  Graph,
 } from './types';
-import {
-  toRFEwoksLinks,
-  toRFEwoksNodes,
-  createGraph,
-  getGraph,
-  getSubgraphs,
-} from './utils';
+import { createGraph } from './utils';
+import { toRFEwoksNodes } from './utils/toRFEwoksNodes';
+import { toRFEwoksLinks } from './utils/toRFEwoksLinks';
 import { validateEwoksGraph } from './utils/EwoksValidator';
 import { findAllSubgraphs } from './utils/FindAllSubgraphs';
 
@@ -64,14 +59,6 @@ const useStore = create<State>((set, get) => ({
     }));
   },
 
-  // updateNeeded: 0,
-
-  // setUpdateNeeded: (num: number) => {
-  //   set((state) => ({
-  //     ...state,
-  //     updateNeeded: get().updateNeeded + num,
-  //   }));
-  // },
   allWorkflows: [] as GraphEwoks[],
 
   setAllWorkflows: (workflows: GraphEwoks[]) => {
@@ -90,12 +77,11 @@ const useStore = create<State>((set, get) => ({
       rec =
         get().recentGraphs.length > 0
           ? get().recentGraphs.filter((gr) => {
-              console.log('GRR:', gr, newGraph);
+              // console.log('GRR:', gr, newGraph);
               return gr.graph.id !== newGraph.graph.id;
             })
           : [];
     }
-    console.log('REC:', rec);
     if (newGraph.graph) {
       set((state) => ({
         ...state,
@@ -130,25 +116,20 @@ const useStore = create<State>((set, get) => ({
     let stack = [];
     const subStack = get().subgraphsStack;
     const exists = subStack.map((gr) => gr.id).indexOf(stackGraph.id);
-    console.log(exists, stackGraph, subStack);
     if (stackGraph.id === 'initialiase') {
       stack = [];
     } else if (exists === -1) {
-      console.log('not exists');
       stack = [...subStack, stackGraph];
     } else if (exists == subStack.length - 1) {
       // TODO: if user insert the same 'graph' and is the first then stack is not updated
-      console.log('exists the last');
       stack = subStack;
     } else {
       // TODO: if the same graph is inserted again lower in the subgraphs this is activated
       // and resets the stack without adding. If it is an addition this stack needs to know it
-      console.log('exists');
       // subStack.length = exists + 1;
       stack = subStack.slice(0, exists + 1);
       // stack = ['graph'];
     }
-    console.log(stack);
     set((state) => ({
       ...state,
       subgraphsStack: stack,
@@ -166,7 +147,6 @@ const useStore = create<State>((set, get) => ({
     // Is the following needed as to not get existing graphs? Better an empty array?
     get().setRecentGraphs({} as GraphRF, true);
 
-    console.log(workingGraph);
     const newNodeSubgraphs = await findAllSubgraphs(
       workingGraph,
       get().recentGraphs
@@ -183,24 +163,21 @@ const useStore = create<State>((set, get) => ({
       });
     });
     // 4. Calculate the new graph given the subgraphs
-    console.log(workingGraph, newNodeSubgraphs);
+    // console.log(workingGraph, newNodeSubgraphs);
     const grfNodes = toRFEwoksNodes(workingGraph, newNodeSubgraphs);
     const graph = {
       graph: workingGraph.graph,
       nodes: grfNodes,
       links: toRFEwoksLinks(workingGraph, newNodeSubgraphs),
     };
-    console.log(grfNodes, graph, get().graphOrSubgraph, get().recentGraphs);
+    // console.log(grfNodes, graph, get().graphOrSubgraph, get().recentGraphs);
 
-    console.log('ADD a new graph1');
     get().setRecentGraphs(graph as GraphRF);
-    console.log('RECENT GRAPHS', get().recentGraphs);
 
     // set the new graph as the working graph
     get().setGraphRF(graph as GraphRF);
     get().setSelectedElement(graph.graph);
     // add the new graph to the recent graphs if not already there
-    console.log('ADD the new supergraph to recent');
     get().setRecentGraphs({
       graph: workingGraph.graph,
       nodes: grfNodes,
@@ -220,7 +197,6 @@ const useStore = create<State>((set, get) => ({
   graphRF: initializedGraph,
 
   setGraphRF: (graphRF) => {
-    console.log(graphRF);
     // If missing uiProps or other fill it here
     if (!graphRF.graph.uiProps) {
       graphRF.graph.uiProps = {};
@@ -231,20 +207,11 @@ const useStore = create<State>((set, get) => ({
     }));
   },
 
-  selectedElement: {
-    // id: '',
-    // label: '',
-    // type: '',
-    // data: { label: '' },
-    // position: { x: 0, y: 0 },
-    // default_inputs: [],
-  } as EwoksRFNode | EwoksRFLink | GraphDetails,
+  selectedElement: {} as EwoksRFNode | EwoksRFLink | GraphDetails,
 
-  // sets graphRF as well? should it?
   setSelectedElement: (element: EwoksRFNode | EwoksRFLink | GraphDetails) => {
-    console.log(element, get().selectedElement);
     const wg = get().workingGraph.graph.id;
-    console.log(get().graphRF, wg);
+
     if (wg === '0' || wg === get().graphRF.graph.id) {
       if ('position' in element) {
         set((state) => ({
@@ -260,7 +227,6 @@ const useStore = create<State>((set, get) => ({
           selectedElement: element,
         }));
       } else if ('source' in element) {
-        console.log('saving a link.');
         set((state) => ({
           ...state,
           graphRF: {
@@ -303,21 +269,17 @@ const useStore = create<State>((set, get) => ({
     links: [],
   } as GraphRF,
 
-  setSubGraph: async (subGraph: GraphEwoks) => {
+  setSubGraph: async (subGraph: GraphRF) => {
     // 1. input the graphEwoks from server or file-system
-    console.log(subGraph);
     // 2. search for all subgraphs in it (async)
-    console.log('getSubgraphs:', subGraph, get().recentGraphs);
     const newNodeSubgraphs = await findAllSubgraphs(
       subGraph,
       get().recentGraphs
     );
     // 3. Put the newNodeSubgraphs into recent in their graphRF form (sync)
     newNodeSubgraphs.forEach((gr) => {
-      console.log('putting in recent', gr);
       // calculate the rfNodes using the fetched subgraphs
       const rfNodes = toRFEwoksNodes(gr, newNodeSubgraphs);
-      console.log('rfNodes', rfNodes, toRFEwoksLinks(gr, newNodeSubgraphs));
 
       get().setRecentGraphs({
         graph: gr.graph,
@@ -334,7 +296,6 @@ const useStore = create<State>((set, get) => ({
     };
     // Adding a subgraph to an existing workingGraph:
     // save the workingGraph in the recent graphs and add a new graph node to it
-    console.log('adding a subgraph:', graph, get().recentGraphs);
 
     let subToAdd = graph as GraphRF;
 
@@ -348,12 +309,11 @@ const useStore = create<State>((set, get) => ({
       get().setRecentGraphs(subToAdd);
     } else {
       // TODO: if not in the recentGraphs?
-      console.log(get().recentGraphs, get().graphRF);
       // subToAdd = get().recentGraphs.find(
       //   (gr) => gr.graph.id === get().graphRF.graph.id
       // );
     }
-    console.log(subToAdd);
+
     let newNode = {} as EwoksRFNode;
     if (subToAdd) {
       const inputsSub = subToAdd.graph.input_nodes.map((input) => {
@@ -387,7 +347,7 @@ const useStore = create<State>((set, get) => ({
         // TODO: can we upload a task too like a subgraph
         task_type: 'graph',
         task_identifier: subToAdd.graph.id,
-        type: 'graph',
+        // type: 'graph',
         position: { x: 100, y: 500 },
         default_inputs: [],
         inputs_complete: false,
@@ -405,9 +365,9 @@ const useStore = create<State>((set, get) => ({
         // data: { label: CustomNewNode(id, name, image) },
       };
 
-      console.log('ADD a new graph2', subToAdd, newNode);
       get().setRecentGraphs(subToAdd);
     } else {
+      // Handle
       console.log('Couldnt locate the workingGraph in the recent');
     }
     const newWorkingGraph = {

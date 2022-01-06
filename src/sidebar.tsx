@@ -49,6 +49,7 @@ import type {
   GraphDetails,
   GraphEwoks,
   Task,
+  DataMapping,
 } from './types';
 import { rfToEwoks } from './utils';
 import EditTaskProp from './Components/EditTaskProp';
@@ -106,7 +107,7 @@ export default function Sidebar(props) {
   const setGraphOrSubgraph = useStore((state) => state.setGraphOrSubgraph);
 
   const [defaultInputs, setDefaultInputs] = React.useState<Inputs[]>([]);
-  const [dataMapping, setDataMapping] = React.useState<Inputs[]>([]);
+  const [dataMapping, setDataMapping] = React.useState<DataMapping[]>([]);
   const [conditions, setConditions] = React.useState<Inputs[]>([]);
   const [inputsComplete, setInputsComplete] = React.useState<boolean>(false);
   const [moreHandles, setMoreHandles] = React.useState<boolean>(true);
@@ -116,13 +117,11 @@ export default function Sidebar(props) {
   const [arrowType, setArrowType] = React.useState('');
   const [label, setLabel] = React.useState('');
   const [comment, setComment] = React.useState('');
-  const [element, setElement] = React.useState<
-    EwoksRFNode | EwoksRFLink | GraphDetails
-  >({});
+  const [element, setElement] = React.useState<EwoksRFNode | EwoksRFLink>({});
   const [onError, setOnError] = React.useState<boolean>(false);
   const [animated, setAnimated] = React.useState<boolean>(false);
-  const [graphInputs, setGraphInputs] = React.useState<Inputs[]>([]);
-  const [graphOutputs, setGraphOutputs] = React.useState<Inputs[]>([]);
+  const [graphInputs, setGraphInputs] = React.useState<GraphDetails[]>([]);
+  const [graphOutputs, setGraphOutputs] = React.useState<GraphDetails[]>([]);
   const graphRF = useStore((state) => state.graphRF);
   const setGraphRF = useStore((state) => state.setGraphRF);
   const workingGraph = useStore((state) => state.workingGraph);
@@ -130,7 +129,7 @@ export default function Sidebar(props) {
   const tasks = useStore((state) => state.tasks);
   const setTasks = useStore((state) => state.setTasks);
   const [openDialog, setOpenDialog] = React.useState<boolean>(false);
-  const [dialogContent, setDialogContent] = React.useState<GraphEwoks>({});
+  const [dialogContent, setDialogContent] = React.useState({});
   const recentGraphs = useStore((state) => state.recentGraphs);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
@@ -174,16 +173,13 @@ export default function Sidebar(props) {
         setConditions(selectedElement.data.conditions);
       console.log(selectedElement);
     } else {
-      console.log('SHOW GRAPH DETAILS');
-      console.log(selectedElement.input_nodes, selectedElement.output_nodes);
+      const selElem = selectedElement as GraphDetails;
+
+      console.log(selElem.input_nodes, selElem.output_nodes);
       setLabel(selectedElement.label);
       setComment(selectedElement.uiProps && selectedElement.uiProps.comment);
-      setGraphInputs(
-        selectedElement.input_nodes ? selectedElement.input_nodes : []
-      );
-      setGraphOutputs(
-        selectedElement.output_nodes ? selectedElement.output_nodes : []
-      );
+      setGraphInputs(selElem.input_nodes ? selElem.input_nodes : []);
+      setGraphOutputs(selElem.output_nodes ? selElem.output_nodes : []);
     }
   }, [
     selectedElement.id,
@@ -237,8 +233,9 @@ export default function Sidebar(props) {
   const labelChanged = (event) => {
     setLabel(event.target.value);
     if ('position' in element) {
+      const el = element as EwoksRFNode;
       setElement({
-        ...element,
+        ...(element as object),
         label: event.target.value,
         data: { ...element.data, label: event.target.value },
       });
@@ -351,6 +348,11 @@ export default function Sidebar(props) {
     setElement({
       ...element,
       data: { ...element.data, moreHandles: event.target.checked },
+    });
+    setOpenSnackbar({
+      open: true,
+      text: `Please save and reload the graph before using the new handles`,
+      severity: 'warning',
     });
   };
 
@@ -810,16 +812,20 @@ export default function Sidebar(props) {
                       inputProps={{ 'aria-label': 'controlled' }}
                     />
                   </div>
-                  <div>
+                  {!['graphInput', 'graphOutput', 'graph'].includes(
+                    selectedElement.task_type
+                  ) && (
                     <div>
-                      <b>More handles</b>
-                      <Checkbox
-                        checked={moreHandles}
-                        onChange={moreHandlesChanged}
-                        inputProps={{ 'aria-label': 'controlled' }}
-                      />
+                      <div>
+                        <b>More handles</b>
+                        <Checkbox
+                          checked={moreHandles}
+                          onChange={moreHandlesChanged}
+                          inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </Box>
               </React.Fragment>
             )}

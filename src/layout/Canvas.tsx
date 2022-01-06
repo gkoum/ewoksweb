@@ -25,7 +25,7 @@ import type {
   RFNode,
   RFLink,
 } from '../types';
-import { toRFEwoksNodes } from '../utils';
+import { toRFEwoksNodes } from '../utils/toRFEwoksNodes';
 import { tasks } from '../assets/graphTests';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -117,7 +117,7 @@ function Canvas() {
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
     console.log(isEdge(element), isNode(element), elements, graphRF.nodes);
-    const graphElement: RFNode | RFLink = elements.find(
+    const graphElement: EwoksRFNode | EwoksRFLink = elements.find(
       (el) => el.id === element.id
     );
     console.log(graphElement);
@@ -330,6 +330,7 @@ function Canvas() {
 
   const onRightClick = (event) => {
     event.preventDefault();
+    updateNodeInternals(selectedElement.id);
     console.log(event);
   };
 

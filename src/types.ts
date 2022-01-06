@@ -135,6 +135,11 @@ export interface EwoksLink {
   uiProps?: UiProps;
 }
 
+export interface outputsInputsSub {
+  label: string;
+  type: string;
+}
+
 export interface EwoksRFNode {
   id: string;
   label?: string;
@@ -144,10 +149,11 @@ export interface EwoksRFNode {
   inputs_complete?: boolean;
   task_generator?: string;
   data?: {
+    exists?: boolean;
     label?: string;
     type?: string;
-    inputs?: [string]; // ?
-    outputs?: [string]; // ?
+    inputs?: outputsInputsSub[]; // ?
+    outputs?: outputsInputsSub[]; // ?
     icon?: string;
     comment?: string;
     moreHandles?: boolean;
@@ -158,6 +164,7 @@ export interface EwoksRFNode {
   optional_input_names?: Array<string>;
   output_names?: Array<string>;
   required_input_names?: Array<string>;
+  uiProps?: UiProps;
 }
 
 export interface EwoksRFLink {
@@ -175,6 +182,7 @@ export interface EwoksRFLink {
     sub_target?: string;
     sub_source?: string;
   };
+  labelStyle;
   subtarget?: string;
   subsource?: string;
   uiProps?: UiProps;
