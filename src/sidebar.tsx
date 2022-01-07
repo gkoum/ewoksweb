@@ -349,6 +349,7 @@ export default function Sidebar(props) {
       ...element,
       data: { ...element.data, moreHandles: event.target.checked },
     });
+    // Remove when refresh is resolved
     setOpenSnackbar({
       open: true,
       text: `Please save and reload the graph before using the new handles`,

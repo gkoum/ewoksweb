@@ -40,6 +40,7 @@ import axios from 'axios';
 import SimpleSnackbar from '../Components/Snackbar';
 // import FullScreenDialog from '../Components/FullScreenDialog';
 import TemporaryDrawer from '../Components/Drawer';
+import LinearSpinner from '../Components/LinearSpinner';
 import Tooltip from '@material-ui/core/Tooltip';
 import DashboardStyle from './DashboardStyle';
 import SendIcon from '@material-ui/icons/Send';
@@ -234,10 +235,34 @@ export default function Dashboard() {
     setWorkflowValue(val);
   };
 
+  const handleKeyDown = (event) => {
+    event.preventDefault();
+    const charCode = String.fromCharCode(event.which).toLowerCase();
+    if ((event.ctrlKey || event.metaKey) && charCode === 's') {
+      console.log(graphRF, 'CTRL+S Pressed');
+      saveToServer();
+    } else if ((event.ctrlKey || event.metaKey) && charCode === 'c') {
+      console.log('CTRL+C Pressed');
+    } else if ((event.ctrlKey || event.metaKey) && charCode === 'v') {
+      console.log('CTRL+V Pressed');
+    }
+  };
+
   return (
-    <div className={classes.root}>
+    <div
+      className={classes.root}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+    >
       <CssBaseline />
       <SimpleSnackbar />
+      {/* <div
+        onKeyDown={handleKeyDown}
+        contentEditable
+        tabIndex={0}
+        role="button"
+      /> */}
       <AppBar
         position="absolute"
         className={clsx(classes.appBar, open && classes.appBarShift)}
@@ -340,7 +365,7 @@ export default function Dashboard() {
             <AutocompleteDrop setInputValue={setInputValue} />
           </FormControl>
           <IntegratedSpinner
-            getting={gettingFromServer}
+            // getting={gettingFromServer}
             tooltip="Open and edit Workflow"
             action={getFromServer}
           >
@@ -401,6 +426,7 @@ export default function Dashboard() {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         <Paper className={fixedHeightPaper}>
+          {/* <LinearSpinner getting={gettingFromServer} /> */}
           <Canvas />
         </Paper>
       </main>
