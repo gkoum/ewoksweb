@@ -69,7 +69,7 @@ export default function IconMenu(props) {
       >
         <Paper>
           <MenuList>
-            <MenuItem onClick={cloneToCanvas}>
+            {/* <MenuItem onClick={cloneToCanvas}>
               <ListItemIcon>
                 <Cloud fontSize="small" />
               </ListItemIcon>
@@ -77,14 +77,14 @@ export default function IconMenu(props) {
               <Typography variant="body2" color="secondary">
                 ⌘X
               </Typography>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={() => setOpenSaveDialog(true)}>
               <ListItemIcon>
                 <Cloud fontSize="small" />
               </ListItemIcon>
               <ListItemText>Save as..</ListItemText>
               <Typography variant="body2" color="primary">
-                ⌘C
+                Ctrl+C
               </Typography>
             </MenuItem>
             <MenuItem onClick={handleShowEwoksGraph}>
@@ -93,13 +93,13 @@ export default function IconMenu(props) {
               </ListItemIcon>
               <ListItemText>Graph in json</ListItemText>
             </MenuItem>
-            <Divider />
+            {/* <Divider />
             <MenuItem>
               <ListItemIcon>
                 <Cloud fontSize="small" />
               </ListItemIcon>
               <ListItemText>Web Clipboard?</ListItemText>
-            </MenuItem>
+            </MenuItem> */}
           </MenuList>
         </Paper>
       </Menu>

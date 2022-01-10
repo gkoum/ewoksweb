@@ -83,7 +83,7 @@ export default function BasicTabs() {
             </Grid>
             <Grid item xs={6} md={4}>
               <Item>
-                <FormControl variant="standard">
+                <FormControl variant="standard" style={{ minWidth: '320px' }}>
                   <AutocompleteDrop setInputValue={setInputValue} />
                 </FormControl>
               </Item>

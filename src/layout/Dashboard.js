@@ -122,6 +122,7 @@ export default function Dashboard() {
     // console.log('Save graph to server', graphRF, recentGraphs);
     // if id: new_graph000 POST and id=label
     // else PUT and replace existing on server
+    setGettingFromServer(true);
     if (graphRF.graph.id === 'new_graph000') {
       const newIdGraph = {
         graph: { ...graphRF.graph, id: graphRF.graph.label },
@@ -134,15 +135,17 @@ export default function Dashboard() {
           rfToEwoks(newIdGraph, recentGraphs)
         )
         .then((res) => {
-          console.log(res.data);
+          setGettingFromServer(false);
           setWorkingGraph(res.data);
           setRecentGraphs({}, true);
         });
     } else if (graphRF.graph.id) {
-      const response = await axios.put(
-        `http://localhost:5000/workflow/${graphRF.graph.id}`, // ${graphRF.graph.id}
-        rfToEwoks(graphRF, recentGraphs)
-      );
+      const response = await axios
+        .put(
+          `http://localhost:5000/workflow/${graphRF.graph.id}`, // ${graphRF.graph.id}
+          rfToEwoks(graphRF, recentGraphs)
+        )
+        .then((res) => setGettingFromServer(false));
     } else {
       setOpenSnackbar({
         open: true,
@@ -177,22 +180,20 @@ export default function Dashboard() {
 
   const getFromServer = async (isSubgraph) => {
     if (workflowValue) {
-      setGettingFromServer(true);
-      console.log('setGettingFromServer started');
+      // setGettingFromServer(true);
       const response = await axios.get(
         // `http://mxbes2-1707:38280/ewoks/workflow/${workflowValue}`
         `http://localhost:5000/workflow/${workflowValue}`
       );
       if (response.data) {
-        setGettingFromServer(false);
-        console.log('setGettingFromServer');
+        // setGettingFromServer(false);
         if (isSubgraph === 'subgraph') {
           setSubGraph(response.data);
         } else {
           setWorkingGraph(response.data);
         }
       } else {
-        setGettingFromServer(false);
+        // setGettingFromServer(false);
         setOpenSnackbar({
           open: true,
           text: 'Could not locate the requested workflow! Maybe it is deleted!',
@@ -236,9 +237,10 @@ export default function Dashboard() {
   };
 
   const handleKeyDown = (event) => {
-    event.preventDefault();
+    //
     const charCode = String.fromCharCode(event.which).toLowerCase();
     if ((event.ctrlKey || event.metaKey) && charCode === 's') {
+      event.preventDefault();
       console.log(graphRF, 'CTRL+S Pressed');
       saveToServer();
     } else if ((event.ctrlKey || event.metaKey) && charCode === 'c') {
@@ -257,12 +259,6 @@ export default function Dashboard() {
     >
       <CssBaseline />
       <SimpleSnackbar />
-      {/* <div
-        onKeyDown={handleKeyDown}
-        contentEditable
-        tabIndex={0}
-        role="button"
-      /> */}
       <AppBar
         position="absolute"
         className={clsx(classes.appBar, open && classes.appBarShift)}
@@ -365,7 +361,7 @@ export default function Dashboard() {
             <AutocompleteDrop setInputValue={setInputValue} />
           </FormControl>
           <IntegratedSpinner
-            // getting={gettingFromServer}
+            getting={gettingFromServer}
             tooltip="Open and edit Workflow"
             action={getFromServer}
           >
@@ -425,9 +421,9 @@ export default function Dashboard() {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
+
         <Paper className={fixedHeightPaper}>
-          {/* <LinearSpinner getting={gettingFromServer} /> */}
-          <Canvas />
+          {gettingFromServer ? <LinearSpinner getting /> : <Canvas />}
         </Paper>
       </main>
       <Drawer />

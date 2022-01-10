@@ -9,11 +9,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import useStore from '../store';
 import type { EwoksRFLink, EwoksRFNode } from '../types';
 import axios from 'axios';
-import { rfToEwoks, toRFEwoksLinks, toRFEwoksNodes } from '../utils';
+import { rfToEwoks } from '../utils';
 
 export default function FormDialog(props) {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [newName, setNewName] = React.useState(false);
+  const [newName, setNewName] = React.useState('');
   const selectedElement = useStore<EwoksRFNode | EwoksRFLink>(
     (state) => state.selectedElement
   );
@@ -27,58 +27,59 @@ export default function FormDialog(props) {
   const handleSave = () => {
     // get the selected element (graph or Node) give a new name before saving
     // fire a POST
-    console.log(open);
+    console.log(open, newName);
     props.setOpenSaveDialog(false);
-    if (isGraph) {
-      // save the graphRF
-      const response = axios
-        .post(
-          `http://localhost:5000/workflows`,
-          rfToEwoks(
-            {
-              ...graphRF,
-              graph: { ...graphRF.graph, id: newName, label: newName },
-            },
-            recentGraphs
+    if (newName !== '') {
+      if (isGraph) {
+        // save the graphRF
+        const response = axios
+          .post(
+            `http://localhost:5000/workflows`,
+            rfToEwoks(
+              {
+                ...graphRF,
+                graph: { ...graphRF.graph, id: newName, label: newName },
+              },
+              recentGraphs
+            )
           )
-        )
-        .then((res) => {
-          console.log(res.data);
-          setWorkingGraph(res.data);
-          setRecentGraphs({}, true);
-        })
-        .catch((error) => {
-          console.log(error);
-          setOpenSnackbar({
-            open: true,
-            text: 'The name exists. Please retry with another name',
-            // TODO: replace by server error
-            severity: 'warning',
+          .then((res) => {
+            console.log(res.data);
+            setWorkingGraph(res.data);
+            setRecentGraphs({}, true);
+          })
+          .catch((error) => {
+            console.log(error);
+            setOpenSnackbar({
+              open: true,
+              text: 'The name exists. Please retry with another name',
+              // TODO: replace by server error
+              severity: 'warning',
+            });
           });
-        });
-      console.log(response);
-    } else if (selectedElement.position) {
-      // it is a node save the selectedElement
-      console.log(selectedElement);
+      } else if (selectedElement.position) {
+        // it is a node save the selectedElement
+        console.log(selectedElement);
+      }
     }
   };
 
   const newNameChanged = (event) => {
-    setNewName(event.target.value);
     console.log(event.target.value, open);
+    setNewName(event.target.value);
   };
 
   const handleClose = () => {
-    console.log(open);
     props.setOpenSaveDialog(false);
+    setNewName('');
   };
   const { open } = props;
 
   useEffect(() => {
-    console.log(open);
     setIsOpen(open);
     setIsGraph(selectedElement.input_nodes ? 'Workflow' : 'Task');
-  }, [open, selectedElement.input_nodes]);
+    setNewName(graphRF.graph.label);
+  }, [open, graphRF.graph.label, selectedElement.input_nodes]);
 
   return (
     <Dialog open={isOpen} onClose={handleClose}>
@@ -89,12 +90,11 @@ export default function FormDialog(props) {
         </DialogContentText>
         <TextField
           margin="dense"
-          id="name"
+          id="saveAsName"
           label="New Name"
-          type=""
           fullWidth
           variant="standard"
-          value={newName || ''}
+          value={newName}
           onChange={newNameChanged}
         />
       </DialogContent>

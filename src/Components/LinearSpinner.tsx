@@ -1,14 +1,10 @@
 import Box from '@material-ui/core/Box';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-export default function LinearSpinner({ getting }) {
+export default function LinearSpinner() {
   return (
-    <>
-      {getting && (
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress />
-        </Box>
-      )}
-    </>
+    <Box sx={{ width: '100%' }}>
+      <LinearProgress />
+    </Box>
   );
 }
