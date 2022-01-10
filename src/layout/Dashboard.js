@@ -38,8 +38,9 @@ import { toRFEwoksLinks } from '../utils/toRFEwoksLinks';
 import { toRFEwoksNodes } from '../utils/toRFEwoksNodes';
 import axios from 'axios';
 import SimpleSnackbar from '../Components/Snackbar';
-// import FullScreenDialog from '../Components/FullScreenDialog';
+// import FullScreenDialog from '../Components/FullScreenDialog'; SubgraphsStack
 import TemporaryDrawer from '../Components/Drawer';
+import SubgraphsStack from '../Components/SubgraphsStack';
 import LinearSpinner from '../Components/LinearSpinner';
 import Tooltip from '@material-ui/core/Tooltip';
 import DashboardStyle from './DashboardStyle';
@@ -215,23 +216,6 @@ export default function Dashboard() {
     setWorkingGraph(initializedGraph);
   };
 
-  const goToGraph = (e) => {
-    e.preventDefault();
-    // console.log(e.target.text, e.target.id, recentGraphs);
-    setSubgraphsStack({ id: e.target.id, label: e.target.text });
-    const subgraph = recentGraphs.find((gr) => gr.graph.id === e.target.id);
-
-    if (!subgraph) {
-      setGraphRF({
-        graph: subgraph.graph,
-        nodes: toRFEwoksNodes(subgraph),
-        links: toRFEwoksLinks(subgraph),
-      });
-    } else {
-      setGraphRF(subgraph);
-    }
-  };
-
   const setInputValue = (val) => {
     setWorkflowValue(val);
   };
@@ -276,32 +260,7 @@ export default function Dashboard() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-          >
-            <Breadcrumbs aria-label="breadcrumb" color="secondary">
-              {subgraphsStack[0] &&
-                subgraphsStack.map((gr) => (
-                  <Link
-                    underline="hover"
-                    color="textPrimary"
-                    href="/"
-                    id={gr.id}
-                    key={gr.id}
-                    value={gr.id}
-                    onClick={goToGraph}
-                  >
-                    {gr.label}
-                  </Link>
-                ))}
-            </Breadcrumbs>
-            {subgraphsStack[0] &&
-              subgraphsStack[subgraphsStack.length - 1].label}
-          </Typography>
+          <SubgraphsStack />
           <IconButton color="inherit">
             <Fab
               className={classes.openFileButton}
