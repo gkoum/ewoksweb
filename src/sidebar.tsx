@@ -50,6 +50,7 @@ import type {
   GraphEwoks,
   Task,
   DataMapping,
+  GraphRF,
 } from './types';
 import { rfToEwoks } from './utils';
 import EditTaskProp from './Components/EditTaskProp';
@@ -235,7 +236,7 @@ export default function Sidebar(props) {
     if ('position' in element) {
       const el = element as EwoksRFNode;
       setElement({
-        ...(element as object),
+        ...el,
         label: event.target.value,
         data: { ...element.data, label: event.target.value },
       });
@@ -249,8 +250,9 @@ export default function Sidebar(props) {
 
   const commentChanged = (event) => {
     setComment(event.target.value);
+    const el = element as EwoksRFNode | EwoksRFLink; // ?
     setElement({
-      ...element,
+      ...el,
       data: { ...element.data, comment: event.target.value },
     });
   };
@@ -308,7 +310,7 @@ export default function Sidebar(props) {
   const conditionsValuesChanged = (table) => {
     console.log(table, element);
     setElement({
-      ...element,
+      ...(element as EwoksRFLink),
       data: {
         ...element.data,
         conditions: table.map((con) => {
@@ -330,13 +332,13 @@ export default function Sidebar(props) {
       };
     });
     setElement({
-      ...element,
+      ...(element as EwoksRFLink),
       data: {
         ...element.data,
         data_mapping: dmap,
         label: dmap
           .map((el) => `${el.source_output}->${el.target_input}`)
-          .join(', ') as EwoksRFLink,
+          .join(', '),
       },
     });
     console.log(element);
@@ -346,7 +348,7 @@ export default function Sidebar(props) {
     console.log(moreHandles, event.target.checked);
     setMoreHandles(event.target.checked);
     setElement({
-      ...element,
+      ...(element as EwoksRFNode),
       data: { ...element.data, moreHandles: event.target.checked },
     });
     // Remove when refresh is resolved
@@ -370,7 +372,7 @@ export default function Sidebar(props) {
     console.log(event.target.checked);
     setOnError(event.target.checked);
     setElement({
-      ...element,
+      ...(element as EwoksRFLink),
       data: { ...element.data, on_error: event.target.checked },
     });
   };
@@ -405,6 +407,7 @@ export default function Sidebar(props) {
     // TODO: if node deleted all associated links should be deleted with warning?
     console.log(element, selectedElement, graphRF);
     let newGraph = {};
+
     if (element.position) {
       // find associated links to delete
       const nodesLinks = graphRF.links.filter(
@@ -442,12 +445,12 @@ export default function Sidebar(props) {
           console.log(error);
         });
       setGraphRF(initializedGraph);
-      setSelectedElement({});
+      setSelectedElement({} as GraphDetails);
       setSubgraphsStack({ id: 'initialiase', label: '' });
-      setRecentGraphs({}, true);
+      setRecentGraphs({} as GraphRF, true);
     } else {
       if (workingGraph.graph.id === graphRF.graph.id) {
-        setGraphRF(newGraph);
+        setGraphRF(newGraph as GraphRF);
       } else {
         setOpenSnackbar({
           open: true,
@@ -460,13 +463,13 @@ export default function Sidebar(props) {
 
   const addConditions = () => {
     console.log(selectedElement);
-    const elCon = element.data.conditions;
+    const el = element as EwoksRFLink;
+    const elCon = el.data.conditions;
     if (elCon && elCon[elCon.length - 1] && elCon[elCon.length - 1].id === '') {
       console.log('should not ADD condition');
     } else {
-      console.log(element);
       setSelectedElement({
-        ...element,
+        ...el,
         data: {
           ...element.data,
           conditions: [...elCon, { id: '', name: '', value: '' }],

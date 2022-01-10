@@ -210,6 +210,7 @@ const useStore = create<State>((set, get) => ({
   selectedElement: {} as EwoksRFNode | EwoksRFLink | GraphDetails,
 
   setSelectedElement: (element: EwoksRFNode | EwoksRFLink | GraphDetails) => {
+    console.log(typeof element);
     const wg = get().workingGraph.graph.id;
 
     if (wg === '0' || wg === get().graphRF.graph.id) {
@@ -224,7 +225,7 @@ const useStore = create<State>((set, get) => ({
             ],
             links: get().graphRF.links,
           },
-          selectedElement: element,
+          selectedElement: element as EwoksRFNode,
         }));
       } else if ('source' in element) {
         set((state) => ({
@@ -237,7 +238,7 @@ const useStore = create<State>((set, get) => ({
               element,
             ],
           },
-          selectedElement: element,
+          selectedElement: element as EwoksRFLink,
         }));
       } else {
         set((state) => ({
@@ -247,7 +248,7 @@ const useStore = create<State>((set, get) => ({
             nodes: get().graphRF.nodes,
             links: get().graphRF.links,
           },
-          selectedElement: element,
+          selectedElement: element as GraphDetails,
         }));
       }
     } else {

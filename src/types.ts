@@ -107,8 +107,10 @@ export interface DataMapping {
 }
 
 export interface Conditions {
-  source_output: string;
-  value: string | boolean;
+  source_output?: string;
+  value?: string | boolean;
+  id?: string;
+  name?: string;
 }
 
 export interface EwoksNode {
@@ -157,6 +159,7 @@ export interface EwoksRFNode {
     icon?: string;
     comment?: string;
     moreHandles?: boolean;
+    map_all_data: boolean; // not exists in nodes Typescript resolve...
   };
   sourcePosition?: string;
   targetPosition?: string;
@@ -173,6 +176,7 @@ export interface EwoksRFLink {
   target: string;
   label?: string;
   data?: {
+    label?: string;
     data_mapping?: DataMapping[];
     type?: string;
     comment?: string;
