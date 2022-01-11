@@ -45,6 +45,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DashboardStyle from './DashboardStyle';
 import SendIcon from '@material-ui/icons/Send';
 import IntegratedSpinner from '../Components/IntegratedSpinner';
+import RedoIcon from '@material-ui/icons/Redo';
+import UndoIcon from '@material-ui/icons/Undo';
 
 const useStyles = DashboardStyle;
 
@@ -269,6 +271,28 @@ export default function Dashboard() {
               aria-label="add"
             >
               <FiberNew onClick={newGraph} />
+            </Fab>
+          </IconButton>
+          <IconButton color="inherit">
+            <Fab
+              className={classes.openFileButton}
+              color="primary"
+              size="small"
+              component="span"
+              aria-label="add"
+            >
+              <UndoIcon onClick={newGraph} />
+            </Fab>
+          </IconButton>
+          <IconButton color="inherit">
+            <Fab
+              className={classes.openFileButton}
+              color="primary"
+              size="small"
+              component="span"
+              aria-label="add"
+            >
+              <RedoIcon onClick={newGraph} />
             </Fab>
           </IconButton>
           <FormControl variant="standard" className={classes.formControl}>

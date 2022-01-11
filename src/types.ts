@@ -34,6 +34,8 @@ export interface DialogParams {
 }
 
 export interface State {
+  undoRedo: Array<Action>;
+  setUndoRedo: (action: Action) => void;
   initializedGraph: GraphRF;
   tasks: Array<Task>;
   setTasks: (tasks: Array<Task>) => void;
@@ -58,6 +60,11 @@ export interface State {
   setSubGraph: (graph: GraphRF) => Promise<GraphRF>;
   workingGraph: GraphRF;
   setWorkingGraph: (graph: GraphEwoks) => Promise<GraphRF>;
+}
+
+export interface Action {
+  action: string;
+  graph: GraphRF;
 }
 
 export interface NodeProps {

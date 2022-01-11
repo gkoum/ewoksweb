@@ -7,6 +7,7 @@ import type {
   GraphDetails,
   stackGraph,
   GraphEwoks,
+  Action,
 } from './types';
 import { createGraph } from './utils';
 import { toRFEwoksNodes } from './utils/toRFEwoksNodes';
@@ -31,6 +32,15 @@ const initializedGraph = {
 } as GraphRF;
 
 const useStore = create<State>((set, get) => ({
+  undoRedo: [] as Action[],
+  setUndoRedo: (action: Action) => {
+    console.log(get().undoRedo);
+    set((state) => ({
+      ...state,
+      undoRedo: [...get().undoRedo, action],
+    }));
+  },
+
   initializedGraph: initializedGraph,
 
   tasks: [],

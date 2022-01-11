@@ -91,6 +91,7 @@ function Canvas() {
   const setGraphRF = useStore((state) => state.setGraphRF);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
+  const setUndoRedo = useStore((state) => state.setUndoRedo);
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
 
@@ -154,6 +155,7 @@ function Canvas() {
     }
 
     if (workingGraph.graph.id === graphRF.graph.id) {
+      setUndoRedo({ action: 'Added a Node', graph: graphRF });
       // TODO: calculate optional_input_names, required_input_names, output_names
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const task_identifier = event.dataTransfer.getData('task_identifier');
@@ -227,7 +229,7 @@ function Canvas() {
   };
 
   const onEdgeUpdate = (oldEdge, newConnection) => {
-    console.log(oldEdge, newConnection, graphRF);
+    setUndoRedo({ action: 'Updated a Link', graph: graphRF });
     let elements = [];
     // TODO: shouldnt need the following debug why graphRF is not
     // updated inside this function
@@ -319,8 +321,10 @@ function Canvas() {
       // setElements((els) => addEdge(params, els));
       setGraphRF(newGraph as GraphRF);
       // need to also save it in recentGraphs if we leave and come back to the graph?
-
       setRecentGraphs(newGraph as GraphRF);
+
+      // add action and previous GraphRF to undo-redo array
+      setUndoRedo({ action: 'new Link', graph: graphRF });
     } else {
       setOpenSnackbar({
         open: true,
@@ -387,6 +391,7 @@ function Canvas() {
     event.preventDefault();
     console.log(event, selectedElements);
     if (workingGraph.graph.id === graphRF.graph.id) {
+      setUndoRedo({ action: 'Dragged a selection', graph: graphRF });
       // find selectedElements and update its position and save grapRF
       const newElements = [];
       const newElementsIds = [];
@@ -430,7 +435,7 @@ function Canvas() {
   const onNodeDragStop = (event, node) => {
     event.preventDefault();
     if (workingGraph.graph.id === graphRF.graph.id) {
-      console.log(event, node, toRFEwoksNodes[node]);
+      setUndoRedo({ action: 'Dragged a Node', graph: graphRF });
       // find RFEwoksNode and update its position and save grapRF
       const RFEwoksNode: EwoksRFNode = {
         ...graphRF.nodes.find((nod) => nod.id === node.id),
@@ -459,15 +464,16 @@ function Canvas() {
   };
 
   const onElementsRemove = (elementsToRemove) => {
-    console.log(elementsToRemove);
     let newGraph = {} as GraphRF;
     // TODO: make it work for multiple delete
     if (elementsToRemove[0].position) {
+      setUndoRedo({ action: 'Removed a Node', graph: graphRF });
       newGraph = {
         ...graphRF,
         nodes: graphRF.nodes.filter((nod) => nod.id !== elementsToRemove[0].id),
       };
     } else if (elementsToRemove[0].source) {
+      setUndoRedo({ action: 'Removed a Link', graph: graphRF });
       newGraph = {
         ...graphRF,
         links: graphRF.links.filter(
