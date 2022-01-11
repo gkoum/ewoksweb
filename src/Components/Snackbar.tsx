@@ -61,7 +61,7 @@ function SimpleSnackbar(props) {
       <Alert
         onClose={handleClose}
         severity={openSnackbar.severity}
-        sx={{ width: '100%' }}
+        // sx={{ width: '100%' }} // Uncomment
       >
         {openSnackbar.text}
       </Alert>

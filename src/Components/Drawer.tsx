@@ -17,7 +17,8 @@ export default function TemporaryDrawer(props) {
 
   useEffect(() => {
     console.log(props.openSettings);
-    setState({ top: props.openSettings });
+    const opSet: boolean = props.openSettings;
+    setState({ top: opSet, left: false, bottom: false, right: false });
   }, [props.openSettings]);
 
   const toggleDrawer = (anchor: Anchor, open: boolean) => (

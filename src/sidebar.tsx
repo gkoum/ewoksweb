@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -118,7 +117,16 @@ export default function Sidebar(props) {
   const [arrowType, setArrowType] = React.useState('');
   const [label, setLabel] = React.useState('');
   const [comment, setComment] = React.useState('');
-  const [element, setElement] = React.useState<EwoksRFNode | EwoksRFLink>({});
+  const [element, setElement] = React.useState<EwoksRFNode | EwoksRFLink>(
+    {} as EwoksRFNode | EwoksRFLink
+  );
+  // used only for typescript functioning???
+  const [elementN, setElementN] = React.useState<EwoksRFNode>(
+    {} as EwoksRFNode
+  );
+  const [elementL, setElementL] = React.useState<EwoksRFLink>(
+    {} as EwoksRFLink
+  );
   const [onError, setOnError] = React.useState<boolean>(false);
   const [animated, setAnimated] = React.useState<boolean>(false);
   const [graphInputs, setGraphInputs] = React.useState<GraphDetails[]>([]);
@@ -143,7 +151,7 @@ export default function Sidebar(props) {
     setElement(selectedElement);
 
     if ('position' in selectedElement) {
-      console.log('SHOW NODE DETAILS');
+      setElementN(selectedElement);
       setNodeType(selectedElement.data.type);
       setLabel(
         selectedElement.label
@@ -158,7 +166,7 @@ export default function Sidebar(props) {
         selectedElement.default_inputs ? selectedElement.default_inputs : []
       );
     } else if ('source' in selectedElement) {
-      console.log('SHOW LINK DETAILS');
+      setElementL(selectedElement);
       setLinkType(selectedElement.type);
       setArrowType(selectedElement.arrowHeadType);
       setAnimated(selectedElement.animated);
@@ -407,11 +415,13 @@ export default function Sidebar(props) {
     // TODO: if node deleted all associated links should be deleted with warning?
     console.log(element, selectedElement, graphRF);
     let newGraph = {};
-
-    if (element.position) {
+    const elN = element as EwoksRFNode; // is this the way???
+    const elL = element as EwoksRFLink;
+    const elD = element as GraphDetails;
+    if (elN.position) {
       // find associated links to delete
       const nodesLinks = graphRF.links.filter(
-        (link) => !(link.source === element.id || link.target === element.id)
+        (link) => !(link.source === elN.id || link.target === elN.id)
       );
       console.log(nodesLinks);
       newGraph = {
@@ -419,20 +429,20 @@ export default function Sidebar(props) {
         nodes: graphRF.nodes.filter((nod) => nod.id !== element.id),
         links: nodesLinks,
       };
-    } else if (element.source) {
+    } else if (elL.source) {
       newGraph = {
         ...graphRF,
-        links: graphRF.links.filter((link) => link.id !== element.id),
+        links: graphRF.links.filter((link) => link.id !== elL.id),
       };
     }
 
-    if (element.input_nodes) {
+    if (elD.input_nodes) {
       await axios
-        .delete(`http://localhost:5000/workflow/${element.id}`)
+        .delete(`http://localhost:5000/workflow/${elD.id}`)
         .then((res) => {
           setOpenSnackbar({
             open: true,
-            text: `Workflow ${element.id} succesfully deleted!`,
+            text: `Workflow ${elD.id} succesfully deleted!`,
             severity: 'success',
           });
         })
@@ -480,15 +490,15 @@ export default function Sidebar(props) {
 
   const addDataMapping = () => {
     console.log(selectedElement);
-    const elMap = element.data.data_mapping;
+    const el = element as EwoksRFLink;
+    const elMap = el.data.data_mapping;
     if (elMap && elMap[elMap.length - 1] && elMap[elMap.length - 1].id === '') {
       console.log('should not ADD mapping');
     } else {
-      console.log(element);
       setSelectedElement({
-        ...element,
+        ...el,
         data: {
-          ...element.data,
+          ...el.data,
           data_mapping: [...elMap, { id: '', name: '', value: '' }],
         },
       });
@@ -497,11 +507,12 @@ export default function Sidebar(props) {
 
   const addDefaultInputs = () => {
     console.log(selectedElement);
-    const elIn = element.default_inputs;
+    const el = element as EwoksRFNode;
+    const elIn = el.default_inputs;
     if (elIn && elIn[elIn.length - 1] && elIn[elIn.length - 1].id === '') {
       console.log('should not ADD default');
     } else {
-      console.log(element.default_inputs);
+      console.log(el.default_inputs);
       setSelectedElement({
         ...element,
         default_inputs: [...elIn, { id: '', name: '', value: '' }],
@@ -525,9 +536,9 @@ export default function Sidebar(props) {
 
   const getTasks = async (event) => {
     console.log(event, selectedElement);
-    const tasks: Task[] = await axios.get('http://localhost:5000/tasks');
+    const tasks = await axios.get('http://localhost:5000/tasks');
     console.log(tasks);
-    setTasks(tasks.data);
+    setTasks(tasks.data as Task[]);
   };
 
   return (
@@ -549,6 +560,8 @@ export default function Sidebar(props) {
         <AccordionDetails style={{ flexWrap: 'wrap' }}>
           {tasks.map((elem, index) => (
             <span
+              role="button"
+              tabIndex={0}
               key={index}
               className="dndnode"
               onDragStart={(event) =>
@@ -564,7 +577,7 @@ export default function Sidebar(props) {
             </span>
           ))}
           <Upload>
-            <span onClick={insertGraph}>
+            <span role="button" tabIndex={0} onClick={insertGraph}>
               <AddIcon />G
             </span>
           </Upload>
@@ -657,7 +670,7 @@ export default function Sidebar(props) {
                     inputProps={{ 'aria-label': 'controlled' }}
                   />
                 </div>
-                {!mapAllData && element.source && (
+                {!mapAllData && elementL.source && (
                   <div>
                     <b>Data Mapping </b>
                     <IconButton
@@ -674,13 +687,13 @@ export default function Sidebar(props) {
                         valuesChanged={dataMappingValuesChanged}
                         typeOfValues={[
                           {
-                            type: element.source
+                            type: elementL.source
                               ? ['class'].includes(
                                   graphRF &&
                                     graphRF.nodes[0] &&
                                     graphRF.nodes.find((nod) => {
                                       console.log(nod, element);
-                                      return nod.id === element.source;
+                                      return nod.id === elementL.source;
                                     }).task_type
                                 )
                                 ? 'select'
@@ -689,13 +702,13 @@ export default function Sidebar(props) {
                             values: props.element.data.links_input_names || [],
                           },
                           {
-                            type: element.target
+                            type: elementL.target
                               ? ['class'].includes(
                                   graphRF &&
                                     graphRF.nodes[0] &&
                                     graphRF.nodes.find((nod) => {
                                       console.log(nod, element);
-                                      return nod.id === element.target;
+                                      return nod.id === elementL.target;
                                     }).task_type
                                 )
                                 ? 'select'
@@ -722,7 +735,7 @@ export default function Sidebar(props) {
                     inputProps={{ 'aria-label': 'controlled' }}
                   />
                 </div>
-                {!onError && element.source && (
+                {!onError && elementL.source && (
                   <div>
                     <b>Conditions </b>
                     {/* TODO: any kind of type is allowed: objects, arrays that need to be editable */}
@@ -740,13 +753,13 @@ export default function Sidebar(props) {
                         valuesChanged={conditionsValuesChanged}
                         typeOfValues={[
                           {
-                            type: element.source
+                            type: elementL.source
                               ? ['class'].includes(
                                   graphRF &&
                                     graphRF.nodes[0] &&
                                     graphRF.nodes.find((nod) => {
                                       console.log(nod, element);
-                                      return nod.id === element.source;
+                                      return nod.id === elementL.source;
                                     }).task_type
                                 )
                                 ? 'select'

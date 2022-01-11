@@ -59,9 +59,9 @@ const useStore = create<State>((set, get) => ({
     }));
   },
 
-  allWorkflows: [] as GraphEwoks[],
+  allWorkflows: [] as Array<{ title: string }>,
 
-  setAllWorkflows: (workflows: GraphEwoks[]) => {
+  setAllWorkflows: (workflows: [{ title: string }]) => {
     set((state) => ({
       ...state,
       allWorkflows: workflows,

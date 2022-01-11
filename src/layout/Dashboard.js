@@ -38,7 +38,6 @@ import { toRFEwoksLinks } from '../utils/toRFEwoksLinks';
 import { toRFEwoksNodes } from '../utils/toRFEwoksNodes';
 import axios from 'axios';
 import SimpleSnackbar from '../Components/Snackbar';
-// import FullScreenDialog from '../Components/FullScreenDialog'; SubgraphsStack
 import TemporaryDrawer from '../Components/Drawer';
 import SubgraphsStack from '../Components/SubgraphsStack';
 import LinearSpinner from '../Components/LinearSpinner';
@@ -356,10 +355,6 @@ export default function Dashboard() {
             handleOpenSettings={handleOpenSettings}
             openSettings={openSettings}
           />
-          {/* <FullScreenDialog
-            handleOpenSettings={handleOpenSettings}
-            openSettings={openSettings}
-          /> */}
         </Toolbar>
       </AppBar>
       <Drawer

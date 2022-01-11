@@ -12,10 +12,9 @@ import DoneIcon from '@material-ui/icons/DoneAllTwoTone';
 import RevertIcon from '@material-ui/icons/NotInterestedOutlined';
 import { MenuItem, Select } from '@material-ui/core';
 import CustomTableCell from './CustomTableCell';
-import useStore from '../store';
 import DraggableDialog from './DraggableDialog';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: '100%',
     padding: '1px',
@@ -59,13 +58,13 @@ function EditableTable(props) {
   const [rows, setRows] = React.useState([]);
   const [typeOfInputs, setTypeOfInputs] = React.useState([]);
   const [openDialog, setOpenDialog] = React.useState<boolean>(false);
-  const [dialogContent, setDialogContent] = React.useState<GraphEwoks>({});
+  const [dialogContent, setDialogContent] = React.useState({});
 
   const { defaultValues } = props;
   const { headers } = props;
 
   // TODO: only the first one???
-  const val = defaultValues[0].value;
+  // const val = defaultValues[0].value;
 
   const typesOfInputs = ['bool', 'number', 'string', 'list', 'dict', 'null'];
   // console.log(defaultValues, val, rows, props, typeOfInputs);
@@ -107,7 +106,7 @@ function EditableTable(props) {
   const onToggleEditMode = (id, index, command) => {
     // console.log(props, id, rows, props.defaultValues, command, typeOfInputs);
     if (command === 'edit' && ['list', 'dict'].includes(typeOfInputs[index])) {
-      let initialValue = '';
+      let initialValue: string | [] | {} = '';
 
       if (typeOfInputs[index] === 'list') {
         if (Array.isArray(rows[index].value)) {
@@ -132,7 +131,7 @@ function EditableTable(props) {
         callbackProps: { rows, id },
       });
     }
-    setRows((state) => {
+    setRows(() => {
       return rows.map((row) => {
         if (row.id === id) {
           return {
@@ -157,7 +156,7 @@ function EditableTable(props) {
     ) {
       let { value } = e.target;
       const { name } = e.target;
-      const inType = typeOfInputs[index];
+      // const inType = typeOfInputs[index];
 
       if (name === 'value') {
         value =

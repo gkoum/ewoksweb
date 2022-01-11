@@ -7,7 +7,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import useStore from '../store';
-import type { EwoksRFLink, EwoksRFNode } from '../types';
+import type {
+  EwoksRFLink,
+  EwoksRFNode,
+  GraphDetails,
+  GraphEwoks,
+  GraphRF,
+} from '../types';
 import axios from 'axios';
 import { rfToEwoks } from '../utils';
 
@@ -29,38 +35,36 @@ export default function FormDialog(props) {
     // fire a POST
     console.log(open, newName);
     props.setOpenSaveDialog(false);
-    if (newName !== '') {
-      if (isGraph) {
-        // save the graphRF
-        const response = axios
-          .post(
-            `http://localhost:5000/workflows`,
-            rfToEwoks(
-              {
-                ...graphRF,
-                graph: { ...graphRF.graph, id: newName, label: newName },
-              },
-              recentGraphs
-            )
+    if (newName !== '' && isGraph) {
+      // save the graphRF
+      const response = axios
+        .post(
+          `http://localhost:5000/workflows`,
+          rfToEwoks(
+            {
+              ...graphRF,
+              graph: { ...graphRF.graph, id: newName, label: newName },
+            },
+            recentGraphs
           )
-          .then((res) => {
-            console.log(res.data);
-            setWorkingGraph(res.data);
-            setRecentGraphs({}, true);
-          })
-          .catch((error) => {
-            console.log(error);
-            setOpenSnackbar({
-              open: true,
-              text: 'The name exists. Please retry with another name',
-              // TODO: replace by server error
-              severity: 'warning',
-            });
+        )
+        .then((res) => {
+          setWorkingGraph(res.data as GraphEwoks);
+          setRecentGraphs({} as GraphRF, true);
+        })
+        .catch((error) => {
+          console.log(error);
+          setOpenSnackbar({
+            open: true,
+            text: 'The name exists. Please retry with another name',
+            // TODO: replace by server error
+            severity: 'warning',
           });
-      } else if (selectedElement.position) {
-        // it is a node save the selectedElement
-        console.log(selectedElement);
-      }
+        });
+      // else if (selectedElement.position) {
+      //   // it is a node save the selectedElement
+      //   console.log(selectedElement);
+      // }
     }
   };
 
@@ -77,9 +81,10 @@ export default function FormDialog(props) {
 
   useEffect(() => {
     setIsOpen(open);
-    setIsGraph(selectedElement.input_nodes ? 'Workflow' : 'Task');
+    const selG = selectedElement as GraphDetails;
+    setIsGraph(selG.input_nodes ? 'Workflow' : 'Task');
     setNewName(graphRF.graph.label);
-  }, [open, graphRF.graph.label, selectedElement.input_nodes]);
+  }, [open, graphRF.graph.label, selectedElement]);
 
   return (
     <Dialog open={isOpen} onClose={handleClose}>

@@ -4,11 +4,10 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { getWorkflows } from '../utils';
 import useStore from '../store';
-import type { GraphEwoks } from '../types';
 
 function AutocompleteDrop(props) {
-  const [options, setOptions] = useState<readonly GraphEwoks[]>([]);
-  const [value] = React.useState<string | null>(options[0]);
+  const [options, setOptions] = useState([]);
+  const [value] = React.useState(options[0]);
   const [open, setOpen] = useState(false);
   const allWorkflows = useStore((state) => state.allWorkflows);
   const setAllWorkflows = useStore((state) => state.setAllWorkflows);
@@ -22,13 +21,15 @@ function AutocompleteDrop(props) {
     }
     // if (allWorkflows.length === 0) { // TODO: not get all the time...
     (async () => {
-      const workF: GraphEwoks[] = await getWorkflows()
+      const workF: { title: string }[] = await getWorkflows();
       // .catch((error) => {
       //   console.log(error);
       // });
       if (workF && workF.length > 0) {
         setAllWorkflows(workF);
-        if (active) { setOptions([...workF]) };
+        if (active) {
+          setOptions([...workF]);
+        }
       }
     })();
     // } else {

@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import type {
-  Graph,
-  EwoksNode,
-  EwoksRFNode,
-  EwoksLink,
-  EwoksRFLink,
-  GraphEwoks,
-  RFNode,
-  nodeInputsOutputs,
-  GraphRF,
-} from '../types';
+// import type {
+//   Graph,
+//   EwoksNode,
+//   EwoksRFNode,
+//   EwoksLink,
+//   EwoksRFLink,
+//   GraphEwoks,
+//   RFNode,
+//   nodeInputsOutputs,
+//   GraphRF,
+// } from '../types';
 
 function assertLog(statement, severity = 'info') {
   // severity can be error, warning, info

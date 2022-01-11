@@ -42,8 +42,8 @@ export interface State {
   openSnackbar: SnackbarParams;
   setOpenSnackbar: (params: SnackbarParams) => void;
   // updateNeeded: any;
-  allWorkflows: Array<GraphEwoks>;
-  setAllWorkflows: (workflows: Array<GraphEwoks>) => void;
+  allWorkflows: Array<{ title: string }>;
+  setAllWorkflows: (workflows: Array<{ title: string }>) => void;
   recentGraphs?: Array<GraphRF>;
   setRecentGraphs?: (graphRF: GraphRF, reset?: boolean) => void;
   graphOrSubgraph?: Boolean;
@@ -60,6 +60,18 @@ export interface State {
   setWorkingGraph: (graph: GraphEwoks) => Promise<GraphRF>;
 }
 
+export interface NodeProps {
+  moreHandles: boolean;
+  isGraph: boolean;
+  type: string;
+  label: string;
+  selected: boolean;
+  color?: string;
+  content: React.ReactNode;
+  image?: string;
+  comment?: string;
+}
+
 export interface Task {
   task_type?: string;
   task_identifier?: string;
@@ -70,9 +82,12 @@ export interface Task {
   output_names?: Array<string>;
   required_input_names?: Array<string>;
   icon?: string;
+  category?: string;
+  uiProps?: UiProps;
 }
 
 export interface Inputs {
+  id?: string;
   name?: string;
   value?: string | boolean;
 }
@@ -102,8 +117,11 @@ export interface CanvasPosition {
 }
 
 export interface DataMapping {
-  source_output: string;
-  target_input: string;
+  source_output?: string;
+  target_input?: string;
+  value?: string | boolean;
+  id?: string;
+  name?: string;
 }
 
 export interface Conditions {
@@ -159,7 +177,7 @@ export interface EwoksRFNode {
     icon?: string;
     comment?: string;
     moreHandles?: boolean;
-    map_all_data: boolean; // not exists in nodes Typescript resolve...
+    map_all_data?: boolean; // not exists in nodes Typescript resolve...
   };
   sourcePosition?: string;
   targetPosition?: string;
@@ -182,7 +200,7 @@ export interface EwoksRFLink {
     comment?: string;
     conditions?: Conditions[];
     on_error?: Inputs;
-    map_all_data: boolean;
+    map_all_data?: boolean;
     sub_target?: string;
     sub_source?: string;
   };

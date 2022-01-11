@@ -1,34 +1,22 @@
 // @ts-ignore
 // import dagre from 'dagre';
-import type {
-  EwoksNode,
-  EwoksRFNode,
-  EwoksLink,
-  EwoksRFLink,
-  GraphEwoks,
-  GraphRF,
-  Task,
-} from './types';
+import type { EwoksRFNode, GraphEwoks, GraphRF } from './types';
 import axios from 'axios';
 import { calcGraphInputsOutputs } from './utils/CalcGraphInputsOutputs';
 import { toEwoksLinks } from './utils/toEwoksLinks';
 import { toEwoksNodes } from './utils/toEwoksNodes';
-// import { inNodesLinks } from './utils/inNodesLinks';
-// import { outNodesLinks } from './utils/outNodesLinks';
-// import { toRFEwoksNodes } from './utils/toRFEwoksNodes';
 
 // const { GraphDagre } = dagre.graphlib;
 // const NODE_SIZE = { width: 270, height: 36 };
 
 export const ewoksNetwork = {};
 
-export async function getWorkflows() {
+export async function getWorkflows(): Promise<Array<{ title: string }>> {
   // const workflows = await axios.get('http://mxbes2-1707:38280/ewoks/workflows');
   // return workflows.data.workflows.map((work) => {
-  const workflows: { data: [] } = await axios.get(
-    'http://localhost:5000/workflows'
-  );
-  return workflows.data.map((work) => {
+  const workflows = await axios.get('http://localhost:5000/workflows');
+  const workf = workflows.data as string[];
+  return workf.map((work) => {
     return { title: work };
   });
 }
@@ -57,7 +45,7 @@ export async function getSubgraphs(
   const existingNodeSubgraphs = nodes.filter(
     (nod) => nod.task_type === 'graph'
   );
-  let results = [];
+  let results = [] as GraphEwoks[];
   if (existingNodeSubgraphs.length > 0) {
     // there are subgraphs -> first search in the recentGraphs for them
     const notInRecent = [];
@@ -79,13 +67,14 @@ export async function getSubgraphs(
       .then(
         axios.spread((...res) => {
           // all requests are now complete in an array
-          return res.map((result) => result.data);
+          return res.map((result) => result.data) as GraphEwoks[];
         })
-      )
-      .catch((error) => {
-        // remove after handling the error
-        console.log('AXIOS ERROR', id, error);
-      });
+      );
+    // Uncomment
+    // .catch((error) => {
+    //   // remove after handling the error
+    //   console.log('AXIOS ERROR', id, error);
+    // });
   }
   return results ? results : [];
 }

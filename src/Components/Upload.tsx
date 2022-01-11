@@ -59,7 +59,7 @@ function Upload(props) {
       const file = await reader.then((val) => val);
       file.onloadend = async function () {
         if (isJsonString(file.result)) {
-          const newGraph = JSON.parse(file.result);
+          const newGraph = JSON.parse(file.result as string);
           let working = {};
           if (graphOrSubgraph) {
             const { result } = validateEwoksGraph(newGraph);

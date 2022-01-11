@@ -1,4 +1,4 @@
-import type { EwoksRFNode } from '../types';
+import type { EwoksRFNode, GraphRF } from '../types';
 import { inNodesLinks } from './inNodesLinks';
 import { outNodesLinks } from './outNodesLinks';
 import { tasks } from '../assets/graphTests';
@@ -76,7 +76,7 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
               required_input_names: [],
             };
 
-        if (task_type != 'graph') {
+        if (task_type !== 'graph') {
           return {
             id: id.toString(),
             task_type,
@@ -113,7 +113,7 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
           };
         }
         // if node=subgraph calculate inputs-outputs from subgraph.graph
-        const subgraphNode = newNodeSubgraphs.find(
+        const subgraphNode: GraphRF = newNodeSubgraphs.find(
           (subGr) => subGr.graph.id === task_identifier
         );
         let inputsSub = [];

@@ -1,11 +1,13 @@
 // the graphs we will get from the server or DB
 // decoupling from the Graph visualisation library used means we have a model
 // of ewoks and a map-engine to create a model for react-flow or another for vis etc.
+import type { Task } from '../types';
+
 const PpfPortTask = 'ewokscore.ppftasks.PpfPortTask';
 export const graph = {};
 
 // TODO: put tasks on the server: get, put, post, delete
-export const tasks = [
+export const tasks: Task[] = [
   {
     task_type: 'class',
     task_identifier:

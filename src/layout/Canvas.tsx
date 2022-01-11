@@ -139,8 +139,8 @@ function Canvas() {
     event.dataTransfer.dropEffect = 'move';
   };
 
-  const onDrop = (event, element) => {
-    console.log(event, element, selectedElements);
+  const onDrop = (event) => {
+    console.log(event, selectedElements);
     event.preventDefault();
     // TODO: examine how to prevent bug on dragging selection of multiple elements
     if (selectedElements.length > 1) {
@@ -166,6 +166,7 @@ function Canvas() {
       });
       console.log(position);
 
+      // TODO change now that we get them from server
       let tempTask = tasks.find(
         (tas) => tas.task_identifier === task_identifier
       );
@@ -213,9 +214,9 @@ function Canvas() {
         links: graphRF.links,
       };
       // setElements((els) => addEdge(params, els));
-      setGraphRF(newGraph);
+      setGraphRF(newGraph as GraphRF);
       // need to also save it in recentGraphs if we leave and come back to the graph?
-      setRecentGraphs(newGraph);
+      setRecentGraphs(newGraph as GraphRF);
     } else {
       setOpenSnackbar({
         open: true,
@@ -228,12 +229,13 @@ function Canvas() {
   const onEdgeUpdate = (oldEdge, newConnection) => {
     console.log(oldEdge, newConnection, graphRF);
     let elements = [];
-    // TODO: shouldnt meed the following debug why graphRF is not
+    // TODO: shouldnt need the following debug why graphRF is not
     // updated inside this function
+    // Uncomment
     setElements((els) => {
       console.log(els);
       elements = els;
-      // updateEdge(oldEdge, newConnection, els);
+      return els;
     });
     const link = {
       ...oldEdge,

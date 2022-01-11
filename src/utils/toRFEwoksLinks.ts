@@ -1,4 +1,4 @@
-import type { EwoksRFLink } from '../types';
+import type { EwoksRFLink, Task } from '../types';
 import { inNodesLinks } from './inNodesLinks';
 import { outNodesLinks } from './outNodesLinks';
 import { tasks } from '../assets/graphTests';

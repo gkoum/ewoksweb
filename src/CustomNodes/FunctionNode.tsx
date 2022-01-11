@@ -1,8 +1,7 @@
-// export {};
 import React, { memo } from 'react';
-// import * as R from "ramda";
 import { Handle, Position } from 'react-flow-renderer';
-import Node, { contentStyle as style } from './Node';
+import Node from './Node';
+import { contentStyle as style } from './NodeStyle';
 
 const isValidInput = (connection, type) => {
   return true; // R.last(R.split('__', connection.source)) === type;

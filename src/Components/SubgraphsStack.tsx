@@ -28,8 +28,8 @@ export default function SubgraphsStack() {
     if (!subgraph) {
       setGraphRF({
         graph: subgraph.graph,
-        nodes: toRFEwoksNodes(subgraph),
-        links: toRFEwoksLinks(subgraph),
+        nodes: toRFEwoksNodes(subgraph, []),
+        links: toRFEwoksLinks(subgraph, []),
       });
     } else {
       setGraphRF(subgraph);
@@ -53,7 +53,7 @@ export default function SubgraphsStack() {
               href="/"
               id={gr.id}
               key={gr.id}
-              value={gr.id}
+              // value={gr.id} // Uncomment
               onClick={goToGraph}
             >
               {gr.label}
