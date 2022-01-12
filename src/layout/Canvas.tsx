@@ -316,15 +316,13 @@ function Canvas() {
         nodes: graphRF.nodes,
         links: [...graphRF.links, link], // addEdge(params, graphRF.links),
       };
-
-      console.log(link, newGraph);
       // setElements((els) => addEdge(params, els));
       setGraphRF(newGraph as GraphRF);
       // need to also save it in recentGraphs if we leave and come back to the graph?
       setRecentGraphs(newGraph as GraphRF);
 
-      // add action and previous GraphRF to undo-redo array
-      setUndoRedo({ action: 'new Link', graph: graphRF });
+      // add action and new GraphRF to undo-redo array
+      setUndoRedo({ action: 'new Link', graph: newGraph as GraphRF });
     } else {
       setOpenSnackbar({
         open: true,

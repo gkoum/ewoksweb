@@ -69,7 +69,6 @@ export default function Dashboard() {
   const setGraphRF = useStore((state) => state.setGraphRF);
   const selectedElement = useStore((state) => state.selectedElement);
   const subgraphsStack = useStore((state) => {
-    console.log(state);
     return state.subgraphsStack;
   });
   const setGraphOrSubgraph = useStore((state) => state.setGraphOrSubgraph);
@@ -85,6 +84,8 @@ export default function Dashboard() {
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
   const initializedGraph = useStore((state) => state.initializedGraph);
   const [gettingFromServer, setGettingFromServer] = React.useState(false);
+  const undoIndex = useStore((state) => state.undoIndex);
+  const setUndoIndex = useStore((state) => state.setUndoIndex);
 
   useEffect(() => {
     console.log(subgraphsStack.length);
@@ -217,6 +218,14 @@ export default function Dashboard() {
     setWorkingGraph(initializedGraph);
   };
 
+  const undo = () => {
+    setUndoIndex(undoIndex - 1);
+  };
+
+  const redo = (event) => {
+    setUndoIndex(undoIndex + 1);
+  };
+
   const setInputValue = (val) => {
     setWorkflowValue(val);
   };
@@ -281,7 +290,7 @@ export default function Dashboard() {
               component="span"
               aria-label="add"
             >
-              <UndoIcon onClick={newGraph} />
+              <UndoIcon onClick={undo} />
             </Fab>
           </IconButton>
           <IconButton color="inherit">
@@ -292,7 +301,7 @@ export default function Dashboard() {
               component="span"
               aria-label="add"
             >
-              <RedoIcon onClick={newGraph} />
+              <RedoIcon onClick={redo} />
             </Fab>
           </IconButton>
           <FormControl variant="standard" className={classes.formControl}>

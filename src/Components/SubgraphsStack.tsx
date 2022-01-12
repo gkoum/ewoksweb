@@ -15,7 +15,6 @@ export default function SubgraphsStack() {
   const setGraphRF = useStore((state) => state.setGraphRF);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const subgraphsStack = useStore((state) => {
-    console.log(state);
     return state.subgraphsStack;
   });
 

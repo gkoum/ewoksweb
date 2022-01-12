@@ -36,6 +36,8 @@ export interface DialogParams {
 export interface State {
   undoRedo: Array<Action>;
   setUndoRedo: (action: Action) => void;
+  undoIndex: number;
+  setUndoIndex: (index: number) => void;
   initializedGraph: GraphRF;
   tasks: Array<Task>;
   setTasks: (tasks: Array<Task>) => void;

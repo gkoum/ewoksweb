@@ -33,12 +33,35 @@ const initializedGraph = {
 
 const useStore = create<State>((set, get) => ({
   undoRedo: [] as Action[],
+
   setUndoRedo: (action: Action) => {
-    console.log(get().undoRedo);
+    console.log(get().undoRedo, action, get().undoIndex);
+    // check the size of the history-array  not more than 10
+    // when undo and the then edit the steps above the current step are erased
     set((state) => ({
       ...state,
       undoRedo: [...get().undoRedo, action],
+      undoIndex: get().undoIndex + 1,
     }));
+  },
+
+  undoIndex: 0 as number,
+
+  setUndoIndex: (index) => {
+    console.log('setIndex', index, get().undoRedo);
+    if (index >= 0 && get().undoRedo.length > index) {
+      set((state) => ({
+        ...state,
+        undoIndex: index,
+        graphRF: get().undoRedo[index].graph,
+      }));
+    } else {
+      get().setOpenSnackbar({
+        open: true,
+        text: 'No more back or forth!',
+        severity: 'warning',
+      });
+    }
   },
 
   initializedGraph: initializedGraph,
@@ -200,6 +223,8 @@ const useStore = create<State>((set, get) => ({
     set((state) => ({
       ...state,
       workingGraph: graph,
+      undoRedo: [{ action: 'Opened new graph', graph: graph }],
+      undoIndex: 0,
     }));
     return graph;
   },
