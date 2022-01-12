@@ -155,7 +155,6 @@ function Canvas() {
     }
 
     if (workingGraph.graph.id === graphRF.graph.id) {
-      setUndoRedo({ action: 'Added a Node', graph: graphRF });
       // TODO: calculate optional_input_names, required_input_names, output_names
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const task_identifier = event.dataTransfer.getData('task_identifier');
@@ -217,6 +216,7 @@ function Canvas() {
       };
       // setElements((els) => addEdge(params, els));
       setGraphRF(newGraph as GraphRF);
+      setUndoRedo({ action: 'Added a Node', graph: newGraph });
       // need to also save it in recentGraphs if we leave and come back to the graph?
       setRecentGraphs(newGraph as GraphRF);
     } else {
@@ -229,7 +229,6 @@ function Canvas() {
   };
 
   const onEdgeUpdate = (oldEdge, newConnection) => {
-    setUndoRedo({ action: 'Updated a Link', graph: graphRF });
     let elements = [];
     // TODO: shouldnt need the following debug why graphRF is not
     // updated inside this function
@@ -252,6 +251,7 @@ function Canvas() {
 
     console.log(link, newGraph);
     setGraphRF(newGraph as GraphRF);
+    setUndoRedo({ action: 'Updated a Link', graph: newGraph });
     // need to also save it in recentGraphs if we leave and come back to the graph?
 
     setRecentGraphs(newGraph as GraphRF);
@@ -389,7 +389,6 @@ function Canvas() {
     event.preventDefault();
     console.log(event, selectedElements);
     if (workingGraph.graph.id === graphRF.graph.id) {
-      setUndoRedo({ action: 'Dragged a selection', graph: graphRF });
       // find selectedElements and update its position and save grapRF
       const newElements = [];
       const newElementsIds = [];
@@ -410,6 +409,10 @@ function Canvas() {
       };
 
       setGraphRF(newGraph as GraphRF);
+      setUndoRedo({
+        action: 'Dragged a selection',
+        graph: newGraph as GraphRF,
+      });
       setRecentGraphs(newGraph);
     } else {
       setOpenSnackbar({
@@ -433,7 +436,6 @@ function Canvas() {
   const onNodeDragStop = (event, node) => {
     event.preventDefault();
     if (workingGraph.graph.id === graphRF.graph.id) {
-      setUndoRedo({ action: 'Dragged a Node', graph: graphRF });
       // find RFEwoksNode and update its position and save grapRF
       const RFEwoksNode: EwoksRFNode = {
         ...graphRF.nodes.find((nod) => nod.id === node.id),
@@ -450,6 +452,7 @@ function Canvas() {
       };
 
       setGraphRF(newGraph as GraphRF);
+      setUndoRedo({ action: 'Dragged a Node', graph: newGraph });
       // need to also save it in recentGraphs if we leave and come back to the graph?
       setRecentGraphs(newGraph);
     } else {
@@ -465,19 +468,19 @@ function Canvas() {
     let newGraph = {} as GraphRF;
     // TODO: make it work for multiple delete
     if (elementsToRemove[0].position) {
-      setUndoRedo({ action: 'Removed a Node', graph: graphRF });
       newGraph = {
         ...graphRF,
         nodes: graphRF.nodes.filter((nod) => nod.id !== elementsToRemove[0].id),
       };
+      setUndoRedo({ action: 'Removed a Node', graph: newGraph });
     } else if (elementsToRemove[0].source) {
-      setUndoRedo({ action: 'Removed a Link', graph: graphRF });
       newGraph = {
         ...graphRF,
         links: graphRF.links.filter(
           (link) => link.id !== elementsToRemove[0].id
         ),
       };
+      setUndoRedo({ action: 'Removed a Link', graph: newGraph });
     }
     setGraphRF(newGraph);
   };

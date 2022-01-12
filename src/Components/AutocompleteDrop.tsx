@@ -12,6 +12,7 @@ function AutocompleteDrop(props) {
   const allWorkflows = useStore((state) => state.allWorkflows);
   const setAllWorkflows = useStore((state) => state.setAllWorkflows);
   const loading = open && options.length === 0;
+  const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
 
   useEffect(() => {
     let active = true;
@@ -30,6 +31,12 @@ function AutocompleteDrop(props) {
         if (active) {
           setOptions([...workF]);
         }
+      } else {
+        setOpenSnackbar({
+          open: true,
+          text: 'Something went wrong when contacting the server!',
+          severity: 'error',
+        });
       }
     })();
     // } else {
@@ -39,7 +46,7 @@ function AutocompleteDrop(props) {
     return () => {
       active = false;
     };
-  }, [loading, allWorkflows, setAllWorkflows]);
+  }, [loading, allWorkflows, setAllWorkflows, setOpenSnackbar]);
 
   useEffect(() => {
     if (!open) {

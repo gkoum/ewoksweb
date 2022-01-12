@@ -408,7 +408,7 @@ export default function Sidebar(props) {
     // TODO: if in save some links dont have active source-target should be deleted?
     console.log(element, selectedElement);
     // calculate effects on saving an element on the rest of the graph
-    setSelectedElement(element);
+    setSelectedElement(element, 'fromSaveElement');
   };
 
   const deleteElement = async () => {

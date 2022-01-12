@@ -57,7 +57,10 @@ export interface State {
   graphRF: GraphRF;
   setGraphRF: (graphRF: GraphRF) => void;
   selectedElement: EwoksRFNode | EwoksRFLink;
-  setSelectedElement: (element: EwoksRFNode | EwoksRFLink) => void;
+  setSelectedElement: (
+    element: EwoksRFNode | EwoksRFLink,
+    from?: string
+  ) => void;
   subGraph: GraphRF;
   setSubGraph: (graph: GraphRF) => Promise<GraphRF>;
   workingGraph: GraphRF;

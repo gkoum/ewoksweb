@@ -14,11 +14,18 @@ export const ewoksNetwork = {};
 export async function getWorkflows(): Promise<Array<{ title: string }>> {
   // const workflows = await axios.get('http://mxbes2-1707:38280/ewoks/workflows');
   // return workflows.data.workflows.map((work) => {
-  const workflows = await axios.get('http://localhost:5000/workflows');
-  const workf = workflows.data as string[];
-  return workf.map((work) => {
-    return { title: work };
-  });
+  const workflows = await axios
+    .get('http://localhost:5000/workflows')
+    .catch((error) => console.log(error));
+  //
+  if (workflows && workflows.data) {
+    const workf = workflows.data as string[];
+    return workf.map((work) => {
+      return { title: work };
+    });
+  } else {
+    return [];
+  }
 }
 
 const id = 'graph';

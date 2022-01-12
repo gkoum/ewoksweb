@@ -40,7 +40,7 @@ const useStore = create<State>((set, get) => ({
     // when undo and the then edit the steps above the current step are erased
     set((state) => ({
       ...state,
-      undoRedo: [...get().undoRedo, action],
+      undoRedo: [...get().undoRedo.slice(0, get().undoIndex + 1), action],
       undoIndex: get().undoIndex + 1,
     }));
   },
@@ -244,47 +244,77 @@ const useStore = create<State>((set, get) => ({
 
   selectedElement: {} as EwoksRFNode | EwoksRFLink | GraphDetails,
 
-  setSelectedElement: (element: EwoksRFNode | EwoksRFLink | GraphDetails) => {
+  setSelectedElement: (element, from) => {
     console.log(typeof element);
     const wg = get().workingGraph.graph.id;
 
     if (wg === '0' || wg === get().graphRF.graph.id) {
+      let tempGraph = {} as GraphRF;
       if ('position' in element) {
+        tempGraph = {
+          graph: get().graphRF.graph,
+          nodes: [
+            ...get().graphRF.nodes.filter((nod) => nod.id !== element.id),
+            element,
+          ],
+          links: get().graphRF.links,
+        };
         set((state) => ({
           ...state,
-          graphRF: {
-            graph: get().graphRF.graph,
-            nodes: [
-              ...get().graphRF.nodes.filter((nod) => nod.id !== element.id),
-              element,
-            ],
-            links: get().graphRF.links,
-          },
+          graphRF: tempGraph,
           selectedElement: element as EwoksRFNode,
         }));
+        if (from === 'fromSaveElement') {
+          get().setUndoRedo({
+            action: 'Node details changed',
+            graph: tempGraph,
+          });
+          get().setUndoIndex(get().undoIndex + 1);
+        }
       } else if ('source' in element) {
+        tempGraph = {
+          graph: get().graphRF.graph,
+          nodes: get().graphRF.nodes,
+          links: [
+            ...get().graphRF.links.filter((link) => link.id !== element.id),
+            element,
+          ],
+        };
         set((state) => ({
           ...state,
-          graphRF: {
-            graph: get().graphRF.graph,
-            nodes: get().graphRF.nodes,
-            links: [
-              ...get().graphRF.links.filter((link) => link.id !== element.id),
-              element,
-            ],
-          },
+          graphRF: tempGraph,
           selectedElement: element as EwoksRFLink,
+          // undoRedo: [
+          //   ...get().undoRedo.slice(0, get().undoIndex),
+          //   { action: 'Link details changed', graph: tempGraph },
+          // ],
+          // undoIndex: get().undoIndex + 1,
         }));
+        if (from === 'fromSaveElement') {
+          get().setUndoRedo({
+            action: 'Link details changed',
+            graph: tempGraph,
+          });
+          get().setUndoIndex(get().undoIndex + 1);
+        }
       } else {
+        tempGraph = {
+          graph: element,
+          nodes: get().graphRF.nodes,
+          links: get().graphRF.links,
+        };
         set((state) => ({
           ...state,
-          graphRF: {
-            graph: element,
-            nodes: get().graphRF.nodes,
-            links: get().graphRF.links,
-          },
+          graphRF: tempGraph,
           selectedElement: element as GraphDetails,
         }));
+        if (from === 'fromSaveElement') {
+          get().setUndoRedo({
+            action: 'Graph details changed',
+            graph: tempGraph,
+          });
+          get().setUndoIndex(get().undoIndex + 1);
+        }
       }
     } else {
       // get().setOpenSnackbar({
