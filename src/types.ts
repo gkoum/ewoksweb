@@ -62,7 +62,7 @@ export interface State {
     from?: string
   ) => void;
   subGraph: GraphRF;
-  setSubGraph: (graph: GraphRF) => Promise<GraphRF>;
+  setSubGraph: (graph: GraphEwoks) => Promise<GraphRF>;
   workingGraph: GraphRF;
   setWorkingGraph: (graph: GraphEwoks) => Promise<GraphRF>;
 }
@@ -121,6 +121,11 @@ export interface UiProps {
   icon?: string;
   comment?: string;
   position?: CanvasPosition;
+  animated?: boolean;
+  arrowHeadType?: string;
+  arrowHeadTypeanimated?: string;
+  sourceHandle?: string;
+  targetHandle?: string;
 }
 
 export interface CanvasPosition {
@@ -146,8 +151,8 @@ export interface Conditions {
 export interface EwoksNode {
   id: string;
   label?: string;
-  task_type: string;
-  task_identifier: string;
+  task_type?: string;
+  task_identifier?: string;
   default_inputs?: Inputs[];
   inputs_complete?: boolean;
   task_generator?: string;
@@ -161,9 +166,10 @@ export interface EwoksLink {
   map_all_data: boolean;
   data_mapping?: DataMapping[];
   conditions?: Conditions[];
-  on_error?: Inputs;
-  subtarget?: string;
-  subsource?: string;
+  on_error?: boolean;
+  sub_target?: string;
+  sub_source?: string;
+  startEnd?: string;
   uiProps?: UiProps;
 }
 
@@ -211,7 +217,7 @@ export interface EwoksRFLink {
     type?: string;
     comment?: string;
     conditions?: Conditions[];
-    on_error?: Inputs;
+    on_error?: boolean;
     map_all_data?: boolean;
     sub_target?: string;
     sub_source?: string;

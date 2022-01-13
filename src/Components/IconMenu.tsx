@@ -1,6 +1,5 @@
 import React from 'react';
 import useStore from '../store';
-import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -10,27 +9,19 @@ import Typography from '@material-ui/core/Typography';
 import Cloud from '@material-ui/icons/Cloud';
 import { Button, Menu, Tooltip } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import { rfToEwoks } from '../utils';
-import type { EwoksRFLink, EwoksRFNode } from '../types';
 import FormDialog from './FormDialog';
 
 export default function IconMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [openSaveDialog, setOpenSaveDialog] = React.useState<boolean>(false);
-  const setOpenDraggableDialog = useStore(
-    (state) => state.setOpenDraggableDialog
-  );
+
   const graphRF = useStore((state) => state.graphRF);
-  const recentGraphs = useStore((state) => state.recentGraphs);
-  const selectedElement = useStore<EwoksRFNode | EwoksRFLink>(
-    (state) => state.selectedElement
-  );
   const { handleShowEwoksGraph } = props;
 
-  const cloneToCanvas = () => {
-    console.log('clone the graphRF initializing the id and the label', graphRF);
-  };
+  // const cloneToCanvas = () => {
+  //   console.log('clone the graphRF initializing the id and the label', graphRF);
+  // };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);

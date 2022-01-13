@@ -1,23 +1,20 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-import React from 'react';
-import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import useStore from '../store';
 import { Alert } from '@material-ui/lab';
 
-function SimpleSnackbar(props) {
+function SimpleSnackbar() {
   const openSnackbar = useStore((state) => state.openSnackbar);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
 
-  const handleClick = () => {
-    setOpenSnackbar({
-      open: true,
-      text: '',
-      severity: 'success',
-    });
-  };
+  // const handleClick = () => {
+  //   setOpenSnackbar({
+  //     open: true,
+  //     text: '',
+  //     severity: 'success',
+  //   });
+  // };
 
   const handleClose = (
     event: React.SyntheticEvent | React.MouseEvent,
@@ -35,19 +32,14 @@ function SimpleSnackbar(props) {
   };
 
   const action = (
-    <React.Fragment>
-      {/* <Button color="secondary" size="small" onClick={handleClose}>
-        UNDO
-      </Button> */}
-      <IconButton
-        size="small"
-        aria-label="close"
-        color="inherit"
-        onClick={handleClose}
-      >
-        <CloseIcon fontSize="small" />
-      </IconButton>
-    </React.Fragment>
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={handleClose}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
   );
 
   return (

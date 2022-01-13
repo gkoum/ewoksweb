@@ -14,9 +14,7 @@ import down from '../images/down.svg';
 import graphOutput from '../images/graphOutput.svg';
 import Correlations from '../images/Correlations.svg';
 import CreateClass from '../images/CreateClass.svg';
-import CSVFile from '../images/CSVFile.svg';
 import { Handle, Position } from 'react-flow-renderer';
-import { IconButton, Tooltip } from '@material-ui/core';
 import type { NodeProps } from '../types';
 import { contentStyle, style } from './NodeStyle';
 
@@ -35,16 +33,16 @@ const iconsObj = {
   Correlations,
   CreateClass,
 };
-const randomProperty = function (obj) {
-  const keys = Object.keys(obj);
-  return obj[keys[Math.trunc(keys.length * Math.random())]];
-};
+// const randomProperty = function (obj) {
+//   const keys = Object.keys(obj);
+//   return obj[keys[Math.trunc(keys.length * Math.random())]];
+// };
 
 const onDragStart = (e) => {
   e.preventDefault();
 };
 const isValidOutput = (connection) => {
-  return true; // R.last(R.split('__', connection.target)) === type;
+  return true;
 };
 
 const Node: React.FC<NodeProps> = ({
@@ -81,9 +79,6 @@ const Node: React.FC<NodeProps> = ({
     customTitle.borderRadius = '10px';
   }
 
-  /* eslint-disable-next-line dot-notation */
-  // console.log(type, label, image, iconsObj[image]);
-  // Collapse contentWrapper on icon click
   return (
     <div
       style={
@@ -171,7 +166,6 @@ const Node: React.FC<NodeProps> = ({
           )}
         <div style={customTitle as React.CSSProperties}>{label}</div>
         <div style={{ wordWrap: 'break-word' }}>{comment}</div>
-        {/* eslint-disable-next-line dot-notation */}
         <img
           role="presentation"
           draggable="false"

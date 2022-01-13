@@ -5,6 +5,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
+import type { GraphNodes } from '../types';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -40,7 +41,9 @@ export default function DenseTable(props) {
 
   let hasSubnode = false;
   props.data.forEach((dat) => {
-    if (dat.sub_node) { hasSubnode = true }
+    if (dat.sub_node) {
+      hasSubnode = true;
+    }
   });
 
   return (
@@ -63,7 +66,7 @@ export default function DenseTable(props) {
         </TableHead>
         <TableBody>
           {props.data.length > 0 &&
-            props.data.map((row) => (
+            props.data.map((row: GraphNodes) => (
               <TableRow key={`${row.id}${row.node}${row.sub_node}`}>
                 <TableCell>{row.id}</TableCell>
                 <TableCell align="left">{row.node}</TableCell>

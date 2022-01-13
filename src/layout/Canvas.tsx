@@ -1,4 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable unicorn/consistent-function-scoping */
 import React, { useEffect, useState, MouseEvent, useRef } from 'react';
 import ReactFlow, {
@@ -8,9 +7,6 @@ import ReactFlow, {
   Node,
   Edge,
   Background,
-  isEdge,
-  isNode,
-  updateEdge,
   useUpdateNodeInternals,
 } from 'react-flow-renderer';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
@@ -18,14 +14,7 @@ import useStore from '../store';
 import CustomNode from '../CustomNodes/CustomNode';
 import FunctionNode from '../CustomNodes/FunctionNode';
 import DataNode from '../CustomNodes/DataNode';
-import type {
-  GraphRF,
-  EwoksRFNode,
-  EwoksRFLink,
-  RFNode,
-  RFLink,
-} from '../types';
-import { toRFEwoksNodes } from '../utils/toRFEwoksNodes';
+import type { GraphRF, EwoksRFNode, EwoksRFLink } from '../types';
 import { tasks } from '../assets/graphTests';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,9 +39,8 @@ const useStyles = makeStyles((theme: Theme) =>
 // // const nodesIds = new Set();
 // const linksIds = new Set();
 
-const getnodesIds = (text, nodes) => {
+const getnodesIds = (text: string, nodes: EwoksRFNode[]) => {
   let id = 0;
-  console.log(nodes, id);
   while (nodes.map((nod) => nod.id).includes(`${text}_${id}`)) {
     id++;
   }
@@ -83,7 +71,7 @@ function Canvas() {
 
   const { fitView } = useZoomPanHelper();
   const [rfInstance, setRfInstance] = useState(null);
-  const [disableDragging, setDisableDragging] = useState(false);
+  // const [disableDragging, setDisableDragging] = useState(false);
   const [elements, setElements] = useState([]);
 
   const reactFlowWrapper = useRef(null);
@@ -98,38 +86,36 @@ function Canvas() {
   const [selectedElements, setSelectedElements] = React.useState([]);
 
   // const updateNeeded = useStore((state) => state.updateNeeded);
-
-  const setSubGraph = useStore((state) => state.setSubGraph);
   const recentGraphs = useStore((state) => state.recentGraphs);
   const workingGraph = useStore((state) => state.workingGraph);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
   const updateNodeInternals = useUpdateNodeInternals();
 
   useEffect(() => {
-    console.log('rerender Canvas', graphRF, recentGraphs.length);
+    // console.log('rerender Canvas', graphRF, recentGraphs.length);
     setElements([...graphRF.nodes, ...graphRF.links]);
   }, [graphRF, graphRF.graph.id, recentGraphs.length]);
 
   // Used to update custom node after adding Handles NOT WORKING
   useEffect(() => {
-    console.log(selectedElement);
-    if ('position' in selectedElement) updateNodeInternals(selectedElement.id);
+    if ('position' in selectedElement) {
+      updateNodeInternals(selectedElement.id);
+    }
   }, [selectedElement, selectedElement.id, updateNodeInternals]);
 
   const onElementClick = (event: MouseEvent, element: Node | Edge) => {
-    console.log(isEdge(element), isNode(element), elements, graphRF.nodes);
+    // console.log(isEdge(element), isNode(element), elements, graphRF.nodes);
     const graphElement: EwoksRFNode | EwoksRFLink = elements.find(
       (el) => el.id === element.id
     );
-    console.log(graphElement);
     setSelectedElement(graphElement);
   };
 
   const onLoad = (reactFlowInstance) => setRfInstance(reactFlowInstance);
 
-  const handlDisableDragging = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDisableDragging(event.target.checked);
-  };
+  // const handlDisableDragging = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setDisableDragging(event.target.checked);
+  // };
 
   useEffect(() => {
     fitView();
@@ -141,7 +127,6 @@ function Canvas() {
   };
 
   const onDrop = (event) => {
-    console.log(event, selectedElements);
     event.preventDefault();
     // TODO: examine how to prevent bug on dragging selection of multiple elements
     if (selectedElements.length > 1) {
@@ -160,12 +145,10 @@ function Canvas() {
       const task_identifier = event.dataTransfer.getData('task_identifier');
       const task_type = event.dataTransfer.getData('task_type');
       const icon = event.dataTransfer.getData('icon');
-      console.log(task_identifier, task_type, icon);
       const position = rfInstance.project({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
-      console.log(position);
 
       // TODO change now that we get them from server
       let tempTask = tasks.find(
@@ -205,9 +188,7 @@ function Canvas() {
           icon,
           moreHandles: true,
         },
-        // data: { label: CustomNewNode(id, name, image) },
       };
-      console.log(newNode, graphRF);
       // setElements((es) => [...es, newNode]);
       const newGraph = {
         graph: graphRF.graph,
@@ -234,7 +215,6 @@ function Canvas() {
     // updated inside this function
     // Uncomment
     setElements((els) => {
-      console.log(els);
       elements = els;
       return els;
     });
@@ -242,14 +222,12 @@ function Canvas() {
       ...oldEdge,
       ...newConnection,
     };
-    console.log(elements.filter((el) => el.position));
     const newGraph = {
       graph: { ...graphRF.graph },
       nodes: elements.filter((el) => el.position), // [...graphRF.nodes],
       links: [...graphRF.links.filter((lin) => lin.id !== oldEdge.id), link], // addEdge(params, graphRF.links),
     };
 
-    console.log(link, newGraph);
     setGraphRF(newGraph as GraphRF);
     setUndoRedo({ action: 'Updated a Link', graph: newGraph });
     // need to also save it in recentGraphs if we leave and come back to the graph?
@@ -258,8 +236,7 @@ function Canvas() {
   };
   // setElements((els) => updateEdge(oldEdge, newConnection, els));
 
-  const onConnect = (params) => {
-    console.log(params, graphRF);
+  const onConnect = (params: Edge) => {
     // IF is a link between pre-existing nodes:
     // add links_required_output_names and links_optional_output_names from target
     // links_input_names from source node
@@ -268,7 +245,6 @@ function Canvas() {
     if (workingGraph.graph.id === graphRF.graph.id) {
       const sourceTask = graphRF.nodes.find((nod) => nod.id === params.source);
       const targetTask = graphRF.nodes.find((nod) => nod.id === params.target);
-      console.log(sourceTask, targetTask);
       const link = {
         data: {
           on_error: false,
@@ -335,12 +311,9 @@ function Canvas() {
   const onRightClick = (event) => {
     event.preventDefault();
     updateNodeInternals(selectedElement.id);
-    console.log(event);
   };
 
   const onSelectionChange = (elements) => {
-    console.log(elements, graphRF.graph);
-
     if (!elements) {
       setSelectedElement(graphRF.graph);
       setSelectedElements([]);
@@ -354,7 +327,6 @@ function Canvas() {
   const onNodeDoubleClick = (event, node) => {
     event.preventDefault();
     const nodeTmp = graphRF.nodes.find((el) => el.id === node.id);
-    console.log(event, node, nodeTmp, recentGraphs);
     if (nodeTmp.task_type === 'graph') {
       // if type==graph get the subgraph from the recentGraphs (and if not from server?)
       // TODO: clear the relation of task_identifier and the id of a subgraph...
@@ -364,7 +336,6 @@ function Canvas() {
       const subgraph = recentGraphs.find(
         (gr) => gr.graph.id === nodeTmp.task_identifier
       );
-      console.log(subgraph);
       if (subgraph && subgraph.graph.id) {
         // TODO: if the subgraph does not exist on recent? Re-ask server and failsafe
         setGraphRF(subgraph);
@@ -372,11 +343,9 @@ function Canvas() {
           id: subgraph.graph.id,
           label: subgraph.graph.label,
         });
-        console.log(subgraph, recentGraphs);
       }
     } else {
       // TODO: need doubleClick on simple nodes?
-      console.log('THIS IS A NODE');
     }
   };
 
@@ -387,7 +356,6 @@ function Canvas() {
 
   const onSelectionDragStop = (event, selectedElements) => {
     event.preventDefault();
-    console.log(event, selectedElements);
     if (workingGraph.graph.id === graphRF.graph.id) {
       // find selectedElements and update its position and save grapRF
       const newElements = [];
@@ -423,9 +391,9 @@ function Canvas() {
     }
   };
 
-  const onSelectionDrag = (event, selectedElements) => {
+  const onSelectionDrag = (event) => {
     event.preventDefault();
-    console.log(event, selectedElements);
+    // console.log(event, selectedElements);
   };
 
   // const onNodeDrag = (event, node) => {
@@ -441,7 +409,6 @@ function Canvas() {
         ...graphRF.nodes.find((nod) => nod.id === node.id),
       };
       RFEwoksNode.position = node.position;
-      console.log(RFEwoksNode, graphRF);
       const newGraph = {
         graph: graphRF.graph,
         nodes: [

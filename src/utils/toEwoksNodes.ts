@@ -18,7 +18,7 @@ export function toEwoksNodes(nodes: EwoksRFNode[]): EwoksNode[] {
       data: { label, type, icon, comment, moreHandles },
       position,
     }) => {
-      if (task_type != 'graph') {
+      if (task_type !== 'graph') {
         return {
           id: id.toString(),
           label,

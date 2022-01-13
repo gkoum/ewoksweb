@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Fab, Button } from '@material-ui/core';
-import { useState } from 'react';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { Fab } from '@material-ui/core';
 import useStore from '../store';
 import { validateEwoksGraph } from '../utils/EwoksValidator';
 
@@ -15,14 +14,11 @@ const useStyles = makeStyles(() =>
 
 const showFile = async (e) => {
   e.preventDefault();
-  console.log(e);
   const reader = new FileReader();
   reader.addEventListener = async (e) => {
     const text = e.target.result;
-    console.log(text);
   };
   reader.readAsText(e.target.files[0]);
-  console.log(reader);
   return reader;
 };
 
@@ -37,13 +33,10 @@ function isJsonString(str) {
 }
 
 function Upload(props) {
-  // console.log(props);
   const classes = useStyles();
 
   // const [selectedFile, setSelectedFile] = useState();
   const graphRF = useStore((state) => state.graphRF);
-  const recentGraphs = useStore((state) => state.recentGraphs);
-  const subgraphsStack = useStore((state) => state.subgraphsStack);
   const graphOrSubgraph = useStore<Boolean>((state) => state.graphOrSubgraph);
 
   const workingGraph = useStore((state) => state.workingGraph);
@@ -52,7 +45,7 @@ function Upload(props) {
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
 
   const fileNameChanged = async (event) => {
-    console.log(event.target.files[0], recentGraphs, graphRF, subgraphsStack);
+    // console.log(event.target.files[0], recentGraphs, graphRF, subgraphsStack);
 
     if (workingGraph.graph.id === graphRF.graph.id) {
       const reader = showFile(event);
@@ -67,7 +60,6 @@ function Upload(props) {
               working = await setWorkingGraph(newGraph);
             }
           } else {
-            console.log('ADDING SUBGRAPH:', newGraph);
             working = await setSubGraph(newGraph);
           }
         } else {

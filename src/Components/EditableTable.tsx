@@ -257,7 +257,7 @@ function EditableTable(props) {
         </TableHead>
         <TableBody>
           {rows.map((row, index) => (
-            <React.Fragment key={`${row.id}-type`}>
+            <React.Fragment key={row.id}>
               {headers[0] !== 'Source' && headers[1] !== 'Node_Id' && (
                 <TableRow key={`${row.id}-type`}>
                   <TableCell align="left" className={classes.tableCell}>
@@ -275,8 +275,8 @@ function EditableTable(props) {
                       label="Task type"
                       onChange={(e) => changedTypeOfInputs(e, row, index)}
                     >
-                      {typesOfInputs.map((tex, index) => (
-                        <MenuItem key={index} value={tex}>
+                      {typesOfInputs.map((tex) => (
+                        <MenuItem key={tex} value={tex}>
                           {tex}
                         </MenuItem>
                       ))}

@@ -24,7 +24,6 @@ export default function FormDialog(props) {
     (state) => state.selectedElement
   );
   const graphRF = useStore((state) => state.graphRF);
-  const recentGraphs = useStore((state) => state.recentGraphs);
   const setWorkingGraph = useStore((state) => state.setWorkingGraph);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
@@ -33,27 +32,23 @@ export default function FormDialog(props) {
   const handleSave = () => {
     // get the selected element (graph or Node) give a new name before saving
     // fire a POST
-    console.log(open, newName);
     props.setOpenSaveDialog(false);
-    if (newName !== '' && isGraph) {
+    if (newName !== '' && isGraph === 'Workflow') {
       // save the graphRF
-      const response = axios
+      axios // if await is used const response =
         .post(
           `http://localhost:5000/workflows`,
-          rfToEwoks(
-            {
-              ...graphRF,
-              graph: { ...graphRF.graph, id: newName, label: newName },
-            },
-            recentGraphs
-          )
+          rfToEwoks({
+            ...graphRF,
+            graph: { ...graphRF.graph, id: newName, label: newName },
+          })
         )
         .then((res) => {
           setWorkingGraph(res.data as GraphEwoks);
           setRecentGraphs({} as GraphRF, true);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          // error
           setOpenSnackbar({
             open: true,
             text: 'The name exists. Please retry with another name',
@@ -61,15 +56,12 @@ export default function FormDialog(props) {
             severity: 'warning',
           });
         });
-      // else if (selectedElement.position) {
-      //   // it is a node save the selectedElement
-      //   console.log(selectedElement);
-      // }
+    } else if (isGraph === 'Task') {
+      console.log('Save the task!');
     }
   };
 
   const newNameChanged = (event) => {
-    console.log(event.target.value, open);
     setNewName(event.target.value);
   };
 

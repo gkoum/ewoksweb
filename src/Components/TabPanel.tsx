@@ -27,12 +27,16 @@ function TabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography component={'span'}>{children}</Typography>
+          <Typography component="span">{children}</Typography>
         </Box>
       )}
     </div>
   );
 }
+
+const setInputValue = () => {
+  // console.log(val, value);
+};
 
 function a11yProps(index: number) {
   return {
@@ -54,10 +58,6 @@ export default function BasicTabs() {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-  };
-
-  const setInputValue = (val) => {
-    console.log(val, value);
   };
 
   return (
@@ -94,8 +94,8 @@ export default function BasicTabs() {
               <Item>
                 <ReactJson
                   src={graphRF}
-                  name={'Ewoks graph'}
-                  theme={'monokai'}
+                  name="Ewoks graph"
+                  theme="monokai"
                   collapsed
                   collapseStringsAfterLength={30}
                   groupArraysAfterLength={15}

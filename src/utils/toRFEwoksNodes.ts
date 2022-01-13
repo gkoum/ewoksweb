@@ -7,10 +7,7 @@ import { tasks } from '../assets/graphTests';
 export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
   // console.log('calc nodes:', tempGraph, newNodeSubgraphs);
   // Find input and output nodes of the graph
-  const inputsAll =
-    tempGraph.graph &&
-    tempGraph.graph.input_nodes &&
-    tempGraph.graph.input_nodes.map((nod) => nod.node);
+  const inputsAl = inputsAll(tempGraph);
 
   const outputsAll =
     tempGraph.graph &&
@@ -41,7 +38,7 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
         uiProps,
       }) => {
         // calculate if node input and/or output or internal
-        const isInput = inputsAll && inputsAll.includes(id);
+        const isInput = inputsAl && inputsAl.includes(id);
         const isOutput = outputsAll && outputsAll.includes(id);
         let nodeType = '';
         if (isInput && isOutput) {
@@ -177,5 +174,14 @@ export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
       }
     );
   }
+
   return [] as EwoksRFNode[];
 }
+
+const inputsAll = (tempGraph) => {
+  return (
+    tempGraph.graph &&
+    tempGraph.graph.input_nodes &&
+    tempGraph.graph.input_nodes.map((nod) => nod.node)
+  );
+};

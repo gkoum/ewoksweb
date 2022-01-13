@@ -3,15 +3,14 @@ import { Handle, Position } from 'react-flow-renderer';
 import Node from './Node';
 import { contentStyle as style } from './NodeStyle';
 
-const isValidInput = (connection, type) => {
-  return true; // R.last(R.split('__', connection.source)) === type;
+const isValidInput = () => {
+  return true;
 };
-const isValidOutput = (connection, type) => {
+const isValidOutput = () => {
   return true; // R.last(R.split('__', connection.target)) === type;
 };
 
 function FunctionNode(all) {
-  console.log(all.data, all);
   return (
     <Node
       isGraph
@@ -29,9 +28,9 @@ function FunctionNode(all) {
       content={
         <>
           {/* <div style={style.contentHeader}>Inputs</div> */}
-          {all.data.inputs.map((input) => (
+          {all.data.inputs.map((input: { label: string }) => (
             <div
-              key={`i-${input.label}`}
+              key={input.label}
               style={{ ...style.io, ...style.textLeft } as React.CSSProperties}
             >
               {/* remove the rest of the input {input.label} for now */}
@@ -46,8 +45,8 @@ function FunctionNode(all) {
                   ...style.left,
                   ...style.handleTarget,
                 }}
-                isValidConnection={(connection) =>
-                  isValidInput(connection, input.type)
+                isValidConnection={
+                  () => isValidInput() // connection, input.type
                 }
               />
               <Handle
@@ -60,55 +59,43 @@ function FunctionNode(all) {
                   ...style.right,
                   ...style.handleTarget,
                 }}
-                isValidConnection={(connection) =>
-                  isValidOutput(connection, input.type)
-                }
+                isValidConnection={() => isValidOutput()}
               />
             </div>
           ))}
           {/* <div style={style.contentHeader}>Outputs</div> */}
-          {all.data.outputs.map((output) => (
-            <>
-              <div
-                key={`o-${output.label}`}
-                style={
-                  { ...style.io, ...style.textRight } as React.CSSProperties
-                }
-              >
-                {/* remove the rest of the output {output.label} for now */}
-                {output.label.slice(0, output.label.indexOf(':'))}
-                <Handle
-                  key={output.label.slice(0, output.label.indexOf(':'))}
-                  type="source"
-                  position={Position.Right}
-                  id={output.label.slice(0, output.label.indexOf(':'))}
-                  style={{
-                    ...style.handle,
-                    ...style.right,
-                    ...style.handleSource,
-                  }}
-                  isValidConnection={(connection) =>
-                    isValidOutput(connection, output.type)
-                  }
-                />
-                <Handle
-                  key={
-                    output.label.slice(0, output.label.indexOf(':')) + 'left'
-                  }
-                  type="source"
-                  position={Position.Left}
-                  id={output.label.slice(0, output.label.indexOf(':')) + 'left'}
-                  style={{
-                    ...style.handle,
-                    ...style.left,
-                    ...style.handleSource,
-                  }}
-                  isValidConnection={(connection) =>
-                    isValidOutput(connection, output.type)
-                  }
-                />
-              </div>
-            </>
+          {all.data.outputs.map((output: { label: string }) => (
+            <div
+              key={output.label}
+              style={{ ...style.io, ...style.textRight } as React.CSSProperties}
+            >
+              {/* remove the rest of the output {output.label} for now */}
+              {output.label.slice(0, output.label.indexOf(':'))}
+              <Handle
+                key={output.label.slice(0, output.label.indexOf(':'))}
+                type="source"
+                position={Position.Right}
+                id={output.label.slice(0, output.label.indexOf(':'))}
+                style={{
+                  ...style.handle,
+                  ...style.right,
+                  ...style.handleSource,
+                }}
+                isValidConnection={() => isValidOutput()}
+              />
+              <Handle
+                key={output.label.slice(0, output.label.indexOf(':')) + 'left'}
+                type="source"
+                position={Position.Left}
+                id={output.label.slice(0, output.label.indexOf(':')) + 'left'}
+                style={{
+                  ...style.handle,
+                  ...style.left,
+                  ...style.handleSource,
+                }}
+                isValidConnection={() => isValidOutput()}
+              />
+            </div>
           ))}
         </>
       }

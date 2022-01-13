@@ -33,7 +33,7 @@ function isJsonString(str) {
 }
 
 function includes(entity: {}, label: string, properties: string[]) {
-  console.info(entity, properties);
+  // console.info(entity, properties);
   let result = true;
   properties.forEach((pr) => {
     if (Object.keys(entity).includes(pr)) {
@@ -48,7 +48,7 @@ function includes(entity: {}, label: string, properties: string[]) {
 
 export function validateEwoksGraph(graph) {
   const result = [];
-  console.log(graph);
+  // console.log(graph);
   result.push(isJsonString(JSON.stringify(graph)));
   // graph structure
   result.push(
@@ -91,25 +91,25 @@ export function validateEwoksGraph(graph) {
   const nodeIds = new Set(graph.nodes.map((nod) => nod.id));
   if (nodeIds.size !== graph.nodes.length) {
     result.push(false);
-    console.error('At least one node id is not unique');
+    // console.error('At least one node id is not unique');
   }
 
   graph.links.forEach((link, index) => {
     if (link.source === link.target) {
       result.push(false);
-      console.error(`link ${index} has the same source-target`);
+      // console.error(`link ${index} has the same source-target`);
     } else if (nodeIds.has(link.source) && nodeIds.has(link.target)) {
       result.push(true);
     } else {
       result.push(false);
-      console.error(
-        `link ${index} ${link.source} ${link.target} has wrong source and/or target node id`
-      );
+      // console.error(
+      // `link ${index} ${link.source} ${link.target} has wrong source and/or target node id`
+      // );
     }
   });
 
   // if subgraphs exist look for the whole tree if it exists and warn
 
-  console.log(result);
+  // console.log(result);
   return { result: !result.includes(false), logs: {} };
 }

@@ -1,17 +1,7 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/EditOutlined';
-import {
-  createStyles,
-  FormControlLabel,
-  IconButton,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  TextField,
-  Theme,
-} from '@material-ui/core';
+import { createStyles, IconButton, TextField, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

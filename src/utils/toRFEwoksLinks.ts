@@ -1,10 +1,13 @@
-import type { EwoksRFLink, Task } from '../types';
+import type { EwoksRFLink, GraphEwoks, Task } from '../types';
 import { inNodesLinks } from './inNodesLinks';
 import { outNodesLinks } from './outNodesLinks';
 import { tasks } from '../assets/graphTests';
 
-// Accepts a GraphEwoks and returns an EwoksRFLink[]
-export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
+// from GrapfEwoks get EwoksRFLink
+export function toRFEwoksLinks(
+  tempGraph: GraphEwoks, // TODO : GraphEwoks
+  newNodeSubgraphs
+): EwoksRFLink[] {
   // tempGraph: the graph to transform its links
   // newNodeSubgraphs: the subgraphs located in the supergraph.
   // If wrong task_identifier or non-existing graph tempGraph is not in there
@@ -100,7 +103,6 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
             };
           }
         }
-        // console.log('TASKS1:', sourceTask, targetTask);
         // if not found app does not break, put an empty skeleton
         sourceTask = sourceTask
           ? sourceTask
@@ -113,12 +115,11 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
               optional_input_names: [],
               required_input_names: [],
             };
-        // console.log('TASKS2:', sourceTask, targetTask, data_mapping);
         return {
           // TODO: does not accept 2 links between the same nodes?
-          id: `${source}:${uiProps && uiProps.sourceHandle}->${target}:${
-            uiProps && uiProps.targetHandle
-          }_${id++}`,
+          id: `${source}:${
+            uiProps && uiProps.sourceHandle ? uiProps.sourceHandle : ''
+          }->${target}:${uiProps && uiProps.targetHandle}_${id++}`,
           // Label if empty use data-mapping
           label:
             uiProps && uiProps.label
@@ -149,11 +150,11 @@ export function toRFEwoksLinks(tempGraph, newNodeSubgraphs): EwoksRFLink[] {
               : '',
           type: uiProps && uiProps.type ? uiProps.type : '',
           arrowHeadType:
-            uiProps && uiProps.arrowHeadType
+            uiProps && uiProps.arrowHeadTypeanimated
               ? uiProps.arrowHeadType
               : 'arrowclosed',
           // labelStyle: uiProps && uiProps.labelStyle ? uiProps.labelStyle : {},
-          animated: uiProps && uiProps.animated ? uiProps.animated : '',
+          animated: uiProps && uiProps.animated ? uiProps.animated : false,
           style: { stroke: '#96a5f9', strokeWidth: '2.5' },
           labelBgStyle: {
             fill: '#fff',

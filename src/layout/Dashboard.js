@@ -1,21 +1,16 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect } from 'react';
 import clsx from 'clsx';
-// import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-// import Badge from '@material-ui/core/Badge';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
@@ -27,15 +22,11 @@ import Canvas from './Canvas';
 import Upload from '../Components/Upload';
 import AutocompleteDrop from '../Components/AutocompleteDrop';
 import AddIcon from '@material-ui/icons/Add';
-// import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { Fab, Button } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import { rfToEwoks } from '../utils';
-import { toRFEwoksLinks } from '../utils/toRFEwoksLinks';
-import { toRFEwoksNodes } from '../utils/toRFEwoksNodes';
 import axios from 'axios';
 import SimpleSnackbar from '../Components/Snackbar';
 import TemporaryDrawer from '../Components/Drawer';
@@ -87,9 +78,9 @@ export default function Dashboard() {
   const undoIndex = useStore((state) => state.undoIndex);
   const setUndoIndex = useStore((state) => state.setUndoIndex);
 
-  useEffect(() => {
-    console.log(subgraphsStack.length);
-  }, [subgraphsStack]);
+  // useEffect(() => {
+  //   console.log(subgraphsStack.length);
+  // }, [subgraphsStack]);
 
   const handleOpenSettings = () => {
     setOpenSettings(!openSettings);
@@ -115,7 +106,7 @@ export default function Dashboard() {
 
   const saveToDisk = (event) => {
     download(
-      JSON.stringify(rfToEwoks(graphRF, recentGraphs), null, 2),
+      JSON.stringify(rfToEwoks(graphRF), null, 2),
       `${graphRF.graph.label}.json`,
       'text/plain'
     );
@@ -133,10 +124,7 @@ export default function Dashboard() {
         links: graphRF.links,
       };
       const response = await axios
-        .post(
-          `http://localhost:5000/workflows`,
-          rfToEwoks(newIdGraph, recentGraphs)
-        )
+        .post(`http://localhost:5000/workflows`, rfToEwoks(newIdGraph))
         .then((res) => {
           setGettingFromServer(false);
           setWorkingGraph(res.data);
@@ -146,7 +134,7 @@ export default function Dashboard() {
       const response = await axios
         .put(
           `http://localhost:5000/workflow/${graphRF.graph.id}`, // ${graphRF.graph.id}
-          rfToEwoks(graphRF, recentGraphs)
+          rfToEwoks(graphRF)
         )
         .then((res) => setGettingFromServer(false));
     } else {
@@ -159,15 +147,24 @@ export default function Dashboard() {
   };
 
   const executeWorkflow = async () => {
-    console.log('execute workflow', recentGraphs, graphRF);
+    // console.log('execute workflow', recentGraphs, graphRF);
     if (recentGraphs.length > 0) {
       await axios
-        .post(
-          `http://localhost:5000/workflow/execute`,
-          rfToEwoks(graphRF, recentGraphs)
+        .post(`http://localhost:5000/workflow/execute`, rfToEwoks(graphRF))
+        .then((res) =>
+          setOpenSnackbar({
+            open: true,
+            text: res,
+            severity: 'warning',
+          })
         )
-        .then((res) => console.log(res))
-        .catch((error) => console.log(error));
+        .catch((error) =>
+          setOpenSnackbar({
+            open: true,
+            text: error,
+            severity: 'warning',
+          })
+        );
     } else {
       setOpenSnackbar({
         open: true,
@@ -182,6 +179,7 @@ export default function Dashboard() {
   };
 
   const getFromServer = async (isSubgraph) => {
+    console.log(workflowValue);
     if (workflowValue) {
       // setGettingFromServer(true);
       const response = await axios.get(
@@ -235,13 +233,13 @@ export default function Dashboard() {
     const charCode = String.fromCharCode(event.which).toLowerCase();
     if ((event.ctrlKey || event.metaKey) && charCode === 's') {
       event.preventDefault();
-      console.log(graphRF, 'CTRL+S Pressed');
       saveToServer();
-    } else if ((event.ctrlKey || event.metaKey) && charCode === 'c') {
-      console.log('CTRL+C Pressed');
-    } else if ((event.ctrlKey || event.metaKey) && charCode === 'v') {
-      console.log('CTRL+V Pressed');
     }
+    // else if ((event.ctrlKey || event.metaKey) && charCode === 'c') {
+    //   console.log('CTRL+C Pressed');
+    // } else if ((event.ctrlKey || event.metaKey) && charCode === 'v') {
+    //   console.log('CTRL+V Pressed');
+    // }
   };
 
   return (
@@ -352,7 +350,7 @@ export default function Dashboard() {
             <AutocompleteDrop setInputValue={setInputValue} />
           </FormControl>
           <IntegratedSpinner
-            getting={gettingFromServer}
+            // getting={gettingFromServer}
             tooltip="Open and edit Workflow"
             action={getFromServer}
           >

@@ -83,8 +83,8 @@ function CustomTableCell({ index, row, name, onChange, type, typeOfValues }) {
             label="type"
             onChange={(e) => onChange(e, row, index)}
           >
-            {typeOfValues.values.map((tex, index) => (
-              <MenuItem key={index} value={tex}>
+            {typeOfValues.values.map((tex) => (
+              <MenuItem key={tex} value={tex}>
                 {tex}
               </MenuItem>
             ))}

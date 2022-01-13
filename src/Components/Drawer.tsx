@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import Drawer from '@material-ui/core/Drawer';
-import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import TabPanel from './TabPanel';
 
@@ -16,7 +15,6 @@ export default function TemporaryDrawer(props) {
   });
 
   useEffect(() => {
-    console.log(props.openSettings);
     const opSet: boolean = props.openSettings;
     setState({ top: opSet, left: false, bottom: false, right: false });
   }, [props.openSettings]);

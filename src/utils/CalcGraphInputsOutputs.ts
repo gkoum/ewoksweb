@@ -13,9 +13,10 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
         .map((link) => link.target);
 
       const nodeObjConnectedTo = [];
-      for (let i = 0; i < nodesNamesConnectedTo.length; i++) {
+      // for (let i = 0; i < nodesNamesConnectedTo.length; i++) {
+      for (const nodesName of nodesNamesConnectedTo) {
         nodeObjConnectedTo.push(
-          graph.nodes.find((node) => nodesNamesConnectedTo[i] === node.id)
+          graph.nodes.find((node) => nodesName === node.id)
         );
       }
       // iterate the nodes to create the new input_nodes
@@ -50,8 +51,6 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
                 'default',
             },
           });
-          // remove link so that it gets the next
-          const removed = graph_links.splice(link_index, 1);
         } else {
           input_nodes.push({
             id: nod.id,
@@ -83,9 +82,10 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
         .map((link) => link.source);
 
       const nodeObjConnectedToEnd = [];
-      for (let i = 0; i < nodesNamesConnectedToEnd.length; i++) {
+      for (const nodesNamesEnd of nodesNamesConnectedToEnd) {
+        // for (let i = 0; i < nodesNamesConnectedToEnd.length; i++) {
         nodeObjConnectedToEnd.push(
-          graph.nodes.find((node) => nodesNamesConnectedToEnd[i] === node.id)
+          graph.nodes.find((node) => nodesNamesEnd === node.id)
         );
       }
       // iterate the nodes to create the new input_nodes
@@ -150,8 +150,8 @@ export function calcGraphInputsOutputs(graph): GraphDetails {
   return {
     id: graph.graph.id,
     label: graph.graph.label,
-    input_nodes: input_nodes,
-    output_nodes: output_nodes,
+    input_nodes,
+    output_nodes,
     uiProps: graph.graph.uiProps,
   };
 }

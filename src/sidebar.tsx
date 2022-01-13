@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import useStore from './store';
@@ -20,7 +20,6 @@ import graphInput from './images/graphInput.svg';
 import graphOutput from './images/graphOutput.svg';
 import Correlations from './images/Correlations.svg';
 import CreateClass from './images/CreateClass.svg';
-import CSVFile from './images/CSVFile.svg';
 import Checkbox from '@material-ui/core/Checkbox';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -31,12 +30,10 @@ import EditableTable from './Components/EditableTable';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Upload from './Components/Upload';
 import AddIcon from '@material-ui/icons/Add';
-import ReactJson from 'react-json-view';
 import DraggableDialog from './Components/DraggableDialog';
 import DenseTable from './Components/DenseTable';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import SaveIcon from '@material-ui/icons/Save';
-import Tooltip from '@material-ui/core/Tooltip';
 import IconMenu from './Components/IconMenu';
 import Drawer from './Components/Drawer';
 import axios from 'axios';
@@ -46,7 +43,6 @@ import type {
   EwoksRFLink,
   Inputs,
   GraphDetails,
-  GraphEwoks,
   Task,
   DataMapping,
   GraphRF,
@@ -55,7 +51,6 @@ import { rfToEwoks } from './utils';
 import EditTaskProp from './Components/EditTaskProp';
 
 const onDragStart = (event, { task_identifier, task_type, icon }) => {
-  console.log(event, icon);
   event.dataTransfer.setData('task_identifier', task_identifier);
   event.dataTransfer.setData('task_type', task_type);
   event.dataTransfer.setData('icon', icon);
@@ -85,15 +80,15 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const iconsObj = {
-  orange1: orange1,
-  Continuize: Continuize,
-  graphInput: graphInput,
-  graphOutput: graphOutput,
-  orange2: orange2,
-  orange3: orange3,
-  AggregateColumns: AggregateColumns,
-  Correlations: Correlations,
-  CreateClass: CreateClass,
+  orange1,
+  Continuize,
+  graphInput,
+  graphOutput,
+  orange2,
+  orange3,
+  AggregateColumns,
+  Correlations,
+  CreateClass,
 };
 
 export default function Sidebar(props) {
@@ -121,9 +116,9 @@ export default function Sidebar(props) {
     {} as EwoksRFNode | EwoksRFLink
   );
   // used only for typescript functioning???
-  const [elementN, setElementN] = React.useState<EwoksRFNode>(
-    {} as EwoksRFNode
-  );
+  // const [setElementN] = React.useState<EwoksRFNode>(
+  //   {} as EwoksRFNode
+  // );
   const [elementL, setElementL] = React.useState<EwoksRFLink>(
     {} as EwoksRFLink
   );
@@ -139,19 +134,16 @@ export default function Sidebar(props) {
   const setTasks = useStore((state) => state.setTasks);
   const [openDialog, setOpenDialog] = React.useState<boolean>(false);
   const [dialogContent, setDialogContent] = React.useState({});
-  const recentGraphs = useStore((state) => state.recentGraphs);
   const setSubgraphsStack = useStore((state) => state.setSubgraphsStack);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
   const [editProps, setEditProps] = React.useState<boolean>(false);
-  const setWorkingGraph = useStore((state) => state.setWorkingGraph);
   const initializedGraph = useStore((state) => state.initializedGraph);
 
   useEffect(() => {
-    console.log(selectedElement);
     setElement(selectedElement);
 
     if ('position' in selectedElement) {
-      setElementN(selectedElement);
+      // setElementN(selectedElement);
       setNodeType(selectedElement.data.type);
       setLabel(
         selectedElement.label
@@ -161,7 +153,6 @@ export default function Sidebar(props) {
       setComment(selectedElement.data.comment);
       setInputsComplete(!!selectedElement.inputs_complete);
       setMoreHandles(!!selectedElement.data.moreHandles);
-      console.log(selectedElement);
       setDefaultInputs(
         selectedElement.default_inputs ? selectedElement.default_inputs : []
       );
@@ -172,19 +163,18 @@ export default function Sidebar(props) {
       setAnimated(selectedElement.animated);
       setLabel(selectedElement.label);
       setComment(selectedElement.data && selectedElement.data.comment);
-      if (selectedElement.data && selectedElement.data.data_mapping)
+      if (selectedElement.data && selectedElement.data.data_mapping) {
         setDataMapping(selectedElement.data.data_mapping);
+      }
       // if (selectedElement.data && selectedElement.data.map_all_data)
       setMapAllData(!!selectedElement.data.map_all_data || false);
       // if (selectedElement.data && selectedElement.data.on_error)
       setOnError(!!selectedElement.data.on_error || false);
-      if (selectedElement.data && selectedElement.data.conditions)
+      if (selectedElement.data && selectedElement.data.conditions) {
         setConditions(selectedElement.data.conditions);
-      console.log(selectedElement);
+      }
     } else {
       const selElem = selectedElement as GraphDetails;
-
-      console.log(selElem.input_nodes, selElem.output_nodes);
       setLabel(selectedElement.label);
       setComment(selectedElement.uiProps && selectedElement.uiProps.comment);
       setGraphInputs(selElem.input_nodes ? selElem.input_nodes : []);
@@ -232,7 +222,6 @@ export default function Sidebar(props) {
 
   const propChanged = (propKeyValue) => {
     // setTaskIdentifier(event.target.value);
-    console.log(propKeyValue);
     setElement({
       ...element,
       ...propKeyValue,
@@ -242,7 +231,7 @@ export default function Sidebar(props) {
   const labelChanged = (event) => {
     setLabel(event.target.value);
     if ('position' in element) {
-      const el = element as EwoksRFNode;
+      const el = element;
       setElement({
         ...el,
         label: event.target.value,
@@ -258,7 +247,7 @@ export default function Sidebar(props) {
 
   const commentChanged = (event) => {
     setComment(event.target.value);
-    const el = element as EwoksRFNode | EwoksRFLink; // ?
+    const el = element;
     setElement({
       ...el,
       data: { ...element.data, comment: event.target.value },
@@ -274,7 +263,6 @@ export default function Sidebar(props) {
   };
 
   const nodeTypeChanged = (event) => {
-    console.log(event.target.value, element.data.type);
     setNodeType(event.target.value);
     setElement({
       ...element,
@@ -283,7 +271,6 @@ export default function Sidebar(props) {
   };
 
   const linkTypeChanged = (event) => {
-    console.log(event.target.value, element);
     setLinkType(event.target.value);
     setElement({
       ...element,
@@ -292,7 +279,6 @@ export default function Sidebar(props) {
   };
 
   const arrowTypeChanged = (event) => {
-    console.log(event.target.value, element);
     setArrowType(event.target.value);
     setElement({
       ...element,
@@ -302,7 +288,6 @@ export default function Sidebar(props) {
 
   const defaultInputsChanged = (table) => {
     // setDefaultInputs(table);
-    console.log(table);
     setElement({
       ...element,
       default_inputs: table.map((dval) => {
@@ -316,7 +301,6 @@ export default function Sidebar(props) {
   };
 
   const conditionsValuesChanged = (table) => {
-    console.log(table, element);
     setElement({
       ...(element as EwoksRFLink),
       data: {
@@ -332,8 +316,7 @@ export default function Sidebar(props) {
   };
 
   const dataMappingValuesChanged = (table) => {
-    console.log(table);
-    const dmap = table.map((row) => {
+    const dmap: DataMapping[] = table.map((row) => {
       return {
         source_output: row.name,
         target_input: row.value,
@@ -349,11 +332,9 @@ export default function Sidebar(props) {
           .join(', '),
       },
     });
-    console.log(element);
   };
 
   const moreHandlesChanged = (event) => {
-    console.log(moreHandles, event.target.checked);
     setMoreHandles(event.target.checked);
     setElement({
       ...(element as EwoksRFNode),
@@ -368,7 +349,6 @@ export default function Sidebar(props) {
   };
 
   const inputsCompleteChanged = (event) => {
-    console.log(inputsComplete, event.target.checked);
     setInputsComplete(event.target.checked);
     setElement({
       ...element,
@@ -377,7 +357,6 @@ export default function Sidebar(props) {
   };
 
   const onErrorChanged = (event) => {
-    console.log(event.target.checked);
     setOnError(event.target.checked);
     setElement({
       ...(element as EwoksRFLink),
@@ -386,7 +365,6 @@ export default function Sidebar(props) {
   };
 
   const animatedChanged = (event) => {
-    console.log(event.target.checked);
     setAnimated(event.target.checked);
     setElement({
       ...element,
@@ -395,25 +373,21 @@ export default function Sidebar(props) {
   };
 
   const mapAllDataChanged = (event) => {
-    console.log(mapAllData, event.target.checked);
     setMapAllData(event.target.checked);
     setElement({
       ...element,
       data: { ...element.data, map_all_data: event.target.checked },
     });
-    console.log(element);
   };
 
   const saveElement = () => {
     // TODO: if in save some links dont have active source-target should be deleted?
-    console.log(element, selectedElement);
     // calculate effects on saving an element on the rest of the graph
     setSelectedElement(element, 'fromSaveElement');
   };
 
   const deleteElement = async () => {
     // TODO: if node deleted all associated links should be deleted with warning?
-    console.log(element, selectedElement, graphRF);
     let newGraph = {};
     const elN = element as EwoksRFNode; // is this the way???
     const elL = element as EwoksRFLink;
@@ -423,7 +397,6 @@ export default function Sidebar(props) {
       const nodesLinks = graphRF.links.filter(
         (link) => !(link.source === elN.id || link.target === elN.id)
       );
-      console.log(nodesLinks);
       newGraph = {
         ...graphRF,
         nodes: graphRF.nodes.filter((nod) => nod.id !== element.id),
@@ -439,7 +412,7 @@ export default function Sidebar(props) {
     if (elD.input_nodes) {
       await axios
         .delete(`http://localhost:5000/workflow/${elD.id}`)
-        .then((res) => {
+        .then(() => {
           setOpenSnackbar({
             open: true,
             text: `Workflow ${elD.id} succesfully deleted!`,
@@ -452,7 +425,6 @@ export default function Sidebar(props) {
             text: error.message,
             severity: 'error',
           });
-          console.log(error);
         });
       setGraphRF(initializedGraph);
       setSelectedElement({} as GraphDetails);
@@ -472,7 +444,6 @@ export default function Sidebar(props) {
   };
 
   const addConditions = () => {
-    console.log(selectedElement);
     const el = element as EwoksRFLink;
     const elCon = el.data.conditions;
     if (elCon && elCon[elCon.length - 1] && elCon[elCon.length - 1].id === '') {
@@ -489,7 +460,6 @@ export default function Sidebar(props) {
   };
 
   const addDataMapping = () => {
-    console.log(selectedElement);
     const el = element as EwoksRFLink;
     const elMap = el.data.data_mapping;
     if (elMap && elMap[elMap.length - 1] && elMap[elMap.length - 1].id === '') {
@@ -506,13 +476,11 @@ export default function Sidebar(props) {
   };
 
   const addDefaultInputs = () => {
-    console.log(selectedElement);
     const el = element as EwoksRFNode;
     const elIn = el.default_inputs;
     if (elIn && elIn[elIn.length - 1] && elIn[elIn.length - 1].id === '') {
       console.log('should not ADD default');
     } else {
-      console.log(el.default_inputs);
       setSelectedElement({
         ...element,
         default_inputs: [...elIn, { id: '', name: '', value: '' }],
@@ -520,8 +488,7 @@ export default function Sidebar(props) {
     }
   };
 
-  const insertGraph = (val) => {
-    console.log(val, selectedElement);
+  const insertGraph = () => {
     setGraphOrSubgraph(false);
   };
 
@@ -529,15 +496,13 @@ export default function Sidebar(props) {
     setOpenDialog(true);
     setDialogContent({
       title: 'Ewoks Graph',
-      object: rfToEwoks(graphRF, recentGraphs),
+      object: rfToEwoks(graphRF),
       openFrom: 'sidebar',
     });
   };
 
-  const getTasks = async (event) => {
-    console.log(event, selectedElement);
+  const getTasks = async () => {
     const tasks = await axios.get('http://localhost:5000/tasks');
-    console.log(tasks);
     setTasks(tasks.data as Task[]);
   };
 
@@ -546,7 +511,7 @@ export default function Sidebar(props) {
       <Accordion
         onChange={(e, expanded) => {
           if (expanded) {
-            getTasks(e);
+            getTasks();
           }
         }}
       >
@@ -558,11 +523,11 @@ export default function Sidebar(props) {
           <Typography>Add Nodes</Typography>
         </AccordionSummary>
         <AccordionDetails style={{ flexWrap: 'wrap' }}>
-          {tasks.map((elem, index) => (
+          {tasks.map((elem) => (
             <span
               role="button"
               tabIndex={0}
-              key={index}
+              key={elem.task_identifier}
               className="dndnode"
               onDragStart={(event) =>
                 onDragStart(event, {
@@ -602,7 +567,7 @@ export default function Sidebar(props) {
           <form className={classes.root} noValidate autoComplete="off">
             {/* {'id' in selectedElement ? ( */}
             {'input_nodes' in selectedElement ? (
-              <React.Fragment>
+              <>
                 <div>
                   <b>Id:</b> {graphRF.graph.id}
                 </div>
@@ -637,14 +602,14 @@ export default function Sidebar(props) {
                     <DenseTable data={graphOutputs} />
                   )}
                 </div>
-              </React.Fragment>
+              </>
             ) : (
               <div>
                 <b>Id:</b> {props.element.id}
               </div>
             )}
             {'source' in selectedElement && (
-              <React.Fragment>
+              <>
                 <div className={classes.root}>
                   <b>Source:</b> {props.element.source}
                 </div>
@@ -692,7 +657,6 @@ export default function Sidebar(props) {
                                   graphRF &&
                                     graphRF.nodes[0] &&
                                     graphRF.nodes.find((nod) => {
-                                      console.log(nod, element);
                                       return nod.id === elementL.source;
                                     }).task_type
                                 )
@@ -707,7 +671,6 @@ export default function Sidebar(props) {
                                   graphRF &&
                                     graphRF.nodes[0] &&
                                     graphRF.nodes.find((nod) => {
-                                      console.log(nod, element);
                                       return nod.id === elementL.target;
                                     }).task_type
                                 )
@@ -758,7 +721,6 @@ export default function Sidebar(props) {
                                   graphRF &&
                                     graphRF.nodes[0] &&
                                     graphRF.nodes.find((nod) => {
-                                      console.log(nod, element);
                                       return nod.id === elementL.source;
                                     }).task_type
                                 )
@@ -777,10 +739,10 @@ export default function Sidebar(props) {
                 )}
 
                 <hr />
-              </React.Fragment>
+              </>
             )}
             {'position' in selectedElement && (
-              <React.Fragment>
+              <>
                 <IconButton
                   style={{ padding: '1px' }}
                   aria-label="edit"
@@ -793,6 +755,7 @@ export default function Sidebar(props) {
                 <Box>
                   {taskProperties.map(({ id, label, value }) => (
                     <EditTaskProp
+                      key={id}
                       id={id}
                       label={label}
                       value={value}
@@ -801,7 +764,7 @@ export default function Sidebar(props) {
                     />
                   ))}
                   <div>
-                    <hr></hr>
+                    <hr />
                     <b>Default Values </b>
                     {/* TODO: any kind of type is allowed: objects, arrays that need to be editable */}
                     <IconButton
@@ -820,7 +783,7 @@ export default function Sidebar(props) {
                       />
                     )}
                   </div>
-                  <hr></hr>
+                  <hr />
                   <div>
                     <b>Inputs-complete</b>
                     <Checkbox
@@ -844,11 +807,11 @@ export default function Sidebar(props) {
                     </div>
                   )}
                 </Box>
-              </React.Fragment>
+              </>
             )}
             {(Object.keys(selectedElement).includes('position') ||
               Object.keys(selectedElement).includes('source')) && (
-              <React.Fragment>
+              <>
                 <div>
                   <Box>
                     {/* if text size big use a text area
@@ -879,7 +842,7 @@ export default function Sidebar(props) {
                     />
                   </Box>
                 </div>
-              </React.Fragment>
+              </>
             )}
           </form>
         </AccordionDetails>
@@ -911,8 +874,8 @@ export default function Sidebar(props) {
                   onChange={nodeTypeChanged}
                 >
                   {['input', 'output', 'internal', 'input_output'].map(
-                    (tex, index) => (
-                      <MenuItem key={index} value={tex}>
+                    (tex) => (
+                      <MenuItem key={tex} value={tex}>
                         {tex}
                       </MenuItem>
                     )
@@ -931,8 +894,8 @@ export default function Sidebar(props) {
                     onChange={linkTypeChanged}
                   >
                     {['straight', 'smoothstep', 'step', 'default'].map(
-                      (text, index) => (
-                        <MenuItem key={index} value={text}>
+                      (text) => (
+                        <MenuItem key={text} value={text}>
                           {text}
                         </MenuItem>
                       )
@@ -947,7 +910,9 @@ export default function Sidebar(props) {
                     onChange={arrowTypeChanged}
                   >
                     {['arrow', 'arrowclosed', 'none'].map((tex) => (
-                      <MenuItem value={tex}>{tex}</MenuItem>
+                      <MenuItem value={tex} key={tex}>
+                        {tex}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>

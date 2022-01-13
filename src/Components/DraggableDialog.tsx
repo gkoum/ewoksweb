@@ -30,31 +30,27 @@ export default function DraggableDialog(props) {
   const [title, setTitle] = React.useState('');
   const [callbackProps, setCallbackProps] = React.useState({});
   const graphRF = useStore((state) => state.graphRF);
-  const recentGraphs = useStore((state) => state.recentGraphs);
 
   const [selection, setSelection] = React.useState('ewoks');
 
   const { open, content } = props;
 
   useEffect(() => {
-    console.log(open, content);
     setGraph((content && content.object) || {});
     setIsOpen(open || false);
     setTitle((content && content.title) || '');
     setCallbackProps(content.callbackProps);
   }, [open, content]);
 
-  const handleClickOpen = () => {
-    setGraph(rfToEwoks(graphRF, recentGraphs));
-  };
+  // const handleClickOpen = () => {
+  //   setGraph(rfToEwoks(graphRF));
+  // };
 
   const handleClose = () => {
-    console.log(graph);
     setIsOpen(false);
   };
 
   const handleSave = () => {
-    console.log(graph);
     setIsOpen(false);
     props.setValue(graph, callbackProps);
   };
@@ -65,9 +61,7 @@ export default function DraggableDialog(props) {
   ) => {
     setSelection(newSelection);
     setTitle(newSelection === 'ewoks' ? 'Ewoks Graph' : 'RF Graph');
-    setGraph(
-      newSelection === 'ewoks' ? rfToEwoks(graphRF, recentGraphs) : graphRF
-    );
+    setGraph(newSelection === 'ewoks' ? rfToEwoks(graphRF) : graphRF);
     setIsOpen(true);
   };
 
@@ -111,7 +105,7 @@ export default function DraggableDialog(props) {
             onAdd={(add) => graphChanged(add)}
             defaultValue="value"
             onDelete={(del) => graphChanged(del)}
-            onSelect={(sel) => true}
+            onSelect={() => true}
             quotesOnKeys={false}
             style={{ backgroundColor: 'rgb(59, 77, 172)' }}
             displayDataTypes

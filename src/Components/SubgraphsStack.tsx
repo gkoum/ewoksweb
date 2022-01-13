@@ -3,8 +3,6 @@ import DashboardStyle from '../layout/DashboardStyle';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import useStore from '../store';
 import Link from '@material-ui/core/Link';
-import { toRFEwoksLinks } from '../utils/toRFEwoksLinks';
-import { toRFEwoksNodes } from '../utils/toRFEwoksNodes';
 
 const useStyles = DashboardStyle;
 
@@ -24,15 +22,15 @@ export default function SubgraphsStack() {
     setSubgraphsStack({ id: e.target.id, label: e.target.text });
     const subgraph = recentGraphs.find((gr) => gr.graph.id === e.target.id);
 
-    if (!subgraph) {
-      setGraphRF({
-        graph: subgraph.graph,
-        nodes: toRFEwoksNodes(subgraph, []),
-        links: toRFEwoksLinks(subgraph, []),
-      });
-    } else {
-      setGraphRF(subgraph);
-    }
+    // if (!subgraph) { // Uncomment if-else or delete if not used
+    //   setGraphRF({
+    //     graph: subgraph.graph,
+    //     nodes: toRFEwoksNodes(subgraph, []),
+    //     links: toRFEwoksLinks(subgraph, []),
+    //   });
+    // } else {
+    setGraphRF(subgraph);
+    // }
   };
 
   return (

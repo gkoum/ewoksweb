@@ -11,7 +11,7 @@ import { toEwoksNodes } from './utils/toEwoksNodes';
 
 export const ewoksNetwork = {};
 
-export async function getWorkflows(): Promise<Array<{ title: string }>> {
+export async function getWorkflows(): Promise<{ title: string }[]> {
   // const workflows = await axios.get('http://mxbes2-1707:38280/ewoks/workflows');
   // return workflows.data.workflows.map((work) => {
   const workflows = await axios
@@ -48,7 +48,7 @@ export async function getSubgraphs(
   recentGraphs: GraphRF[]
 ) {
   // TODO: need to load first layer subgraphs with failsave if some not found
-  const nodes: EwoksRFNode[] = graph.nodes;
+  const nodes: EwoksRFNode[] = [...graph.nodes];
   const existingNodeSubgraphs = nodes.filter(
     (nod) => nod.task_type === 'graph'
   );
@@ -67,7 +67,7 @@ export async function getSubgraphs(
     });
     results = await axios
       .all(
-        notInRecent.map((id) =>
+        notInRecent.map((id: string) =>
           axios.get(`http://localhost:5000/workflow/${id}`)
         )
       )
@@ -86,13 +86,13 @@ export async function getSubgraphs(
   return results ? results : [];
 }
 
-export function rfToEwoks(tempGraph, recentGraphs): GraphEwoks {
+export function rfToEwoks(tempGraph): GraphEwoks {
   // calculate input_nodes-output_nodes nodes from graphInput-graphOutput
   const graph = calcGraphInputsOutputs(tempGraph);
   return {
-    graph: graph,
+    graph,
     nodes: toEwoksNodes(tempGraph.nodes),
-    links: toEwoksLinks(tempGraph.links, recentGraphs),
+    links: toEwoksLinks(tempGraph.links),
   };
 }
 

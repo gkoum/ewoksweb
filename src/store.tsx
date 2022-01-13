@@ -12,12 +12,7 @@ import type {
 import { createGraph } from './utils';
 import { toRFEwoksNodes } from './utils/toRFEwoksNodes';
 import { toRFEwoksLinks } from './utils/toRFEwoksLinks';
-import { validateEwoksGraph } from './utils/EwoksValidator';
 import { findAllSubgraphs } from './utils/FindAllSubgraphs';
-
-const nodes: EwoksRFNode[] = [];
-const edges: EwoksRFLink[] = [];
-console.log(nodes, edges);
 
 const initializedGraph = {
   graph: {
@@ -35,7 +30,6 @@ const useStore = create<State>((set, get) => ({
   undoRedo: [] as Action[],
 
   setUndoRedo: (action: Action) => {
-    console.log(get().undoRedo, action, get().undoIndex);
     // check the size of the history-array  not more than 10
     // when undo and the then edit the steps above the current step are erased
     set((state) => ({
@@ -48,7 +42,6 @@ const useStore = create<State>((set, get) => ({
   undoIndex: 0 as number,
 
   setUndoIndex: (index) => {
-    console.log('setIndex', index, get().undoRedo);
     if (index >= 0 && get().undoRedo.length > index) {
       set((state) => ({
         ...state,
@@ -64,7 +57,7 @@ const useStore = create<State>((set, get) => ({
     }
   },
 
-  initializedGraph: initializedGraph,
+  initializedGraph,
 
   tasks: [],
   setTasks: (tasks) => {
@@ -92,7 +85,7 @@ const useStore = create<State>((set, get) => ({
     }));
   },
 
-  allWorkflows: [] as Array<{ title: string }>,
+  allWorkflows: [] as { title: string }[],
 
   setAllWorkflows: (workflows: [{ title: string }]) => {
     set((state) => ({
@@ -104,7 +97,6 @@ const useStore = create<State>((set, get) => ({
   recentGraphs: [] as GraphRF[],
 
   setRecentGraphs: (newGraph: GraphRF, reset = false) => {
-    console.log('NEW GRAPH:', get().recentGraphs, newGraph, reset);
     let rec = [];
     if (!reset) {
       rec =
@@ -153,7 +145,7 @@ const useStore = create<State>((set, get) => ({
       stack = [];
     } else if (exists === -1) {
       stack = [...subStack, stackGraph];
-    } else if (exists == subStack.length - 1) {
+    } else if (exists === subStack.length - 1) {
       // TODO: if user insert the same 'graph' and is the first then stack is not updated
       stack = subStack;
     } else {
@@ -184,26 +176,24 @@ const useStore = create<State>((set, get) => ({
       workingGraph,
       get().recentGraphs
     );
+
     // 3. Put the newNodeSubgraphs into recent in their graphRF form (sync)
     newNodeSubgraphs.forEach((gr) => {
       // calculate the rfNodes using the fetched subgraphs
-      const rfNodes = toRFEwoksNodes(gr, newNodeSubgraphs);
-      console.log('rfNodes', rfNodes, toRFEwoksLinks(gr, newNodeSubgraphs));
       get().setRecentGraphs({
         graph: gr.graph,
-        nodes: rfNodes,
+        nodes: toRFEwoksNodes(gr, newNodeSubgraphs),
         links: toRFEwoksLinks(gr, newNodeSubgraphs),
       });
     });
+
     // 4. Calculate the new graph given the subgraphs
-    // console.log(workingGraph, newNodeSubgraphs);
     const grfNodes = toRFEwoksNodes(workingGraph, newNodeSubgraphs);
     const graph = {
       graph: workingGraph.graph,
       nodes: grfNodes,
       links: toRFEwoksLinks(workingGraph, newNodeSubgraphs),
     };
-    // console.log(grfNodes, graph, get().graphOrSubgraph, get().recentGraphs);
 
     get().setRecentGraphs(graph as GraphRF);
 
@@ -223,7 +213,7 @@ const useStore = create<State>((set, get) => ({
     set((state) => ({
       ...state,
       workingGraph: graph,
-      undoRedo: [{ action: 'Opened new graph', graph: graph }],
+      undoRedo: [{ action: 'Opened new graph', graph }],
       undoIndex: 0,
     }));
     return graph;
@@ -245,25 +235,17 @@ const useStore = create<State>((set, get) => ({
   selectedElement: {} as EwoksRFNode | EwoksRFLink | GraphDetails,
 
   setSelectedElement: (element, from) => {
-    console.log(typeof element);
     const wg = get().workingGraph.graph.id;
+    const { graph, nodes, links } = get().graphRF;
 
-    if (wg === '0' || wg === get().graphRF.graph.id) {
+    if (wg === '0' || wg === graph.id) {
       let tempGraph = {} as GraphRF;
       if ('position' in element) {
         tempGraph = {
-          graph: get().graphRF.graph,
-          nodes: [
-            ...get().graphRF.nodes.filter((nod) => nod.id !== element.id),
-            element,
-          ],
-          links: get().graphRF.links,
+          graph,
+          nodes: [...nodes.filter((nod) => nod.id !== element.id), element],
+          links,
         };
-        set((state) => ({
-          ...state,
-          graphRF: tempGraph,
-          selectedElement: element as EwoksRFNode,
-        }));
         if (from === 'fromSaveElement') {
           get().setUndoRedo({
             action: 'Node details changed',
@@ -273,23 +255,10 @@ const useStore = create<State>((set, get) => ({
         }
       } else if ('source' in element) {
         tempGraph = {
-          graph: get().graphRF.graph,
-          nodes: get().graphRF.nodes,
-          links: [
-            ...get().graphRF.links.filter((link) => link.id !== element.id),
-            element,
-          ],
+          graph,
+          nodes,
+          links: [...links.filter((link) => link.id !== element.id), element],
         };
-        set((state) => ({
-          ...state,
-          graphRF: tempGraph,
-          selectedElement: element as EwoksRFLink,
-          // undoRedo: [
-          //   ...get().undoRedo.slice(0, get().undoIndex),
-          //   { action: 'Link details changed', graph: tempGraph },
-          // ],
-          // undoIndex: get().undoIndex + 1,
-        }));
         if (from === 'fromSaveElement') {
           get().setUndoRedo({
             action: 'Link details changed',
@@ -300,14 +269,10 @@ const useStore = create<State>((set, get) => ({
       } else {
         tempGraph = {
           graph: element,
-          nodes: get().graphRF.nodes,
-          links: get().graphRF.links,
+          nodes,
+          links,
         };
-        set((state) => ({
-          ...state,
-          graphRF: tempGraph,
-          selectedElement: element as GraphDetails,
-        }));
+
         if (from === 'fromSaveElement') {
           get().setUndoRedo({
             action: 'Graph details changed',
@@ -316,12 +281,12 @@ const useStore = create<State>((set, get) => ({
           get().setUndoIndex(get().undoIndex + 1);
         }
       }
+      set((state) => ({
+        ...state,
+        graphRF: tempGraph,
+        selectedElement: element,
+      }));
     } else {
-      // get().setOpenSnackbar({
-      //   open: true,
-      //   text: 'Not allowed to modify sub-graphs!',
-      //   severity: 'success',
-      // });
       set((state) => ({
         ...state,
         selectedElement: element,
@@ -335,7 +300,7 @@ const useStore = create<State>((set, get) => ({
     links: [],
   } as GraphRF,
 
-  setSubGraph: async (subGraph: GraphRF) => {
+  setSubGraph: async (subGraph: GraphEwoks) => {
     // 1. input the graphEwoks from server or file-system
     // 2. search for all subgraphs in it (async)
     const newNodeSubgraphs = await findAllSubgraphs(
@@ -355,6 +320,7 @@ const useStore = create<State>((set, get) => ({
     });
     // 4. Calculate the new graph given the subgraphs
     const grfNodes = toRFEwoksNodes(subGraph, newNodeSubgraphs);
+
     const graph = {
       graph: subGraph.graph,
       nodes: grfNodes,
@@ -400,7 +366,7 @@ const useStore = create<State>((set, get) => ({
       });
       let id = 0;
       let graphId = subToAdd.graph.label;
-      while (get().graphRF.nodes.find((nod) => nod.id === graphId)) {
+      while (get().graphRF.nodes.some((nod) => nod.id === graphId)) {
         graphId += id++;
       }
       newNode = {
@@ -434,7 +400,11 @@ const useStore = create<State>((set, get) => ({
       get().setRecentGraphs(subToAdd);
     } else {
       // Handle
-      console.log('Couldnt locate the workingGraph in the recent');
+      get().setOpenSnackbar({
+        open: true,
+        text: 'Couldnt locate the workingGraph in the recent!',
+        severity: 'warning',
+      });
     }
     const newWorkingGraph = {
       graph: get().graphRF.graph,
