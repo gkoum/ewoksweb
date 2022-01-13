@@ -74,9 +74,22 @@ export default function FormDialog(props) {
   useEffect(() => {
     setIsOpen(open);
     const selG = selectedElement as GraphDetails;
-    setIsGraph(selG.input_nodes ? 'Workflow' : 'Task');
-    setNewName(graphRF.graph.label);
-  }, [open, graphRF.graph.label, selectedElement]);
+    // if selected element a task get its name
+    if ('input_nodes' in selectedElement) {
+      const selG = selectedElement as GraphDetails;
+      setIsGraph('Workflow');
+      setNewName(selG.label);
+    } else if ('position' in selectedElement) {
+      setIsGraph('Task');
+      setNewName(selectedElement.label);
+    } else {
+      setOpenSnackbar({
+        open: true,
+        text: 'Select a task or the graph to clone',
+        severity: 'warning',
+      });
+    }
+  }, [open, graphRF.graph.label, selectedElement, setOpenSnackbar]);
 
   return (
     <Dialog open={isOpen} onClose={handleClose}>
