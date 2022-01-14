@@ -39,6 +39,7 @@ export interface State {
   undoIndex: number;
   setUndoIndex: (index: number) => void;
   initializedGraph: GraphRF;
+  initializedTask: Task;
   tasks: Array<Task>;
   setTasks: (tasks: Array<Task>) => void;
   openDraggableDialog: DialogParams;

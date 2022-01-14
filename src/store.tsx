@@ -14,6 +14,16 @@ import { toRFEwoksNodes } from './utils/toRFEwoksNodes';
 import { toRFEwoksLinks } from './utils/toRFEwoksLinks';
 import { findAllSubgraphs } from './utils/FindAllSubgraphs';
 
+const initializedTask = {
+  task_identifier: '',
+  task_type: '',
+  icon: '',
+  category: '',
+  optional_input_names: [],
+  output_names: [],
+  required_input_names: [],
+};
+
 const initializedGraph = {
   graph: {
     id: 'new_graph000',
@@ -56,6 +66,8 @@ const useStore = create<State>((set, get) => ({
       });
     }
   },
+
+  initializedTask,
 
   initializedGraph,
 
