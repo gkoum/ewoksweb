@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Button from '@material-ui/core/Button';
+import { Button, Tooltip } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,7 +10,6 @@ import useStore from '../store';
 import type {
   EwoksRFLink,
   EwoksRFNode,
-  GraphDetails,
   GraphEwoks,
   GraphRF,
   Task,
@@ -35,13 +34,13 @@ export default function FormDialog(props) {
   const selectedElement = useStore<EwoksRFNode | EwoksRFLink>(
     (state) => state.selectedElement
   );
-  // const graphRF = useStore((state) => state.graphRF);
   const setWorkingGraph = useStore((state) => state.setWorkingGraph);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
   const [element, setElement] = React.useState<Task | GraphRF>(
     {} as Task | GraphRF
   );
+  const setTasks = useStore((state) => state.setTasks);
 
   const { open, action, elementToEdit } = props;
 
@@ -49,9 +48,7 @@ export default function FormDialog(props) {
     console.log(elementToEdit);
     setIsOpen(open);
     setElement(elementToEdit);
-    // if selected element a task get its name
     if (action === 'cloneGraph') {
-      // const selG = elementToEdit as GraphDetails;
       setNewName(elementToEdit.label);
     } else {
       setNewName(elementToEdit.task_identifier);
@@ -100,9 +97,11 @@ export default function FormDialog(props) {
         .post(`http://localhost:5000/tasks`, {
           ...elem,
         })
-        .then((res) => {
+        .then(async (res) => {
           console.log(res);
           props.setOpenSaveDialog(false);
+          const tasks = await axios.get('http://localhost:5000/tasks');
+          setTasks(tasks.data as Task[]);
         })
         .catch((error) => {
           console.log(error.message + error.response.data);
@@ -192,10 +191,35 @@ export default function FormDialog(props) {
     setNewName('');
   };
 
+  const fields = [
+    { id: 'Task Type', value: taskType, change: taskTypeChanged },
+    { id: 'Category', value: category, change: categoryChanged },
+    { id: 'Icon', value: icon, change: iconChanged },
+    {
+      id: 'Optional Inputs',
+      value: optionalInputNames,
+      change: optionalInputNamesChanged,
+      tip: 'Give the optional inputs in comma separated values eg: op1,op2...',
+    },
+    {
+      id: 'Required Inputs',
+      value: requiredInputNames,
+      change: requiredInputNamesChanged,
+      tip:
+        'Give the required inputs in comma separated values eg: req1,req2...',
+    },
+    {
+      id: 'Output Inputs',
+      value: outputNames,
+      change: outputNamesChanged,
+      tip: 'Give the outputs in comma separated values eg: out1,out2...',
+    },
+  ];
+
   return (
     <Dialog open={isOpen} onClose={handleClose}>
       <DialogTitle>
-        Give the new {action === 'cloneGraph' ? 'Workflow' : 'Task'} name
+        Give the new {action === 'cloneGraph' ? 'Workflow' : 'Task'} details
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -211,64 +235,20 @@ export default function FormDialog(props) {
           value={newName}
           onChange={newNameChanged}
         />
-        {action !== 'cloneGraph' && (
-          <>
-            <TextField
-              margin="dense"
-              id="saveAsName"
-              label="Task Type"
-              fullWidth
-              variant="standard"
-              value={taskType}
-              onChange={taskTypeChanged}
-            />
-            <TextField
-              margin="dense"
-              id="category"
-              label="Category"
-              fullWidth
-              variant="standard"
-              value={category}
-              onChange={categoryChanged}
-            />
-            <TextField
-              margin="dense"
-              id="icon"
-              label="icon"
-              fullWidth
-              variant="standard"
-              value={icon}
-              onChange={iconChanged}
-            />
-            <TextField
-              margin="dense"
-              id="optionalInputNames"
-              label="Optional inputs"
-              fullWidth
-              variant="standard"
-              value={optionalInputNames}
-              onChange={optionalInputNamesChanged}
-            />
-            <TextField
-              margin="dense"
-              id="requiredInputNames"
-              label="Required inputs"
-              fullWidth
-              variant="standard"
-              value={requiredInputNames}
-              onChange={requiredInputNamesChanged}
-            />
-            <TextField
-              margin="dense"
-              id="outputNames"
-              label="Outputs"
-              fullWidth
-              variant="standard"
-              value={outputNames}
-              onChange={outputNamesChanged}
-            />
-          </>
-        )}
+        {action !== 'cloneGraph' &&
+          fields.map((field) => (
+            <Tooltip title={field.tip || ''}>
+              <TextField
+                margin="dense"
+                id={field.id}
+                label={field.id}
+                fullWidth
+                variant="standard"
+                value={field.value}
+                onChange={field.change}
+              />
+            </Tooltip>
+          ))}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>

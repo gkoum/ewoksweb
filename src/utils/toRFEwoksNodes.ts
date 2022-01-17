@@ -1,10 +1,13 @@
 import type { EwoksRFNode, GraphRF } from '../types';
 import { inNodesLinks } from './inNodesLinks';
 import { outNodesLinks } from './outNodesLinks';
-import { tasks } from '../assets/graphTests';
 
 // Accepts a GraphEwoks and returns an EwoksRFNode[]
-export function toRFEwoksNodes(tempGraph, newNodeSubgraphs): EwoksRFNode[] {
+export function toRFEwoksNodes(
+  tempGraph,
+  newNodeSubgraphs,
+  tasks
+): EwoksRFNode[] {
   // console.log('calc nodes:', tempGraph, newNodeSubgraphs);
   // Find input and output nodes of the graph
   const inputsAl = inputsAll(tempGraph);

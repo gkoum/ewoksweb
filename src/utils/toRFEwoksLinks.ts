@@ -1,12 +1,12 @@
 import type { EwoksRFLink, GraphEwoks, Task } from '../types';
 import { inNodesLinks } from './inNodesLinks';
 import { outNodesLinks } from './outNodesLinks';
-import { tasks } from '../assets/graphTests';
 
 // from GrapfEwoks get EwoksRFLink
 export function toRFEwoksLinks(
   tempGraph: GraphEwoks, // TODO : GraphEwoks
-  newNodeSubgraphs
+  newNodeSubgraphs,
+  tasks
 ): EwoksRFLink[] {
   // tempGraph: the graph to transform its links
   // newNodeSubgraphs: the subgraphs located in the supergraph.

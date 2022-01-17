@@ -15,7 +15,6 @@ import CustomNode from '../CustomNodes/CustomNode';
 import FunctionNode from '../CustomNodes/FunctionNode';
 import DataNode from '../CustomNodes/DataNode';
 import type { GraphRF, EwoksRFNode, EwoksRFLink } from '../types';
-import { tasks } from '../assets/graphTests';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -82,6 +81,7 @@ function Canvas() {
   const setUndoRedo = useStore((state) => state.setUndoRedo);
   const selectedElement = useStore((state) => state.selectedElement);
   const setSelectedElement = useStore((state) => state.setSelectedElement);
+  const tasks = useStore((state) => state.tasks);
 
   const [selectedElements, setSelectedElements] = React.useState([]);
 

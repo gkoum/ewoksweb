@@ -8,11 +8,13 @@ import type {
   stackGraph,
   GraphEwoks,
   Action,
+  Task,
 } from './types';
 import { createGraph } from './utils';
 import { toRFEwoksNodes } from './utils/toRFEwoksNodes';
 import { toRFEwoksLinks } from './utils/toRFEwoksLinks';
 import { findAllSubgraphs } from './utils/FindAllSubgraphs';
+import axios from 'axios';
 
 const initializedTask = {
   task_identifier: '',
@@ -180,6 +182,10 @@ const useStore = create<State>((set, get) => ({
   setWorkingGraph: async (workingGraph: GraphEwoks): Promise<GraphRF> => {
     // 1. if it is a new graph opening initialize
     // TODO: remove initialise or id: 0. Send clear messages
+    if (get().tasks.length === 0) {
+      const tasks = await axios.get('http://localhost:5000/tasks');
+      get().setTasks(tasks.data as Task[]);
+    }
     get().setSelectedElement({} as EwoksRFNode | EwoksRFLink);
     get().setSubgraphsStack({ id: 'initialiase', label: '' });
     get().setGraphRF(initializedGraph);
@@ -196,17 +202,21 @@ const useStore = create<State>((set, get) => ({
       // calculate the rfNodes using the fetched subgraphs
       get().setRecentGraphs({
         graph: gr.graph,
-        nodes: toRFEwoksNodes(gr, newNodeSubgraphs),
-        links: toRFEwoksLinks(gr, newNodeSubgraphs),
+        nodes: toRFEwoksNodes(gr, newNodeSubgraphs, get().tasks),
+        links: toRFEwoksLinks(gr, newNodeSubgraphs, get().tasks),
       });
     });
 
     // 4. Calculate the new graph given the subgraphs
-    const grfNodes = toRFEwoksNodes(workingGraph, newNodeSubgraphs);
+    const grfNodes = toRFEwoksNodes(
+      workingGraph,
+      newNodeSubgraphs,
+      get().tasks
+    );
     const graph = {
       graph: workingGraph.graph,
       nodes: grfNodes,
-      links: toRFEwoksLinks(workingGraph, newNodeSubgraphs),
+      links: toRFEwoksLinks(workingGraph, newNodeSubgraphs, get().tasks),
     };
 
     get().setRecentGraphs(graph as GraphRF);
@@ -218,7 +228,7 @@ const useStore = create<State>((set, get) => ({
     get().setRecentGraphs({
       graph: workingGraph.graph,
       nodes: grfNodes,
-      links: toRFEwoksLinks(workingGraph, newNodeSubgraphs),
+      links: toRFEwoksLinks(workingGraph, newNodeSubgraphs, get().tasks),
     });
     get().setSubgraphsStack({
       id: workingGraph.graph.id,
@@ -324,21 +334,21 @@ const useStore = create<State>((set, get) => ({
     // 3. Put the newNodeSubgraphs into recent in their graphRF form (sync)
     newNodeSubgraphs.forEach((gr) => {
       // calculate the rfNodes using the fetched subgraphs
-      const rfNodes = toRFEwoksNodes(gr, newNodeSubgraphs);
+      const rfNodes = toRFEwoksNodes(gr, newNodeSubgraphs, get().tasks);
 
       get().setRecentGraphs({
         graph: gr.graph,
         nodes: rfNodes,
-        links: toRFEwoksLinks(gr, newNodeSubgraphs),
+        links: toRFEwoksLinks(gr, newNodeSubgraphs, get().tasks),
       });
     });
     // 4. Calculate the new graph given the subgraphs
-    const grfNodes = toRFEwoksNodes(subGraph, newNodeSubgraphs);
+    const grfNodes = toRFEwoksNodes(subGraph, newNodeSubgraphs, get().tasks);
 
     const graph = {
       graph: subGraph.graph,
       nodes: grfNodes,
-      links: toRFEwoksLinks(subGraph, newNodeSubgraphs),
+      links: toRFEwoksLinks(subGraph, newNodeSubgraphs, get().tasks),
     };
     // Adding a subgraph to an existing workingGraph:
     // save the workingGraph in the recent graphs and add a new graph node to it
@@ -364,17 +374,21 @@ const useStore = create<State>((set, get) => ({
     if (subToAdd) {
       const inputsSub = subToAdd.graph.input_nodes.map((input) => {
         return {
-          label: `${input.uiProps.label ? input.uiProps.label : input.id}: ${
-            input.node
-          } ${input.sub_node ? `  -> ${input.sub_node}` : ''}`,
+          label: `${
+            input.uiProps && input.uiProps.label
+              ? input.uiProps.label
+              : input.id
+          }: ${input.node} ${input.sub_node ? `  -> ${input.sub_node}` : ''}`,
           type: 'data ',
         };
       });
       const outputsSub = subToAdd.graph.output_nodes.map((output) => {
         return {
-          label: `${output.uiProps.label ? output.uiProps.label : output.id}: ${
-            output.node
-          } ${output.sub_node ? ` -> ${output.sub_node}` : ''}`,
+          label: `${
+            output.uiProps && output.uiProps.label
+              ? output.uiProps.label
+              : output.id
+          }: ${output.node} ${output.sub_node ? ` -> ${output.sub_node}` : ''}`,
           type: 'data ',
         };
       });
@@ -393,7 +407,7 @@ const useStore = create<State>((set, get) => ({
         // TODO: can we upload a task too like a subgraph
         task_type: 'graph',
         task_identifier: subToAdd.graph.id,
-        // type: 'graph',
+        type: 'graph',
         position: { x: 100, y: 500 },
         default_inputs: [],
         inputs_complete: false,

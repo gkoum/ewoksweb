@@ -14,39 +14,37 @@ function AutocompleteDrop(props) {
   const loading = open && options.length === 0;
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
 
-  useEffect(() => {
-    let active = true;
-
-    if (!loading) {
-      return undefined;
-    }
-    // if (allWorkflows.length === 0) { // TODO: not get all the time...
-    (async () => {
-      const workF: { title: string }[] = await getWorkflows();
-      // .catch((error) => {
-      //   console.log(error);
-      // });
-      if (workF && workF.length > 0) {
-        setAllWorkflows(workF);
-        if (active) {
-          setOptions([...workF]);
-        }
-      } else {
-        setOpenSnackbar({
-          open: true,
-          text: 'Something went wrong when contacting the server!',
-          severity: 'error',
-        });
-      }
-    })();
-    // } else {
-    //   setOptions(allWorkflows);
-    // }
-
-    return () => {
-      active = false;
-    };
-  }, [loading, allWorkflows, setAllWorkflows, setOpenSnackbar]);
+  // useEffect(() => {
+  //   // let active = true;
+  //   // if (!loading) {
+  //   //   return undefined;
+  //   // }
+  //   // if (allWorkflows.length === 0) { // TODO: not get all the time...
+  //   // (async () => {
+  //   //   const workF: { title: string }[] = await getWorkflows();
+  //   //   // .catch((error) => {
+  //   //   //   console.log(error);
+  //   //   // });
+  //   //   if (workF && workF.length > 0) {
+  //   //     setAllWorkflows(workF);
+  //   //     if (active) {
+  //   //       setOptions([...workF]);
+  //   //     }
+  //   //   } else {
+  //   //     setOpenSnackbar({
+  //   //       open: true,
+  //   //       text: 'Something went wrong when contacting the server!',
+  //   //       severity: 'error',
+  //   //     });
+  //   //   }
+  //   // })();
+  //   // } else {
+  //   //   setOptions(allWorkflows);
+  //   // }
+  //   // return () => {
+  //   //   active = false;
+  //   // };
+  // }, [loading, allWorkflows, setAllWorkflows, setOpenSnackbar]);
 
   useEffect(() => {
     if (!open) {
@@ -58,12 +56,34 @@ function AutocompleteDrop(props) {
     props.setInputValue(newInputValue);
   };
 
+  const temp = async () => {
+    setOpen(true);
+    let active = true;
+    const workF: { title: string }[] = await getWorkflows();
+    if (workF && workF.length > 0) {
+      setAllWorkflows(workF);
+      if (active) {
+        setOptions([...workF]);
+      }
+    } else {
+      setOpenSnackbar({
+        open: true,
+        text: 'Something went wrong when contacting the server!',
+        severity: 'error',
+      });
+    }
+    return () => {
+      active = false;
+    };
+  };
+
   return (
     <Autocomplete
       id="async-autocomplete-drop"
       open={open}
       onOpen={() => {
-        setOpen(true);
+        temp();
+        // setOpen(true);
       }}
       onClose={() => {
         setOpen(false);

@@ -183,6 +183,7 @@ export interface EwoksRFNode {
   id: string;
   label?: string;
   task_type?: string;
+  type?: string;
   task_identifier?: string;
   default_inputs?: Inputs[];
   inputs_complete?: boolean;
