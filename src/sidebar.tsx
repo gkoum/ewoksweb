@@ -37,6 +37,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import IconMenu from './Components/IconMenu';
 import Drawer from './Components/Drawer';
 import axios from 'axios';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import type {
   EwoksRFNode,
@@ -538,7 +539,16 @@ export default function Sidebar(props) {
               }
               draggable
             >
-              <img src={iconsObj[elem.icon]} alt="orangeImage" />
+              <Tooltip title={elem.task_identifier}>
+                <img
+                  src={
+                    Object.keys(iconsObj).includes(elem.icon)
+                      ? iconsObj[elem.icon]
+                      : iconsObj['orange1']
+                  }
+                  alt=""
+                />
+              </Tooltip>
             </span>
           ))}
           <Upload>

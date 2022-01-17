@@ -52,7 +52,7 @@ export default function IconMenu(props) {
     console.log(action, element, tasks);
     setDoAction(action);
     if (action === 'newTask') {
-      setElementToEdit({} as Task);
+      setElementToEdit(initializedTask as Task);
     } else if (action === 'cloneTask') {
       if ('position' in element) {
         const task = tasks.find(
@@ -105,7 +105,7 @@ export default function IconMenu(props) {
       >
         <Paper>
           <MenuList>
-            <MenuItem onClick={() => action('newTask', {})}>
+            <MenuItem onClick={() => action('newTask', initializedTask)}>
               <ListItemIcon>
                 <Cloud fontSize="small" />
               </ListItemIcon>

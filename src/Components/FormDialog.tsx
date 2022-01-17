@@ -25,13 +25,17 @@ export default function FormDialog(props) {
   const [taskType, setTaskType] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [icon, setIcon] = React.useState('');
-  const [optionalInputNames, setOptionalInputNames] = React.useState('');
-  const [requiredInputNames, setRequiredInputNames] = React.useState('');
-  const [outputNames, setOutputNames] = React.useState('');
+  const [optionalInputNames, setOptionalInputNames] = React.useState(
+    [] as string[]
+  );
+  const [requiredInputNames, setRequiredInputNames] = React.useState(
+    [] as string[]
+  );
+  const [outputNames, setOutputNames] = React.useState([] as string[]);
   const selectedElement = useStore<EwoksRFNode | EwoksRFLink>(
     (state) => state.selectedElement
   );
-  const graphRF = useStore((state) => state.graphRF);
+  // const graphRF = useStore((state) => state.graphRF);
   const setWorkingGraph = useStore((state) => state.setWorkingGraph);
   const setRecentGraphs = useStore((state) => state.setRecentGraphs);
   const setOpenSnackbar = useStore((state) => state.setOpenSnackbar);
@@ -58,11 +62,12 @@ export default function FormDialog(props) {
       setRequiredInputNames(elementToEdit.required_input_names);
       setOutputNames(elementToEdit.output_names);
     }
-  }, [open, graphRF.graph.label, action, elementToEdit, setOpenSnackbar]);
+  }, [open, action, elementToEdit]);
 
   const handleSave = () => {
     // get the selected element (graph or Node) give a new name before saving
     // fire a POST
+    console.log(newName, action);
     if (newName !== '' && action === 'cloneGraph') {
       const el = element as GraphRF;
       axios // if await is used const response =
@@ -89,7 +94,7 @@ export default function FormDialog(props) {
         });
     } else if (['cloneTask', 'newTask'].includes(action)) {
       // or newTask
-      console.log('Save the task!');
+      console.log('Save the task!', element);
       const elem = element as Task;
       axios // if await is used const response =
         .post(`http://localhost:5000/tasks`, {
@@ -113,16 +118,16 @@ export default function FormDialog(props) {
   const newNameChanged = (event) => {
     const val = event.target.value;
     setNewName(val);
-    if ('position' in selectedElement) {
-      setElement({
-        ...element,
-        task_identifier: val,
-      });
-    } else {
+    if ('graph' in selectedElement) {
       const el = element as GraphRF;
       setElement({
         ...el,
         graph: { ...el.graph, id: val, label: val },
+      });
+    } else {
+      setElement({
+        ...element,
+        task_identifier: val,
       });
     }
   };
@@ -157,28 +162,28 @@ export default function FormDialog(props) {
 
   const optionalInputNamesChanged = (event) => {
     const val = event.target.value;
-    setOptionalInputNames(val);
+    setOptionalInputNames(val.split(','));
     setElement({
       ...element,
-      optional_input_names: val,
+      optional_input_names: val.split(','),
     });
   };
 
   const requiredInputNamesChanged = (event) => {
     const val = event.target.value;
-    setRequiredInputNames(val);
+    setRequiredInputNames(val.split(','));
     setElement({
       ...element,
-      required_input_names: val,
+      required_input_names: val.split(','),
     });
   };
 
   const outputNamesChanged = (event) => {
     const val = event.target.value;
-    setOutputNames(val);
+    setOutputNames(val.split(','));
     setElement({
       ...element,
-      output_names: val,
+      output_names: val.split(','),
     });
   };
 

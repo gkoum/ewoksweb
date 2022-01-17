@@ -40,6 +40,7 @@ const useStore = create<State>((set, get) => ({
   undoRedo: [] as Action[],
 
   setUndoRedo: (action: Action) => {
+    console.log(action, get().undoIndex, get().undoRedo);
     // check the size of the history-array  not more than 10
     // when undo and the then edit the steps above the current step are erased
     set((state) => ({
@@ -52,6 +53,7 @@ const useStore = create<State>((set, get) => ({
   undoIndex: 0 as number,
 
   setUndoIndex: (index) => {
+    console.log(index, get().undoIndex, get().undoRedo);
     if (index >= 0 && get().undoRedo.length > index) {
       set((state) => ({
         ...state,
@@ -263,7 +265,7 @@ const useStore = create<State>((set, get) => ({
             action: 'Node details changed',
             graph: tempGraph,
           });
-          get().setUndoIndex(get().undoIndex + 1);
+          // get().setUndoIndex(get().undoIndex + 1);
         }
       } else if ('source' in element) {
         tempGraph = {
@@ -276,7 +278,7 @@ const useStore = create<State>((set, get) => ({
             action: 'Link details changed',
             graph: tempGraph,
           });
-          get().setUndoIndex(get().undoIndex + 1);
+          // get().setUndoIndex(get().undoIndex + 1);
         }
       } else {
         tempGraph = {
@@ -290,7 +292,7 @@ const useStore = create<State>((set, get) => ({
             action: 'Graph details changed',
             graph: tempGraph,
           });
-          get().setUndoIndex(get().undoIndex + 1);
+          // get().setUndoIndex(get().undoIndex + 1);
         }
       }
       set((state) => ({
